@@ -553,7 +553,9 @@
     "remove": "削除",
     "checkout": "レジに進む",
     "summary_heading": "ご注文内容",
-    "empty_title": "カートはまだ空です"
+    "empty_title": "カートはまだ空です",
+    "option": "{{ name }}：{{ value }}",
+    "view_cart": "カートを見る"
   },
   "yarn_pdp": {
     "per_ball": "/ 玉",

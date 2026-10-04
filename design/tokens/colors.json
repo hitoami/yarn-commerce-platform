@@ -46,7 +46,7 @@
     "bg-surface": { "value": "cream-50", "use": "卡片、导航、横幅、输入框面" },
     "bg-sunken": { "value": "sand-100", "use": "次级区块（暖砂）" },
     "bg-warm": { "value": "sand-150", "use": "暖米区块（配色方案 5）", "pending": "P3：与 bg-sunken 合并或删除" },
-    "bg-band": { "value": "sand-50", "use": "暖米面板：毛线详情「要买几团？」估算面板" },
+    "bg-band": { "value": "sand-50", "use": "暖米面板：毛线详情「要买几团？」估算面板；购物车汇总面板与空购物车底带" },
     "bg-inverse": { "value": "clay-700", "use": "深色反白区块" },
 
     "text-primary": { "value": "charcoal-900", "use": "正文、通用标题、Rise 原生文字" },
@@ -88,7 +88,7 @@
     "overlay": { "value": "charcoal-900", "alpha": 0.32, "use": "抽屉与弹窗遮罩、浮层阴影" },
     "shadow-soft": { "value": "umber-700", "alpha": 0.14, "use": "卡片与浮层的柔和阴影" },
     "scrollbar-thumb": { "value": "sand-400", "use": "滚动条滑块" },
-    "scrollbar-track": { "value": "sand-50", "use": "滚动条轨道；首屏、导览条与购物车的奶油底" },
+    "scrollbar-track": { "value": "sand-50", "use": "滚动条轨道" },
 
     "shadow-page": { "value": "shade-100", "use": "配色方案 1 阴影色" },
     "shadow-sunken": { "value": "shade-150", "use": "配色方案 2 阴影色" },

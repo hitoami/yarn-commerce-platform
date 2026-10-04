@@ -553,7 +553,9 @@
     "remove": "删除",
     "checkout": "去结账",
     "summary_heading": "订单小计",
-    "empty_title": "购物车还是空的"
+    "empty_title": "购物车还是空的",
+    "option": "{{ name }}：{{ value }}",
+    "view_cart": "查看购物车"
   },
   "yarn_pdp": {
     "per_ball": "/ 团",

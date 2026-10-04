@@ -124,6 +124,12 @@ async function seedCart(context, baseUrl, products) {
   if (!response.ok()) throw new Error(`预置加购失败 ${response.status()}`);
 }
 
+async function openCartDrawer(page) {
+  await page.click('#cart-icon-bubble');
+  await page.waitForSelector('cart-drawer.active', { timeout: 8000 });
+  await page.waitForTimeout(600);
+}
+
 async function runJob(browser, job, baseUrl) {
   const { page: target, locale, viewport } = job;
   const context = await browser.newContext({
@@ -171,6 +177,7 @@ async function runJob(browser, job, baseUrl) {
     if (found.placeholders) result.warnings.push(`${found.placeholders} 个占位图（未设置图片）`);
 
     await page.evaluate(() => window.scrollTo(0, 0));
+    if (target.openCart) await openCartDrawer(page);
     await page.waitForTimeout(300);
     result.shot = path.join('shots', viewport.key, `${locale.key}-${target.key}.png`);
     await page.screenshot({ path: path.join(OUT, result.shot) });

@@ -1,5 +1,7 @@
 // npm run proof 的检查范围。改动页面或商品下架时更新这里。
 
+const CART_SEED = ['/products/demo-cotton-candy-yarn-50g', '/products/demo-pierre-penguin-crochet-kit', '/products/demo-flower-bouquet-blanket-finished'];
+
 module.exports = {
   baseUrl: 'http://127.0.0.1:9292',
 
@@ -20,8 +22,9 @@ module.exports = {
     { key: 'yarn-pdp', path: '/products/demo-cotton-candy-yarn-50g' },
     { key: 'kit-pdp', path: '/products/demo-pierre-penguin-crochet-kit' },
     { key: 'finished-pdp', path: '/products/demo-flower-bouquet-blanket-finished' },
-    // 先加入毛线 / 编织包 / 成品各一件再打开购物车页；cart-empty 是全新会话的空购物车。
-    { key: 'cart', path: '/cart', seedProducts: ['/products/joyful-cake-yarn', '/products/demo-pierre-penguin-crochet-kit', '/products/demo-flower-bouquet-blanket-finished'] },
+    // 先加入毛线 / 编织包 / 成品各一件：cart-drawer 在商品页点页头购物车打开抽屉，cart 是整页；cart-empty 是全新会话。
+    { key: 'cart-drawer', path: '/products/demo-cotton-candy-yarn-50g', seedProducts: CART_SEED, openCart: true },
+    { key: 'cart', path: '/cart', seedProducts: CART_SEED },
     { key: 'cart-empty', path: '/cart' },
     { key: 'search', path: '/search?q=demo' },
     { key: 'commercial-disclosure', path: '/pages/commercial-disclosure' },

@@ -565,7 +565,9 @@
     "remove": "Remove",
     "checkout": "Check out",
     "summary_heading": "Order summary",
-    "empty_title": "Your cart is empty"
+    "empty_title": "Your cart is empty",
+    "option": "{{ name }}: {{ value }}",
+    "view_cart": "View cart"
   },
   "yarn_pdp": {
     "per_ball": "/ ball",
