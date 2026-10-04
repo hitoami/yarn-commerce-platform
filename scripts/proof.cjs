@@ -124,10 +124,15 @@ async function seedCart(context, baseUrl, products) {
   if (!response.ok()) throw new Error(`预置加购失败 ${response.status()}`);
 }
 
+// 打开抽屉并返回商品列表的横向溢出（列表是滚动容器，溢出会出现左右滚动）。
 async function openCartDrawer(page) {
   await page.click('#cart-icon-bubble');
   await page.waitForSelector('cart-drawer.active', { timeout: 8000 });
   await page.waitForTimeout(600);
+  return page.evaluate(() => {
+    const list = document.querySelector('cart-drawer-items');
+    return list ? list.scrollWidth - list.clientWidth : 0;
+  });
 }
 
 async function runJob(browser, job, baseUrl) {
@@ -177,7 +182,10 @@ async function runJob(browser, job, baseUrl) {
     if (found.placeholders) result.warnings.push(`${found.placeholders} 个占位图（未设置图片）`);
 
     await page.evaluate(() => window.scrollTo(0, 0));
-    if (target.openCart) await openCartDrawer(page);
+    if (target.openCart) {
+      const drawerOverflow = await openCartDrawer(page);
+      if (drawerOverflow > 0) result.failures.push(`购物车抽屉横向溢出 ${drawerOverflow}px`);
+    }
     await page.waitForTimeout(300);
     result.shot = path.join('shots', viewport.key, `${locale.key}-${target.key}.png`);
     await page.screenshot({ path: path.join(OUT, result.shot) });
