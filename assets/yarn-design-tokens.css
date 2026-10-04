@@ -42,6 +42,7 @@ html[lang]:root {
   --yarn-bg-surface: #fffefa; /* cream-50 · 卡片、导航、横幅、输入框面 */
   --yarn-bg-sunken: #ebe5dc; /* sand-100 · 次级区块（暖砂） */
   --yarn-bg-warm: #ece8dc; /* sand-150 · 暖米区块（配色方案 5） */
+  --yarn-bg-band: #f5f1e8; /* sand-50 · 暖米面板：毛线详情「要买几团？」估算面板 */
   --yarn-bg-inverse: #8f3c26; /* clay-700 · 深色反白区块 */
   --yarn-text-primary: #2f302f; /* charcoal-900 · 正文、通用标题、Rise 原生文字 */
   --yarn-text-heading: #13202d; /* navy-900 · 商品家族标题 */

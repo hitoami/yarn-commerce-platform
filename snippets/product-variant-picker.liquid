@@ -38,7 +38,13 @@
       {%- if picker_type == 'swatch' -%}
         <fieldset class="js product-form__input product-form__input--swatch">
           <legend class="form__label">
-            {{ localized_option_name | strip }}:
+            {%- if show_selected_value -%}
+              {%- comment -%}毛线详情（#122）：「颜色：奶油白」，标签 muted；data-selected-value 由 Rise 在切换时更新。{%- endcomment -%}
+              {%- assign swatch_option_name = localized_option_name | strip | escape -%}
+              <span class="yp-option-name">{{ 'yarn_pdp.option_name_html' | t: name: swatch_option_name }}</span>
+            {%- else -%}
+              {{ localized_option_name | strip }}:
+            {%- endif -%}
             <span data-selected-value>
               {{- option.selected_value -}}
             </span>
@@ -53,7 +59,16 @@
       {%- elsif picker_type == 'button' -%}
         <fieldset class="js product-form__input product-form__input--pill">
           {%- if show_selected_value -%}
-            <legend class="form__label">{{ 'yarn_pdp.option_selected' | t: name: localized_option_name, value: option.selected_value | strip }}</legend>
+            {%- liquid
+              # 毛线只有颜色一个选项；后台默认名「选项 / Title」显示为「颜色」。
+              assign selected_option_name = localized_option_name | strip
+              if option.name == '选项' or option.name == 'オプション' or option.name == 'Option' or option.name == 'Title'
+                assign selected_option_name = 'yarn_pdp.color_label' | t
+              endif
+              assign selected_option_name = selected_option_name | escape
+              assign selected_option_value = option.selected_value | escape
+            -%}
+            <legend class="form__label">{{ 'yarn_pdp.option_selected_html' | t: name: selected_option_name, value: selected_option_value }}</legend>
           {%- else -%}
             <legend class="form__label">{{ localized_option_name | strip }}</legend>
           {%- endif -%}

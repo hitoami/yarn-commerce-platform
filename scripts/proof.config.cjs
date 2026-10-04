@@ -17,7 +17,7 @@ module.exports = {
   pages: [
     { key: 'home', path: '/' },
     { key: 'yarn-collection', path: '/collections/yarn' },
-    { key: 'yarn-pdp', path: '/products/joyful-cake-yarn' },
+    { key: 'yarn-pdp', path: '/products/demo-cotton-candy-yarn-50g' },
     { key: 'kit-pdp', path: '/products/demo-pierre-penguin-crochet-kit' },
     { key: 'finished-pdp', path: '/products/demo-flower-bouquet-blanket-finished' },
     { key: 'cart-drawer', path: '/products/demo-nukumori-yarn-50g', openCart: true },
@@ -34,7 +34,7 @@ module.exports = {
   contentSelectors: [
     '.card__heading', '.card__information', '.card__badge',
     '.yp-card__title', '.yp-card__summary', '.yp-card__price', '.yp-card__price-from',
-    '.yx-product-card__title', '.yx-product-card__spec', '.yx-product-card__price',
+    '.yx-product-card__title', '.yx-product-card__spec', '.yx-product-card__price', '.yx-product-card__reason',
     '.yx-content-card__title', '.yx-content-card__text',
     '.product__title', '.product__description', '.product__text', '.rte', '.price', '.yp-kitstory',
     '.product-form__input legend', '.product-form__input label', '.product-form__input option',
