@@ -35,7 +35,7 @@ html[lang]:root {
 
 /* BEGIN generated colors — edit design/tokens/colors.json, then run npm run tokens */
 :root {
-  --yarn-home-action: #675144; /* umber-700 · hitoami 低饱和主操作：首页按钮；毛线详情页加入、选中与价格 */
+  --yarn-home-action: #675144; /* umber-700 · hitoami 低饱和主操作：首页按钮；毛线详情页加入、选中与价格；购物车结账与价格 */
   --yarn-home-thread: #8c8880; /* sand-600 · hitoami 小猫展开的装饰毛线 */
   --yarn-home-rope: #b8b1a4; /* sand-400 · 首页导览条挂线的线芯（线纹用 home-thread）；不得用于文字 */
   --yarn-bg-page: #f7f7f5; /* cream-100 · 页面底 */
@@ -76,7 +76,7 @@ html[lang]:root {
   --yarn-overlay: rgba(47, 48, 47, 0.32); /* charcoal-900 @ 0.32 · 抽屉与弹窗遮罩、浮层阴影 */
   --yarn-shadow-soft: rgba(103, 81, 68, 0.14); /* umber-700 @ 0.14 · 卡片与浮层的柔和阴影 */
   --yarn-scrollbar-thumb: #b8b1a4; /* sand-400 · 滚动条滑块 */
-  --yarn-scrollbar-track: #f5f1e8; /* sand-50 · 滚动条轨道 */
+  --yarn-scrollbar-track: #f5f1e8; /* sand-50 · 滚动条轨道；首屏、导览条与购物车的奶油底 */
   --yarn-shadow-page: #d8d4cc; /* shade-100 · 配色方案 1 阴影色 */
   --yarn-shadow-sunken: #d9d1c4; /* shade-150 · 配色方案 2 阴影色 */
   --yarn-shadow-inverse: #6d2c1b; /* clay-900 · 配色方案 3 阴影色 */

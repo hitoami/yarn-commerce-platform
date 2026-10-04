@@ -39,7 +39,7 @@
     "umber-700": "#675144"
   },
   "roles": {
-    "home-action": { "value": "umber-700", "use": "hitoami 低饱和主操作：首页按钮；毛线详情页加入、选中与价格" },
+    "home-action": { "value": "umber-700", "use": "hitoami 低饱和主操作：首页按钮；毛线详情页加入、选中与价格；购物车结账与价格" },
     "home-thread": { "value": "sand-600", "use": "hitoami 小猫展开的装饰毛线" },
     "home-rope": { "value": "sand-400", "use": "首页导览条挂线的线芯（线纹用 home-thread）；不得用于文字" },
     "bg-page": { "value": "cream-100", "use": "页面底" },
@@ -88,7 +88,7 @@
     "overlay": { "value": "charcoal-900", "alpha": 0.32, "use": "抽屉与弹窗遮罩、浮层阴影" },
     "shadow-soft": { "value": "umber-700", "alpha": 0.14, "use": "卡片与浮层的柔和阴影" },
     "scrollbar-thumb": { "value": "sand-400", "use": "滚动条滑块" },
-    "scrollbar-track": { "value": "sand-50", "use": "滚动条轨道" },
+    "scrollbar-track": { "value": "sand-50", "use": "滚动条轨道；首屏、导览条与购物车的奶油底" },
 
     "shadow-page": { "value": "shade-100", "use": "配色方案 1 阴影色" },
     "shadow-sunken": { "value": "shade-150", "use": "配色方案 2 阴影色" },
