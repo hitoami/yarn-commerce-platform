@@ -46,6 +46,7 @@
     "bg-surface": { "value": "cream-50", "use": "卡片、导航、横幅、输入框面" },
     "bg-sunken": { "value": "sand-100", "use": "次级区块（暖砂）" },
     "bg-warm": { "value": "sand-150", "use": "暖米区块（配色方案 5）", "pending": "P3：与 bg-sunken 合并或删除" },
+    "bg-band": { "value": "sand-50", "use": "暖米面板：毛线详情「要买几团？」估算面板" },
     "bg-inverse": { "value": "clay-700", "use": "深色反白区块" },
 
     "text-primary": { "value": "charcoal-900", "use": "正文、通用标题、Rise 原生文字" },
@@ -106,7 +107,7 @@
     "$comment": "声明实际使用的文字/背景搭配；min 为 WCAG 最低对比度（正文 4.5，大字与控件 3）。",
     "pairs": [
       ["text-inverse", "home-action", 4.5],
-      ["home-action", "bg-surface", 4.5], ["home-action", "action-subtle-bg", 4.5], ["text-secondary", "tint-sage", 4.5], ["text-heading", "tint-blush", 4.5], ["text-secondary", "action-subtle-bg", 4.5],
+      ["home-action", "bg-surface", 4.5], ["home-action", "bg-band", 4.5], ["text-primary", "bg-band", 4.5], ["text-secondary", "bg-band", 4.5], ["text-muted", "bg-band", 4.5], ["text-secondary", "tint-sage", 4.5], ["text-heading", "tint-blush", 4.5],
       ["text-primary", "bg-page", 4.5], ["text-primary", "bg-surface", 4.5], ["text-primary", "bg-sunken", 4.5], ["text-primary", "action-subtle-bg", 4.5],
       ["text-primary", "tint-butter", 4.5], ["text-primary", "tint-blush", 4.5], ["text-primary", "tint-sage", 4.5],
       ["text-heading", "bg-page", 4.5], ["text-heading", "bg-surface", 4.5], ["text-heading", "cta-bg", 4.5],

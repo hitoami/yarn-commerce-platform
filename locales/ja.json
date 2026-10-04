@@ -539,7 +539,9 @@
   },
   "yarn_pdp": {
     "per_ball": "/ 玉",
-    "option_selected": "{{ name }}：{{ value }}",
+    "per_ball_tax_included": "/ 玉（税込）",
+    "option_selected_html": "<span class=\"yp-option-name\">{{ name }}：</span>{{ value }}",
+    "color_label": "色",
     "spec_heading": "糸の仕様",
     "spec_material": "素材",
     "spec_weight_length": "重さ / 長さ",

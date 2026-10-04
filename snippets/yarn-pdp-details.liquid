@@ -5,7 +5,7 @@
   - 规格：yarn.material / ball_weight_g / ball_length_m / thickness / needle_size
   - 要买几团：yarn.usage_estimates → yarn_usage（name / size / balls / needle）；「按参考填入」只改数量，不加购
   - 能织：可公开且有封面、在 materials 或 components 里引用本商品的 yarn_project
-  - 编织包：yarn.related_kits；没有配对时退回现有的通用编织包入口
+  - 编织包：yarn.related_kits；没有配对时不显示（视觉稿无数据即无此块，#122）
   - 怎么洗：yarn.care 每行一条
   参数：product、section_id
 {%- endcomment -%}
@@ -147,8 +147,6 @@
         {%- endfor -%}
       </div>
     </section>
-  {%- else -%}
-    <div class="yp-yarn-block">{%- render 'yarn-kit-crosslinks', product: product, kind: 'kits-teaser' -%}</div>
   {%- endif -%}
 
   {%- if care_lines != blank and care_lines.size > 0 -%}

@@ -154,10 +154,14 @@
                       product: product,
                       use_variant: true,
                       show_badges: true,
-                      price_class: 'price--large'
+                      price_class: 'price--large',
+                      hide_currency_code: yarn_pdp
                     -%}
                   </div>
-                  {%- if yarn_pdp -%}<span class="yp-yarn-price__unit">{{ 'yarn_pdp.per_ball' | t }}</span>{%- endif -%}
+                  {%- if yarn_pdp -%}
+                    {%- comment -%}「（含税）」只跟随 Shopify 的含税设置，不按运营文案推断。{%- endcomment -%}
+                    <span class="yp-yarn-price__unit">{% if cart.taxes_included %}{{ 'yarn_pdp.per_ball_tax_included' | t }}{% else %}{{ 'yarn_pdp.per_ball' | t }}{% endif %}</span>
+                  {%- endif -%}
                   {%- if product.quantity_price_breaks_configured? -%}
                     <div class="volume-pricing-note" id="Volume-Note-{{ section.id }}">
                       <span>{{ 'products.product.volume_pricing.note' | t }}</span>

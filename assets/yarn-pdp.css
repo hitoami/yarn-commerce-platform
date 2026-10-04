@@ -31,6 +31,7 @@ product-info.yarn-product-page--yarn .yp-yarn-intro p { margin: 0; }
 /* 颜色：原生 Variant 按钮呈圆形色号，选中为 2px 灰棕环 */
 product-info.yarn-product-page--yarn .product-form__input--pill { display: flex; flex-wrap: wrap; gap: 6px; }
 product-info.yarn-product-page--yarn .product-form__input--pill .form__label { flex: 0 0 100%; margin-bottom: 6px; color: var(--yarn-text-primary); font-size: 14px; }
+product-info.yarn-product-page--yarn .product-form__input--pill .yp-option-name { color: var(--yarn-text-muted); }
 product-info.yarn-product-page--yarn .product-form__input--pill input[type='radio'] + label {
   display: inline-grid; place-items: center; min-width: var(--yarn-touch); height: var(--yarn-touch); margin: 0; padding: 0 10px;
   border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-radius-pill);
@@ -62,7 +63,7 @@ product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit[dis
 .yp-yarn-spec dt { color: var(--yarn-text-muted); font-size: 12px; line-height: 1.4; }
 .yp-yarn-spec dd { margin: 0; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
 
-.yp-usage { display: block; margin-top: calc(var(--yarn-space-2) - var(--yarn-space-6)); padding: 20px; border-radius: 20px; background: var(--yarn-action-subtle-bg); }
+.yp-usage { display: block; margin-top: calc(var(--yarn-space-2) - var(--yarn-space-6)); padding: 20px; border-radius: 20px; background: var(--yarn-bg-band); }
 .yp-usage section { display: flex; flex-direction: column; gap: 14px; }
 .yp-usage__head { display: flex; flex-direction: column; gap: var(--yarn-space-1); }
 .yp-usage__head .yp-yarn-block__title { margin: 0; }
@@ -132,6 +133,16 @@ product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit[dis
 @media (max-width: 749px) {
   body:has(product-info.yarn-product-page--yarn) { padding-bottom: 76px; }
   product-info.yarn-product-page--yarn { padding-top: var(--yarn-space-2); }
+  /* #122：手机只保留底部常驻栏作为购买入口（视觉稿 1a）。原生表单与加购按钮仍在 DOM 中，由常驻栏驱动。 */
+  product-info.yarn-product-page--yarn .product-form__quantity,
+  product-info.yarn-product-page--yarn .product-form__buttons,
+  product-info.yarn-product-page--yarn .product-form__error-message-wrapper,
+  product-info.yarn-product-page--yarn .product__inventory,
+  product-info.yarn-product-page--yarn .product__text { display: none; }
+  /* 图库：去掉放大镜与缩略图箭头，缩略图一行 4 张，多出的横向滑动。 */
+  product-info.yarn-product-page--yarn .product__media-icon { display: none; }
+  product-info.yarn-product-page--yarn .thumbnail-slider .slider-button { display: none; }
+  product-info.yarn-product-page--yarn .thumbnail-slider .thumbnail-list { width: 100%; }
   /* Rise 手机图库的首张偏移（grid--peek）让主图偏右；毛线主图按视觉稿铺满内容宽度。 */
   product-info.yarn-product-page--yarn .product__media-list.grid--peek.slider .product__media-item:first-of-type { margin-left: 0; }
   product-info.yarn-product-page--yarn .product__media-list.grid--peek.slider::after { display: none; }

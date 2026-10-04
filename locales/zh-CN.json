@@ -539,7 +539,9 @@
   },
   "yarn_pdp": {
     "per_ball": "/ 团",
-    "option_selected": "{{ name }}：{{ value }}",
+    "per_ball_tax_included": "/ 团（含税）",
+    "option_selected_html": "<span class=\"yp-option-name\">{{ name }}：</span>{{ value }}",
+    "color_label": "颜色",
     "spec_heading": "线的规格",
     "spec_material": "成分",
     "spec_weight_length": "重量 / 长度",
