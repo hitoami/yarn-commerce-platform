@@ -35,6 +35,7 @@ test('homepage follows scheme C: category entries and sale (Issue #93, approved 
   // 首屏手作小屋轮播（与导览条解耦）→ 四个品类入口 + 新手入口 → 优惠 → 按作品图选 → 新手友好编织包 → 材质 / 粗细 → 店铺精选成品 → LINE 帮助。
   // 每个模块都是独立 section，顺序与开关在主题编辑器调整；原三节点 Hero 保留为停用 section。
   // Issue #117：挑毛线圆图入口接在品牌介绍之后；原「按材质 / 粗细」标签页区块停用（材质 / 粗细改在集合页「更多筛选」）。
+  // Issue #126：挑毛线改为按字段分段的两行横滑方卡（Claude Design 1a），数据仍是 #117 的入口。
   assert.deepEqual(index.order, ['hero', 'guide-strip', 'story', 'yarn-entries', 'sale-picks', 'project-picks', 'beginner-kits', 'filter-switch', 'picks-finished', 'yarn-hero', 'line-support']);
   assert.equal(index.sections['filter-switch'].disabled, true);
   assert.equal(index.sections.hero.type, 'hitoami-hero');
@@ -49,6 +50,8 @@ test('homepage follows scheme C: category entries and sale (Issue #93, approved 
   // 新手入口按用户 2026-09-28 决定不在首页显示：链接留空时整条不渲染，编辑器里填写即可恢复。
   assert.equal(index.sections['guide-strip'].settings.starter_link, undefined);
   assert.equal(index.sections['sale-picks'].settings.mode, 'sale');
+  // #126 Claude Design 1a 的模块顺序里没有优惠：区块停用而不删除，编辑器里可重新打开。
+  assert.equal(index.sections['sale-picks'].disabled, true);
   assert.equal(index.sections['project-picks'].type, 'yarn-project-picks');
   assert.equal(index.sections['beginner-kits'].settings.mode, 'beginner');
   assert.equal(index.sections['filter-switch'].type, 'yarn-filter-switch');
@@ -119,6 +122,27 @@ test('filter updates preserve preview parameters and URL hash', () => {
   assert.equal(urls[0].searchParams.get('preview_theme_id'), '123');
   assert.equal(urls[0].searchParams.get('discover_project'), 'bag');
   assert.equal(urls[0].hash, '#discover-products');
+});
+
+test('home follows Claude Design 1a: dot-only hero, switchable two-row yarn strip, 4-up finished picks (#126)', () => {
+  const heroSection = fs.readFileSync('sections/hitoami-hero.liquid', 'utf8');
+  assert.doesNotMatch(heroSection, /data-previous|data-next|data-current/);
+  assert.match(heroSection, /class="hitoami-dots"/);
+  const circles = fs.readFileSync('sections/yarn-entry-circles.liquid', 'utf8');
+  // 同一商品字段的入口归为一段；段名可编辑；只有一段时不出切换。
+  assert.match(circles, /if block\.settings\.field != ec_group_field/);
+  assert.match(circles, /if ec_group_count > 1 -%\}<div class="yarn-entries__tabs" role="tablist"/);
+  assert.match(circles, /yarn-entries__panel--rows-m/);
+  for (const locale of ['zh-CN', 'ja', 'en.default']) {
+    const source = fs.readFileSync(`locales/${locale}.json`, 'utf8').replace(/^\/\*[\s\S]*?\*\//, '');
+    const strings = JSON.parse(source).yarn_project;
+    for (const key of ['entries_swipe', 'entries_view_all']) assert.ok(strings[key]?.trim(), `${locale}.${key}`);
+    assert.match(strings.entries_total.other, /\{\{ count \}\}/);
+  }
+  const finished = index.sections['picks-finished'].settings;
+  assert.equal(finished.products_to_show, 4);
+  assert.equal(finished.columns_desktop, 4);
+  assert.equal(finished.products_to_show_mobile, 2);
 });
 
 test('yarn entry circles and collection type chips share one filter (Issue #117, A+C approved 2026-10-02)', () => {

@@ -23,10 +23,12 @@
 <section class="yx-picks yarn-shell-block color-{{ section.settings.color_scheme }}" aria-labelledby="ProjectPicks-{{ section.id }}">
   <div class="yx-picks__inner page-width">
     <div class="yx-picks__head">
-      <h2 id="ProjectPicks-{{ section.id }}">{{ pp_heading | escape }}</h2>
+      <div class="yx-picks__titles">
+        <h2 id="ProjectPicks-{{ section.id }}">{{ pp_heading | escape }}</h2>
+        {%- if pp_note != blank -%}<p class="yx-picks__note">{{ pp_note | escape }}</p>{%- endif -%}
+      </div>
       {%- if section.settings.all_link != blank -%}<a class="yx-picks__all" href="{{ section.settings.all_link }}">{{ 'yarn_project.card_view_all' | t }} →</a>{%- endif -%}
     </div>
-    {%- if pp_note != blank -%}<p class="yx-picks__note">{{ pp_note | escape }}</p>{%- endif -%}
     <div class="yx-project-picks">{{ pp_cards }}</div>
   </div>
 </section>

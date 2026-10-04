@@ -673,6 +673,12 @@
       "one": "{{ count }}種",
       "other": "{{ count }}種"
     },
+    "entries_total": {
+      "one": "全 {{ count }} 種類",
+      "other": "全 {{ count }} 種類"
+    },
+    "entries_swipe": "左右にスワイプしてもっと見る",
+    "entries_view_all": "すべての毛糸を見る",
     "materials": "材料の参考情報",
     "tools": "必要な道具をそろえる",
     "finished": "完成品を購入",

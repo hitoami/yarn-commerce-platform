@@ -234,7 +234,8 @@
         "columns_desktop": 4,
         "exit_enabled": false,
         "color_scheme": "scheme-1"
-      }
+      },
+      "disabled": true
     },
     "project-picks": {
       "type": "yarn-project-picks",
@@ -250,9 +251,9 @@
         "heading": "初心者向けの編みキット",
         "heading_zh": "新手友好编织包",
         "heading_en": "Beginner-friendly kits",
-        "note": "",
-        "note_zh": "",
-        "note_en": "",
+        "note": "「初心者向け」のマークには、理由を添えています。",
+        "note_zh": "带「新手友好」标签的，都写明了理由。",
+        "note_en": "Every beginner-friendly tag comes with a reason.",
         "collection": "knit-kits",
         "mode": "beginner",
         "products_to_show": 4,
@@ -276,13 +277,14 @@
         "heading": "ショップおすすめの完成品",
         "note": "編まなくても、やさしさをそのまま持ち帰れます。",
         "collection": "finished-goods",
-        "products_to_show": 2,
-        "columns_desktop": 2,
+        "products_to_show": 4,
+        "products_to_show_mobile": 2,
+        "columns_desktop": 4,
         "exit_enabled": false,
         "color_scheme": "scheme-1",
         "heading_zh": "店铺精选成品",
         "heading_en": "Finished pieces we recommend",
-        "note_zh": "不想动手,也能直接把温柔带回家。",
+        "note_zh": "不想动手，也能直接把温柔带回家。",
         "note_en": "Not into making? Take a finished piece home."
       }
     },

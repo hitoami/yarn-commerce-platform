@@ -4,8 +4,12 @@
 .hitoami-story .rte { max-width: 640px; margin: 0 auto; font-size: 1.5rem; line-height: 1.9; }
 .hitoami-story p { margin: 0 0 14px; }
 .hitoami-story a:focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 4px; }
+.hitoami-story__eyebrow { display: none; }
 
 @media (min-width: 750px) {
-  .hitoami-story { padding: 76px 32px; }
-  .hitoami-story h2 { font-size: 3.2rem; }
+  .hitoami-story { padding: 88px 48px; }
+  .hitoami-story__eyebrow { display: block; margin: 0 0 12px; color: var(--yarn-text-muted); font-size: 1.2rem; letter-spacing: .5em; text-indent: .5em; }
+  .hitoami-story h2 { max-width: 800px; margin-bottom: 28px; font-size: 3.4rem; }
+  .hitoami-story .rte { max-width: 800px; font-size: 1.6rem; line-height: 2; }
 }
+.hitoami-story__eyebrow:lang(en) { letter-spacing: .2em; text-indent: .2em; }

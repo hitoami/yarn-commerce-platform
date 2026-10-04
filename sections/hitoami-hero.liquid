@@ -1,5 +1,5 @@
 {% comment %}
-  首页首屏:整幅场景轮播,标题、说明与按钮压在左侧留白处;箭头、编号与圆点在右下;底边是一道波浪。
+  首页首屏:整幅场景轮播,标题、说明与按钮压在左侧留白处(桌面对齐 1200 内容轴);圆点居中在底部的白色胶囊里(#126 Claude Design 1a);底边是一道波浪。
   作为首页第一个 section 时,页头透明地叠在图上(规则在 hitoami-hero.css)。
   与首屏下方的导览条互不关联:切换幻灯片不影响导览条,导览条也不控制幻灯片。
   场景图可在每张幻灯片上传(桌面 / 手机),未上传时用内置的三张氛围图(来源见 docs/design/approved/home-scheme-c.source.md)。
@@ -68,13 +68,8 @@
       </div>
       {% if section.blocks.size > 1 %}
         <div class="hitoami-controls" hidden>
-          <button class="hitoami-arrow hitoami-arrow--previous" type="button" data-previous aria-label="{{ 'sections.slideshow.previous_slideshow' | t }}"><span aria-hidden="true">{{ 'icon-caret.svg' | inline_asset_content }}</span></button>
-          <button class="hitoami-arrow hitoami-arrow--next" type="button" data-next aria-label="{{ 'sections.slideshow.next_slideshow' | t }}"><span aria-hidden="true">{{ 'icon-caret.svg' | inline_asset_content }}</span></button>
-          <div class="hitoami-pagination">
-            <span class="hitoami-count" aria-hidden="true"><span data-current>01</span> / {{ section.blocks.size | prepend: '00' | slice: -2, 2 }}</span>
-            <div class="hitoami-dots">
-              {% for block in section.blocks %}<button type="button" data-page="{{ forloop.index0 }}" aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }}" aria-controls="HitoamiSlide-{{ block.id }}" {% if forloop.first %}aria-current="true"{% endif %}><span></span></button>{% endfor %}
-            </div>
+          <div class="hitoami-dots">
+            {% for block in section.blocks %}<button type="button" data-page="{{ forloop.index0 }}" aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }}" aria-controls="HitoamiSlide-{{ block.id }}" {% if forloop.first %}aria-current="true"{% endif %}><span></span></button>{% endfor %}
           </div>
         </div>
       {% endif %}
