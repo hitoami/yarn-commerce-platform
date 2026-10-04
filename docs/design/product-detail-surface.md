@@ -15,7 +15,8 @@
 - 适用于带 `毛糸` tag 或在 `yarn` 集合里的商品；编织包 / 成品不变。批准依据与差异见 [毛线手机方向](approved/120-yarn-pdp-mobile.source.md)。本节取代上文对毛线的「毛线与成品共用购买结构」，以及旧手机方向中「不使用浮动购买栏」对毛线的约束。
 - 顺序：图库（1:1 完整显示、4 缩略图、收藏）→ 毛线 / 新手友好角标 → 标题 → 价格「/ 团」（只在 Shopify 含税设置开启时加「（含税）」）→ 商品说明 → 颜色 → 线的规格 → 要买几团？ → 用这款线能织 → 搭配的编织包 → 怎么洗 → 原有「购买须知」与相关商品。
 - 手机（#122，用户 2026-10-04 决定）：不显示页内数量、加购、立即购买、库存行与重复公告条的购物说明行，底部常驻栏始终显示，是唯一购买入口；桌面保留页内加购。
-- 数据：规格读 `yarn.material`、`ball_weight_g`、`ball_length_m`、`thickness`、`needle_size`；「要买几团？」即 CONTEXT 的参照标准，读 `yarn.usage_estimates` → `yarn_usage`（作品、尺寸、团数、推荐针号）；作品是灵感入口（用户 2026-10-02 决定，不构成材料要求或推荐），为 `materials` 或 `components` 引用本商品、可公开且有封面的 `yarn_project`；编织包读 `yarn.related_kits`，没有配对不显示；洗涤读 `yarn.care`。缺数据的块整块不渲染。
+- 数据：规格读 `yarn.composition`（无则 `yarn.material`）、`ball_weight_g` / `ball_length_m`、`thickness`、`gauge`、`needle_knit` / `needle_crochet`（都没有时用 `needle_size`）；颜色有 Shopify 原生色板（选项关联 `shopify.color-pattern`）时显示 44px 色块，否则显示编号圆钮；新手角标与卡片理由读 `yarn.beginner_reason`；「要买几团？」即 CONTEXT 的参照标准，读 `yarn.usage_estimates` → `yarn_usage`；作品是灵感入口（用户 2026-10-02 决定，不构成材料要求或推荐），为 `materials` 或 `components` 引用本商品、可公开且有封面的 `yarn_project`；编织包读 `yarn.related_kits`，没有配对不显示，卡片规格行读 `yarn.spec_line`；洗涤读 `yarn.care`，按关键词配图标（漂白 → 禁止、熨烫 → 熨斗、晾干 → 勾、其余 → 洗涤）。缺数据的块整块不渲染。
+- 样板商品（#122，用户 2026-10-04 决定）：`demo-cotton-candy-yarn-50g` 用 demo 数据填满全部区块，作为对照视觉稿的基准页；其他毛线由选品组逐步补真实数据。
 - 「按参考填入 N 团」只改原生数量输入，不加购。手机常驻栏的数量写回同一（隐藏的）输入，「加入」点击原加购按钮；售罄 / 不可售时随原按钮禁用，加购错误显示在常驻栏上方。Rise 切换颜色会把数量重置为最小值，沿用原行为。
 - 桌面（≥750px）不显示常驻栏，下方内容沿 1104px 轴展开；桌面视觉稿待手机实现确认后另出。
 

@@ -2,7 +2,8 @@
   毛线详情页购买区之后的内容（Issue #120，视觉稿 Yarn PDP 1a）：
   线的规格 → 要买几团？ → 用这款线能织 → 搭配的编织包 → 怎么洗。
   每块只读 Shopify 已有数据，没有数据的块整块不渲染，不补写示例值：
-  - 规格：yarn.material / ball_weight_g / ball_length_m / thickness / needle_size
+  - 规格：yarn.composition（无则 material）/ ball_weight_g / ball_length_m / thickness / gauge /
+          needle_knit + needle_crochet（都没有时用 needle_size）
   - 要买几团：yarn.usage_estimates → yarn_usage（name / size / balls / needle）；「按参考填入」只改数量，不加购
   - 能织：可公开且有封面、在 materials 或 components 里引用本商品的 yarn_project
   - 编织包：yarn.related_kits；没有配对时不显示（视觉稿无数据即无此块，#122）
@@ -22,8 +23,9 @@
 -%}
 
 {%- capture spec_rows -%}
-  {%- if y.material.value != blank -%}
-    <div class="yp-yarn-spec__row"><dt>{{ 'yarn_pdp.spec_material' | t }}</dt><dd data-proof-content>{{ y.material.value | escape }}</dd></div>
+  {%- assign spec_composition = y.composition.value | default: y.material.value -%}
+  {%- if spec_composition != blank -%}
+    <div class="yp-yarn-spec__row"><dt>{{ 'yarn_pdp.spec_material' | t }}</dt><dd data-proof-content>{{ spec_composition | escape }}</dd></div>
   {%- endif -%}
   {%- if spec_weight != blank and spec_length != blank -%}
     <div class="yp-yarn-spec__row"><dt>{{ 'yarn_pdp.spec_weight_length' | t }}</dt><dd>{{ 'yarn_pdp.spec_weight_value' | t: weight: spec_weight }} · {{ 'yarn_pdp.spec_length_value' | t: length: spec_length }}</dd></div>
@@ -35,7 +37,17 @@
   {%- if y.thickness.value != blank -%}
     <div class="yp-yarn-spec__row"><dt>{{ 'yarn_pdp.spec_thickness' | t }}</dt><dd data-proof-content>{{ y.thickness.value | escape }}</dd></div>
   {%- endif -%}
-  {%- if y.needle_size.value != blank -%}
+  {%- if y.gauge.value != blank -%}
+    <div class="yp-yarn-spec__row"><dt>{{ 'yarn_pdp.spec_gauge' | t }}</dt><dd data-proof-content>{{ y.gauge.value | escape }}</dd></div>
+  {%- endif -%}
+  {%- if y.needle_knit.value != blank or y.needle_crochet.value != blank -%}
+    {%- if y.needle_knit.value != blank -%}
+      <div class="yp-yarn-spec__row"><dt>{{ 'yarn_pdp.spec_needle_knit' | t }}</dt><dd data-proof-content>{{ y.needle_knit.value | escape }}</dd></div>
+    {%- endif -%}
+    {%- if y.needle_crochet.value != blank -%}
+      <div class="yp-yarn-spec__row"><dt>{{ 'yarn_pdp.spec_needle_crochet' | t }}</dt><dd data-proof-content>{{ y.needle_crochet.value | escape }}</dd></div>
+    {%- endif -%}
+  {%- elsif y.needle_size.value != blank -%}
     <div class="yp-yarn-spec__row"><dt>{{ 'yarn_pdp.spec_needle' | t }}</dt><dd data-proof-content>{{ y.needle_size.value | escape }}</dd></div>
   {%- endif -%}
 {%- endcapture -%}
@@ -155,7 +167,19 @@
       <ul class="yp-yarn-care">
         {%- for line in care_lines -%}
           {%- if line != blank -%}
-            <li><span class="svg-wrapper" aria-hidden="true">{{ 'icon-washing.svg' | inline_asset_content }}</span><span data-proof-content>{{ line | escape }}</span></li>
+            {%- liquid
+              # 按关键词配图标（中 / 日 / 英）：漂白 → 禁止，熨烫 → 熨斗，晾干 → 勾，其余 → 洗涤。
+              assign care_icon = 'icon-washing.svg'
+              assign care_text = line | downcase
+              if care_text contains '漂白' or care_text contains 'bleach'
+                assign care_icon = 'icon-close-small.svg'
+              elsif care_text contains '熨' or care_text contains 'アイロン' or care_text contains 'iron'
+                assign care_icon = 'icon-iron.svg'
+              elsif care_text contains '晾' or care_text contains '干' or care_text contains '乾' or care_text contains '干し' or care_text contains 'dry'
+                assign care_icon = 'icon-checkmark.svg'
+              endif
+            -%}
+            <li><span class="svg-wrapper" aria-hidden="true">{{ care_icon | inline_asset_content }}</span><span data-proof-content>{{ line | escape }}</span></li>
           {%- endif -%}
         {%- endfor -%}
       </ul>

@@ -43,7 +43,21 @@ product-info.yarn-product-page--yarn .product-form__input--pill input[type='radi
   background-color: var(--yarn-bg-surface) !important; color: var(--yarn-text-primary) !important; font-weight: 600;
 }
 product-info.yarn-product-page--yarn .product-form__input--pill input[type='radio']:focus-visible + label { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: 2px; }
-product-info.yarn-product-page--yarn .product-form__input--swatch .swatch-input__input:checked + .swatch-input__label { outline-color: var(--yarn-home-action); }
+/* 有色值时的原生色板（视觉稿 1a）：44px 圆，选中为 2px 灰棕环，色块带细线。 */
+product-info.yarn-product-page--yarn .product-form__input--swatch { display: flex; flex-wrap: wrap; gap: 6px; }
+product-info.yarn-product-page--yarn .product-form__input--swatch .form__label { flex: 0 0 100%; margin-bottom: 6px; color: var(--yarn-text-primary); font-size: 14px; }
+product-info.yarn-product-page--yarn .product-form__input--swatch .yp-option-name { color: var(--yarn-text-muted); }
+product-info.yarn-product-page--yarn .swatch-input__input + .swatch-input__label {
+  --swatch-input--size: 100%; display: block; width: var(--yarn-touch); height: var(--yarn-touch); margin: 0; padding: 3px;
+  border: 2px solid transparent; border-radius: var(--yarn-radius-pill); outline: none;
+}
+/* yarn-prototype.css 对所有选中单选标签用 !important 涂陶土红，色块也会命中，需同等强度覆盖。 */
+product-info.yarn-product-page--yarn .swatch-input__input:checked + .swatch-input__label { border-color: var(--yarn-home-action) !important; background-color: transparent !important; outline: none; }
+product-info.yarn-product-page--yarn .swatch-input__input + .swatch-input__label:hover,
+product-info.yarn-product-page--yarn .swatch-input__input:hover + .swatch-input__label { outline: none; }
+product-info.yarn-product-page--yarn .swatch-input__input:not(:checked):hover + .swatch-input__label { border-color: var(--yarn-border-card); }
+product-info.yarn-product-page--yarn .swatch-input__input:focus-visible + .swatch-input__label { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: 2px; box-shadow: none; }
+product-info.yarn-product-page--yarn .swatch-input__label .swatch { width: 100%; height: 100%; border-radius: var(--yarn-radius-pill); box-shadow: inset 0 0 0 1px var(--yarn-border-card); }
 
 /* 页内加购：灰棕实心主按钮 */
 product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit { background: var(--yarn-home-action); color: var(--yarn-text-inverse); font-family: var(--yarn-display); font-size: 16px; font-weight: 600; }
@@ -89,6 +103,8 @@ product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit[dis
 
 /* 无配对时的通用编织包入口：图片按方形缩略显示，不被 img 的 height 属性撑高 */
 .yp-yarn-details .yx-exit__media--row img { height: auto; }
+
+.yp-yarn-details .yx-product-card__price { color: var(--yarn-home-action); }
 
 .yp-yarn-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 

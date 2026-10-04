@@ -33,7 +33,7 @@
         {%- else -%}
           <span class="yp-sticky__value" aria-hidden="true" data-proof-content>{{ sticky_option.selected_value | escape }}</span>
         {%- endif -%}
-        <span class="visually-hidden">{{ 'yarn_pdp.sticky_selected' | t: value: sticky_variant.title | escape }}</span>
+        <span class="visually-hidden" data-proof-content>{{ 'yarn_pdp.sticky_selected' | t: value: sticky_variant.title | escape }}</span>
       </span>
     {%- endunless -%}
     <div class="yp-sticky__qty" data-sticky-qty>

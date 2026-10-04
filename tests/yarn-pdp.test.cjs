@@ -42,7 +42,7 @@ test('only yarn products get the new layout, and it stays on the native product 
 
 test('lower yarn blocks read Shopify data only and render nothing when it is missing', () => {
   const details = read('snippets/yarn-pdp-details.liquid');
-  for (const field of ['material', 'ball_weight_g', 'ball_length_m', 'thickness', 'needle_size', 'usage_estimates', 'related_kits', 'care']) {
+  for (const field of ['composition', 'material', 'ball_weight_g', 'ball_length_m', 'thickness', 'gauge', 'needle_knit', 'needle_crochet', 'needle_size', 'usage_estimates', 'related_kits', 'care']) {
     assert.match(details, new RegExp(`y\\.${field}\\.value`), field);
   }
   assert.match(details, /spec_rows contains 'yp-yarn-spec__row'/);
