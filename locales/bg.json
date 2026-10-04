@@ -673,6 +673,12 @@
       "one": "{{ count }} yarn",
       "other": "{{ count }} yarns"
     },
+    "entries_total": {
+      "one": "{{ count }} category",
+      "other": "{{ count }} categories"
+    },
+    "entries_swipe": "Swipe for more",
+    "entries_view_all": "View all yarn",
     "materials": "Materials reference",
     "tools": "Add tools as needed",
     "finished": "Buy finished piece",

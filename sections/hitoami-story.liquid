@@ -1,12 +1,15 @@
 {% comment %}
   首页品牌介绍:居中的品牌标语与一段品牌故事(取自线上首页 #110 / #111,拆成独立 section,位置在编辑器调整)。
+  桌面在标语上方加一行小标题「关于品牌」(#126 Claude Design 1a),手机不显示。
   三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
 {% endcomment %}
 {{ 'hitoami-story.css' | asset_url | stylesheet_tag }}
+{%- capture story_eyebrow -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'story_eyebrow' -%}{%- endcapture -%}
 {%- capture story_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'story_heading' -%}{%- endcapture -%}
 {%- capture story_text -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'story_text' -%}{%- endcapture -%}
 {%- if story_heading != blank or story_text != blank -%}
 <div class="hitoami-story" {% if story_heading != blank %}aria-labelledby="HitoamiStory-{{ section.id }}"{% endif %}>
+  {%- if story_eyebrow != blank -%}<p class="hitoami-story__eyebrow">{{ story_eyebrow | escape }}</p>{%- endif -%}
   {%- if story_heading != blank -%}<h2 id="HitoamiStory-{{ section.id }}">{{ story_heading | escape | newline_to_br }}</h2>{%- endif -%}
   {%- if story_text != blank -%}<div class="rte">{{ story_text }}</div>{%- endif -%}
 </div>
@@ -18,6 +21,9 @@
   "tag": "section",
   "class": "section hitoami-story-section",
   "settings": [
+    { "type": "text", "id": "story_eyebrow", "label": "日文 · 小标题（仅桌面）", "default": "ブランドについて" },
+    { "type": "text", "id": "story_eyebrow_zh", "label": "中文 · 小标题（仅桌面）", "default": "关于品牌" },
+    { "type": "text", "id": "story_eyebrow_en", "label": "英文 · 小标题（仅桌面）", "default": "About hitoami" },
     {
       "type": "textarea",
       "id": "story_heading",

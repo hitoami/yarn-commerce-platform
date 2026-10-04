@@ -1,16 +1,34 @@
-{{ 'yarn-filter-switch.css' | asset_url | stylesheet_tag }}
+{{ 'yarn-entries.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'yarn-entries.js' | asset_url }}" defer="defer"></script>
 {% comment %}
-  首页「挑毛线」圆图入口（Issue #117，方案 A+C）：一组圆图全部展开，不分标签页。
+  首页「挑毛线」（Issue #117 入口数据，#126 按 Claude Design 1a 改为两段切换 + 两行横滑方卡）。
   每个入口是一个 block：商品字段（yarn.texture 质感 / yarn.use 用途）+ 一条「毛线入口」Metaobject（yarn_entry），
   链接到毛线集合并带 Search & Discovery 筛选参数（filter.p.m.<字段>=<Metaobject GID>），与集合页顶部的分类标签是同一个筛选。
-  名称取 Metaobject 的 name 字段，三语在 Translate & Adapt 维护，圆图与标签自动同名。
-  款数与默认照片来自所选集合里引用该入口的商品（前 50 件）；一件都没有的入口不渲染。
+  名称取 Metaobject 的 name 字段，三语在 Translate & Adapt 维护。同一字段的入口归为一段，段名在本区块设置里编辑；只有一段时不显示切换。
+  说明行优先用 block 里填写的说明，留空时显示款数；款数与默认照片来自所选集合里引用该入口的商品（前 50 件）；一件都没有的入口不渲染。
+  一段超过 4 个（手机）/ 6 个（桌面）入口时排成两行，左右滑动或用桌面箭头翻页。
 {% endcomment %}
+{%- capture ec_eyebrow -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'eyebrow' -%}{%- endcapture -%}
 {%- capture ec_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'heading' -%}{%- endcapture -%}
 {%- assign ec_collection = collections[section.settings.collection] -%}
-{%- capture ec_items -%}
-  {%- if ec_collection != blank -%}
-    {%- for block in section.blocks -%}
+{%- liquid
+  assign ec_fields = ''
+  for block in section.blocks
+    unless ec_fields contains block.settings.field
+      assign ec_fields = ec_fields | append: block.settings.field | append: ','
+    endunless
+  endfor
+  assign ec_fields = ec_fields | split: ','
+  assign ec_tabs = ''
+  assign ec_panels = ''
+  assign ec_group_count = 0
+-%}
+{%- if ec_collection != blank -%}
+  {%- for ec_group_field in ec_fields -%}
+    {%- assign ec_total = 0 -%}
+    {%- capture ec_items -%}
+      {%- for block in section.blocks -%}
+        {%- if block.settings.field != ec_group_field -%}{%- continue -%}{%- endif -%}
         {%- liquid
           assign ec_handle = block.settings.entry | strip
           assign ec_entry = metaobjects.yarn_entry[ec_handle]
@@ -46,31 +64,64 @@
           if ec_count == 0
             continue
           endif
+          assign ec_total = ec_total | plus: 1
           assign ec_gid = 'gid://shopify/Metaobject/' | append: ec_id
         -%}
+        {%- capture ec_hint -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'hint' -%}{%- endcapture -%}
         <li>
-          <a class="yarn-fswitch__card" href="{{ ec_collection.url }}?filter.p.m.{{ block.settings.field }}={{ ec_gid | url_encode }}" {{ block.shopify_attributes }}>
-            <span class="yarn-fswitch__ring">
-              <span class="yarn-fswitch__photo">{%- if ec_image != blank -%}{{ ec_image | image_url: width: 400 | image_tag: widths: '200, 300, 400', sizes: '(min-width: 990px) 132px, (min-width: 750px) 22vw, 30vw', loading: 'lazy', alt: '' }}{%- endif -%}</span>
-              <span class="yarn-fswitch__go" aria-hidden="true">{{ 'icon-arrow.svg' | inline_asset_content }}</span>
-            </span>
-            <span class="yarn-fswitch__name">{{ ec_entry.name.value | escape }}</span>
-            <span class="yarn-fswitch__needle">{{ 'yarn_project.entry_count' | t: count: ec_count }}</span>
+          <a class="yarn-entries__card" href="{{ ec_collection.url }}?filter.p.m.{{ block.settings.field }}={{ ec_gid | url_encode }}" {{ block.shopify_attributes }}>
+            <span class="yarn-entries__photo">{%- if ec_image != blank -%}{{ ec_image | image_url: width: 400 | image_tag: widths: '200, 300, 400', sizes: '(min-width: 750px) 200px, 136px', loading: 'lazy', alt: '' }}{%- endif -%}</span>
+            <span class="yarn-entries__name">{{ ec_entry.name.value | escape }}</span>
+            <span class="yarn-entries__hint">{% if ec_hint != blank %}{{ ec_hint | escape }}{% else %}{{ 'yarn_project.entry_count' | t: count: ec_count }}{% endif %}</span>
           </a>
         </li>
-    {%- endfor -%}
-  {%- endif -%}
-{%- endcapture -%}
-{%- if ec_items != blank -%}
-<section class="yarn-fswitch yarn-entries" aria-labelledby="EntryCircles-{{ section.id }}">
-  <div class="page-width">
-    <div class="yarn-fswitch__head">
-      <h2 id="EntryCircles-{{ section.id }}">{{ ec_heading | escape }}</h2>
-      <a class="yx-picks__all" href="{{ ec_collection.url }}">{{ 'yarn_project.card_view_all' | t }} →</a>
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- if ec_total == 0 -%}{%- continue -%}{%- endif -%}
+    {%- liquid
+      assign ec_group_count = ec_group_count | plus: 1
+      assign ec_key = ec_group_field | split: '.' | last
+      assign ec_tab_key = 'tab_' | append: ec_key
+      capture ec_tab_label
+        render 'yarn-setting-text', settings: section.settings, key: ec_tab_key
+      endcapture
+      assign ec_panel_id = 'YarnEntries-' | append: section.id | append: '-' | append: ec_key
+    -%}
+    {%- capture ec_tab -%}
+      <button class="yarn-entries__tab" type="button" role="tab" id="{{ ec_panel_id }}-tab" aria-controls="{{ ec_panel_id }}" aria-selected="{% if ec_group_count == 1 %}true{% else %}false{% endif %}" tabindex="{% if ec_group_count == 1 %}0{% else %}-1{% endif %}">{{ ec_tab_label | escape }}</button>
+    {%- endcapture -%}
+    {%- capture ec_panel -%}
+      <div class="yarn-entries__panel{% if ec_total > 4 %} yarn-entries__panel--rows-m{% endif %}{% if ec_total > 6 %} yarn-entries__panel--rows-d{% endif %}" id="{{ ec_panel_id }}" data-total="{{ 'yarn_project.entries_total' | t: count: ec_total | escape }}" data-tabpanel-for="{{ ec_panel_id }}-tab" {% if ec_group_count > 1 %}hidden{% endif %}>
+        <div class="yarn-entries__scroller" data-entries-scroller>
+          <ul class="yarn-entries__track" role="list">{{ ec_items }}</ul>
+        </div>
+      </div>
+    {%- endcapture -%}
+    {%- assign ec_tabs = ec_tabs | append: ec_tab -%}
+    {%- assign ec_panels = ec_panels | append: ec_panel -%}
+    {%- if ec_group_count == 1 -%}{%- assign ec_first_total = ec_total -%}{%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+{%- if ec_group_count > 0 -%}
+<section class="yarn-entries" data-yarn-entries aria-labelledby="EntryCircles-{{ section.id }}">
+  <div class="yarn-entries__inner">
+    <div class="yarn-entries__head">
+      {%- if ec_eyebrow != blank -%}<p class="yarn-entries__eyebrow">{{ ec_eyebrow | escape }}</p>{%- endif -%}
+      <h2 class="yarn-entries__heading" id="EntryCircles-{{ section.id }}">{{ ec_heading | escape }}</h2>
+      <img class="yarn-entries__flourish" src="{{ 'impeccable-category-heading-flourish.png' | asset_url }}" alt="" width="1706" height="368" loading="lazy">
     </div>
-    <ul class="yarn-fswitch__grid yarn-entries__grid" role="list">
-      {{ ec_items }}
-    </ul>
+    <div class="yarn-entries__bar">
+      <span class="yarn-entries__total" data-entries-total>{{ 'yarn_project.entries_total' | t: count: ec_first_total }}</span>
+      {%- if ec_group_count > 1 -%}<div class="yarn-entries__tabs" role="tablist" aria-label="{{ ec_heading | escape }}">{{ ec_tabs }}</div>{%- endif -%}
+      <div class="yarn-entries__arrows" data-entries-arrows hidden>
+        <button class="yarn-entries__arrow" type="button" data-entries-prev aria-label="{{ 'general.slider.previous_slide' | t }}"><span aria-hidden="true">←</span></button>
+        <button class="yarn-entries__arrow" type="button" data-entries-next aria-label="{{ 'general.slider.next_slide' | t }}"><span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+    {%- if ec_group_count > 1 -%}{%- assign ec_panels = ec_panels | replace: 'data-tabpanel-for="', 'role="tabpanel" aria-labelledby="' -%}{%- endif -%}
+    {{ ec_panels }}
+    <p class="yarn-entries__swipe"><span data-entries-total>{{ 'yarn_project.entries_total' | t: count: ec_first_total }}</span><span aria-hidden="true">·</span><span>{{ 'yarn_project.entries_swipe' | t }}</span></p>
+    <a class="yarn-entries__all" href="{{ ec_collection.url }}">{{ 'yarn_project.entries_view_all' | t }}</a>
   </div>
 </section>
 {%- elsif request.design_mode -%}
@@ -79,14 +130,24 @@
 
 {% schema %}
 {
-  "name": "挑毛线（圆图入口）",
+  "name": "挑毛线（横滑方卡）",
   "tag": "div",
   "class": "section-yarn-entry-circles",
   "settings": [
+    { "type": "text", "id": "eyebrow", "label": "日文 · 小标题", "default": "毛糸を選ぶ" },
+    { "type": "text", "id": "eyebrow_zh", "label": "中文 · 小标题", "default": "挑毛线" },
+    { "type": "text", "id": "eyebrow_en", "label": "英文 · 小标题", "default": "Pick yarn" },
     { "type": "text", "id": "heading", "label": "日文 · 标题", "default": "どんな毛糸をお探しですか？" },
     { "type": "text", "id": "heading_zh", "label": "中文 · 标题", "default": "今天想要什么样的线？" },
     { "type": "text", "id": "heading_en", "label": "英文 · 标题", "default": "What kind of yarn are you after?" },
-    { "type": "collection", "id": "collection", "label": "毛线集合", "info": "圆图链接到该集合并带筛选参数；需在 Search & Discovery 为 yarn.texture / yarn.use 开启筛选" }
+    { "type": "collection", "id": "collection", "label": "毛线集合", "info": "方卡链接到该集合并带筛选参数；需在 Search & Discovery 为 yarn.texture / yarn.use 开启筛选" },
+    { "type": "header", "content": "切换段名（同一商品字段的入口归为一段）" },
+    { "type": "text", "id": "tab_texture", "label": "质感段 · 日文", "default": "質感で選ぶ" },
+    { "type": "text", "id": "tab_texture_zh", "label": "质感段 · 中文", "default": "按质感" },
+    { "type": "text", "id": "tab_texture_en", "label": "质感段 · 英文", "default": "By texture" },
+    { "type": "text", "id": "tab_use", "label": "用途段 · 日文", "default": "用途で選ぶ" },
+    { "type": "text", "id": "tab_use_zh", "label": "用途段 · 中文", "default": "按用途" },
+    { "type": "text", "id": "tab_use_en", "label": "用途段 · 英文", "default": "By use" }
   ],
   "blocks": [
     {
@@ -95,10 +156,13 @@
       "settings": [
         { "type": "select", "id": "field", "label": "商品字段", "options": [ { "value": "yarn.texture", "label": "质感（yarn.texture）" }, { "value": "yarn.use", "label": "用途 / 季节（yarn.use）" } ], "default": "yarn.texture" },
         { "type": "text", "id": "entry", "label": "毛线入口 handle（Metaobject「毛线入口」yarn_entry）", "info": "例如 gradient；名称三语在 Translate & Adapt 的「毛线入口」里编辑" },
-        { "type": "image_picker", "id": "image", "label": "照片（空则用集合里第一件带该取值的商品主图）" }
+        { "type": "image_picker", "id": "image", "label": "照片（空则用集合里第一件带该取值的商品主图）" },
+        { "type": "text", "id": "hint", "label": "日文 · 说明（留空时显示款数）" },
+        { "type": "text", "id": "hint_zh", "label": "中文 · 说明" },
+        { "type": "text", "id": "hint_en", "label": "英文 · 说明" }
       ]
     }
   ],
-  "presets": [ { "name": "挑毛线（圆图入口）" } ]
+  "presets": [ { "name": "挑毛线（横滑方卡）" } ]
 }
 {% endschema %}

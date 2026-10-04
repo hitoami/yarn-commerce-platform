@@ -41,7 +41,7 @@
 .yx-product-card__meta-row .yx-card-meta { flex: 1; min-width: 0; }
 .yx-product-card__badge { flex: none; margin-left: auto; padding: 2px 9px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: 12px; font-weight: 600; line-height: 1.4; }
 .yx-product-card__reason { display: block; font-size: var(--yarn-card-meta); line-height: 1.45; color: var(--yarn-text-secondary); }
-.yx-project-picks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.yx-project-picks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
 .yx-project-pick { display: flex; flex-direction: column; gap: 8px; color: var(--yarn-text-heading); text-decoration: none; }
 .yx-project-pick__media { display: block; aspect-ratio: 3 / 4; border-radius: var(--yarn-card-radius); overflow: hidden; background: var(--yarn-bg-sunken); }
 .yx-project-pick__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -101,14 +101,19 @@
 .yx-exit--compact { grid-template-columns: 96px minmax(0, 1fr) auto; padding: 16px; }
 .yx-exit--compact .yx-exit__media img { max-height: 96px; }
 .yx-exit--compact .yx-exit__title { font-size: 18px; }
-/* One content axis and section rhythm for all homepage families. */
-.yx-picks { margin: 0 auto; padding: 28px 0; background: var(--yarn-bg-surface); }
+/* One content axis and section rhythm for all homepage families (#126 1a: 64px between bands, 32px inside a run of picks). */
+.yx-picks { margin: 0 auto; padding: 32px 0; background: var(--yarn-bg-surface); }
+.section-yarn-entry-circles + .shopify-section .yx-picks { padding-top: 64px; }
 .yx-picks > .page-width { max-width: calc(var(--yarn-commerce-max) + 64px); padding-inline: 32px; }
 .yx-picks__head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.yx-picks__head:has(.yx-picks__titles) { align-items: flex-end; gap: 24px; margin-bottom: 24px; }
+.yx-picks__titles { min-width: 0; }
+.yx-picks__titles .yx-picks__note { margin: 6px 0 0; font-size: 15px; }
+.yx-picks__head:has(.yx-picks__titles) .yx-picks__all { margin-bottom: -10px; } /* keep the 44px target, align the text with the note */
 .yx-picks__head h2 { margin: 0; min-width: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 30px; font-weight: 600; line-height: 1.3; text-wrap: balance; }
 .yx-picks__all { display: inline-flex; align-items: center; min-height: var(--yarn-touch); color: var(--yarn-accent); font-size: 15px; white-space: nowrap; text-underline-offset: 4px; }
 .yx-picks__note { margin: -10px 0 16px; font-size: 14px; color: var(--yarn-text-muted); }
-.yx-picks__grid { display: grid; grid-template-columns: repeat(var(--yx-cols, 4), minmax(0, 1fr)); gap: 16px; }
+.yx-picks__grid { display: grid; grid-template-columns: repeat(var(--yx-cols, 4), minmax(0, 1fr)); gap: 24px; }
 .yx-picks__body--with-exit { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
 .yx-picks__body--with-exit .yx-picks__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .yx-picks--duo:not(:has(.yx-picks__exit)) .yx-product-card { flex-direction: row; }
@@ -116,9 +121,14 @@
 .yx-picks--duo:not(:has(.yx-picks__exit)) .yx-product-card__body { justify-content: center; padding: 20px; }
 @media (max-width: 749px) {
   .yx-project-picks { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-  .yx-picks { padding: 20px 0; }
+  .yx-picks, .section-yarn-entry-circles + .shopify-section .yx-picks { padding: 20px 0; }
   .yx-picks > .page-width { padding-inline: 16px; }
   .yx-picks__head { gap: 10px; margin-bottom: 12px; }
+  /* Phones: title and view-all share the first row, the note runs full width below. */
+  .yx-picks__head:has(.yx-picks__titles) { flex-wrap: wrap; align-items: baseline; column-gap: 10px; row-gap: 0; margin-bottom: 12px; }
+  .yx-picks__titles { display: contents; }
+  .yx-picks__head:has(.yx-picks__titles) .yx-picks__all { margin-bottom: 0; }
+  .yx-picks__titles .yx-picks__note { order: 3; flex-basis: 100%; margin: -6px 0 0; font-size: 14px; }
   .yx-picks__head h2 { font-size: 24px; }
   .yx-picks__all { font-size: 13px; }
   .yx-picks__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }

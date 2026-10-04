@@ -673,6 +673,12 @@
       "one": "{{ count }} 款",
       "other": "{{ count }} 款"
     },
+    "entries_total": {
+      "one": "共 {{ count }} 类",
+      "other": "共 {{ count }} 类"
+    },
+    "entries_swipe": "左右滑动查看更多",
+    "entries_view_all": "查看全部毛线",
     "materials": "材料参考",
     "tools": "按需补齐工具",
     "finished": "购买成品",

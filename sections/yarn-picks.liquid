@@ -50,12 +50,17 @@
   {%- if request.design_mode -%}<p class="yx-picks__note page-width">{{ picks_heading | escape }}：{% if picks_mode == 'sale' %}所选集合里暂无带划线价的商品，本区块不在店面显示。{% else %}请在右侧选择一个有商品的集合，未选择时本区块不在店面显示。{% endif %}</p>{%- endif -%}
 {%- else -%}
 <section class="yx-picks yarn-shell-block{% if section.settings.columns_desktop == 2 %} yx-picks--duo{% endif %} color-{{ section.settings.color_scheme }}" style="--yx-cols: {{ section.settings.columns_desktop }};" aria-labelledby="Picks-{{ section.id }}">
+  {%- if section.settings.products_to_show_mobile < picks_limit -%}
+    <style>@media (max-width: 749px) { #shopify-section-{{ section.id }} .yx-picks__grid > :nth-child(n + {{ section.settings.products_to_show_mobile | plus: 1 }}) { display: none; } }</style>
+  {%- endif -%}
   <div class="yx-picks__inner page-width">
     <div class="yx-picks__head">
-      <h2 id="Picks-{{ section.id }}">{{ picks_heading | escape }}</h2>
+      <div class="yx-picks__titles">
+        <h2 id="Picks-{{ section.id }}">{{ picks_heading | escape }}</h2>
+        {%- if picks_note != blank -%}<p class="yx-picks__note">{{ picks_note | escape }}</p>{%- endif -%}
+      </div>
       {%- if picks_collection != blank -%}<a class="yx-picks__all" href="{{ picks_collection.url }}">{{ 'yarn_project.card_view_all' | t }} →</a>{%- endif -%}
     </div>
-    {%- if picks_note != blank -%}<p class="yx-picks__note">{{ picks_note | escape }}</p>{%- endif -%}
     <div class="yx-picks__body{% if section.settings.exit_enabled %} yx-picks__body--with-exit{% endif %}">
     {%- if section.settings.exit_enabled -%}
       <aside class="yx-exit yx-picks__exit">
@@ -112,6 +117,7 @@
       "default": "collection"
     },
     { "type": "range", "id": "products_to_show", "min": 2, "max": 8, "step": 1, "default": 4, "label": "商品数" },
+    { "type": "range", "id": "products_to_show_mobile", "min": 2, "max": 8, "step": 1, "default": 8, "label": "手机最多显示", "info": "手机上只显示前几件；大于商品数时按商品数显示" },
     { "type": "range", "id": "columns_desktop", "min": 2, "max": 4, "step": 1, "default": 4, "label": "桌面列数" },
     { "type": "header", "content": "出口卡钩子(可选)" },
     { "type": "checkbox", "id": "exit_enabled", "label": "显示出口卡", "default": false },

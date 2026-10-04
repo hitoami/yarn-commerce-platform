@@ -1,4 +1,4 @@
-// Home hero: scene carousel with arrows, numbered dots, swipe and arrow keys. Independent of the guide strip.
+// Home hero: scene carousel with dots, swipe and arrow keys. Independent of the guide strip.
 (() => {
   if (customElements.get('hitoami-hero')) return;
   const wrap = (value, length) => ((value % length) + length) % length;
@@ -13,8 +13,6 @@
       this.index = 0;
       if (this.slides.length < 2) return;
       this.querySelector('.hitoami-controls')?.removeAttribute('hidden');
-      on(this.querySelector('[data-previous]'), 'click', () => this.show(this.index - 1));
-      on(this.querySelector('[data-next]'), 'click', () => this.show(this.index + 1));
       this.pages.forEach((button, index) => on(button, 'click', () => this.show(index)));
       on(this.querySelector('.hitoami-hero'), 'keydown', (event) => {
         if (!['ArrowLeft', 'ArrowRight'].includes(event.key) || event.target.matches('input, textarea, select')) return;
@@ -47,7 +45,7 @@
     show(index, animate = true) {
       const next = wrap(index, this.slides.length);
       if (next === this.index) return;
-      if (this.slides[this.index].contains(document.activeElement)) this.querySelector('[data-next]')?.focus();
+      if (this.slides[this.index].contains(document.activeElement)) this.pages[next]?.focus();
       this.index = next;
       this.slides.forEach((slide, position) => {
         const inactive = position !== next;
@@ -58,8 +56,6 @@
         if (position === next) button.setAttribute('aria-current', 'true');
         else button.removeAttribute('aria-current');
       });
-      const count = this.querySelector('[data-current]');
-      if (count) count.textContent = String(next + 1).padStart(2, '0');
       const status = this.querySelector('[data-slide-status]');
       if (status) status.textContent = this.slides[next].querySelector('.hitoami-heading')?.textContent || '';
       if (animate && !this.reduce.matches) {

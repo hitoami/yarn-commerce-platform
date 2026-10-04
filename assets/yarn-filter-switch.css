@@ -131,18 +131,11 @@
   line-height: 1.4;
 }
 
-/* Issue 117: home entry circles stay expanded — one row of up to 8 on desktop, 4 on tablet, 3 on phones. */
-.yarn-entries__grid { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 28px 16px; }
-
-@media (max-width: 989px) {
-  .yarn-entries__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
-
 @media (max-width: 749px) {
   .yarn-fswitch { padding-block: 32px 40px; }
   .yarn-fswitch__head h2 { font-size: 24px; }
   .yarn-fswitch__tab { padding: 0 16px; font-size: 14px; }
-  .yarn-fswitch__grid, .yarn-entries__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 12px; }
+  .yarn-fswitch__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 12px; }
   .yarn-fswitch__ring { margin-bottom: 6px; padding: 5px; }
   .yarn-fswitch__go { right: -4px; bottom: 0; width: 32px; height: 32px; }
   .yarn-fswitch__go svg { width: 13px; height: 13px; }
