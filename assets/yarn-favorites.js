@@ -22,6 +22,7 @@
       this.pending = new Set();
       this.queue = Promise.resolve();
       this.authenticated = this.dataset.authenticated === 'true';
+      this.enabled = this.dataset.enabled === 'true';
       this.dialog = this.querySelector('dialog');
       this.notice = this.querySelector('[data-favorite-notice]');
       window.YarnFavorites = this;
@@ -32,6 +33,7 @@
         event.preventDefault();
         const entity = { type: button.dataset.favoriteType, id: button.dataset.favoriteId };
         if (!validEntity(entity)) return;
+        if (!this.enabled) { this.announce(this.dataset.unavailable); return; }
         if (!this.authenticated) { this.showLogin(entity); return; }
         this.toggle(entity);
       }, options);
@@ -50,7 +52,7 @@
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible' && this.authenticated) this.load({ refresh: true }).catch(() => {});
       }, options);
-      if (this.authenticated) {
+      if (this.enabled && this.authenticated) {
         this.load().then(() => this.resumeIntent()).catch(() => {});
       }
     }
@@ -63,6 +65,7 @@
     keys() { return new Set(this.saved); }
 
     async load({ refresh = false } = {}) {
+      if (!this.enabled) return { authenticated: false, unavailable: true };
       if (!this.authenticated) return { authenticated: false };
       if (this.loadPromise) return this.loadPromise;
       if (this.loaded && !refresh) return { authenticated: true };
@@ -131,6 +134,7 @@
     }
 
     showLogin(entity) {
+      if (!this.enabled) { this.announce(this.dataset.unavailable); return; }
       this.loginIntent = validEntity(entity) ? entity : null;
       if (!this.dialog.open) this.dialog.showModal();
     }

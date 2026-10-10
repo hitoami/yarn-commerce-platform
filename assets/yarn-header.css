@@ -78,6 +78,9 @@
   color: var(--yarn-action);
 }
 
+.yarn-account-drawer { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--yarn-border-subtle); }
+.header-wrapper .yarn-account-drawer-link { display: flex; justify-content: flex-start; width: 100%; }
+
 .header-wrapper .header__icon .svg-wrapper,
 .header-wrapper .header__icon > span:not(.visually-hidden) {
   flex: 0 0 24px;
@@ -201,7 +204,7 @@
   /* Override Rise's four-column account layout as one coherent mobile row. */
   #YarnHeader {
     grid-template-areas: 'left-icons heading icons';
-    grid-template-columns: 44px minmax(0, 1fr) 88px;
+    grid-template-columns: 44px minmax(0, 1fr) 132px;
     column-gap: 0;
     min-height: 72px;
     padding: 10px 24px;
@@ -214,10 +217,11 @@
 
   .header-wrapper .header__inline-menu,
   #YarnHeader > .header__search,
-  .header-wrapper .header__icon--account,
   .header-wrapper .desktop-localization-wrapper {
     display: none;
   }
+
+  .header-wrapper .header__icon--favorites { display: none; }
 
   .header-wrapper .header__heading,
   .header-wrapper .header__heading-link {
@@ -229,7 +233,7 @@
   }
 
   .header-wrapper .header__icons {
-    width: 88px;
+    width: 132px;
     gap: 0;
   }
 
@@ -253,7 +257,7 @@
   }
 
   .header-wrapper .header__heading-link > .yarn-wordmark {
-    width: min(184px, calc(100vw - 174px));
+    width: min(184px, calc(100vw - 218px));
   }
 }
 
@@ -297,7 +301,7 @@
 .yarn-project-nav-back, .yarn-project-nav-title { display: none; }
 @media (max-width: 989px) {
   .yarn-project-page .announcement-bar-section { display: none; }
-  .header-wrapper .header.header--project { grid-template-columns: 44px minmax(0,1fr) 88px; grid-template-areas: "left-icons heading icons"; column-gap: 0; padding: 6px var(--yarn-gutter); min-height: 56px; }
+  .header-wrapper .header.header--project { grid-template-columns: 44px minmax(0,1fr) 132px; grid-template-areas: "left-icons heading icons"; column-gap: 0; padding: 6px var(--yarn-gutter); min-height: 56px; }
   .header--project > :is(header-drawer,.header__heading-link) { display: none; }
   .header--project .yarn-project-nav-back { display: flex; grid-area: left-icons; align-items: center; justify-content: center; width: var(--yarn-touch); height: var(--yarn-touch); color: var(--yarn-text-primary); font-size: 2.4rem; text-decoration: none; }
   .header--project .yarn-project-nav-title { display: block; grid-area: heading; text-align: center; font-family: var(--yarn-display); font-size: 1.6rem; color: var(--yarn-text-primary); }

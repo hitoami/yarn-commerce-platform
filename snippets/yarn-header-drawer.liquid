@@ -87,6 +87,13 @@
                 </li>
               {%- endfor -%}
             </ul>
+            {%- if shop.customer_accounts_enabled -%}
+              <div class="yarn-account-drawer">
+                <a class="menu-drawer__menu-item yarn-account-drawer-link link link--text focus-inset" href="{{ routes.account_url }}">
+                  {{ 'customer.account.title' | t }}
+                </a>
+              </div>
+            {%- endif -%}
           </nav>
           {%- if show_language_selector and localization.available_languages.size > 1 -%}
             {%- comment -%}All shop languages side by side: one tap opens the same page in that language (#107).{%- endcomment -%}

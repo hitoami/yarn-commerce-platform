@@ -90,6 +90,11 @@
     <p>{{ 'yarn_discovery.login_hint' | t }}</p>
     <button class="yd-search__action" type="button" data-favorites-login-button>{{ 'customer.log_in' | t }}</button>
   </section>
+  <section class="yd-search__empty" data-favorites-unavailable hidden>
+    <h2>{{ 'yarn_discovery.favorites' | t }}</h2>
+    <p>{{ 'yarn_discovery.favorites_unavailable' | t }}</p>
+    <a class="yd-search__action" href="{{ routes.root_url }}#shop-by-project">{{ 'yarn_discovery.discover_projects' | t }}</a>
+  </section>
   <div data-search-results hidden>
     <section class="yd-search__group" data-search-group="project" aria-labelledby="DiscoveryProjects-{{ section.id }}">
       <h2 id="DiscoveryProjects-{{ section.id }}">{{ 'yarn_discovery.related_projects' | t }}</h2>

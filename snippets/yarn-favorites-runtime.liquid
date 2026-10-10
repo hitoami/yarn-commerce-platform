@@ -1,10 +1,12 @@
 <yarn-favorites-runtime
   data-endpoint="{{ settings.yarn_favorites_endpoint | escape }}"
+  data-enabled="{% if settings.yarn_favorites_endpoint != blank %}true{% else %}false{% endif %}"
   data-authenticated="{% if customer %}true{% else %}false{% endif %}"
   data-login-url="{{ routes.storefront_login_url | escape }}"
   data-saved="{{ 'yarn_discovery.saved' | t }}"
   data-removed="{{ 'yarn_discovery.removed' | t }}"
   data-error="{{ 'yarn_discovery.favorite_error' | t }}"
+  data-unavailable="{{ 'yarn_discovery.favorites_unavailable' | t }}"
 >
   <p class="yarn-favorites-notice" role="status" data-favorite-notice hidden></p>
   <dialog class="yarn-favorites-dialog" aria-labelledby="FavoriteLoginTitle">
