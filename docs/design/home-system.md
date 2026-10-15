@@ -1,81 +1,85 @@
 # 首页设计系统接入
 
-Issue #32 提取共享规则；Issue #55 将当前首页改为毛线主线与商品卡片家族。视觉事实以最终 `DESIGN.md` 为准；本页说明代码职责与下一页面如何接入。
+本文说明当前首页与共享组件的代码职责。视觉规则见 [DESIGN.md](../../DESIGN.md)，产品与内容边界见 [PRODUCT.md](../../PRODUCT.md) 和 [CONTEXT.md](../../CONTEXT.md)。当前构图依据为 [#131 手机稿与用户补充决定](approved/131-mobile.source.md)；2026-10-15 用户明确要求保留线上手作小屋 Hero，并将圆形分类、独立小猫、新手卡片和 FAQ 延展到桌面。
 
-## 单一来源
+旧方案 C / #126 的绳索四分类、手机无猫、旧模块顺序与独立 Kit 商品模型已被替换，不再作为新页面接入模板。必要素材来源仍保留在原位置，当前实现无需引用旧稿的第二套配色。
 
-| 文件 | 职责与当前使用者 |
+## 唯一来源与文件职责
+
+| 文件 | 当前职责 |
 | --- | --- |
-| `assets/yarn-design-tokens.css` | 字体加载、共享颜色与语义角色、间距、容器、圆角、触控与焦点尺寸；在旧 `yarn-prototype.css` 前全局加载 |
-| `assets/yarn-foundation.css` | 导航、页脚、首页 Hero/作品/帮助的焦点与选区；导航与页脚共用字段、语言选择、下拉选项状态；不控制页面构图 |
-| `assets/yarn-header.css` | 共享桌面导航、手机菜单、搜索面板与品牌标识 |
-| `assets/yarn-footer.css` | 共享页脚品牌、订阅、运营 block、语言与政策的布局 |
-| `sections/hitoami-hero.liquid` / `assets/hitoami-hero.css` · `sections/yarn-guide-strip.liquid` / `assets/yarn-guide-strip.css` · `sections/hitoami-story.liquid` | 首屏手作小屋轮播（页头叠图、波浪底边）；导览条（晾衣绳挂线、小猫与品类入口）；品牌介绍。三者互不关联 |
-| `assets/yarn-filter-switch.css` | 首页按材质 / 粗细的圆形照片卡与标签页 |
-| `assets/yarn-cards.css` / `assets/yarn-collection.css` | 商品、内容和出口卡家族；1200px 目录轴与筛选布局 |
-| `assets/yarn-product-context.css` / `assets/yarn-project-reading.css` | 原生购买区、商品独立规格区与单列内容阅读 |
-| `sections/yarn-line-contact.liquid` | 紧凑帮助条消费容器/色彩/圆角角色，保留非紧凑历史变体 |
+| `design/tokens/colors.json` | 颜色基础色板、语义角色、配色方案与声明的对比度搭配；唯一色源 |
+| `assets/yarn-design-tokens.css` | 全局字体、生成的颜色、间距、容器、圆角、触控与焦点尺寸；先于旧原型样式加载 |
+| `assets/yarn-foundation.css` | 已接入组件的焦点、选区、共享字段和语言选择状态，不控制页面构图 |
+| `assets/yarn-header.css` / `assets/yarn-footer.css` | 桌面导航、手机菜单、搜索、品牌字标、页脚和运营 block |
+| `sections/hitoami-hero.liquid` / `assets/hitoami-hero.css` / `.js` | 整幅手作小屋、三张手动轮播、透明页头与波浪；`catalog_layout` 不覆盖 Hero 构图 |
+| `sections/hitoami-story.liquid` / `assets/hitoami-story.css` | 品牌图文、桌面联系面板与手机文字入口 |
+| `sections/yarn-entry-circles.liquid` / `assets/yarn-entries.css` / `.js` | `yarn_entry` 分类及真实商品字段关系、入口图片、分段与横向浏览 |
+| `snippets/yarn-companion.liquid` / `assets/yarn-companion.css` / `.js` | 分类上方独立小猫，复用原 sprite，点击交互与减少动态效果 |
+| `sections/yarn-catalog.liquid` / `assets/yarn-home-mobile.css` | 明确选择的真实毛线目录；当前首页首屏以下的手机与桌面构图覆盖 |
+| `assets/yarn-cards.css` / `assets/yarn-collection.css` | 商品卡家族、目录筛选与 1200px 内容轴 |
+| `sections/yarn-season-feature.liquid` / `assets/yarn-season-feature.css` | 首页本季入口；专题正文使用 `yarn-season-page` 对应文件 |
+| `sections/yarn-home-guide.liquid` | 三语新手指引与 FAQ；布局在 `yarn-home-mobile.css` |
+| `snippets/yarn-kit-visible.liquid` | 材料包内容公开门槛，购买可用性另读真实 Variant |
+| `assets/yarn-product-context.css` / `assets/yarn-pdp.css` | 通用商品购买区与毛线详情覆盖；不能把通用奶油按钮覆盖到毛线灰棕变体 |
 
-颜色的唯一来源是 `design/tokens/colors.json`，`npm run tokens` 生成 `yarn-design-tokens.css` 的颜色段（`BEGIN/END generated colors` 之间，勿手改）、`settings_data.json` 配色方案和 `DESIGN.md` 前言 `colors`。页面只引用语义角色，角色表与规则见 `DESIGN.md` Colors。`--yarn-action` 用于可点击文字，`--yarn-decor-thread` 只用于插画连线；`--yarn-cta-bg` 是奶油主按钮，`--yarn-action-subtle-bg` 是导航选中、帮助和页脚的浅色面；焦点为 `--yarn-focus`，与 hover 分开。
+`npm run tokens` 生成 CSS 颜色段、`config/settings_data.json` 当前配色方案和 `DESIGN.md` 前言 `colors`，不手改生成结果。保留旧组件所需的角色不代表当前首页仍使用它们。新增页面先查实际使用方，不把 `home-rope` 等旧装饰角色当全局默认。
 
-Issue #65 删除了无模板使用的 `yarn-purpose-grid` / `yarn-seasonal-feature` / `yarn-shopping-paths`；保留的 `yarn-project-library` / `yarn-project-discovery` / `yarn-starter-project`（作品库等近期范围）已改用角色，启用前仍需核对三语文案与构图。
+## 当前首页组成
 
-## 下一页面的用法
+`templates/index.json` 决定 section 顺序和启用状态；有数据门槛的模块还会在 Liquid 判断后隐藏。主题编辑器继续负责内容、图片、链接、排序和开关。
 
-1. 先确定页面职责和对应 surface brief，选择所需的现有角色；不复制首页串联插画或四分类构图。
-2. 页面容器按 `width: min(var(--yarn-content-max), calc(100% - 2 * var(--yarn-gutter)))` 对齐，内容阅读宽度可另行收窄。Hero 艺术画布的定位与宽度仍属于首页。
-3. 页面样式直接消费 token；只有同一交互意图真实重复时才扩展 `yarn-foundation.css` 的作用范围，不在全局覆盖全部 `.button`、`input` 或 `.page-width`。
-4. 沿用 Shopify 原生表单语义、标签、错误与成功状态。新输入框在手机至少保持 16px，交互目标至少 44px，键盘焦点不得被容器截断。
-5. 新增共享 token 前检查现有角色；只能在 token 文件定义。更新实际使用说明和适用截图，不能只修改规范而未接入组件。
-
-## Shopify 编辑边界
-
-导航文字与目标继续来自 Navigation 菜单，菜单标题与每个菜单项的日/中/英译文在 Shopify Translate & Adapt 对应菜单资源维护；桌面、手机菜单和页面 section 必须显示同一整页语言，不能在 Liquid 写死英文或用另一份硬编码菜单遮住未翻译内容。Logo 沿用全局上传设置，未上传时使用用户提供的 hitoami 字标。帮助文案/链接来自原 Section setting。页脚订阅标题、显示开关、Block、语言/国家、政策与付款图标仍由原设置及 Shopify 数据决定。
-
-页脚订阅仍使用 `form 'customer'`、`contact[email]` 和 `newsletter` tag；不增加营销承诺，不替换后端处理。本轮复核输入、验证和焦点，不发送真实订阅。隐藏订阅时不应渲染输入表单；未来添加运营 block 时仍使用原有 schema。
-
-## 验证与回滚
-
-`npm run verify` 包含两组系统边界检查：token 必须先于旧原型样式加载；`tests/yarn-color-system.test.cjs` 覆盖所有 yarn 样式与引用 `--yarn-*` 的模板，检查颜色字面量、未定义引用、生成物同步、对比度、未使用角色与近似色。它防止单一来源再次分叉，不替代浏览器视觉复核。
-
-导航与页脚在其他页面共享生效；本次对作品详情和联系页做路径与无横向溢出的抽查，不宣称其他页面正文已完成视觉统一。回滚采用撤回本 PR 或重新选择原未变更主题；未发布预览不等于生产发布授权。
-
-## Issue #55 当前接入
-
-商品家族消费 `text-heading`、`accent`、`border-card`、10px card radius 与 1200px commerce max；卡片标题/规格/价格为 16/14/21px。构图与数据回退见 [当前 surface brief](approved/55-visual-fidelity.md)。
-
-首页出口卡未选择图片时使用当前集合第一件商品主图；内容卡链接指向 `yarn_project` 时可使用其封面，运营选择的图片优先。作品正文缺失时只读取已有关联 Kit 的介绍和步骤，不创建另一份内容真值。三语运营文案仍由 Section setting 与 Shopify 对应资源维护。
-
-## 首屏（2026-09-28 用户选定）
-
-首页首屏由 `sections/hitoami-hero.liquid` 承担：整幅场景图，标题、说明与按钮压在左侧留白处，圆点居中在底部白色胶囊里（#126 起不再有箭头与编号）；支持滑动与方向键。每张幻灯片可上传桌面 / 手机图、设文字深浅与图片焦点，三语文案与按钮链接在编辑器维护；未上传时用内置三张氛围图。底边是一道奶白波浪。它作为首页第一个 section 时，页头透明地叠在图上（Logo 居左、桌面 ≥1340px 菜单居中、首页隐藏收藏图标与公告条，滚动吸顶后恢复白底），与线上一致。它与导览条互不关联：切换幻灯片不影响导览条，导览条也不控制幻灯片。来源见 [方案 C 视觉稿](approved/home-scheme-c.source.md)。
-
-首屏的内置三组素材与桌面缩放规则沿用 #110：横幅原生 1672×941，桌面产品场景最大 1440px 居中、Hero 620–880px，后方共用窗帘和阳光底图；运营自选图走 Shopify responsive srcset（最高 3840px），不叠加内置窗边素材。素材来源见 [#110 首页素材](approved/110-home-assets.md)。#110 的单一 section（轮播、猫与分类联动）已按 #93 拆开，不再使用。
-
-## 首页 1a（2026-10-03 用户确认，#126；信息架构沿用方案 C #93）
-
-模块顺序：首屏手作小屋轮播 → 导览条（四个品类入口，小猫动画不变）→ 品牌介绍 → 挑毛线 → 按作品图选 → 新手友好编织包 → 店铺精选成品 → 帮助条。优惠区块在模板里停用（1a 不含，编辑器可重新打开）。每块是独立 section，顺序与开关在主题编辑器调整；首页主推位仍待 #50 决策。构图见 [Claude Design 1a](approved/126-home-1a.source.md)，早期方案见 [方案 C 视觉稿](approved/home-scheme-c.source.md)。
-
-| 模块 | Section | 数据与显示规则 |
+| 顺序 | 模块 | 当前构图与内容来源 |
 | --- | --- | --- |
-| 品类入口 + 新手入口 | `yarn-guide-strip` | 节点为 block（图标、链接、三语标题与说明）；新手入口的标题和链接都填写才显示（用户 2026-09-28 决定首页不放，模板里链接留空）。桌面挂线像晾衣绳：两端钉在上一个 section 的底边（伸入 20px），两个钉点以页面中线对称（比内容区边缘各外伸至多 96px），两端垂下同样形状的弯，左侧多出的一段平缓绳子，小猫睡在左侧弯里；悬停入口时小猫醒来沿绳走过去。手机端挂线仍在节点上方、无小猫 |
-| 品牌介绍 | `hitoami-story` | 居中的品牌标语与品牌故事，取自线上首页，三语在编辑器维护；两项都为空时不渲染。桌面小标题「关于品牌」另设三语设置 |
-| 挑毛线 | `yarn-entry-circles`（`assets/yarn-entries.css` / `.js`） | 入口数据同 #117（`yarn_entry` Metaobject + `yarn.texture` / `yarn.use`）。同一字段的入口归为一段，段名（按质感 / 按用途）在区块设置三语维护，只有一段时不出切换；说明行优先取 block 三语说明，留空显示款数；没有商品的入口不渲染 |
-| 优惠（停用） | `yarn-picks`，显示方式「优惠」 | 只取所选集合里 `compare_at_price` 高于 `price` 的商品（前 50 件中），按折扣比例从大到小；一件都没有时整块不渲染 |
-| 按作品图选 | `yarn-project-picks` | 运营挑选的 `yarn_project`，未挑选时按作品库顺序；只显示可公开且有封面的作品。标签按真实关联：有成品 / 有编织包（关联商品带 `編みものキット` 标签）/ 可买材料（除编织包外还有本店可买的材料或工具） |
-| 新手友好编织包 | `yarn-picks`，显示方式「新手友好」 | 集合由运营选择；只有商品字段 `yarn.beginner_reason` 有内容时才显示「新手友好」标签与理由 |
-| 店铺精选成品 | `yarn-picks` | `finished-goods` 集合，桌面 4 件 4 列；「手机最多显示」设为 2 |
-| 帮助条 | `yarn-line-contact`（紧凑） | 标题 / 链接文字 / 桌面说明三语在区块设置维护；未配置 LINE 链接时链接到联系页 |
-| 按材质 / 粗细（停用） | `yarn-filter-switch` | 从毛线集合商品的 `yarn.material` / `yarn.weight` 收集实际取值；没有取值的维度不渲染。链接带 `filter.p.m.<字段>` 参数，需在 Search & Discovery 为同一字段开启筛选。取值 block 决定顺序、照片与三语参考针号，没上传照片时用第一件带该取值的商品主图 |
+| 1 | `hitoami-hero` | 整幅手作小屋，文案叠图、透明页头、白胶囊圆点、奶白波浪；三张手动切换，无购买 CTA |
+| 2 | `hitoami-story` | 品牌图文和联系入口；上传图优先，默认品牌氛围图保留生成来源；手机文字入口，桌面灰棕按钮 |
+| 3 | `yarn-entry-circles` | 五类圆形实物照片，小猫和毛球独立在上方；手机也显示猫，无挂绳；入口读 `yarn_entry` 与 `yarn.texture` / `yarn.use` |
+| 4 | `yarn-catalog` | 只读运营明确选择的已核实 Product；手机两列、桌面四列；未选择商品时显示整理提示 |
+| 5 | `yarn-season-feature` | 有来源的实物封面与专题链接；专题商品来自真实选择/筛选结果，不写未验证款数 |
+| 6 | `yarn-home-guide`（steps） | 新手指引；手机顺读、桌面三列卡片 |
+| 7 | 材料包内容 | 只显示满足 `yarn-kit-visible` 的 `yarn_project`；缺封面、毛线/团数、教程入口或公开状态时不充数 |
+| 8 | 成品 | 使用真实成品 Product；无合格内容则隐藏 |
+| 9 | 服务说明 | 仅使用已有事实支持的服务文案 |
+| 10 | `yarn-home-guide`（faq） | 手机折叠列表；桌面标题与问题两列 |
+| 11 | 共享页脚 | Shopify 配置的品牌、联系、语言、政策与订阅等 |
 
-导航的 SALE 胶囊由链接目标决定：顶层菜单项指向 handle 为 `sale` 的集合时显示爪子粉底，不按文字判断。原毛线 / 编织包 / 工具精选从首页移除（毛线由品类入口与材质 / 粗细承接，编织包由新手友好编织包承接，工具由品类入口承接）；内容精选 section 保留但不在首页使用。
+旧 `yarn-guide-strip`、优惠、旧新手 Kit 等 section 即使代码与配置仍保留，也不属于当前默认首页。不要因为模板里保留一个旧 section，就把它加入系统默认展示。
 
-## #131 当前手机接入（2026-10-15）
+### Hero 与素材
 
-当前手机构图以 [获批手机稿及来源](approved/131-mobile.source.md) 为准，替换上文 #126 的首页顺序与「手机无小猫」规则。用户同日明确要求保留线上 Hero：手机和桌面均继续使用手作小屋整幅场景、文案叠图、透明页头与波浪底边，沿用三张场景手动切换；本 Issue 不显示首屏购买按钮。`catalog_layout` 仅加载首屏以下的手机布局，不得覆盖 Hero。用户随后提供桌面缺失截图并要求对齐同一参考：桌面分类恢复五个圆图，去掉小猫下方的装饰线；新手指引采用三列卡片，FAQ 为标题与问题两列。商品区和本季区仍需真实数据接入，整页尚未验收。
+Hero 和分类是独立组件，不互相控制。切换幻灯片不驱动小猫或分类。没有自动轮播；支持圆点、滑动与方向键。页头在首页叠图，滚动吸顶后恢复背景；普通页面沿用暖白导航。
 
-品牌介绍可使用 `hitoami-brand-knitting-cat.png` 氛围图，上传图优先；生成提示词和适用范围记录在同名 `.source.json`，不作为真实人物或商品证据。本季封面复用油画圈圈原图，未核实选品时不声称有固定款数。
+手机 Hero 高度为 `clamp(560px, 76svh, 710px)`，桌面为 `clamp(620px, 71svh, 880px)`。内置桌面场景最大 1440px 居中，共用窗帘/阳光底图最大 1672px；运营上传图使用响应式图片，不额外叠加内置窗边素材。标题保留实际 rem / vw 公式，不能把浏览器量出的某个值写成所有视口的固定字号。
 
-小猫由 `yarn-companion` snippet、CSS 与 custom element 接入 `yarn-entry-circles`，复用原 sprite，支持点击醒来/走动和减少动态效果。分类仍引用 `yarn_entry` 与 Shopify 商品字段，参考图可在 block 选择本轮原表实物图。毛线资料区 `yarn-catalog` 只渲染运营明确选择的已核实 Product，没有配置时给出整理提示。`yarn-home-guide` 以三语 block 承载新手指引和 FAQ。
+素材来源见 [#110 首页素材](approved/110-home-assets.md)；品牌氛围图来源为 `assets/hitoami-brand-knitting-cat.png.source.json`。这些氛围图不作为人物、材质、库存或真实商品证明。当前字标由 `yarn-wordmark` 和 Shopify Logo 设置负责，不从旧视觉稿裁图重做。
 
-材料包公开条件在 `yarn-kit-visible` 集中处理：公开状态、封面、毛线 Variant/团数与教程领取链接缺一不可；当前路径不使用内部样例开关。价格与可售性继续取 Shopify，不随作品公开状态复制。商品页、卡片和材料包的零价状态显示「暂未开售」；整份材料缺项时阻止加购，可逐项购买其他可售材料。
+### 首屏以下的作用域
+
+`catalog_layout` 启用时，`yarn-home-mobile.css` 通过 `.hitoami-hero--catalog` 限定品牌、分类与本季入口覆盖，同时定义 `yarn-home-catalog` 和 `yarn-home-guide` 本身。该文件包含手机和桌面规则，文件名不意味着只影响手机。
+
+手机品牌、分类、商品区、新手和 FAQ 等正文使用 24px 左右留白；普通商品目录仍用 16px。首页商品网格两列、列距 12px，桌面四列、间距 24px。分类手机每列 85px 圆图、间距 16px，桌面五列；标题 21 / 26px。商品区与指引标题 24 / 28px，字重 400；上下留白 36 / 56px。不要恢复旧的全站 32px 标题、72px 分区间距或方形分类卡。
+
+## 下一页面的接入方式
+
+1. 先确认 Issue 和页面 brief，按 PRODUCT / CONTEXT 确认当前用户路径。当前材料包是内容加毛线组合，不新增独立库存或双模式商品。
+2. 用共享容器 `width: min(var(--yarn-content-max), calc(100% - 2 * var(--yarn-gutter)))`，商品家族用 1200px 轴；页面局部收窄须保留自己的作用域。
+3. 字体、颜色、间距和圆角引用已有 token。只有相同意图的重复组件才扩展共享样式，不全局覆盖 `.button`、`input` 或 `.page-width`。
+4. 根据实际用途选按钮变体：首页联系 / 毛线购买为灰棕，目录价格 / 部分交易动作为陶土，目录筛选 / 通用商品加购为奶油。变体与状态同组件一起复用。
+5. 保留 Shopify 原生表单与错误/成功语义。新输入手机字号至少 16px，交互目标至少 44px，焦点不得被容器裁切。数量、价格、库存与购买可用性不在展示层复制。
+6. 新共享规则同时更新实现与 DESIGN；只校准文档时不能借机改视觉。新增方向按手机稿到桌面实现的既定流程确认。
+
+## Shopify 编辑与语言边界
+
+导航文字和目标来自 Shopify Navigation；日中英译文在对应资源维护，不在 Liquid 写另一份菜单遮住缺译。Logo 使用上传设置及现有字标回退。Section / Block 运营文案经 `yarn-setting-text`，通用控件进 Theme locales，商品与 Metaobject 正文来自 Shopify 翻译。页面、桌面导航、手机菜单与页脚跟随同一语言。
+
+页脚订阅继续使用 `form 'customer'`、`contact[email]` 和 `newsletter` tag；隐藏订阅时不渲染表单。视觉核对不发送真实订阅。
+
+材料包的内容公开与购买可用性分开：先验证公开、封面、毛线 Variant / 团数与教程入口，再判断每条材料是否定价且可售；缺项时阻止整份加购，可逐项购买其余可售毛线。零价显示「暂未开售」。收藏入口不暗示收藏人数，商品卡不补造评分或销量。
+
+## 验证与维护
+
+`npm run verify` 包括 token 加载顺序、颜色生成同步、引用存在、声明的对比度、颜色字面量与近似色检查。页面或购买流程变更还需本地 `npm run proof`，按 `docs/agents/visual-review.md` 复核 390 / 1440 的实际截图、语言、溢出、图片与脚本结果；必要时检查展开的菜单和表单状态。
+
+验证结论引用当前 `.proof/report.md`，只覆盖报告中的路径与状态。截图与日志保留在忽略目录，不提交为新的设计权威。未完成的人工验收、运营资料和导航接线继续记录在对应 Issue；自动检查通过不能代替这些条件。
+
+Claude Design 是这套规范的设计工具镜像，须按同一版本同步 token、组件说明与示例。同步以实际代码和当前获批方向为准，不从镜像反推新的产品范围；图标、字体文件和素材若仅存在设计工具中，应明确标出与 Theme 的差异。代码/规范改动可撤回对应提交，生产 Theme 发布仍需当次人工批准。

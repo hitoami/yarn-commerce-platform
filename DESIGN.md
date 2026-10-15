@@ -1,6 +1,6 @@
 ---
-name: 毛线品牌
-description: 从已复核的毛线主线首页、目录、商品与内容页提取的暖白手作界面系统；保留受保护内部原型边界
+name: hitoami
+description: 从当前 Shopify 首页、毛线目录、毛线详情与本季专题提取的暖纸手作界面系统
 colors:
   home-action: "#675144"
   home-thread: "#8c8880"
@@ -50,151 +50,41 @@ colors:
   shadow-cream: "#eadfc4"
   shadow-warm: "#d8d1bd"
 typography:
-  commerce-badge:
-    fontSize: "12px"
-  commerce-note:
-    fontSize: "13px"
-  commerce-meta:
-    fontSize: "14px"
-  commerce-control:
-    fontSize: "15px"
+  display-ja-en:
+    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
+  body-ja:
+    fontFamily: "'Noto Sans JP', sans-serif"
+  body-en:
+    fontFamily: "'Figtree', 'Noto Sans JP', sans-serif"
+  display-zh:
+    fontFamily: "'LXGW WenKai', 'Noto Sans SC', sans-serif"
+  body-zh:
+    fontFamily: "'LXGW WenKai Screen', 'Noto Sans SC', sans-serif"
   commerce-card-title:
     fontSize: "16px"
-  commerce-hero-control:
-    fontSize: "17px"
-  commerce-reading-lead:
-    fontSize: "18px"
-  commerce-editorial-mobile-title:
-    fontSize: "19px"
-  commerce-exit-mobile-title:
-    fontSize: "20px"
+    fontWeight: 600
+  commerce-meta:
+    fontSize: "14px"
   commerce-card-price:
     fontSize: "21px"
-  commerce-section-mobile:
-    fontSize: "23px"
-  commerce-section-small:
+    fontWeight: 600
+  yarn-product-title:
     fontSize: "24px"
-  commerce-hero-ja-mobile:
-    fontSize: "25px"
-  commerce-product-mobile:
-    fontSize: "26px"
-  commerce-section:
-    fontSize: "28px"
-  commerce-home-section:
-    fontSize: "30px"
-  commerce-hero-mobile:
-    fontSize: "32px"
-  commerce-product-desktop:
-    fontSize: "36px"
-  commerce-page-title:
-    fontSize: "40px"
-  commerce-hero-ja-max:
-    fontSize: "44px"
-  commerce-hero-en-max:
-    fontSize: "50px"
-  commerce-hero-max:
-    fontSize: "56px"
-  shared-section:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
-    fontSize: "clamp(2.5rem, 2.5vw, 3.2rem)"
     fontWeight: 600
-    lineHeight: 1.4
-  discovery-card-title:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
-    fontSize: "1.8rem"
-    fontWeight: 600
-    lineHeight: 1.5
-  discovery-card-title-mobile:
-    fontSize: "1.5rem"
-  discovery-price:
-    fontSize: "2rem"
-    fontWeight: 600
-    lineHeight: 1.5
-  discovery-price-mobile:
-    fontSize: "1.8rem"
+    lineHeight: 1.35
   shared-control:
     fontSize: "1.5rem"
   shared-meta:
     fontSize: "1.3rem"
+  shared-section:
+    fontSize: "clamp(2.5rem, 2.5vw, 3.2rem)"
   shell-input:
     fontSize: "16px"
-  display:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
-    fontSize: "clamp(3.4rem, 4.75vw, 5.4rem)"
-    fontWeight: 600
-    lineHeight: 1.32
-    letterSpacing: "0"
-  display-mobile:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
-    fontSize: "2.6rem"
-    fontWeight: 600
-    lineHeight: 1.35
-    letterSpacing: "0"
-  headline-discovery:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
-    fontSize: "clamp(2.4rem, 3.7vw, 3.2rem)"
-    fontWeight: 500
-    lineHeight: 1.3
-    letterSpacing: "-0.01em"
-  title-work:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
-    fontSize: "1.65rem"
-    fontWeight: 500
-    lineHeight: 1.45
-    letterSpacing: "-0.01em"
-  title-project-mobile:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
-    fontSize: "1.9rem"
-    fontWeight: 600
-    lineHeight: 1.3
-    letterSpacing: "0"
-  project-yarn-title:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
-    fontSize: "2.1rem"
-    fontWeight: 600
-    lineHeight: 1.35
-  project-yarn-title-mobile:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
-    fontSize: "1.75rem"
-    fontWeight: 600
-    lineHeight: 1.35
-  project-supporting-heading:
-    fontSize: "1.7rem"
-  project-supporting-item-title:
-    fontSize: "1.55rem"
-  body-zh:
-    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif"
-    fontSize: "1.5rem"
-    fontWeight: 400
-    lineHeight: 1.8
-    letterSpacing: "0.01em"
-  body-hero-mobile:
-    fontSize: "1.4rem"
-    fontWeight: 400
-    lineHeight: 1.65
-    letterSpacing: "0"
-  label-flow:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
-    fontSize: "1.6rem"
-    fontWeight: 400
-    lineHeight: 1.45
-  label-control:
-    fontSize: "1.4rem"
 rounded:
-  control: "3px"
-  kit-label: "5px"
-  filter: "11px"
-  field: "12px"
-  shared-field: "24px"
-  work-media: "14px"
-  project-yarn-image: "10px"
-  project-supporting-image: "8px"
-  action-wide: "15px"
-  compact-paper: "16px"
-  flow-paper: "18px"
-  content-mobile: "20px"
-  atlas: "24px"
-  content: "28px"
+  card: "10px"
+  media: "14px"
+  panel: "16px"
+  field: "24px"
   circle: "50%"
   pill: "999px"
 spacing:
@@ -206,190 +96,150 @@ spacing:
   section: "32px"
   wide: "48px"
 components:
-  button-hero:
-    backgroundColor: "{colors.cta-bg}"
-    textColor: "{colors.text-on-cta}"
+  button-home-yarn:
+    backgroundColor: "{colors.home-action}"
+    textColor: "{colors.text-inverse}"
     rounded: "{rounded.pill}"
-    padding: "12px 28px"
-  button-hero-hover:
+  button-commerce:
+    backgroundColor: "{colors.accent}"
+    textColor: "{colors.text-on-action}"
+    rounded: "{rounded.pill}"
+  button-commerce-hover:
+    backgroundColor: "{colors.action-strong}"
+  button-generic-product:
+    backgroundColor: "{colors.cta-bg}"
+    textColor: "{colors.text-heading}"
+    rounded: "{rounded.pill}"
+  button-generic-product-hover:
     backgroundColor: "{colors.cta-hover}"
   nav-selected:
     backgroundColor: "{colors.action-subtle-bg}"
     textColor: "{colors.action}"
     rounded: "{rounded.pill}"
-    padding: "10px 11px"
   field-shell:
     backgroundColor: "{colors.bg-surface}"
     textColor: "{colors.text-primary}"
-    rounded: "{rounded.shared-field}"
+    rounded: "{rounded.field}"
     typography: "{typography.shell-input}"
     height: "56px"
-  footer-paper:
-    backgroundColor: "{colors.action-subtle-bg}"
-    textColor: "{colors.text-primary}"
-  button-primary:
-    backgroundColor: "{colors.cta-bg}"
-    textColor: "{colors.text-heading}"
-    rounded: "{rounded.pill}"
-    padding: "16px clamp(24px, 3.5vw, 52px)"
-  button-primary-hover:
-    backgroundColor: "{colors.cta-hover}"
-  button-commerce:
-    backgroundColor: "{colors.accent}"
-    textColor: "{colors.text-on-action}"
-    rounded: "{rounded.pill}"
-    padding: "12px 24px"
-  button-commerce-hover:
-    backgroundColor: "{colors.action-strong}"
-  button-secondary:
+  card-commerce:
     backgroundColor: "{colors.bg-surface}"
-    textColor: "{colors.text-heading}"
-    rounded: "{rounded.pill}"
+    rounded: "{rounded.card}"
     border: "1px solid {colors.border-card}"
-  field-search:
+  favorite:
     backgroundColor: "{colors.bg-surface}"
     textColor: "{colors.text-primary}"
     rounded: "{rounded.pill}"
-    padding: "16px 16px 16px 54px"
-    height: "56px"
-  button-favorite:
-    backgroundColor: "{colors.bg-surface}"
-    textColor: "{colors.text-primary}"
-    rounded: "{rounded.pill}"
-    padding: "12px"
     width: "44px"
     height: "44px"
-  button-favorite-selected:
-    backgroundColor: "{colors.action-subtle-bg}"
-    textColor: "{colors.action}"
-  field-filter:
-    backgroundColor: "{colors.bg-surface}"
-    textColor: "{colors.text-primary}"
-    rounded: "{rounded.filter}"
-    padding: "10px 13px"
-  field-filter-active:
-    backgroundColor: "{colors.tint-blush}"
-  kit-label:
-    backgroundColor: "{colors.tint-blush}"
-    textColor: "{colors.selected-text}"
-    rounded: "{rounded.kit-label}"
-    padding: "3px 6px"
-  card-work-media:
-    backgroundColor: "{colors.bg-page}"
-    rounded: "{rounded.work-media}"
-  card-help:
-    backgroundColor: "{colors.action-subtle-bg}"
-    rounded: "{rounded.compact-paper}"
-    padding: "24px 30px"
-  card-content:
-    backgroundColor: "{colors.bg-surface}"
-    rounded: "{rounded.content}"
-  card-content-mobile:
-    rounded: "{rounded.content-mobile}"
 ---
-# Design System: 毛线品牌
+# Design System: hitoami
 
-## 当前首页手机接入（#131，2026-10-15）
+本文记录当前实现中可复用的设计规则；颜色、字体与控件值以代码为准，页面构图以当前获批方向为准。2026-10-15 根据 `main@59cddac` 的首页、毛线目录、毛线详情和本季专题校准，替换旧方案 C / #126 中已失效的首页、字标与商品模型说明。此日期说明校准依据，不代表全站人工验收或生产发布。
 
-手机版首屏按用户同日最新要求保留线上手作小屋 Hero：整幅场景、文案叠图、透明页头、波浪底边与三张手动轮播；本 Issue 不显示首屏购买按钮。首屏以下采用 [手机构图](docs/design/approved/131-mobile.source.md)：圆形分类上方显示原小猫，正文段左右留白 24px。旧「手机不显示猫」不适用于此入口。共享颜色与字体继续消费既有 tokens。
+产品范围见 [PRODUCT.md](PRODUCT.md)，领域关系见 [CONTEXT.md](CONTEXT.md)。新页面先读 [首页系统接入](docs/design/home-system.md) 与对应页面 brief；设计流程遵循 [视觉复核规则](docs/agents/visual-review.md)。验收状态和未决问题放 GitHub Issue，本文不维护进度清单。
 
-`yarn-home-mobile.css` 将这组构图限制在启用 `catalog_layout` 的首页手机端；卡片取 Shopify Product。商品数据未接入时显示整理提示，不能把空态验收当作目录已经迁移。小猫在减少动态效果下保持静止。按用户随后标注的桌面差距，分类采用五个圆图并移除多余装饰线；商品区对齐 1200px 内容轴，新手指引三列卡片，FAQ 双列。品牌图和本季封面接入后仍须完成商品资料，整页人工验收尚未通过。
+## Creative North Star
 
-## 这份文档是什么
+暖纸底色、真实织物照片、轻柔手写标题、细线控件构成 hitoami 的手作气质。首页手作小屋承接品牌氛围，圆形实物分类帮助选线，小猫只作陪伴。商品与购买信息保持清楚、克制，层次主要来自留白、浅色面和细边线。
 
-这里只记录**当前生效的设计规范**和**我们怎么做设计**。逐个 Issue 的实现过程、评审截图和当轮边界声明不再写进本文——需要考古时查 git 历史;界面以线上实现为准。颜色的唯一来源是 `design/tokens/colors.json`：`npm run tokens` 生成 `yarn-design-tokens.css` 颜色段、Shopify 配色方案和本文前言的 `colors`，请勿手改这三处。其余前言 token 仍在本文维护，代码通过 `yarn-design-tokens.css` 消费。
-
-**边界(一次性声明,适用于全文)**:本店仍是受密码保护的内部原型。本文描述的是已实现并复核过的界面事实,不认证生产发布、真实供货、支付配置或素材公开授权;demo 素材(含来源站水印的参考图片)仅限内部预览,发布前必须替换或取得授权。
-
-## 我们怎么做设计
-
-页面设计流程（手机稿 → 手机实现 → 用户确认 → 桌面稿 → 桌面实现）见 `docs/agents/visual-review.md`；本文只记录确认并实现后的规范。
-
-## Creative North Star:编织图解图谱
-
-暖白纸面承接真实织物照片,柔色面区分内容角色,炭黑文字给出阅读重心;手作插画、细线图标与线团花枝保留温度,文字与操作保持克制。深度靠浅面差和细线,不靠重阴影。
+当前字标使用 Shopify 上传 Logo；未上传时由 `snippets/yarn-wordmark.liquid` 显示现有 hitoami 字标。保留原比例与品牌色，不重绘，不用旧 MewoolMew 猫字标替代。氛围插画不能充当真实商品或人物证据。
 
 ## Colors
 
-三层结构，颜色值只在 `design/tokens/colors.json` 出现（Issue #65）：
+唯一色源为 `design/tokens/colors.json`。`npm run tokens` 生成 `assets/yarn-design-tokens.css` 的颜色段、Shopify 配色方案及本文前言 `colors`；不要手改生成段或从截图另采一套颜色。页面只消费 `--yarn-*` 语义角色，基础 `palette` 不直接暴露给组件。
 
-1. **基础色板 `palette`**：按色系 + 明度编号（`cream-*`、`sand-*`、`charcoal-*`、`clay-*`、`butter-*` 等），只被本文件的角色引用，不输出为 CSS 变量。
-2. **语义角色 `roles`**：输出为 `--yarn-<角色>`，页面与组件只能引用这一层。
-3. **使用方**：`yarn-*.css` 与 Liquid 样式块、Shopify 配色方案（`schemes` 生成 `settings_data.json`）、本文 components。
+| 角色 | 当前用途 |
+| --- | --- |
+| `bg-page` / `bg-surface` | 暖纸页面 / 卡片、导航与输入面 |
+| `bg-band` / `bg-sunken` / `bg-warm` | 浅米 FAQ 与估算面板 / 暖砂次级面 / 可选暖米配色方案 |
+| `text-primary` / `text-heading` / `text-warm` | 正文与毛线详情标题 / 商品卡和目录标题 / Hero 等暖色文字 |
+| `text-secondary` / `text-muted` / `text-disabled` | 次级正文 / 规格与说明 / 不可用文字 |
+| `home-action` | 首页桌面联系按钮；毛线详情价格、购买按钮和选中环 |
+| `action` / `accent` / `action-strong` | 链接、导航当前项 / 商品卡价格和部分交易动作 / 深色交互态 |
+| `cta-bg` / `cta-hover` / `cta-border` | 目录筛选选中、通用商品加购等奶油变体；当前首页 Hero 不显示购买按钮 |
+| `action-subtle-bg` / `action-subtle-hover` | 导航选中、帮助、页脚等浅色操作面 |
+| `border-subtle` / `border-card` / `border-control` / `border-disabled` | 分隔 / 卡片边 / 输入和数量控件边 / 禁用边 |
+| `tint-blush` / `tint-butter` / `tint-sage` | 分类与信息面；颜色不证明库存、齐套、难度或优惠 |
+| `focus` | 键盘焦点，2px 轮廓与 4px 偏移，与 hover 分开 |
+| `decor-*` / `home-thread` / `home-rope` | 特定插画与保留旧组件的装饰，不能用于正文或恢复旧首页绳索 |
+| `overlay` / `shadow-*` / `scrollbar-*` | 遮罩、限定浮层阴影、配色方案与滚动条 |
 
-| 分组 | 角色 | 用途 |
-|---|---|---|
-| 背景 | `bg-page` / `bg-surface` / `bg-sunken` / `bg-inverse` / `bg-band` | 页面底 / 卡片与导航面 / 暖砂次级区块与页脚 / 深色反白区块 / 毛线详情估算面板 |
-| 文字 | `text-primary` / `text-secondary` / `text-muted` / `text-disabled` | 正文与通用标题 / 次级正文 / 辅助说明 / 不可用 |
-| 文字（特定底） | `text-inverse` / `text-on-action` / `text-on-cta` | 深色区块 / 陶土实心按钮 / 奶油主按钮 |
-| 操作 | `action` / `accent` / `action-strong` / `action-subtle-bg` / `action-subtle-hover` | 链接与文字按钮 / 价格与实心按钮 / 按下与深色强调 / 导航选中、帮助浅面 / 其悬停 |
-| 主按钮 | `cta-bg` / `cta-hover` / `cta-border` | 奶油主按钮（加购、Hero、选中筛选） |
-| 边线 | `border-subtle` / `border-card` / `border-control` / `border-disabled` | 分组细线 / 卡片边 / 输入与筛选控件边（≥3:1）/ 不可用 |
-| 柔色面 | `tint-blush` / `tint-butter` / `tint-sage` | 品类角标毛线 / 编织包 / 成品，及信息卡；只表达分类 |
-| 状态 | `selected-text` / `focus` | 作品筛选选中态 / 键盘焦点与输入光标（全站唯一冷色，2px 轮廓 + 4px 偏移） |
-| 装饰 | `decor-thread` / `decor-art-line` / `decor-halo` | 插画连线、节点描边与光晕；**不得用于文字** |
-| 其他 | `overlay` / `shadow-soft` / `scrollbar-*` / `shadow-*` | 遮罩、柔和阴影、滚动条、配色方案阴影 |
+灰棕、陶土和奶油是现有的不同使用范围，不得把其中一种直接扩成所有页面的主按钮。毛线详情的灰棕价格也不覆盖目录卡的陶土价格。`selected-text` 等保留角色只随已有使用方维护，新页面不为凑齐色板而使用。
 
-**规则**:
-
-- 新页面只引用上表角色；需要新用途先在 `colors.json` 增加角色并运行 `npm run tokens`，不在页面写色值，也不直接引用基础色板。
-- `npm run verify` 检查：生成物与源一致、token 文件外无颜色字面量、`--yarn-*` 引用均有定义、`contrast.pairs` 声明的文字/背景搭配达标（正文 4.5、大字与控件 3）、无未使用角色、基础色板无未登记近似色（ΔE < 5）、本文 components 只引用角色。
-- 颜色只表达分类、选中和动作层级，不构成价格、热度、难度或库存的事实证明。禁止把参照站（Woobles 青绿等）的品牌色带进来。
-
-**待选色（P3，需用户决定）**：`text-heading`（藏青黑，商品家族标题）与 `text-primary` 二选一；`accent` 与 `action` 合并或拉开层级；`border-card` 并入 `border-subtle`；`text-on-cta` / `text-warm` 并入 `text-primary`；`bg-warm` 与配色方案 5 的去留；`selected-text` 是否并入 `action`；`colors.json` 的 `nearDuplicates.allow` 列出其余 23 对近似色。选色只改基础色板与角色映射，页面无需改动。
-
-**Shopify 配色方案**（Rise 原生组件与可选配色的 section 使用）：scheme-1 默认页面 / scheme-2 暖砂次级 / scheme-3 深色反白 / scheme-4 柔和奶油 / scheme-5 暖米，均由角色生成；主题编辑器中改色值会在下次 `npm run tokens` 被覆盖，发布前应拉取线上主题比对。
+Shopify scheme-1 至 scheme-5 分别用于默认、暖砂、深色反白、柔和奶油、暖米。颜色调整先改源，再检查生成物和真实页面；不能在 Theme 编辑器改完后忘记同步源文件。自动检查覆盖角色引用、生成同步与已声明的对比度搭配，不能替代视觉检查。
 
 ## Typography
 
-- **字体（方案 G，2026-09-23 用户选定并发布）**：日文与英文标题、导航、按钮用 Klee One；正文日文 Noto Sans JP、英文 Figtree（日文回退 Noto Sans JP）。中文页标题用霞鹜文楷、正文用霞鹜文楷屏幕版。`--yarn-display` / `--yarn-body` 按 `:lang()` 切换，并覆盖 Rise 的 `--font-heading-family` / `--font-body-family`。字体暂由 Google Fonts 与 jsDelivr 按语言加载，正式托管方式待定；手机日文 Hero 断行待调整。
-- 商品家族采用显式 px 尺寸，避免旧根字号放大构图：卡片标题 16px、规格 14px、价格 21px、角标 12px；目录标题桌面 40px / 手机 28px，商品标题 36px / 26px，阅读正文 16px。Hero 按容器流式，日英手机扩展画布保留按钮净空。前言 `commerce-*` 为该家族已实现的局部字号，不用于覆盖其他页面。
-- 说明页（#86）的阅读标题桌面 36px、手机 28–36px；字段和值桌面 16px、手机 15px。它们是该页面已实现的局部字号，不扩成全站令牌；构图与内容来源见 [说明页 brief](docs/design/approved/86-policy-support.md)。
-- 新增文案必须检查三语断行与字体回退;菜单、集合描述等运营文案的原文与译文只维护在 Shopify(Navigation / Translate & Adapt),不在 Liquid 写死。
-- 三语文案只有两条路:section / block 里的运营文案用 `key`(日文)/ `key_zh` / `key_en` 三个设置,统一经 `snippets/yarn-setting-text.liquid` 取当前语言(译文为空时回退日文,`npm run proof` 会报缺译);通用控件文案进 Theme locales,用 `| t`。不在 Liquid 里按语言写死文案,`tests/yarn-locale-copy.test.cjs` 检查。
+| 页面语言 | 标题 / 导航 / 展示文字 | 正文 |
+| --- | --- | --- |
+| 日文 | Klee One，Noto Sans JP 回退 | Noto Sans JP |
+| 英文 | Klee One，Noto Sans JP 回退 | Figtree，Noto Sans JP 回退 |
+| 中文 | LXGW WenKai（霞鹜文楷），Noto Sans SC 回退 | LXGW WenKai Screen（文楷屏幕版），Noto Sans SC 回退 |
+
+通过 `--yarn-display` / `--yarn-body` 随 `:lang()` 切换，同时接入 Rise 字体变量。具体按钮沿用所属组件的字体声明，不能用全局选择器强制改写。字体当前在线加载；未打包本地字体不能宣称离线可用。
+
+| 实际使用位置 | 手机 / 桌面 CSS 字号 | 字重与说明 |
+| --- | --- | --- |
+| 商品卡标题 / 规格 / 价格 | 16 / 14 / 21px，两端相同 | 标题与价格 600 |
+| 毛线目录标题 | 28 / 40px | 600 |
+| 毛线详情标题 / 价格 / 说明 | 24 / 21 / 14px，两端相同 | 标题与价格 600；说明行高 1.75 |
+| 首页圆形分类标题 | 21 / 26px | 400 |
+| 首页商品区、新手指引、FAQ 标题 | 24 / 28px | 400，行高 1.45 |
+| 首页本季入口标题 | 27px / `clamp(4rem, 4vw, 5.6rem)` | 手机 400；桌面沿用专题自身层级 |
+| 首页 Hero 标题 | `clamp(2.8rem, 7.8vw, 3.4rem)` / `clamp(3.6rem, 3.6vw, 5.2rem)` | 600；行高 1.35 / 1.3 |
+| 品牌介绍正文 | 12px / 1.6rem | 手机紧凑文案属于首页局部规则 |
+| 共享控件 / 元信息 | 1.5rem / 1.3rem | 不是固定 px |
+
+这些局部字号不能升级成全站标题等级。通用商品详情另有 36 / 26px 标题，毛线详情由 `yarn-pdp.css` 覆盖为 24px；不要把通用值写成毛线页标准。
+
+`layout/theme.liquid` 的根字号是 `body_scale × 62.5%`，当前配置 `body_scale: 100`。浏览器默认字体为 16px 时 1rem = 10px；本次用户 Chrome 实测根字号为 12.5px。保留 rem / vw 原单位，不能将一次截图的像素值当成全站常量，也不能为了对齐截图修改用户字体设置。
 
 ## Layout
 
-- **商品家族容器** 1200px 内容轴，手机 16px gutter；商品首屏桌面为最大 1104px 的两栏、48px 列距，图库为完整主图加缩略图，受视口约束的主图最高 520px。编织包详情在图库下方沿 1200px 轴展开，关于正文配右侧小图，内容物为左图右侧双栏明细，三步横排、规格双卡与单列折叠问答；毛线/成品描述维持独立 960px 阅读轴。作品内容页为 800px 单列，封面 → 标题/摘要 → 已有正文或关联商品的介绍与步骤 → 来源 → 真实商品出口。共享导航与页脚仍用原 1320px 容器。
-- **间距角色** 4/8/12/16/24/32/48px;桌面主要分区间 64px。
-- 手机端优先保住:标题、主图、卖点、购买入口的首屏可达,以及正文与操作净空。
+共享容器 `--yarn-content-max: 1320px`，商品内容轴 `--yarn-commerce-max: 1200px`；共享 gutter 为桌面 48px、≤989px 时 24px、≤749px 时 16px。页面可以在自己的作用域收窄阅读宽度，不能覆盖全局 `.page-width`。
+
+间距角色为 4 / 8 / 12 / 16 / 24 / 32 / 48px。首页当前构图另有局部间距：手机品牌、分类、新手和 FAQ 等正文左右 24px；`yarn-home-catalog` 也为 24px。普通目录手机边距 16px。首页商品区与新手/FAQ 上下 36px，桌面 56px，不应套用旧文档的全站 40 / 72px。
+
+商品网格手机两列、列距 12px；桌面四列、间距 24px。首页分类在手机以 85px 圆图横向浏览、间距 16px，桌面显示五列。桌面新手指引三列，FAQ 标题与问题分两列。Hero 保持独立全幅场景画布，不受商品网格裁切规则约束。
 
 ## Depth & Shapes
 
-- 无重阴影:平铺内容零阴影,覆盖面板才允许轻扩散阴影。
-- 商品家族卡片与内容卡为 `--yarn-card-radius: 10px`、1px 暖灰边线；出口卡陶土细边。**所有实心与描边操作按钮统一胶囊 `--yarn-radius-pill`**(含加购、立即购买、结账、继续购物、集合筛选与排序控件)；输入框、语言选择器与下拉面板用 `--yarn-radius-field: 24px` / `--yarn-radius-panel: 16px`。媒体缩略图与数量步进器保留各自既有圆角。
-- 图标为细线 SVG;手作插画与商品照片是有来源的 raster,`contain` 保完整、不为填满容器裁掉主体。
+共享圆角为媒体 14px、卡片 10px、面板 16px、字段 24px、按钮胶囊 999px；圆形分类与色板保持圆形。媒体缩略图、估算面板等局部尺寸以对应组件为准，不为统一数字改动当前页面。
 
-## Components(现行规则)
+目录商品卡使用 1px 暖灰边框，首页商品卡为无外框的开放式图文。平铺内容不增加重阴影；抽屉与下拉等浮层按已有组件使用遮罩或轻阴影。商品图以完整展示主体为先，毛线详情主图为 1:1、`contain`；品牌氛围图和专题编辑图按各自构图裁切。
 
-- **导航**:暖白底细线,当前页浅奶油胶囊 + 陶土字;菜单项来自 Shopify Navigation,含集合入口(编织包/毛线/成品);44px 触控、24px 图标。
-- **首页**(Claude Design 1a,#126;信息架构沿用方案 C #93):首屏手作小屋整幅轮播(页头透明叠图、底边波浪)→ 导览条(晾衣绳式挂线两端钉在首屏底边、以页面中线对称,四个品类挂饰;小猫沿绳走到悬停的入口,保持不变)→ 品牌介绍 → 挑毛线 → 按作品图选 → 新手友好编织包 → 店铺精选成品 → 帮助条。优惠区块停用(1a 不含)。每块是独立 section,没有真实数据的模块整块不渲染。区块节奏(#131 统一):页面底为暖纸色 `bg-page`,商品 / 材料包 / 成品区不另铺底色,只有「挑毛线」`bg-band` 色带与本季主推奶油卡作分区;区块上下间距桌面 72px、手机 40px;区块标题 Klee One / 霞鹜文楷 600,桌面 32px、手机 24px,「查看全部 →」为 `action` 色 15px 粗体文字链(悬停下划线)。内容轴 1200px。
-  - **挑毛线**:`bg-band` 色带;居中小标题(12px、宽字距)+ 标题(手机 24 / 桌面 30px)+ 花饰图;按商品字段分段的胶囊切换(白底,选中 `home-action`);方卡 1:1、10px 圆角,名称 16 / 18px 中粗、说明 12 / 14px(未填说明时显示款数);一段超过 4 个(手机)/ 6 个(桌面)排两行,横向滑动,手机露出下一列并在下方写「共 N 类 · 左右滑动查看更多」,桌面左侧「共 N 类」、右侧圆形翻页箭头;底部 `bg-sunken` 次级按钮「查看全部毛线」。
-  - **商品与作品卡**:标题左上、说明紧贴标题下方、「查看全部」在右侧;手机 2 列 12px 间距,桌面 4 列 24px 间距;成品手机只显示前 2 件。首页商品卡无边框、方形照片即卡片;折扣角标为图片左上 `tint-blush` 胶囊,只在有划线价时出现;「新手友好」为 `tint-sage` 小标签,必须带商品字段里的理由;作品卡标签只写有成品 / 有编织包 / 可买材料。
-  - **帮助条**:`action-subtle-bg` 浅黄面、`cta-border` 细线、16px 圆角,不放图标;手机为标题 + 文字链接,桌面为标题 + 说明 + `home-action` 实心按钮。
-- **商品详情**:Shopify 图库、Variant、数量、加购与动态购买保留原生行为；奶油黄加购为主，动态购买描边为次。购买下方显示真实互链出口。Kit 六段描述在商品双栏下方顺读；手机内容物完整明细在内容物图前，关于与规格以正文阅读为主，保留全部 FAQ。成品描述在「尺寸与材质」独立区域渲染，不补造未录入的规格。当前边界见[商品详情 surface brief](docs/design/product-detail-surface.md)。
-- **毛线详情**(#120，手机已实现，桌面待稿):主图 1:1 完整显示、一行 4 张缩略图（无放大镜与箭头）、右上收藏；毛线角标 → 24px 中粗炭黑标题 → `home-action` 21px 价格（不带货币代码）与「/ 团」→ 说明 → 「颜色：奶油白」图例（标签为 muted）与 44px 圆形色块（有原生色板时）或编号圆钮（选中均为 2px `home-action` 环）。加入按钮、估算选中项与价格用 `home-action` 灰棕，不用奶油黄。下方依次为两列规格细线表（成分、重量 / 长度、粗细、密度、推荐棒针、推荐钩针）、`bg-band` 圆角「要买几团？」面板、作品卡、编织包卡（价格为 `home-action`）、洗涤行（按内容配洗涤 / 禁止 / 勾 / 熨斗图标），没有数据的块不渲染（无编织包配对时不显示入口）。手机不显示页内数量 / 加购 / 立即购买，底部常驻购买栏（色号、数量、加入 · 合计）始终显示，只驱动原生表单（#122）。
-- **作品内容页**:保留 Metaobject 标题、摘要、封面、准备与教程；缺少站内教程正文时，可呈现已关联 Kit 的既有介绍和开始步骤，再提供来源入口。商品关系只来自已存关系；不复制购买表单，不把外部商品页标为直接教程。
-- **双模式入口**:成品/材料两种能力并存才显示意图卡,单能力直接展示,无购买能力归灵感;能力标签不表示库存或齐套。
-- **集合页**:全目录使用三语浏览标题，具名集合保留 Shopify 标题/描述；搜索、品类、价格带、真实供货筛选与排序在商品网格上方。默认 JPY 价格带为 <500 / 500–1499 / ≥1500。卡片桌面四列、手机两列，暖白细线、两行标题、陶土价格、无分隔线文字动作。规格优先读 `yarn.spec_line`，缺少时提示查看详情。
-- **购物车**:条目两列三行,数量步进器、删除与行总价必须完整可见可达;保障条三项(配送/选线支持/放心购物)三语内置,三张卡依次为奶油 / `tint-blush` / `tint-sage`;结账与继续购物为陶土胶囊。
-- **收藏**:图上暖白圆形爱心,表达收藏,不显示人数或评分。
-- **表单与字段**:暖白底、24px 圆角、56px 输入高度、16px 输入字号;成功/错误保留 Shopify 语义。
-- **公告条**:奶油底,文案与三语译文都存在 `announcement` block 的 `text` / `text_zh` / `text_en`,不在 Liquid 写死;首页有 Hero 时隐藏。
-- **语言一致性**:页面上的品类、用途一类标签一律走 Theme locale,不渲染 Shopify 的 `product.type`(该字段不可翻译,原值混着日文与中文)。404 标题用 `templates.404.title`,不用 Shopify 返回的英文 `page_title`。商品标题、描述、选项名与 Metaobject 正文属于 Shopify 内容层,由 Translate & Adapt 维护。
+共享图标目标尺寸 24px、触控区域至少 44px；复用仓库已有 SVG 和 `currentColor`。Claude Design 中的 Lucide 选择属于设计工具层，尚不能据此声称 Theme 已整体替换。品牌图形、小猫 sprite 和洗涤含义不能用任意近似图标替代。
+
+## Components
+
+| 组件 | 使用与状态规则 | 主要实现 |
+| --- | --- | --- |
+| 导航 / 手机菜单 | hitoami 字标；当前项浅奶油面与陶土字；普通页暖白底。首页 Hero 透明叠图，滚动吸顶后恢复底色；首页隐藏公告和收藏入口 | `yarn-header.css`、`header.liquid` |
+| Hero / 圆点 | 手作小屋三张手动轮播、文案叠图、白胶囊圆点和波浪底边；无自动播放、无购买 CTA；支持滑动与方向键 | `hitoami-hero.liquid`、`.css`、`.js` |
+| 圆形分类 / 小猫 | 分类读真实商品字段与 `yarn_entry`；原小猫独立位于分类上方，手机与桌面均显示，不依附绳索；减少动态效果时静止 | `yarn-entry-circles.liquid`、`yarn-companion`、`yarn-home-mobile.css` |
+| 商品卡 | 首页开放式，目录带边框；真实标题、规格、价格和状态。价格未确认或为零显示「暂未开售」；按钮可用性由实际商品状态决定 | `yarn-cards.css`、`yarn-product-card.liquid` |
+| 毛线购买区 | 24px 标题、灰棕价格及购买动作；色号/数量由原生表单管理；手机固定底栏，禁用状态使用灰色。没有数据的规格、估算和关联内容不渲染 | `yarn-pdp.css`、`.js` |
+| 按钮 / 筛选 | 灰棕：首页联系与毛线购买；陶土：商品文字动作与购物车交易动作；奶油：目录选中筛选与通用商品加购；保留各自 hover、focus、disabled | 对应页面样式，颜色取共享角色 |
+| 字段 / 数量 | 共享输入 56px 高、16px 字号、24px 圆角；目录搜索等已有紧凑变体保留实际高度。标签、验证与成功状态沿用 Shopify 原生语义 | `yarn-foundation.css`、`yarn-collection.css` |
+| 本季专题 | 真实商品图片、编辑标题、目录锚点与商品出口；价格和可售性仍读 Shopify | `yarn-season-feature.css`、`yarn-season-page.css` |
+| 新手指引 / FAQ | 三语 block；桌面三列步骤与两列 FAQ，手机顺读；折叠按钮保留键盘操作与明显焦点 | `yarn-home-guide.liquid`、`yarn-home-mobile.css` |
+| 页脚 | 运营 block、语言、政策、付款标识由设置与 Shopify 数据决定；订阅保留原 `customer` 表单，隐藏时不渲染输入 | `yarn-footer.css`、`footer.liquid` |
+
+首页完整顺序、文件职责及隐藏条件见 [首页系统接入](docs/design/home-system.md)。毛线/成品详情的局部构图继续参考 [商品详情 brief](docs/design/product-detail-surface.md)，产品范围冲突时以 PRODUCT / CONTEXT 的当前定义为准，不能恢复旧 Kit 独立商品或双模式购买设计。
+
+## Content
+
+运营内容映射到 Section setting、Block、Metaobject、Metafield 或 Shopify Product。通用控件用 Theme locales；section / block 的 `key`、`key_zh`、`key_en` 经 `yarn-setting-text` 读取；导航菜单与商品正文使用 Shopify 对应资源译文。页面、菜单、页脚必须跟随同一整页语言，日文回退不算翻译验收通过。
+
+只售毛线与手作成品；材料包是作品内容及真实毛线 Variant × 团数的组合，不拥有另一份库存或价格。教程经 LINE 人工核对领取。材料包公开门槛包括公开状态、封面、毛线与团数、教程领取链接；完整购买能力另外检查每条材料的价格与可售性。作品公开不等于材料齐套可买。
+
+不虚构评价、销量、折扣、规格、库存或新手难度；缺数据时使用空态、明确缺项或隐藏模块。AI 品牌氛围图必须保留来源/提示词，不能替换商品实物证据。设计工具中的示例必须标为示例，不把概念稿截图写成真实经营信息。
 
 ## Do / Don't
 
-**Do**:延续暖纸+细线+炭黑的世界;新增文案查三语断行与手机可读;运营内容一律映射到 Shopify 可编辑层;每轮实现后把规范变化蒸馏回本文。
-
-**Don't**:不虚构评价、销量、折扣或品牌证明;不把参照站配色、构图稿小字或生成素材当真值;不以参照站样式替换当前批准的三节点首页与商品卡片家族;不把局部字号、比例升级成全站令牌;不把本文当作发布、授权或验收凭据。
-
-## hitoami 首屏（#110，#93 起与导览条拆开）
-
-已实现构图依据 [手机稿](docs/design/approved/110-home-mobile.md)，控件与桌面按 [Claude Design 1a](docs/design/approved/126-home-1a.source.md)。默认三张按毛线、编织材料包、成品排序；全幅小屋照片由 HTML 文案覆盖；手机 Hero 高度 `clamp(560px, 76svh, 710px)`。不放左右箭头与页码：圆点居中在底部 90% 白的胶囊里（手机距底 30px、桌面 44px），圆点为 `home-action`，未选中 35% 透明、选中拉长为 18px；支持滑动与方向键。标题 28–34px / 1.35，副文案 15px / 1.65，CTA 16px、至少 46px 高，使用 `home-action` 灰棕底和反白字。没有自动轮播。
-
-首屏底边为奶油波浪（手机 30px、桌面 44px），衔接下方导览条（`scrollbar-track` 底）。导览条挂线线芯 `home-rope`、线纹 `home-thread`；九帧猫重新切帧后脚底对齐，桌面约 100px 宽，沿挂线走到悬停入口旁，毛球滚在前方；手机不显示猫。轮播与导览条互不联动。品牌介绍为独立 section，标题 25px / 1.6、正文 15px / 1.9；桌面在标题上方加 12px 宽字距小标题「关于品牌」，标题 34px、正文 16px / 2、阅读宽 800px、上下 88px。
-
-共享默认 Logo 改用用户提供的 hitoami 平面字标，原图比例 640:246，首页手机宽 130px。Logo 保留原品牌色；不将低饱和首页按钮配色扩散到商品价格与购买按钮。首页桌面目前为响应式延展，仍待用户手机验收后的桌面定稿。
-
-桌面 Hero 使用独立横图，高度 `clamp(620px, 71svh, 880px)`（1440×900 时约 640px）。内置产品场景以最大 1440px 居中，不超过原生素材尺寸；共用的窗帘、日光与墙面光影底图最大 1672px，两侧融入纸色。装饰可延伸至内容区外。文案左对齐在 `--yarn-commerce-max: 1200px` 内容轴上、垂直居中，宽度至多 640px；标题约 52px / 1.3，副文案 18px / 1.7，CTA 17px、52px 高。保护渐变从屏幕左缘横向铺开（88% → 34% 处 50% → 56% 处透明），浅色文字使用深色渐变。1340px 以上页眉按 1320px 容器（左右各留 24px）排布，字标 150px。手机保持各自竖图。
+- 沿用当前暖纸底、真实织物、手写字体、hitoami 字标和独立小猫；修改共享规则时同步真实实现与本文。
+- 新页面先复用现有语义角色和组件，只在同一交互意图确实重复时抽取共享规则。
+- 校准规范时保留已实现变体的范围；不要把旧方案 C 的第二色层、四个绳索挂饰、旧猫字标、站内教程或工具商城带回当前系统。
+- 新视觉方向先按手机稿 → 手机实现 → 用户确认 → 桌面稿 → 桌面实现推进；本文不能把未经确认的新方向提前写成成品规范。
+- 代码检查、语言/溢出/图片检查和截图复核分别提供证据；不能把自动检查通过写成运营数据齐备或整页人工验收通过。
