@@ -6,7 +6,7 @@
         "slide-yarn": {
           "type": "slide",
           "settings": {
-            "scene": "cloud",
+            "scene": "yarn",
             "focus": 50,
             "tone": "dark",
             "heading": "ここで、\n毎日を少しゆっくりと。",
@@ -19,10 +19,46 @@
             "cta_zh": "",
             "cta_en": ""
           }
+        },
+        "slide-kit": {
+          "type": "slide",
+          "settings": {
+            "scene": "kit",
+            "focus": 50,
+            "tone": "dark",
+            "heading": "キットを開いて、\n最初のひと目から。",
+            "heading_zh": "打开编织包，\n从第一针慢慢开始。",
+            "heading_en": "Open a kit.\nBegin with one stitch.",
+            "text": "材料と編み図を、ゆっくり選ぼう。",
+            "text_zh": "材料与图解，一起慢慢挑。",
+            "text_en": "Find your yarn, your pattern, your pace.",
+            "cta": "",
+            "cta_zh": "",
+            "cta_en": ""
+          }
+        },
+        "slide-finished": {
+          "type": "slide",
+          "settings": {
+            "scene": "finished",
+            "focus": 50,
+            "tone": "dark",
+            "heading": "手づくりのぬくもりを、\n毎日の暮らしへ。",
+            "heading_zh": "把手作的温柔，\n带进日常。",
+            "heading_en": "Handmade warmth.\nA place in your everyday.",
+            "text": "お気に入りのひと品を、あなたのもとへ。",
+            "text_zh": "挑一件喜欢的手作，陪伴每一天。",
+            "text_en": "Find a handmade piece to make your days a little warmer.",
+            "cta": "",
+            "cta_zh": "",
+            "cta_en": ""
+          }
         }
       },
       "block_order": [
-        "slide-yarn"
+        "slide-yarn",
+        "slide-kit",
+        "slide-finished"
       ],
       "settings": {
         "catalog_layout": true

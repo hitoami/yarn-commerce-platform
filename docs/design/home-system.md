@@ -72,7 +72,7 @@ Issue #65 删除了无模板使用的 `yarn-purpose-grid` / `yarn-seasonal-featu
 
 ## #131 当前手机接入（2026-10-15）
 
-当前手机构图以 [获批手机稿及来源](approved/131-mobile.source.md) 为准，替换上文 #126 的首页顺序与「手机无小猫」规则。`hitoami-hero` 的 `catalog_layout` 开关加载 `yarn-home-mobile.css`，手机采用文案在上、实物图在下；桌面新构图尚待单独确认。
+当前手机构图以 [获批手机稿及来源](approved/131-mobile.source.md) 为准，替换上文 #126 的首页顺序与「手机无小猫」规则。用户同日明确要求保留线上 Hero：手机和桌面均继续使用手作小屋整幅场景、文案叠图、透明页头与波浪底边，沿用三张场景手动切换；本 Issue 不显示首屏购买按钮。`catalog_layout` 仅加载首屏以下的手机布局，不得覆盖 Hero。桌面其余区块的新构图尚待单独确认。
 
 小猫由 `yarn-companion` snippet、CSS 与 custom element 接入 `yarn-entry-circles`，复用原 sprite，支持点击醒来/走动和减少动态效果。分类仍引用 `yarn_entry` 与 Shopify 商品字段，参考图可在 block 选择本轮原表实物图。毛线资料区 `yarn-catalog` 只渲染运营明确选择的已核实 Product，没有配置时给出整理提示。`yarn-home-guide` 以三语 block 承载新手指引和 FAQ。
 

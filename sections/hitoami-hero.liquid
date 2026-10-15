@@ -21,10 +21,7 @@
             assign desktop_image = desktop_image | default: mobile_image
             assign desktop_asset = 'hitoami-kit-wide.webp'
             assign mobile_asset = 'hitoami-room-mobile.webp'
-            if block.settings.scene == 'cloud'
-              assign desktop_asset = 'hitoami-source-cloud.jpeg'
-              assign mobile_asset = desktop_asset
-            elsif block.settings.scene == 'yarn'
+            if block.settings.scene == 'yarn'
               assign desktop_asset = 'hitoami-yarn-wide.webp'
               assign mobile_asset = 'hitoami-yarn-mobile.webp'
             elsif block.settings.scene == 'finished'
@@ -108,7 +105,7 @@
   "tag": "section",
   "class": "section hitoami-hero-section",
   "max_blocks": 8,
-  "settings": [{"type":"checkbox","id":"catalog_layout","label":"已确认的手机实物图布局","default":false}],
+  "settings": [{"type":"checkbox","id":"catalog_layout","label":"首屏下方的手机目录布局","default":false}],
   "blocks": [
     {
       "type": "slide",
@@ -120,7 +117,7 @@
           "label": "默认氛围图",
           "info": "未上传图片时使用对应的内置场景；按钮链接留空时进入对应集合。活动图选「浅色占位」，上传图片前显示浅色块。",
           "default": "kit",
-          "options": [{"value":"cloud","label":"云团实物图（用户提供原图）"},
+          "options": [
             {
               "value": "placeholder",
               "label": "浅色占位(活动图)"
