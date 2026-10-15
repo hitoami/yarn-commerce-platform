@@ -52,3 +52,12 @@ collection-component .facets-vertical { display: block; }
 }
 .collection-hero__title { margin: 0; }
 collection-component #product-grid { margin-top: 0; }
+/* Issue 117: yarn type chips stay visible as one row; phones scroll sideways instead of wrapping. */
+.yx-toolbar__cats { display: flex; flex-wrap: wrap; gap: 10px; }
+.yx-cat { gap: 6px; }
+.yx-cat__count { color: var(--yarn-text-muted); font-size: 13px; font-weight: 400; }
+@media (max-width: 749px) {
+  .yx-toolbar__cats { flex-wrap: nowrap; overflow-x: auto; margin-inline: -16px; padding: 2px 16px 4px; scrollbar-width: none; }
+  .yx-toolbar__cats::-webkit-scrollbar { display: none; }
+  .yx-toolbar__cats .yx-chip { flex: none; padding: 9px 16px; font-size: 15px; }
+}

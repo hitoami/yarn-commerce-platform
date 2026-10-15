@@ -7,7 +7,43 @@
   filter.v.price 参数(已实测生效)。当前 tab 高亮按集合 handle;chip 高亮由
   yarn-browse-toolbar.js 按查询参数标记,并合并现有参数(无 JS 时链接直达)。
   标签按 yarn-hero 三联模式:纯键名为日文默认,_zh/_en 为中英覆盖;留空则用集合名。
+  分类标签(Issue #117):设置里列出的 Search & Discovery 筛选(默认 yarn.texture / yarn.use)
+  不进下拉,而是平铺成一排常驻标签,与首页圆图同名同链接;单选,「全部」清除这些筛选。
 {% endcomment %}
+{%- liquid
+  assign cat_params = section.settings.category_filters | remove: ' ' | split: ','
+  assign cat_order = section.settings.category_order | remove: ' ' | split: ','
+  assign cat_active = false
+  for filter in collection.filters
+    if cat_params contains filter.param_name
+      for value in filter.values
+        if value.active
+          assign cat_active = true
+        endif
+      endfor
+    endif
+  endfor
+-%}
+{%- capture cat_chips -%}
+  {%- for param in cat_params -%}
+    {%- for filter in collection.filters -%}
+      {%- if filter.param_name == param -%}
+        {%- comment -%} 标签按设置里的「毛线入口」handle 顺序排列,与首页圆图一致;Search & Discovery 的自动排序会因语言不同而变。{%- endcomment -%}
+        {%- for entry_handle in cat_order -%}
+          {%- assign entry = metaobjects.yarn_entry[entry_handle] -%}
+          {%- if entry == blank -%}{%- continue -%}{%- endif -%}
+          {%- assign entry_gid = 'gid://shopify/Metaobject/' | append: entry.system.id -%}
+          {%- for value in filter.values -%}
+            {%- comment -%} 选中某个分类后,其他分类的数量会按当前筛选重算,所以只在未选分类时显示款数,且标签一直保留。{%- endcomment -%}
+            {%- if value.value == entry_gid and value.count > 0 or value.value == entry_gid and cat_active -%}
+              <a class="yx-chip yx-cat{% if value.active %} yx-chip--active{% endif %}"{% if value.active %} aria-current="true"{% endif %} href="{{ collection.url }}?{{ value.param_name }}={{ value.value | url_encode }}">{{ value.label | escape }}{% unless cat_active %}<span class="yx-cat__count">{{ value.count }}</span>{% endunless %}</a>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endfor -%}
+{%- endcapture -%}
 <div class="yx-toolbar page-width" data-yx-toolbar>
   <form class="yx-toolbar__search" action="{{ routes.search_url }}" method="get" role="search">
     <label class="visually-hidden" for="BrowseSearch-{{ section.id }}">{{ 'yarn_project.browse_search' | t }}</label>
@@ -30,6 +66,12 @@
       {%- endif -%}
     {%- endfor -%}
   </nav>
+  {%- if cat_chips != blank -%}
+    <nav class="yx-toolbar__cats" aria-label="{{ 'yarn_project.browse_yarn_types' | t }}">
+      <a class="yx-chip yx-cat{% unless cat_active %} yx-chip--active{% endunless %}"{% unless cat_active %} aria-current="true"{% endunless %} href="{{ collection.url }}">{{ 'yarn_project.browse_category_all' | t }}</a>
+      {{ cat_chips }}
+    </nav>
+  {%- endif -%}
   <div class="yx-toolbar__chips">
     <a class="yx-chip" data-yx-chip data-yx-param="" href="{{ collection.url }}">{{ 'yarn_project.browse_price_any' | t }}</a>
     {%- for block in section.blocks -%}
@@ -45,7 +87,9 @@
   </div>
   <form class="yx-toolbar__filters" action="{{ collection.url }}" method="get" data-yx-filters>
     {% for filter in collection.filters %}
-      {% if filter.type == 'price_range' %}
+      {% if cat_params contains filter.param_name and cat_chips != blank %}
+        {% continue %}
+      {% elsif filter.type == 'price_range' %}
         {% if filter.min_value.value %}<input type="hidden" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value | divided_by: 100.0 }}">{% endif %}
         {% if filter.max_value.value %}<input type="hidden" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value | divided_by: 100.0 }}">{% endif %}
       {% else %}
@@ -76,7 +120,10 @@
 {% schema %}
 {
   "name": "浏览工具栏(品类+价格带)",
-  "settings": [],
+  "settings": [
+    { "type": "text", "id": "category_filters", "label": "平铺为分类标签的筛选参数", "default": "filter.p.m.yarn.texture,filter.p.m.yarn.use", "info": "逗号分隔;需与首页圆图入口使用同一组商品字段" },
+    { "type": "text", "id": "category_order", "label": "分类标签顺序(毛线入口 handle)", "default": "gradient,fluffy,loop-fancy,fine-airy,basic-solid,amigurumi,bags-home,spring-summer-cotton", "info": "逗号分隔;与首页圆图顺序一致。未列出的入口不显示为标签" }
+  ],
   "blocks": [
     { "type": "tab", "name": "品类 Tab", "settings": [
       { "type": "collection", "id": "collection", "label": "集合" },

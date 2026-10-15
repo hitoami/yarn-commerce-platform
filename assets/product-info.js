@@ -185,6 +185,10 @@ if (!customElements.get('product-info')) {
           this.updateOptionValues(html);
           this.updateURL(productUrl, variant?.id);
           this.updateVariantInputs(variant?.id);
+          this.querySelectorAll('[data-product-dynamic-checkout]').forEach((checkout) => {
+            checkout.hidden = !(variant?.available && variant.price > 0);
+            checkout.inert = checkout.hidden;
+          });
 
           if (!variant) {
             this.setUnavailable();
@@ -214,7 +218,7 @@ if (!customElements.get('product-info')) {
 
           this.productForm?.toggleSubmitButton(
             html.getElementById(`ProductSubmitButton-${this.sectionId}`)?.hasAttribute('disabled') ?? true,
-            window.variantStrings.soldOut
+            html.getElementById(`ProductSubmitButton-${this.sectionId}`)?.querySelector('span')?.textContent?.trim() || window.variantStrings.soldOut
           );
 
           publish(PUB_SUB_EVENTS.variantChange, {

@@ -1,6 +1,6 @@
 # 内容队员上手：用 Shopify 维护作品、配件与库存
 
-任务来源：[Issue #15](https://github.com/mewool-yarn/yarn-commerce-platform/issues/15)。当前首页与作品体验已经由 [Issue #23](https://github.com/mewool-yarn/yarn-commerce-platform/issues/23) 和 [PR #24](https://github.com/mewool-yarn/yarn-commerce-platform/pull/24) 更新；本页按当前 `main` 说明日常入口，不保留旧版首页结构。
+任务来源：[Issue #15](https://github.com/hitoami/yarn-commerce-platform/issues/15)。当前首页与作品体验已经由 [Issue #23](https://github.com/hitoami/yarn-commerce-platform/issues/23) 和 [PR #24](https://github.com/hitoami/yarn-commerce-platform/pull/24) 更新；本页按当前 `main` 说明日常入口，不保留旧版首页结构。
 
 ## 先理解四类内容
 

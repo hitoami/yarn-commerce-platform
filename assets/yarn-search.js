@@ -102,6 +102,7 @@
       this.empty = this.querySelector('[data-search-empty]');
       this.favoritesEmpty = this.querySelector('[data-favorites-empty]');
       this.loginState = this.querySelector('[data-favorites-login]');
+      this.unavailableState = this.querySelector('[data-favorites-unavailable]');
       this.error = this.querySelector('[data-search-error]');
       this.loading = this.querySelector('[data-search-loading]');
       this.clearButton = this.querySelector('[data-search-clear]');
@@ -232,6 +233,7 @@
       this.empty.hidden = true;
       this.favoritesEmpty.hidden = true;
       this.loginState.hidden = true;
+      this.unavailableState.hidden = true;
       this.error.hidden = true;
       this.results.hidden = true;
       this.count.textContent = '';
@@ -242,6 +244,7 @@
           if (!window.YarnFavorites) throw new Error('Favorites runtime unavailable');
           const state = await window.YarnFavorites.load({ refresh: true });
           if (this.controller !== controller || this.presentationVersion !== version) return;
+          if (state.unavailable) { this.unavailableState.hidden = false; return; }
           if (!state.authenticated) { this.loginState.hidden = false; return; }
         }
         await this.loadCatalogs();
@@ -256,6 +259,10 @@
     }
 
     render() {
+      if (this.state.browse === 'favorites' && !window.YarnFavorites?.enabled) {
+        this.results.hidden = true; this.empty.hidden = true; this.favoritesEmpty.hidden = true; this.loginState.hidden = true; this.unavailableState.hidden = false;
+        return;
+      }
       if (this.state.browse === 'favorites' && !window.YarnFavorites?.authenticated) {
         this.results.hidden = true; this.empty.hidden = true; this.favoritesEmpty.hidden = true; this.loginState.hidden = false;
         return;

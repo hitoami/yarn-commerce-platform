@@ -1,4 +1,4 @@
 {
-  "sections": { "main": { "type": "yarn-project-detail", "settings": {} } },
+  "sections": { "main": { "type": "yarn-kit-detail", "settings": {} } },
   "order": ["main"]
 }

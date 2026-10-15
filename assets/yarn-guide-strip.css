@@ -1,0 +1,303 @@
+/* Guide strip under the hero: entry ornaments hang from one sagging yarn line, like a garland. */
+.yarn-guide {
+  --yg-dot: 88px;
+  --yg-strand: 30px;
+  --yg-ball: 22px;
+  /* Room above the rail for the sitting cat at the thread's start. */
+  position: relative;
+  z-index: 1; /* the line's pins sit on the section above */
+  padding: 64px 0 34px;
+  /* Same ground as the hero's wavy edge above. */
+  background: var(--yarn-scrollbar-track);
+}
+
+.yarn-guide__inner {
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr);
+  align-items: center;
+  gap: 32px;
+  width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter)));
+  margin: 0 auto;
+}
+
+.yarn-guide__eyebrow {
+  margin: 0 0 8px;
+  color: var(--yarn-text-muted);
+  font: 500 13px var(--yarn-body);
+  letter-spacing: 0.24em;
+}
+
+.yarn-guide__heading {
+  margin: 0;
+  color: var(--yarn-text-heading);
+  font: 600 28px/1.35 var(--yarn-display);
+  letter-spacing: 0.04em;
+}
+
+.yarn-guide__heading:lang(ja) { font-size: 24px; white-space: nowrap; }
+
+.yarn-guide__rail {
+  position: relative;
+}
+
+/* The line runs along the top; hang points (y = 8 of 40) sit above each node. */
+.yarn-guide__thread {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.yarn-guide__thread path {
+  fill: none;
+  stroke-width: 4.4;
+}
+
+.yarn-guide__ply-core { stroke: var(--yarn-home-rope); stroke-linecap: round; }
+/* Short dashes across the core read as the twist of plied yarn. */
+.yarn-guide__ply-ridge { stroke: var(--yarn-home-thread); stroke-dasharray: 1.1 2.3; }
+
+.yarn-guide__thread .yarn-guide__draw {
+  stroke: currentColor; /* alpha mask: only opacity matters */
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.yarn-guide.is-armed .yarn-guide__draw { stroke-dashoffset: 1; }
+.yarn-guide.is-drawn .yarn-guide__draw { stroke-dashoffset: 0; transition: stroke-dashoffset 1.8s cubic-bezier(0.45, 0, 0.2, 1); }
+
+/* Pins where the line's ends are tied to the section above (desktop). */
+.yarn-guide__knot { display: none; fill: var(--yarn-scrollbar-track); stroke: var(--yarn-home-thread); stroke-width: 1.8; }
+.yarn-guide.has-pins .yarn-guide__knot { display: inline; }
+
+/* Cat at the thread's start: a nine-frame sprite (sleep, wake, stand, five walk steps, settle) that walks the line. */
+.yarn-guide__cat {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 100px;
+  height: 70px;
+  background-repeat: no-repeat;
+  background-size: 900% 100%;
+  background-position: 0 0;
+  transform: translate(var(--cat-x, -90px), var(--cat-y, -50px)) scaleX(var(--cat-dir, 1));
+  pointer-events: none;
+}
+
+.yarn-guide__ball {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: var(--yg-ball);
+  height: var(--yg-ball);
+  overflow: visible;
+  opacity: 0;
+  transform: translate(var(--ball-x, 0px), var(--ball-y, 0px)) rotate(var(--ball-spin, 0deg));
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.yarn-guide.has-ball .yarn-guide__ball { opacity: 1; }
+.yarn-guide__ball-body { fill: var(--yarn-tint-butter); }
+.yarn-guide__ball path { fill: none; stroke: var(--yarn-home-thread); stroke-width: 0.9; stroke-linecap: round; }
+.yarn-guide__ball-rim { fill: none; stroke: var(--yarn-home-thread); stroke-width: 1.3; }
+
+.yarn-guide__nodes {
+  position: relative;
+  z-index: 1;
+  /* Equal columns keep each node centre at (2i + 1) / 2N, right under its hang point on the line. */
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  justify-items: center;
+  margin: 0;
+  padding: 8px 0 0;
+  list-style: none;
+}
+
+.yarn-guide__node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 132px;
+  color: var(--yarn-text-heading);
+  text-align: center;
+  text-decoration: none;
+}
+
+/* Each ornament swings gently from its hang point on the line. */
+.yarn-guide__hang {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: 50% 0;
+  animation: yarn-guide-swing 4.8s ease-in-out var(--swing-delay, 0s) infinite;
+}
+
+/* Hanging strand: the same plied yarn, tied to the line with a small loop. */
+.yarn-guide__strand {
+  position: relative;
+  width: 3.4px;
+  height: var(--yg-strand);
+  border-radius: 2px;
+  background: repeating-linear-gradient(0deg, var(--yarn-home-rope) 0 2.2px, var(--yarn-home-thread) 2.2px 3.3px);
+}
+
+.yarn-guide__strand::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  box-sizing: border-box;
+  border: 1.8px solid var(--yarn-home-thread);
+  border-radius: 50%;
+  background: var(--yarn-bg-page);
+}
+
+.yarn-guide__dot {
+  display: grid;
+  place-items: center;
+  width: var(--yg-dot);
+  height: var(--yg-dot);
+  border: 2px solid var(--yarn-border-subtle);
+  border-radius: 50%;
+  color: var(--yarn-action);
+  box-shadow: 0 6px 14px var(--yarn-shadow-soft);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s ease;
+}
+
+.yarn-guide__dot--yarn { background: var(--yarn-tint-sage); }
+.yarn-guide__dot--kit { background: var(--yarn-tint-blush); }
+.yarn-guide__dot--sweater { background: var(--yarn-bg-sunken); }
+.yarn-guide__dot--tools { background: var(--yarn-bg-page); }
+
+.yarn-guide__icon {
+  width: 64%;
+  height: 64%;
+}
+
+.yarn-guide__node:is(:hover, :focus-visible) .yarn-guide__dot {
+  transform: scale(1.08);
+  border-color: var(--yarn-action);
+}
+
+.yarn-guide__node:focus-visible {
+  outline: var(--yarn-focus-width) solid var(--yarn-focus);
+  outline-offset: var(--yarn-focus-offset);
+  border-radius: var(--yarn-radius-panel);
+}
+
+.yarn-guide__num {
+  margin-top: 12px;
+  color: var(--yarn-action);
+  font: 500 12px var(--yarn-display);
+  letter-spacing: 0.16em;
+}
+
+.yarn-guide__title {
+  font: 600 18px/1.35 var(--yarn-display);
+  letter-spacing: 0.04em;
+}
+
+.yarn-guide__node:hover .yarn-guide__title { color: var(--yarn-action); }
+
+.yarn-guide__text {
+  color: var(--yarn-text-muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* New-knitter entry under the ornaments: one soft bar, one action. */
+.yarn-guide__starter {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter)));
+  margin: 28px auto 0;
+  padding: 14px 16px 14px 20px;
+  border-radius: var(--yarn-radius-panel);
+  background: var(--yarn-tint-blush);
+  color: var(--yarn-text-primary);
+  text-decoration: none;
+}
+
+.yarn-guide__starter-icon { flex: none; width: 52px; height: 52px; color: var(--yarn-action); }
+.yarn-guide__starter-icon .yarn-guide__icon { width: 100%; height: 100%; }
+.yarn-guide__starter-text { flex: 1; min-width: 0; }
+.yarn-guide__starter-title { display: block; color: var(--yarn-text-primary); font: 600 20px/1.35 var(--yarn-display); letter-spacing: 0.02em; }
+.yarn-guide__starter-sub { display: block; margin-top: 2px; color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.5; }
+
+.yarn-guide__starter-cta {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--yarn-touch);
+  padding: 0 20px;
+  border-radius: var(--yarn-radius-pill);
+  background: var(--yarn-home-action);
+  color: var(--yarn-text-on-action);
+  font-size: 15px;
+}
+
+.yarn-guide__starter:hover .yarn-guide__starter-title { text-decoration: underline; text-underline-offset: 4px; }
+
+.yarn-guide__starter:focus-visible {
+  outline: var(--yarn-focus-width) solid var(--yarn-focus);
+  outline-offset: var(--yarn-focus-offset);
+}
+
+@keyframes yarn-guide-swing {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@media (max-width: 749px) {
+  .yarn-guide {
+    --yg-dot: 60px;
+    --yg-strand: 18px;
+    --yg-ball: 16px;
+    padding: 20px 0 22px;
+    border-bottom: 1px solid var(--yarn-border-subtle);
+  }
+
+  .yarn-guide__cat { display: none; }
+  .yarn-guide__thread path { stroke-width: 3; }
+
+  .yarn-guide__inner {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .yarn-guide__head { text-align: center; }
+  .yarn-guide__eyebrow { margin-bottom: 2px; font-size: 12px; }
+  .yarn-guide__heading { font-size: 22px; }
+  .yarn-guide__heading:lang(ja) { font-size: 20px; }
+  .yarn-guide__node { min-width: 0; }
+  .yarn-guide__num { margin-top: 8px; }
+  .yarn-guide__title { font-size: 12px; letter-spacing: 0; text-wrap: balance; }
+  .yarn-guide__num { font-size: 11px; }
+  .yarn-guide__text { display: none; }
+
+  .yarn-guide__starter { flex-wrap: wrap; gap: 12px; margin-top: 20px; padding: 14px 16px; }
+  .yarn-guide__starter-icon { width: 40px; height: 40px; }
+  .yarn-guide__starter-title { font-size: 18px; }
+  .yarn-guide__starter-cta { width: 100%; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yarn-guide__hang { animation: none; }
+  .yarn-guide__dot, .yarn-guide__ball { transition: none; }
+  .yarn-guide.is-armed .yarn-guide__draw { stroke-dashoffset: 0; }
+}

@@ -1,0 +1,93 @@
+{% comment %}
+  首页「本季主推」入口卡(#131):大图 + 衬线大标题 + 说明 + 标签 + 进入专题的提示。
+  整块是一个链接,进入本季主推专题页(page.season 模板,7 款毛线的介绍与购买入口在那一页);首页不再列出毛线。
+  链接留空时只显示内容、不可点击。大图未上传时，用所选集合里带选品标签的前 3 款毛线主图拼成封面（与专题页同一选品），都没有时显示浅色占位块。
+  三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
+{% endcomment %}
+{%- liquid
+  assign sf_collage = ''
+  if section.settings.image == blank
+    assign sf_collection = section.settings.collection | default: collections['yarn']
+    assign sf_pick_tag = section.settings.tag | strip
+    for sf_product in sf_collection.products limit: 50
+      if sf_pick_tag == blank or sf_product.tags contains sf_pick_tag
+        if sf_product.featured_image != blank
+          assign sf_collage = sf_collage | append: sf_product.handle | append: ','
+        endif
+      endif
+    endfor
+    assign sf_collage = sf_collage | split: ','
+  endif
+  capture sf_label
+    render 'yarn-setting-text', settings: section.settings, key: 'label'
+  endcapture
+  capture sf_heading
+    render 'yarn-setting-text', settings: section.settings, key: 'heading'
+  endcapture
+  capture sf_text
+    render 'yarn-setting-text', settings: section.settings, key: 'text'
+  endcapture
+  capture sf_link_label
+    render 'yarn-setting-text', settings: section.settings, key: 'link_label'
+  endcapture
+  if section.settings.link != blank
+    assign sf_tag = 'a'
+  else
+    assign sf_tag = 'div'
+  endif
+-%}
+{{ 'yarn-season-feature.css' | asset_url | stylesheet_tag }}
+<{{ sf_tag }} class="yx-season"{% if section.settings.link != blank %} href="{% render 'yarn-local-url', url: section.settings.link %}"{% endif %} aria-labelledby="Season-{{ section.id }}">
+  <div class="yx-season__media">
+    {%- if section.settings.image != blank -%}
+      {{ section.settings.image | image_url: width: 1200 | image_tag: widths: '400, 600, 900, 1200', sizes: '(min-width: 750px) 38vw, calc(100vw - 64px)', loading: 'lazy', alt: '' }}
+    {%- elsif section.settings.source_image -%}
+      <img src="{{ 'hitoami-source-oil-loop.jpeg' | asset_url }}" width="790" height="885" loading="lazy" alt="">
+    {%- elsif sf_collage.size > 0 -%}
+      <div class="yx-season__collage yx-season__collage--{{ sf_collage.size | at_most: 3 }}">
+        {%- for sf_handle in sf_collage limit: 3 -%}
+          {%- assign sf_cover = all_products[sf_handle].featured_image -%}
+          {%- if forloop.first -%}{%- assign sf_w = 900 -%}{%- else -%}{%- assign sf_w = 500 -%}{%- endif -%}
+          {{ sf_cover | image_url: width: sf_w | image_tag: widths: '300, 500, 900', sizes: '(min-width: 750px) 30vw, 60vw', loading: 'lazy', alt: '' }}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="yx-season__placeholder"></div>
+    {%- endif -%}
+  </div>
+  <div class="yx-season__body">
+    <h2 id="Season-{{ section.id }}" class="yx-season__heading">{{ sf_heading | escape | newline_to_br }}</h2>
+    {%- if sf_text != blank -%}<p class="yx-season__text">{{ sf_text | escape }}</p>{%- endif -%}
+    {%- if sf_label != blank -%}<span class="yx-season__label">{{ sf_label | escape }}</span>{%- endif -%}
+    {%- if section.settings.link != blank and sf_link_label != blank -%}
+      <span class="yx-season__link">{{ sf_link_label | escape }} <span aria-hidden="true">→</span></span>
+    {%- endif -%}
+  </div>
+</{{ sf_tag }}>
+
+{% schema %}
+{
+  "name": "本季主推(入口卡)",
+  "tag": "section",
+  "class": "section yx-season-section",
+  "settings": [{"type":"checkbox","id":"source_image","label":"使用本次油画圈圈线原图","default":false},
+    { "type": "image_picker", "id": "image", "label": "本季大图", "info": "未上传时用下面选品的前 3 款毛线主图拼成封面。" },
+    { "type": "collection", "id": "collection", "label": "封面拼图 · 选品集合", "info": "留空时使用「毛线」集合；与专题页保持一致。" },
+    { "type": "text", "id": "tag", "label": "封面拼图 · 选品标签", "default": "预订爆款" },
+    { "type": "text", "id": "label", "label": "日文 · 标签", "default": "今季のおすすめ" },
+    { "type": "text", "id": "label_zh", "label": "中文 · 标签", "default": "本季主推" },
+    { "type": "text", "id": "label_en", "label": "英文 · 标签", "default": "This season" },
+    { "type": "textarea", "id": "heading", "label": "日文 · 标题", "default": "この季節、\n編みたい色。" },
+    { "type": "textarea", "id": "heading_zh", "label": "中文 · 标题", "default": "这一季，\n想织的颜色" },
+    { "type": "textarea", "id": "heading_en", "label": "英文 · 标题", "default": "This season,\nthe colours we want to knit" },
+    { "type": "text", "id": "text", "label": "日文 · 说明", "default": "店で選んだ今季の毛糸。ひと玉ごとに、色の物語があります。" },
+    { "type": "text", "id": "text_zh", "label": "中文 · 说明", "default": "店里挑的当季毛线，每一团都有自己的颜色故事。" },
+    { "type": "text", "id": "text_en", "label": "英文 · 说明", "default": "Yarns we picked for the season, each with its own colour story." },
+    { "type": "url", "id": "link", "label": "专题页链接", "info": "整块卡片进入这一页（本季主推专题页，选 page.season 模板的页面）；留空时卡片不可点击。" },
+    { "type": "text", "id": "link_label", "label": "日文 · 链接文字", "default": "今季の特集を読む" },
+    { "type": "text", "id": "link_label_zh", "label": "中文 · 链接文字", "default": "阅读本季专题" },
+    { "type": "text", "id": "link_label_en", "label": "英文 · 链接文字", "default": "Read this season's feature" }
+  ],
+  "presets": [{ "name": "本季主推(入口卡)" }]
+}
+{% endschema %}

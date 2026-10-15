@@ -1,9 +1,18 @@
-{% unless template.name == 'index' %}{{ 'hitoami-home.css' | asset_url | stylesheet_tag }}{% endunless %}
-<script src="{{ 'hitoami-home.js' | asset_url }}" defer="defer"></script>
+{% comment %}
+  首页首屏:整幅场景轮播,标题、说明与按钮压在左侧留白处(桌面对齐 1200 内容轴);圆点居中在底部的白色胶囊里(#126 Claude Design 1a);底边是一道波浪。
+  #131 活动图:标题、说明与按钮都留空时只显示图片(不加遮罩),填了链接则整张图可点;选「浅色占位」时未上传图片显示浅色占位块。
+  作为首页第一个 section 时,页头透明地叠在图上(规则在 hitoami-hero.css)。
+  与首屏下方的导览条互不关联:切换幻灯片不影响导览条,导览条也不控制幻灯片。
+  场景图可在每张幻灯片上传(桌面 / 手机),未上传时用内置的三张氛围图(来源见 docs/design/approved/home-scheme-c.source.md)。
+  三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
+{% endcomment %}
+{{ 'hitoami-hero.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'hitoami-hero.js' | asset_url }}" defer="defer"></script>
 
-<hitoami-home class="hitoami-home" data-motion="{{ section.settings.enable_cat }}">
+<hitoami-hero class="hitoami-hero-root{% if section.settings.catalog_layout %} hitoami-hero--catalog{% endif %}">
+  {% if section.settings.catalog_layout %}{{ 'yarn-home-mobile.css' | asset_url | stylesheet_tag }}{% endif %}
   {% if section.blocks.size > 0 %}
-    <section class="hitoami-hero" aria-label="{{ 'hitoami_home.featured' | t }}" aria-roledescription="{{ 'hitoami_home.carousel' | t }}">
+    <section class="hitoami-hero" aria-label="{{ 'sections.slideshow.carousel' | t }}" aria-roledescription="{{ 'sections.slideshow.carousel' | t }}">
       <div class="hitoami-slides">
         {% for block in section.blocks %}
           {% liquid
@@ -28,8 +37,16 @@
             capture cta
               render 'yarn-setting-text', settings: block.settings, key: 'cta'
             endcapture
+            assign image_only = false
+            if heading == blank and text == blank and cta == blank
+              assign image_only = true
+            endif
+            assign placeholder = false
+            if block.settings.scene == 'placeholder' and desktop_image == blank
+              assign placeholder = true
+            endif
             assign target = block.settings.link
-            if target == blank
+            if target == blank and image_only == false
               assign target = collections['knit-kits'].url | default: routes.all_products_collection_url
               if block.settings.scene == 'yarn'
                 assign target = collections['yarn'].url | default: routes.all_products_collection_url
@@ -38,7 +55,12 @@
               endif
             endif
           %}
-          <article id="HitoamiSlide-{{ block.id }}" class="hitoami-slide hitoami-slide--{{ block.settings.tone }}{% if desktop_image == blank %} hitoami-slide--default-scene{% endif %}" data-scene="{{ block.settings.scene }}" data-slide data-block-id="{{ block.id }}" aria-roledescription="{{ 'hitoami_home.slide' | t }}" aria-label="{{ forloop.index }} / {{ section.blocks.size }}" {% unless forloop.first %}hidden inert{% endunless %} {{ block.shopify_attributes }}>
+          <article id="HitoamiSlide-{{ block.id }}" class="hitoami-slide hitoami-slide--{{ block.settings.tone }}{% if desktop_image == blank and placeholder == false %} hitoami-slide--default-scene{% endif %}{% if image_only %} hitoami-slide--image-only{% endif %}" data-scene="{{ block.settings.scene }}" data-slide data-block-id="{{ block.id }}" aria-roledescription="{{ 'sections.slideshow.slide' | t }}" aria-label="{{ forloop.index }} / {{ section.blocks.size }}" {% unless forloop.first %}hidden inert{% endunless %} {{ block.shopify_attributes }}>
+            {%- if image_only and forloop.first -%}<h1 class="visually-hidden">{{ shop.name | escape }}</h1>{%- endif -%}
+            {%- if image_only and target != blank -%}<a class="hitoami-slide__link" href="{{ target }}" aria-label="{{ forloop.index }} / {{ section.blocks.size }}">{%- endif -%}
+            {%- if placeholder -%}
+              <div class="hitoami-scene hitoami-scene--placeholder" aria-hidden="true"></div>
+            {%- else -%}
             <picture class="hitoami-scene" style="--scene-focus: {{ block.settings.focus }}%;">
               {% if mobile_image != blank %}
                 <source media="(max-width: 749px)" srcset="{{ mobile_image | image_url: width: 600 }} 600w, {{ mobile_image | image_url: width: 900 }} 900w" sizes="100vw">
@@ -51,152 +73,39 @@
                 <img src="{{ desktop_asset | asset_url }}" width="1672" height="941" alt="" {% if forloop.first %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}>
               {% endif %}
             </picture>
+            {%- endif -%}
+            {%- if image_only and target != blank -%}</a>{%- endif -%}
+            {%- unless image_only -%}
             <div class="hitoami-copy">
               {% if forloop.first %}<h1 class="hitoami-heading">{{ heading | escape | newline_to_br }}</h1>{% else %}<h2 class="hitoami-heading">{{ heading | escape | newline_to_br }}</h2>{% endif %}
               {% if text != blank %}<p class="hitoami-subtitle">{{ text | escape }}</p>{% endif %}
               {% if cta != blank %}<a class="hitoami-cta" href="{{ target }}">{{ cta | escape }}<span aria-hidden="true">{{ 'icon-arrow.svg' | inline_asset_content }}</span></a>{% endif %}
             </div>
+            {%- endunless -%}
           </article>
         {% endfor %}
       </div>
       {% if section.blocks.size > 1 %}
         <div class="hitoami-controls" hidden>
-          <button class="hitoami-arrow hitoami-arrow--previous" type="button" data-previous aria-label="{{ 'sections.slideshow.previous_slideshow' | t }}"><span aria-hidden="true">{{ 'icon-caret.svg' | inline_asset_content }}</span></button>
-          <button class="hitoami-arrow hitoami-arrow--next" type="button" data-next aria-label="{{ 'sections.slideshow.next_slideshow' | t }}"><span aria-hidden="true">{{ 'icon-caret.svg' | inline_asset_content }}</span></button>
-          <div class="hitoami-pagination">
-            <span class="hitoami-count" aria-hidden="true"><span data-current>01</span> / {{ section.blocks.size | prepend: '00' | slice: -2, 2 }}</span>
-            <div class="hitoami-dots">
-              {% for block in section.blocks %}<button type="button" data-page="{{ forloop.index0 }}" aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }}" aria-controls="HitoamiSlide-{{ block.id }}" {% if forloop.first %}aria-current="true"{% endif %}><span></span></button>{% endfor %}
-            </div>
+          <div class="hitoami-dots">
+            {% for block in section.blocks %}<button type="button" data-page="{{ forloop.index0 }}" aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }}" aria-controls="HitoamiSlide-{{ block.id }}" {% if forloop.first %}aria-current="true"{% endif %}><span></span></button>{% endfor %}
           </div>
         </div>
       {% endif %}
       <span class="visually-hidden" data-slide-status aria-live="polite" aria-atomic="true"></span>
+      <svg class="hitoami-wave" viewBox="0 0 1440 52" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 25 C180 -10 340 52 560 28 S850 0 1020 25 S1260 45 1440 14 V52 H0Z"/></svg>
     </section>
   {% endif %}
 
-  <nav class="hitoami-guide" aria-label="{{ 'hitoami_home.categories' | t }}">
-    <svg class="hitoami-wave" viewBox="0 0 1440 52" preserveAspectRatio="none" aria-hidden="true"><path d="M0 25 C180 -10 340 52 560 28 S850 0 1020 25 S1260 45 1440 14 V52 H0Z"/></svg>
-    <div class="hitoami-guide-inner">
-      <div class="hitoami-cat-lane" aria-hidden="true">
-        <svg class="hitoami-thread"><path data-thread d="M8 60 Q22 65 80 60"/></svg>
-        <span class="hitoami-cat" data-cat></span>
-        <img class="hitoami-ball" data-ball src="{{ 'hitoami-yarn-ball.svg' | asset_url }}" width="22" height="22" alt="">
-      </div>
-      <ul class="hitoami-categories" role="list">
-        {% assign category_keys = 'yarn,kit,finished' | split: ',' %}
-        {% for key in category_keys %}
-          {% liquid
-            assign setting_key = key | append: '_collection'
-            assign destination = section.settings[setting_key].url
-            if destination == blank
-              case key
-                when 'yarn'
-                  assign destination = collections['yarn'].url
-                when 'kit'
-                  assign destination = collections['knit-kits'].url
-                when 'finished'
-                  assign destination = collections['finished-goods'].url
-              endcase
-            endif
-            assign destination = destination | default: routes.all_products_collection_url
-            case key
-              when 'yarn'
-                assign icon = 'hitoami-nav-yarn.webp'
-              when 'kit'
-                assign icon = 'hitoami-nav-kit.webp'
-              when 'finished'
-                assign icon = 'hitoami-nav-finished.webp'
-            endcase
-            assign label = 'hitoami_home.' | append: key
-          %}
-          <li><a class="hitoami-category hitoami-category--{{ key }}" href="{{ destination }}" data-category="{{ forloop.index0 }}" data-scene="{{ key }}"><span class="hitoami-category-art"><img src="{{ icon | asset_url }}" width="360" height="360" alt="" loading="eager"></span><span>{{ label | t }}</span></a></li>
-        {% endfor %}
-      </ul>
-    </div>
-  </nav>
-</hitoami-home>
-
-{% if section.settings.show_story %}
-  {% capture story_heading %}{% render 'yarn-setting-text', settings: section.settings, key: 'story_heading' %}{% endcapture %}
-  {% capture story_text %}{% render 'yarn-setting-text', settings: section.settings, key: 'story_text' %}{% endcapture %}
-  <section class="hitoami-story" aria-labelledby="HitoamiStory-{{ section.id }}">
-    <h2 id="HitoamiStory-{{ section.id }}">{{ story_heading | escape | newline_to_br }}</h2>
-    <div class="rte">{{ story_text }}</div>
-  </section>
-{% endif %}
+</hitoami-hero>
 
 {% schema %}
 {
-  "name": "hitoami · 手作小屋",
+  "name": "首屏 · 手作小屋轮播",
   "tag": "section",
-  "class": "section hitoami-home-section",
+  "class": "section hitoami-hero-section",
   "max_blocks": 8,
-  "settings": [
-    {
-      "type": "checkbox",
-      "id": "enable_cat",
-      "label": "启用小猫动画",
-      "default": true
-    },
-    {
-      "type": "collection",
-      "id": "yarn_collection",
-      "label": "毛线入口"
-    },
-    {
-      "type": "collection",
-      "id": "kit_collection",
-      "label": "编织材料包入口"
-    },
-    {
-      "type": "collection",
-      "id": "finished_collection",
-      "label": "成品入口"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_story",
-      "label": "显示品牌介绍",
-      "default": true
-    },
-    {
-      "type": "textarea",
-      "id": "story_heading",
-      "label": "日文 · 品牌标语",
-      "default": "最初のひと目から、\n編みもので、人と暮らしをやさしくつなぐ。"
-    },
-    {
-      "type": "textarea",
-      "id": "story_heading_zh",
-      "label": "中文 · 品牌标语",
-      "default": "从第一针开始，\n用编织，温柔连接人与生活。"
-    },
-    {
-      "type": "textarea",
-      "id": "story_heading_en",
-      "label": "英文 · 品牌标语",
-      "default": "From the first stitch,\nweaving warmth into everyday connections."
-    },
-    {
-      "type": "richtext",
-      "id": "story_text",
-      "label": "日文 · 品牌故事",
-      "default": "<p>hitoami は、「一」と「編む」という想いから生まれました。</p><p>最初のひと目から、糸と色、ひらめきを少しずつ暮らしの中へ。初めて毛糸に触れる人も、手づくりが好きな人も。ひと目ひと目に自分のペースを見つけ、編みものを愛する誰かと出会える場所でありたいと願っています。</p>"
-    },
-    {
-      "type": "richtext",
-      "id": "story_text_zh",
-      "label": "中文 · 品牌故事",
-      "default": "<p>hitoami，取意于「一」与「编织」。</p><p>从第一针开始，把线、色彩与灵感慢慢编进日常。无论初次拿起毛线，还是早已钟情手作，都能在一针一线之间找到自己的节奏，也与同样热爱编织的人相遇。</p>"
-    },
-    {
-      "type": "richtext",
-      "id": "story_text_en",
-      "label": "英文 · 品牌故事",
-      "default": "<p>hitoami brings together the ideas of “one” and “knitting”.</p><p>From the first stitch, bring yarn, colour and imagination into everyday life. Whether you are picking up yarn for the first time or have always loved making, find your own rhythm, one stitch at a time—and connect with others who share that love.</p>"
-    }
-  ],
+  "settings": [{"type":"checkbox","id":"catalog_layout","label":"首屏下方的手机目录布局","default":false}],
   "blocks": [
     {
       "type": "slide",
@@ -205,21 +114,25 @@
         {
           "type": "select",
           "id": "scene",
-          "label": "所属分类与默认氛围图",
-          "info": "决定导航选中项和小猫停靠位置；上传活动图片后仍保留此分类。多个活动可以属于同一分类。",
+          "label": "默认氛围图",
+          "info": "未上传图片时使用对应的内置场景；按钮链接留空时进入对应集合。活动图选「浅色占位」，上传图片前显示浅色块。",
           "default": "kit",
           "options": [
             {
+              "value": "placeholder",
+              "label": "浅色占位(活动图)"
+            },
+            {
               "value": "kit",
-              "label": "手作桌"
+              "label": "手作桌(编织包)"
             },
             {
               "value": "yarn",
-              "label": "毛线柜"
+              "label": "毛线柜(毛线)"
             },
             {
               "value": "finished",
-              "label": "成品角"
+              "label": "成品角(成品)"
             }
           ]
         },
@@ -318,15 +231,15 @@
         {
           "type": "url",
           "id": "link",
-          "label": "按钮链接",
-          "info": "留空时进入对应的毛线、材料包或成品集合；可链接任意活动、商品或内容页。"
+          "label": "链接",
+          "info": "有按钮时是按钮链接，留空进入对应集合。标题、说明、按钮都留空时只显示图片，填了链接则整张图可点。"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "hitoami · 手作小屋",
+      "name": "首屏 · 手作小屋轮播",
       "blocks": [
         {
           "type": "slide",

@@ -1,6 +1,6 @@
 # 商品详情手机方向与来源
 
-- 关联：[Issue #73](https://github.com/mewool-yarn/yarn-commerce-platform/issues/73)。用户在本会话确认「可以的」；手机实页的完整正文呈现已另在 [PR #98](https://github.com/mewool-yarn/yarn-commerce-platform/pull/98) 批准并合并。
+- 关联：[Issue #73](https://github.com/hitoami/yarn-commerce-platform/issues/73)。用户在本会话确认「可以的」；手机实页的完整正文呈现已另在 [PR #98](https://github.com/hitoami/yarn-commerce-platform/pull/98) 批准并合并。
 - 视觉稿的照片/摘要是构图示意。真实内容顺序以已确认实页及 [surface brief](../product-detail-surface.md) 为准：完整明细在内容物图片前，保留全部正文与 FAQ，不因图中短清单删减后台内容。
 - 字体冲突已在会话提出：采用建议的现有文楷；不把生成稿的无衬线字体写成全站规范。
 - 工具：内置 ImageGen。获批稿本地保存为 `docs/design/approved/73-pdp-mobile.png`，SHA-256：`a7cf56dd6b148799f54679af06d5d7088673a1a504ca529f2446e38fd96f3611`。

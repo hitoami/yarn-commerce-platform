@@ -1,0 +1,58 @@
+{%- comment -%}
+  毛线详情页手机常驻购买栏（Issue #120，用户 2026-10-02 确认保留）。
+  只是原生商品表单的第二个入口：数量写回 Quantity-{section} 输入框，「加入」点击原加购按钮，
+  不自行提交、不另存价格或库存。原加购区在视口内时隐藏；750px 及以上不显示。
+  参数：product、section_id、product_title
+{%- endcomment -%}
+{%- liquid
+  assign sticky_variant = product.selected_or_first_available_variant
+  assign sticky_min = sticky_variant.quantity_rule.min | default: 1
+  assign sticky_total = sticky_variant.price | times: sticky_min | money
+  assign sticky_option = product.options_with_values.first
+  assign sticky_swatch = sticky_option.selected_value.swatch
+-%}
+<yarn-sticky-buy
+  class="yp-sticky"
+  data-section="{{ section_id }}"
+  data-price="{{ sticky_variant.price }}"
+  data-money-format="{{ shop.money_format | strip_html | escape }}"
+  data-label="{{ 'yarn_pdp.sticky_add' | t: price: '[price]' | escape }}"
+  data-visible="false"
+  inert
+>
+  <p class="yp-sticky__error" role="alert" data-sticky-error hidden></p>
+  <div class="yp-sticky__bar" role="region" aria-label="{{ 'yarn_pdp.sticky_label' | t }}">
+    {%- unless product.has_only_default_variant -%}
+      <span class="yp-sticky__chip" id="YarnStickyChip-{{ section_id }}">
+        {%- if sticky_swatch.color != blank or sticky_swatch.image != blank -%}
+          <span
+            class="yp-sticky__swatch"
+            style="{% if sticky_swatch.image != blank %}background-image: url({{ sticky_swatch.image | image_url: width: 88 }});{% else %}background-color: {{ sticky_swatch.color }};{% endif %}"
+            aria-hidden="true"
+          ></span>
+        {%- else -%}
+          <span class="yp-sticky__value" aria-hidden="true" data-proof-content>{{ sticky_option.selected_value | escape }}</span>
+        {%- endif -%}
+        <span class="visually-hidden" data-proof-content>{{ 'yarn_pdp.sticky_selected' | t: value: sticky_variant.title | escape }}</span>
+      </span>
+    {%- endunless -%}
+    <div class="yp-sticky__qty" data-sticky-qty>
+      <span class="visually-hidden">{{ 'products.product.quantity.label' | t }}</span>
+      <button type="button" data-step="-1" aria-label="{{ 'products.product.quantity.decrease' | t: product: product_title | escape }}">
+        <span class="svg-wrapper">{{- 'icon-minus.svg' | inline_asset_content -}}</span>
+      </button>
+      <span class="yp-sticky__qty-value" data-sticky-qty-value aria-live="polite">{{ sticky_min }}</span>
+      <button type="button" data-step="1" aria-label="{{ 'products.product.quantity.increase' | t: product: product_title | escape }}">
+        <span class="svg-wrapper">{{- 'icon-plus.svg' | inline_asset_content -}}</span>
+      </button>
+    </div>
+    <button type="button" class="yp-sticky__add" data-sticky-add{% unless sticky_variant.available and sticky_variant.price > 0 %} disabled{% endunless %}>
+      {%- if sticky_variant.price <= 0 -%}{{ 'yarn_project.kit_not_on_sale' | t }}
+      {%- elsif sticky_variant.available -%}
+        {{- 'yarn_pdp.sticky_add' | t: price: sticky_total -}}
+      {%- else -%}
+        {{- 'products.product.sold_out' | t -}}
+      {%- endif -%}
+    </button>
+  </div>
+</yarn-sticky-buy>

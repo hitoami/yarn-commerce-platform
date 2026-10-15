@@ -1,0 +1,91 @@
+/* Season feature page (#131, page.season): magazine layout. Cover = mosaic of the picked yarns + heading + contents;
+   then one spread per yarn, image and copy alternating, every third yarn a full-width plate; product facts read as a ruled spec table. */
+.yx-season-page { width: min(var(--yarn-commerce-max), 100%); margin: 0 auto 64px; color: var(--yarn-text-primary); }
+.yx-season-page a:focus-visible, .yx-season-page button:focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 3px; }
+
+/* Cover */
+.yx-season-page__cover { display: grid; }
+.yx-season-page__art, .yx-season-page__art:empty { display: grid; overflow: hidden; min-height: 240px; background: var(--yarn-bg-sunken); }
+.yx-season-page__art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.yx-season-page__art--mosaic { grid-template-columns: 2fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 3px; aspect-ratio: 390 / 330; background: var(--yarn-bg-page); }
+.yx-season-page__art--mosaic img:first-child { grid-row: 1 / -1; }
+.yx-season-page__art--mosaic img:only-child { grid-column: 1 / -1; }
+.yx-season-page__intro { display: grid; gap: var(--yarn-space-4); padding: var(--yarn-space-6) var(--yarn-gutter) var(--yarn-space-5); }
+.yx-season-page__heading { margin: 0; color: var(--yarn-text-heading); font: 700 3.6rem/1.15 var(--yarn-display); letter-spacing: 0.01em; text-wrap: balance; }
+.yx-season-page__text { max-width: 34em; margin: 0; color: var(--yarn-text-secondary); font-size: 1.5rem; line-height: 1.8; }
+
+/* Contents */
+.yx-season-page__toc { margin-top: var(--yarn-space-3); border-top: 1px solid var(--yarn-text-heading); }
+.yx-season-page__toc-label { display: flex; justify-content: space-between; margin: 0; padding: var(--yarn-space-2) 0; color: var(--yarn-text-heading); font: 600 1.4rem/1.4 var(--yarn-display); }
+.yx-season-page__toc-label span { color: var(--yarn-text-muted); font-family: var(--yarn-body); font-size: 1.2rem; font-weight: 400; }
+.yx-season-page__toc ol { margin: 0; padding: 0; list-style: none; }
+.yx-season-page__toc li { border-top: 1px solid var(--yarn-border-subtle); }
+.yx-season-page__toc a { display: flex; align-items: baseline; gap: var(--yarn-space-3); min-height: var(--yarn-touch); padding: 10px 0; box-sizing: border-box; color: var(--yarn-text-primary); font-size: 1.4rem; text-decoration: none; }
+.yx-season-page__toc a:hover { color: var(--yarn-action); }
+.yx-season-page__toc-num { min-width: 2ch; color: var(--yarn-action); font: 600 1.4rem/1 var(--yarn-display); font-variant-numeric: tabular-nums; }
+
+/* Yarn spreads */
+.yx-season-page__list { display: grid; gap: 56px; margin: var(--yarn-space-5) 0 0; padding: 0 var(--yarn-gutter); list-style: none; }
+.yx-season-page__yarn { display: grid; gap: var(--yarn-space-4); padding-top: var(--yarn-space-5); border-top: 1px solid var(--yarn-border-subtle); scroll-margin-top: 80px; }
+.yx-season-page__figure { display: grid; gap: var(--yarn-space-2); margin: 0; }
+.yx-season-page__media { display: block; overflow: hidden; aspect-ratio: 4 / 5; border-radius: var(--yarn-radius-media); background: var(--yarn-bg-sunken); }
+.yx-season-page__yarn--wide .yx-season-page__media { aspect-ratio: 4 / 3; }
+.yx-season-page__media img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.yx-season-page__media:hover img { transform: scale(1.03); }
+.yx-season-page__figure figcaption { color: var(--yarn-text-muted); font-size: 1.2rem; letter-spacing: 0.04em; }
+.yx-season-page__copy { display: grid; gap: var(--yarn-space-3); align-content: start; }
+.yx-season-page__num { color: var(--yarn-action); font: 600 4.4rem/1 var(--yarn-display); font-variant-numeric: tabular-nums; }
+.yx-season-page__name { margin: 0; color: var(--yarn-text-heading); font: 700 2.6rem/1.25 var(--yarn-display); text-wrap: balance; }
+.yx-season-page__name a { color: inherit; text-decoration: none; }
+.yx-season-page__name a:hover { color: var(--yarn-action); }
+.yx-season-page__note { margin: 0; font-size: 1.5rem; line-height: 1.8; }
+
+/* Spec table from the product description list */
+.yx-season-page__facts { color: var(--yarn-text-secondary); font-size: 1.4rem; line-height: 1.7; }
+.yx-season-page__facts > :first-child { margin-top: 0; }
+.yx-season-page__facts > :last-child { margin-bottom: 0; }
+.yx-season-page__facts ul { margin: 0; padding: 0; border-bottom: 1px solid var(--yarn-border-subtle); list-style: none; }
+.yx-season-page__facts li { display: grid; grid-template-columns: 6.5em minmax(0, 1fr); gap: var(--yarn-space-3); padding: 9px 0; border-top: 1px solid var(--yarn-border-subtle); }
+.yx-season-page__facts strong { color: var(--yarn-text-heading); font-weight: 600; }
+
+.yx-season-page__buy { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--yarn-space-3); margin-top: var(--yarn-space-2); }
+.yx-season-page__price { color: var(--yarn-text-heading); font-size: var(--yarn-card-price); font-weight: 700; }
+.yx-season-page__price s { color: var(--yarn-text-muted); font-size: 1.4rem; font-weight: 400; }
+.yx-season-page__actions { display: flex; gap: var(--yarn-space-2); margin-left: auto; }
+.yx-season-page__form { margin: 0; }
+.yx-season-page__btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: var(--yarn-touch); padding: 0 var(--yarn-space-5); box-sizing: border-box; border: 1px solid var(--yarn-text-heading); border-radius: var(--yarn-radius-pill); background: transparent; color: var(--yarn-text-heading); cursor: pointer; font: inherit; font-size: 1.4rem; font-weight: 600; text-decoration: none; transition: background-color 0.2s ease, color 0.2s ease; }
+.yx-season-page__btn:hover { background: var(--yarn-text-heading); color: var(--yarn-text-inverse); }
+.yx-season-page__btn--cart { border-color: var(--yarn-cta-bg); background: var(--yarn-cta-bg); }
+.yx-season-page__btn--cart:hover { border-color: var(--yarn-cta-hover); background: var(--yarn-cta-hover); color: var(--yarn-text-heading); }
+.yx-season-page__empty { padding: 0 var(--yarn-gutter); }
+
+@media (min-width: 750px) {
+  .yx-season-page { margin-bottom: 112px; }
+  .yx-season-page__cover { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: stretch; min-height: 620px; padding: var(--yarn-space-6) var(--yarn-gutter) 0; gap: 56px; }
+  .yx-season-page__art { border-radius: var(--yarn-radius-panel); }
+  .yx-season-page__art--mosaic { aspect-ratio: auto; gap: 6px; background: transparent; }
+  .yx-season-page__art--mosaic img { border-radius: var(--yarn-radius-media); }
+  .yx-season-page__intro { align-content: center; padding: 0; }
+  .yx-season-page__heading { font-size: clamp(4.4rem, 4.4vw, 6rem); line-height: 1.1; }
+  .yx-season-page__text { font-size: 1.6rem; }
+
+  .yx-season-page__list { gap: 96px; margin-top: 96px; }
+  .yx-season-page__yarn { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: end; gap: 64px; padding-top: var(--yarn-space-6); }
+  .yx-season-page__yarn--flip { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  .yx-season-page__yarn--flip .yx-season-page__figure { order: 2; }
+  .yx-season-page__yarn--wide { grid-template-columns: minmax(0, 1fr); }
+  .yx-season-page__yarn--wide .yx-season-page__media { aspect-ratio: 21 / 9; }
+  .yx-season-page__yarn--wide .yx-season-page__copy { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: 64px; }
+  .yx-season-page__yarn--wide .yx-season-page__copy > * { grid-column: 1; }
+  .yx-season-page__yarn--wide .yx-season-page__facts, .yx-season-page__yarn--wide .yx-season-page__buy { grid-column: 2; }
+  .yx-season-page__yarn--wide .yx-season-page__facts { grid-row: 1 / span 3; }
+  .yx-season-page__copy { max-width: 520px; padding-bottom: var(--yarn-space-2); }
+  .yx-season-page__yarn--wide .yx-season-page__copy { max-width: none; }
+  .yx-season-page__num { font-size: 6rem; }
+  .yx-season-page__name { font-size: 3.4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yx-season-page__media img, .yx-season-page__btn { transition: none; }
+  .yx-season-page__media:hover img { transform: none; }
+}

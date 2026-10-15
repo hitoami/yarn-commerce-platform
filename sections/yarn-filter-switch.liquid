@@ -1,0 +1,211 @@
+{{ 'yarn-filter-switch.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'yarn-filter-switch.js' | asset_url }}" defer="defer"></script>
+{% comment %}
+  首页「按材质 / 粗细挑毛线」:从所选毛线集合的商品字段(默认 yarn.material / yarn.weight)收集实际取值,
+  每个取值一张圆形照片卡,链接到带 Search & Discovery 筛选参数(filter.p.m.<字段>)的同一集合列表。
+  没有商品填写该字段的维度不渲染,两个都没有时整块不渲染。首页读不到集合的筛选对象,
+  因此链接要生效,需要在 Search & Discovery 为同一字段开启筛选。
+  「取值」block 决定顺序、照片与参考针号(按取值文字匹配);未设置 block 的取值排在后面,照片用第一件带该取值的商品主图。
+  三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
+{% endcomment %}
+{%- capture fs_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'heading' -%}{%- endcapture -%}
+{%- liquid
+  assign fs_collection = collections[section.settings.collection]
+  assign fs_sep = '¦'
+  assign fs_material_vals = ''
+  assign fs_material_idx = ''
+  assign fs_weight_vals = ''
+  assign fs_weight_idx = ''
+  if fs_collection != blank
+    for group in (1..2)
+      if group == 1
+        assign fs_field_name = section.settings.material_field
+      else
+        assign fs_field_name = section.settings.weight_field
+      endif
+      assign fs_parts = fs_field_name | split: '.'
+      assign fs_ns = fs_parts[0]
+      assign fs_key = fs_parts[1]
+      assign fs_vals = fs_sep
+      assign fs_idx = ''
+      if fs_ns != blank and fs_key != blank
+        for fs_product in fs_collection.products limit: 50
+          assign fs_field = fs_product.metafields[fs_ns][fs_key]
+          if fs_field == blank
+            continue
+          endif
+          if fs_field.type contains 'list'
+            assign fs_found = fs_field.value
+          else
+            assign fs_found = fs_field.value | append: '' | split: '§§'
+          endif
+          for fs_value in fs_found
+            assign fs_probe = fs_sep | append: fs_value | append: fs_sep
+            unless fs_vals contains fs_probe
+              assign fs_vals = fs_vals | append: fs_value | append: fs_sep
+              assign fs_idx = fs_idx | append: forloop.parentloop.index0 | append: ','
+            endunless
+          endfor
+        endfor
+      endif
+      if group == 1
+        assign fs_material_vals = fs_vals
+        assign fs_material_idx = fs_idx
+      else
+        assign fs_weight_vals = fs_vals
+        assign fs_weight_idx = fs_idx
+      endif
+    endfor
+  endif
+  assign fs_has_material = false
+  if fs_material_vals.size > 1
+    assign fs_has_material = true
+  endif
+  assign fs_has_weight = false
+  if fs_weight_vals.size > 1
+    assign fs_has_weight = true
+  endif
+  assign fs_first = 'weight'
+  if section.settings.default_tab == 'material' and fs_has_material
+    assign fs_first = 'material'
+  elsif fs_has_weight == false
+    assign fs_first = 'material'
+  endif
+  assign fs_both = false
+  if fs_has_material and fs_has_weight
+    assign fs_both = true
+  endif
+-%}
+{%- if fs_has_material or fs_has_weight -%}
+<section class="yarn-fswitch" data-yarn-fswitch aria-labelledby="FilterSwitch-{{ section.id }}">
+  <div class="page-width">
+    <div class="yarn-fswitch__head">
+      <h2 id="FilterSwitch-{{ section.id }}">{{ fs_heading | escape }}</h2>
+      <a class="yx-picks__all" href="{{ fs_collection.url }}">{{ 'yarn_project.card_view_all' | t }} →</a>
+    </div>
+    {%- if fs_both -%}
+      <div class="yarn-fswitch__tabs" role="tablist">
+        {%- for group in (1..2) -%}
+          {%- if group == 1 -%}{%- assign fs_key = 'material' -%}{%- else -%}{%- assign fs_key = 'weight' -%}{%- endif -%}
+          {%- assign fs_tab_key = fs_key | append: '_tab' -%}
+          {%- capture fs_tab -%}{%- render 'yarn-setting-text', settings: section.settings, key: fs_tab_key -%}{%- endcapture -%}
+          <button type="button" class="yarn-fswitch__tab" role="tab" id="FilterTab-{{ section.id }}-{{ fs_key }}" aria-controls="FilterPanel-{{ section.id }}-{{ fs_key }}" aria-selected="{% if fs_first == fs_key %}true{% else %}false{% endif %}"{% unless fs_first == fs_key %} tabindex="-1"{% endunless %}>{{ fs_tab | escape }}</button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+    {%- assign fs_products = fs_collection.products -%}
+    {%- for group in (1..2) -%}
+      {%- liquid
+        if group == 1
+          assign fs_key = 'material'
+          assign fs_on = fs_has_material
+          assign fs_vals = fs_material_vals
+          assign fs_idx = fs_material_idx | split: ','
+          assign fs_param = 'filter.p.m.' | append: section.settings.material_field
+        else
+          assign fs_key = 'weight'
+          assign fs_on = fs_has_weight
+          assign fs_vals = fs_weight_vals
+          assign fs_idx = fs_weight_idx | split: ','
+          assign fs_param = 'filter.p.m.' | append: section.settings.weight_field
+        endif
+        assign fs_list = fs_vals | remove_first: fs_sep | split: fs_sep
+        # Block values first, in block order, then the rest in the order products carry them.
+        assign fs_order = ''
+        for block in section.blocks
+          assign fs_probe = fs_sep | append: block.settings.value | append: fs_sep
+          if block.settings.group == fs_key and block.settings.value != blank and fs_vals contains fs_probe
+            assign fs_order = fs_order | append: block.settings.value | append: fs_sep
+          endif
+        endfor
+        for fs_value in fs_list
+          assign fs_probe = fs_sep | append: fs_value | append: fs_sep
+          assign fs_order_probe = fs_sep | append: fs_order
+          unless fs_order_probe contains fs_probe
+            assign fs_order = fs_order | append: fs_value | append: fs_sep
+          endunless
+        endfor
+        assign fs_order = fs_order | split: fs_sep
+      -%}
+      {%- if fs_on -%}
+        <div class="yarn-fswitch__panel" id="FilterPanel-{{ section.id }}-{{ fs_key }}"{% if fs_both %} role="tabpanel" aria-labelledby="FilterTab-{{ section.id }}-{{ fs_key }}"{% endif %}{% unless fs_first == fs_key %} hidden{% endunless %}>
+        <ul class="yarn-fswitch__grid" role="list">
+          {%- for fs_value in fs_order -%}
+            {%- liquid
+              assign fs_block = blank
+              for block in section.blocks
+                if block.settings.group == fs_key and block.settings.value == fs_value
+                  assign fs_block = block
+                  break
+                endif
+              endfor
+              assign fs_image = fs_block.settings.image
+              if fs_image == blank
+                for fs_listed in fs_list
+                  if fs_listed == fs_value
+                    assign fs_product_index = fs_idx[forloop.index0] | plus: 0
+                    assign fs_image = fs_products[fs_product_index].featured_image
+                    break
+                  endif
+                endfor
+              endif
+            -%}
+            {%- capture fs_needle -%}{%- if fs_block != blank -%}{%- render 'yarn-setting-text', settings: fs_block.settings, key: 'needle' -%}{%- endif -%}{%- endcapture -%}
+            <li>
+              <a class="yarn-fswitch__card" href="{{ fs_collection.url }}?{{ fs_param }}={{ fs_value | url_encode }}" {{ fs_block.shopify_attributes }}>
+                <span class="yarn-fswitch__ring">
+                  <span class="yarn-fswitch__photo">{%- if fs_image != blank -%}{{ fs_image | image_url: width: 400 | image_tag: widths: '200, 300, 400', sizes: '(min-width: 750px) 172px, 30vw', loading: 'lazy', alt: '' }}{%- endif -%}</span>
+                  <span class="yarn-fswitch__go" aria-hidden="true">{{ 'icon-arrow.svg' | inline_asset_content }}</span>
+                </span>
+                <span class="yarn-fswitch__name">{{ fs_value | escape }}</span>
+                {%- if fs_needle != blank -%}<span class="yarn-fswitch__needle">{{ fs_needle | escape }}</span>{%- endif -%}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+{%- elsif request.design_mode -%}
+  <p class="yx-picks__note page-width">{{ fs_heading | escape }}：所选集合里还没有商品填写材质或粗细字段，本区块不在店面显示。</p>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "按材质 / 粗细挑毛线",
+  "tag": "div",
+  "class": "section-yarn-filter-switch",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "日文 · 标题", "default": "素材・太さから選ぶ" },
+    { "type": "text", "id": "heading_zh", "label": "中文 · 标题", "default": "按材质 / 粗细挑毛线" },
+    { "type": "text", "id": "heading_en", "label": "英文 · 标题", "default": "Shop yarn by fiber or weight" },
+    { "type": "text", "id": "material_tab", "label": "日文 · 材质标签页", "default": "素材で選ぶ" },
+    { "type": "text", "id": "material_tab_zh", "label": "中文 · 材质标签页", "default": "按材质" },
+    { "type": "text", "id": "material_tab_en", "label": "英文 · 材质标签页", "default": "By fiber" },
+    { "type": "text", "id": "weight_tab", "label": "日文 · 粗细标签页", "default": "太さで選ぶ" },
+    { "type": "text", "id": "weight_tab_zh", "label": "中文 · 粗细标签页", "default": "按粗细" },
+    { "type": "text", "id": "weight_tab_en", "label": "英文 · 粗细标签页", "default": "By weight" },
+    { "type": "collection", "id": "collection", "label": "毛线集合" },
+    { "type": "select", "id": "default_tab", "label": "默认标签页", "options": [ { "value": "weight", "label": "按粗细" }, { "value": "material", "label": "按材质" } ], "default": "weight" },
+    { "type": "text", "id": "material_field", "label": "材质字段(命名空间.键)", "default": "yarn.material", "info": "需在 Search & Discovery 为同一字段开启筛选,链接才会带筛选" },
+    { "type": "text", "id": "weight_field", "label": "粗细字段(命名空间.键)", "default": "yarn.weight", "info": "需在 Search & Discovery 为同一字段开启筛选,链接才会带筛选" }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "取值照片与针号",
+      "settings": [
+        { "type": "select", "id": "group", "label": "维度", "options": [ { "value": "weight", "label": "粗细" }, { "value": "material", "label": "材质" } ], "default": "weight" },
+        { "type": "text", "id": "value", "label": "取值(与筛选里显示的文字完全一致)" },
+        { "type": "image_picker", "id": "image", "label": "照片(空则用集合里第一件带该取值的商品主图)" },
+        { "type": "text", "id": "needle", "label": "日文 · 参考针号(可空)" },
+        { "type": "text", "id": "needle_zh", "label": "中文 · 参考针号(可空)" },
+        { "type": "text", "id": "needle_en", "label": "英文 · 参考针号(可空)" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "按材质 / 粗细挑毛线" } ]
+}
+{% endschema %}

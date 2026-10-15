@@ -1,6 +1,15 @@
+{%- liquid
+  # Issue #120：毛线使用独立的手机构图；编织包 / 成品详情页不变。
+  # 新选品（#116）在「毛线」集合里但没有 毛糸 tag，两者任一成立即视为毛线。
+  assign yarn_pdp = false
+  assign yarn_collection_handles = product.collections | map: 'handle'
+  if product.tags contains '毛糸' or yarn_collection_handles contains 'yarn'
+    assign yarn_pdp = true
+  endif
+-%}
 <product-info
   id="MainProduct-{{ section.id }}"
-  class="yarn-product-page section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}"
+  class="yarn-product-page{% if yarn_pdp %} yarn-product-page--yarn{% endif %} section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}"
   data-section="{{ section.id }}"
   data-product-id="{{ product.id }}"
   data-update-url="true"
@@ -43,6 +52,11 @@
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'yarn-product-context.js' | asset_url }}" defer="defer"></script>
   {{ 'yarn-product-context.css' | asset_url | stylesheet_tag }}
+  {%- if yarn_pdp -%}
+    {{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
+    {{ 'yarn-pdp.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'yarn-pdp.js' | asset_url }}" defer="defer"></script>
+  {%- endif -%}
   {%- if product.quantity_price_breaks_configured? -%}
     <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
@@ -75,11 +89,16 @@
   {%- endif -%}
 
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
+  {%- capture product_title_text -%}{%- render 'yarn-product-title', product: product -%}{%- endcapture -%}
+  {%- assign product_title_text = product_title_text | strip -%}
   <product-component view-event-payload="{{ product | standard_event_data: 'view', context: 'page' | escape }}">
     <div class="page-width">
       <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
         <div class="grid__item product__media-wrapper">
           {% render 'product-media-gallery', variant_images: variant_images %}
+          {%- if yarn_pdp -%}
+            {% render 'yarn-favorite-button', entity_type: 'product', entity_id: product.id, entity_title: product_title_text %}
+          {%- endif -%}
         </div>
         <div class="product__info-wrapper grid__item{% if settings.page_width > 1400 and section.settings.media_size == "small" %} product__info-wrapper--extra-padding{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
           <section
@@ -112,6 +131,14 @@
                     {{- block_text -}}
                   </p>
                 {%- when 'title' -%}
+                  {%- if yarn_pdp -%}
+                    <p class="yp-yarn-badges">
+                      <span class="yp-yarn-badge yp-yarn-badge--yarn">{{ 'yarn_project.card_badge_yarn' | t }}</span>
+                      {%- if product.metafields.yarn.beginner_reason.value != blank -%}
+                        <span class="yp-yarn-badge yp-yarn-badge--beginner">{{ 'yarn_project.card_badge_beginner' | t }}</span>
+                      {%- endif -%}
+                    </p>
+                  {%- endif -%}
                   <div class="product__title" {{ block.shopify_attributes }}>
                     <h1>{{ product_title | escape }}</h1>
                     <a href="{{ product.url }}" class="product__title">
@@ -121,14 +148,20 @@
                     </a>
                   </div>
                 {%- when 'price' -%}
+                  {%- if yarn_pdp -%}<div class="yp-yarn-price">{%- endif -%}
                   <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
                     {%- render 'price',
                       product: product,
                       use_variant: true,
                       show_badges: true,
-                      price_class: 'price--large'
+                      price_class: 'price--large',
+                      hide_currency_code: yarn_pdp
                     -%}
                   </div>
+                  {%- if yarn_pdp -%}
+                    {%- comment -%}「（含税）」只跟随 Shopify 的含税设置，不按运营文案推断。{%- endcomment -%}
+                    <span class="yp-yarn-price__unit">{% if cart.taxes_included %}{{ 'yarn_pdp.per_ball_tax_included' | t }}{% else %}{{ 'yarn_pdp.per_ball' | t }}{% endif %}</span>
+                  {%- endif -%}
                   {%- if product.quantity_price_breaks_configured? -%}
                     <div class="volume-pricing-note" id="Volume-Note-{{ section.id }}">
                       <span>{{ 'products.product.volume_pricing.note' | t }}</span>
@@ -148,6 +181,7 @@
                       {%- endif -%}
                     </div>
                   {%- endif -%}
+                  {%- if yarn_pdp -%}</div>{%- endif -%}
                   <div {{ block.shopify_attributes }}>
                     {%- assign product_form_installment_id = 'product-form-installment-' | append: section.id -%}
                     {%- form 'product', product, id: product_form_installment_id, class: 'installment caption-large' -%}
@@ -155,6 +189,14 @@
                       {{ form | payment_terms }}
                     {%- endform -%}
                   </div>
+                  {%- comment -%}毛线：说明紧跟价格（视觉稿 1a），description block 对毛线不再重复输出。{%- endcomment -%}
+                  {%- if yarn_pdp and product.description != blank -%}
+                    {%- capture yarn_intro -%}{%- render 'yarn-product-description', product: product -%}{%- endcapture -%}
+                    {%- assign yarn_intro_text = yarn_intro | strip_html | strip -%}
+                    {%- if yarn_intro_text != blank -%}
+                      <div class="product__description rte yp-yarn-intro">{{ yarn_intro }}</div>
+                    {%- endif -%}
+                  {%- endif -%}
                 {%- when 'inventory' -%}
                   <p
                     class="product__inventory{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}"
@@ -212,9 +254,8 @@
                       {{ 'yarn-kit-story.css' | asset_url | stylesheet_tag }}
                       {{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
                       {% comment %}Full kit narrative follows the purchase section.{% endcomment %}
-                    {% elsif product.tags contains '毛糸' %}
-                      {{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
-                      {% assign show_product_details = true %}
+                    {% elsif yarn_pdp %}
+                      {% comment %}Rendered after the price; see the price block.{% endcomment %}
                     {% elsif product.tags contains '完成品' %}
                       {{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
                       {% assign show_product_details = true %}
@@ -513,7 +554,8 @@
                   {% render 'product-variant-picker',
                     product: product,
                     block: block,
-                    product_form_id: product_form_id
+                    product_form_id: product_form_id,
+                    show_selected_value: yarn_pdp
                   %}
                 {%- when 'buy_buttons' -%}
                   {%- render 'buy-buttons',
@@ -525,10 +567,6 @@
                   -%}
                   {%- if product.tags contains '編みものキット' -%}
                     {%- render 'yarn-kit-crosslinks', product: product, kind: 'yarn' -%}
-                  {%- elsif product.tags contains '毛糸' -%}
-                    {%- render 'yarn-kit-crosslinks', product: product, kind: 'kits-teaser' -%}
-                  {%- elsif product.tags contains '完成品' -%}
-                    {%- render 'yarn-kit-crosslinks', product: product, kind: 'kit-from-finished' -%}
                   {%- endif -%}
                 {%- when 'rating' -%}
                   {%- if product.metafields.reviews.rating.value != blank -%}
@@ -734,9 +772,13 @@
         <div class="yarn-kit-story-full">
           {% render 'yarn-kit-story', product: product, part: 'about', fallback: 'raw' %}
           {% render 'yarn-kit-story', product: product, part: 'body', fallback: 'none', show_fact_icons: true %}
-          {% render 'yarn-kit-crosslinks', product: product, kind: 'finished' %}
           {% render 'yarn-kit-story', product: product, part: 'faq', fallback: 'none' %}
         </div>
+      {%- endif -%}
+
+      {%- if yarn_pdp -%}
+        {% render 'yarn-pdp-details', product: product, section_id: section.id %}
+        {% render 'yarn-pdp-sticky-buy', product: product, section_id: section.id, product_title: product_title_text %}
       {%- endif -%}
 
       {% if show_product_details and product.description != blank %}

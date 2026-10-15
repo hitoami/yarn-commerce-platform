@@ -34,16 +34,19 @@
     capture line_secondary
       render 'yarn-setting-text', settings: section.settings, key: 'compact_action'
     endcapture
+    capture line_text
+      render 'yarn-setting-text', settings: section.settings, key: 'compact_text'
+    endcapture
   endif
 %}
 
 <section id="line-support" class="yarn-line{% if section.settings.compact_layout %} yarn-line--compact{% endif %} color-{{ section.settings.color_scheme }} gradient">
   <div class="page-width">
     <div class="yarn-line__inner">
-      {% if section.settings.compact_layout %}<img class="yarn-line__help-icon" src="{{ 'impeccable-b-help-icon.png' | asset_url }}" alt="" width="1254" height="1254" loading="lazy">{% else %}<img class="yarn-line__flourish" src="{{ 'impeccable-next-section-flourish.png' | asset_url }}" alt="" width="1024" height="512" loading="lazy">{% endif %}
+      {% unless section.settings.compact_layout %}<img class="yarn-line__flourish" src="{{ 'impeccable-next-section-flourish.png' | asset_url }}" alt="" width="1024" height="512" loading="lazy">{% endunless %}
       <div class="yarn-line__copy">
         <h2>{{ line_heading | escape }}</h2>
-        {% unless section.settings.compact_layout %}<div class="rte">{{ line_text }}</div>{% endunless %}
+        {% if section.settings.compact_layout %}{% if line_text != blank %}<p class="yarn-line__note">{{ line_text | escape }}</p>{% endif %}{% else %}<div class="rte">{{ line_text }}</div>{% endif %}
       </div>
       <div class="yarn-line__actions">
         {% if line_has_primary %}
@@ -177,23 +180,26 @@
     }
   }
   .section:has(.yarn-line--compact) { margin-top: 0; }
-  .yarn-line.yarn-line--compact { padding: var(--yarn-space-6) 0 var(--yarn-space-7); background: var(--yarn-bg-surface); color: var(--yarn-text-primary); }
-  .yarn-line--compact > .page-width { width: min(var(--yarn-content-max), calc(100% - 2 * var(--yarn-gutter))); max-width: none; padding: 0; }
-  .yarn-line--compact .yarn-line__inner { grid-template-columns: 58px minmax(0, 1fr) auto; padding: 24px 30px; gap: 22px; min-height: 110px; border: 1px solid var(--yarn-cta-border); border-radius: var(--yarn-radius-panel); background: var(--yarn-action-subtle-bg); box-shadow: none; }
-  .yarn-line__help-icon { display: block; width: 58px; height: 58px; object-fit: contain; mix-blend-mode: multiply; }
-  .yarn-line--compact .yarn-line__copy h2 { font-family: var(--yarn-display); color: var(--yarn-text-primary); font-size: 2rem; line-height: 1.4; }
+  .yarn-line.yarn-line--compact { padding: var(--yarn-space-6) 0 72px; background: var(--yarn-bg-surface); color: var(--yarn-text-primary); }
+  .yarn-line--compact > .page-width { width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter))); max-width: none; padding: 0; }
+  .yarn-line--compact .yarn-line__inner { grid-template-columns: minmax(0, 1fr) auto; padding: 28px 32px; gap: 24px; min-height: 0; border: 1px solid var(--yarn-cta-border); border-radius: var(--yarn-radius-panel); background: var(--yarn-action-subtle-bg); box-shadow: none; }
+  .yarn-line--compact .yarn-line__copy h2 { max-width: none; font: 600 2rem/1.4 var(--yarn-display); color: var(--yarn-text-primary); }
+  .yarn-line__note { margin: 4px 0 0; color: var(--yarn-text-muted); font-size: 1.4rem; line-height: 1.6; }
   .yarn-line--compact .yarn-line__actions { min-width: 0; }
-  .yarn-line--compact .yarn-line__fallback { padding: 8px 0; min-height: 44px; gap: 14px; background: transparent; border: 0; border-radius: 0; color: var(--yarn-action); font-size: var(--yarn-type-control); box-shadow: none; }
+  .yarn-line--compact .yarn-line__fallback { min-height: 44px; padding: 0 24px; gap: 8px; border: 0; border-radius: var(--yarn-radius-pill); background: var(--yarn-home-action); color: var(--yarn-text-on-action); font: 600 1.5rem/1.2 var(--yarn-display); box-shadow: none; }
   .yarn-line--compact .yarn-line__fallback::before, .yarn-line--compact .yarn-line__fallback::after { display: none; }
-  .yarn-line--compact .yarn-line__fallback:hover { text-decoration: underline; text-underline-offset: 5px; }
+  .yarn-line--compact .yarn-line__fallback:hover { background: var(--yarn-text-warm); }
   .yarn-line--compact .yarn-line__fallback svg { width: 16px; height: 16px; }
-  @media (max-width: 599px) {
+  @media (max-width: 749px) {
+    .yarn-line.yarn-line--compact { padding: 24px 0 32px; }
     .yarn-line--compact > .page-width { width: calc(100% - 32px); }
-    .yarn-line--compact .yarn-line__inner { grid-template-columns: 32px minmax(0, 1fr); gap: 4px 12px; padding: 18px 16px; min-height: 90px; }
-    .yarn-line--compact .yarn-line__copy h2 { max-width: none; font-size: 1.6rem; }
-    .yarn-line--compact .yarn-line__actions { grid-column: 2; justify-self: start; }
-    .yarn-line--compact .yarn-line__fallback { font-size: 1.4rem; gap: 8px; }
-    .yarn-line__help-icon { width: 36px; height: 36px; }
+    .yarn-line--compact .yarn-line__inner { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 18px 16px; }
+    .yarn-line--compact .yarn-line__copy h2 { font-size: 1.6rem; }
+    .yarn-line__note { display: none; }
+    .yarn-line--compact .yarn-line__actions { justify-self: start; }
+    .yarn-line--compact .yarn-line__fallback { justify-content: flex-start; min-width: 0; min-height: 32px; padding: 0; gap: 8px; background: transparent; color: var(--yarn-action); font: 400 1.4rem/1.4 var(--yarn-body); }
+    .yarn-line--compact .yarn-line__fallback:hover { background: transparent; text-decoration: underline; text-underline-offset: 5px; }
+    .yarn-line--compact .yarn-line__fallback svg { width: 14px; height: 14px; }
   }
 {% endstylesheet %}
 
@@ -210,6 +216,9 @@
     { "type": "text", "id": "compact_action_zh", "label": "紧凑链接 · 中文", "default": "问问我们" },
     { "type": "text", "id": "compact_heading_en", "label": "紧凑标题 · 英文", "default": "Need help choosing materials?" },
     { "type": "text", "id": "compact_action_en", "label": "紧凑链接 · 英文", "default": "Ask us" },
+    { "type": "text", "id": "compact_text", "label": "紧凑说明 · 日文（仅桌面）", "default": "作りたいものを教えてください。糸と道具選びをお手伝いします。" },
+    { "type": "text", "id": "compact_text_zh", "label": "紧凑说明 · 中文（仅桌面）", "default": "告诉我们想做什么，我们帮你配线和工具。" },
+    { "type": "text", "id": "compact_text_en", "label": "紧凑说明 · 英文（仅桌面）", "default": "Tell us what you'd like to make and we'll help you pick yarn and tools." },
     { "type": "text", "id": "fallback_heading", "label": "未配置 LINE 时的标题", "default": "迷ったら、つくりたいものからご相談ください。" },
     { "type": "richtext", "id": "fallback_text", "label": "未配置 LINE 时的说明", "default": "<p>色合わせや必要量、在庫で迷ったときは、お問い合わせフォームから気軽にお知らせください。</p>" },
     {

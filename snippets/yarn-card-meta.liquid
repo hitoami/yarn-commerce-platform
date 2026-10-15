@@ -1,0 +1,23 @@
+{%- comment -%}
+  Card meta row shared by homepage picks and collection cards: product kind on the left,
+  real color count on the right. The count comes from the product's color option, never from photo text.
+  Accepts: meta_product
+{%- endcomment -%}
+{%- capture yx_meta_kind %}{% render 'yarn-product-kind-label', kind_product: meta_product %}{% endcapture -%}
+{%- liquid
+  assign yx_meta_kind = yx_meta_kind | strip
+  assign yx_color_count = 0
+  for option in meta_product.options_with_values
+    assign yx_option_name = option.name | downcase
+    if yx_option_name contains '色' or yx_option_name contains 'color' or yx_option_name contains 'colour' or yx_option_name contains 'カラー'
+      assign yx_color_count = option.values.size
+      break
+    endif
+  endfor
+-%}
+{%- if yx_meta_kind != blank or yx_color_count > 1 -%}
+  <span class="yx-card-meta">
+    <span class="yx-card-meta__kind">{{ yx_meta_kind }}</span>
+    {%- if yx_color_count > 1 -%}<span class="yx-card-meta__colors">{{ 'yarn_project.card_color_count' | t: count: yx_color_count }}</span>{%- endif -%}
+  </span>
+{%- endif -%}

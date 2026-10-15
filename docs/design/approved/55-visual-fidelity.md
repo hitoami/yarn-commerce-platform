@@ -1,6 +1,6 @@
 # Issue #55 商品家族构图
 
-范围与批准记录：[Issue #55](https://github.com/mewool-yarn/yarn-commerce-platform/issues/55#issuecomment-5745597797)。用户在本轮确认按指定手机/桌面原型修正 PR #56 的视觉还原；沿用既有品牌与 Shopify 数据边界，不使用仅适用于 #23 的原型例外。
+范围与批准记录：[Issue #55](https://github.com/hitoami/yarn-commerce-platform/issues/55#issuecomment-5745597797)。用户在本轮确认按指定手机/桌面原型修正 PR #56 的视觉还原；沿用既有品牌与 Shopify 数据边界，不使用仅适用于 #23 的原型例外。
 
 | Surface | 目的 | 构图 |
 | --- | --- | --- |

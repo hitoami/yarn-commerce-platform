@@ -1,4 +1,4 @@
-{%- comment -%}Desktop navigation. Menu labels and URLs come from Shopify Navigation.{%- endcomment -%}
+{%- comment -%}Desktop navigation. Menu labels and URLs come from Shopify Navigation; a top-level link to the collection with handle `sale` is highlighted.{%- endcomment -%}
 <nav class="header__inline-menu" aria-label="{{ 'sections.header.menu' | t }}">
   <ul class="list-menu list-menu--inline yarn-main-menu" role="list">
     {%- for link in navigation_menu.links -%}
@@ -61,7 +61,7 @@
           <a
             id="YarnHeaderMenu-{{ link.handle }}"
             href="{{ link.url | escape }}"
-            class="header__menu-item list-menu__item link link--text focus-inset{% if link.current %} header__active-menu-item{% endif %}"
+            class="header__menu-item list-menu__item link link--text focus-inset{% if link.current %} header__active-menu-item{% endif %}{% if link.type == 'collection_link' and link.object.handle == 'sale' %} yarn-menu-sale{% endif %}"
             {% if link.current %}aria-current="page"{% endif %}
           >
             <span>{{ link.title | escape }}</span>

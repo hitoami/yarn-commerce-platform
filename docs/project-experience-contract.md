@@ -1,6 +1,6 @@
 # 作品体验与内容编辑合同
 
-日期：2026-09-06。任务来源：[Issue #22](https://github.com/mewool-yarn/yarn-commerce-platform/issues/22)。
+日期：2026-09-06。任务来源：[Issue #22](https://github.com/hitoami/yarn-commerce-platform/issues/22)。
 
 本文件承接 PRODUCT.md 中已确认的产品决定，规定各页面职责与内容来源；不是本地任务追踪器，也不是当前 Shopify 后台已经完成接线的操作指南。实施状态、验收证据与后续任务以 Issue / PR 为准。
 

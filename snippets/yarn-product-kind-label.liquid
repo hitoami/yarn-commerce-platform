@@ -10,5 +10,7 @@
     echo 'yarn_project.card_badge_kit' | t
   elsif kind_product.tags contains '完成品'
     echo 'yarn_project.card_badge_finished' | t
+  elsif kind_product.tags contains '編み物道具'
+    echo 'yarn_project.card_badge_tools' | t
   endif
 -%}

@@ -1,11 +1,33 @@
 {{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
 {% comment %}
   首页精选区块(卡片家族):标题 + 查看全部 + 可选出口卡钩子 + 商品卡网格。
-  文案按 yarn-hero 的三联模式:纯键名为日文默认,_zh/_en 为中英覆盖。
+  模式:collection 按集合顺序;sale 只取有真实划线价的商品、按折扣力度从大到小,没有折扣商品时整块不渲染;
+  beginner 在卡片上显示「新手友好」及商品 metafield yarn.beginner_reason 里的理由,没有理由的商品不显示标签。
+  handmade(#131 手工成品):库存由 Shopify 跟踪且 10 件及以下时显示「仅剩 N 件」,卖完显示「售罄」(不隐藏)。
+  三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
 {% endcomment %}
 {%- liquid
   assign picks_collection = collections[section.settings.collection]
   assign picks_limit = section.settings.products_to_show
+  assign picks_mode = section.settings.mode
+  assign picks_count = 0
+  if picks_collection != blank
+    assign picks_count = picks_collection.products_count
+  endif
+  if picks_mode == 'sale' and picks_count > 0
+    # Rank discounted products by discount depth: key = (100 - percent) zero-padded, then original position.
+    assign sale_keys = ''
+    for sale_product in picks_collection.products limit: 50
+      if sale_product.compare_at_price > sale_product.price
+        assign sale_off = sale_product.compare_at_price | minus: sale_product.price | times: 100 | divided_by: sale_product.compare_at_price
+        assign sale_rank = 100 | minus: sale_off | plus: 1000 | append: ''
+        assign sale_pos = forloop.index0 | plus: 1000 | append: ''
+        assign sale_keys = sale_keys | append: sale_rank | append: '-' | append: sale_pos | append: ','
+      endif
+    endfor
+    assign sale_keys = sale_keys | split: ',' | sort
+    assign picks_count = sale_keys.size
+  endif
   capture picks_heading
     render 'yarn-setting-text', settings: section.settings, key: 'heading'
   endcapture
@@ -25,13 +47,21 @@
     render 'yarn-setting-text', settings: section.settings, key: 'exit_note'
   endcapture
 -%}
+{%- if picks_count == 0 -%}
+  {%- if request.design_mode -%}<p class="yx-picks__note page-width">{{ picks_heading | escape }}：{% if picks_mode == 'sale' %}所选集合里暂无带划线价的商品，本区块不在店面显示。{% else %}请在右侧选择一个有商品的集合，未选择时本区块不在店面显示。{% endif %}</p>{%- endif -%}
+{%- else -%}
 <section class="yx-picks yarn-shell-block{% if section.settings.columns_desktop == 2 %} yx-picks--duo{% endif %} color-{{ section.settings.color_scheme }}" style="--yx-cols: {{ section.settings.columns_desktop }};" aria-labelledby="Picks-{{ section.id }}">
+  {%- if section.settings.products_to_show_mobile < picks_limit -%}
+    <style>@media (max-width: 749px) { #shopify-section-{{ section.id }} .yx-picks__grid > :nth-child(n + {{ section.settings.products_to_show_mobile | plus: 1 }}) { display: none; } }</style>
+  {%- endif -%}
   <div class="yx-picks__inner page-width">
     <div class="yx-picks__head">
-      <h2 id="Picks-{{ section.id }}">{{ picks_heading | escape }}</h2>
+      <div class="yx-picks__titles">
+        <h2 id="Picks-{{ section.id }}">{{ picks_heading | escape }}</h2>
+        {%- if picks_note != blank -%}<p class="yx-picks__note">{{ picks_note | escape }}</p>{%- endif -%}
+      </div>
       {%- if picks_collection != blank -%}<a class="yx-picks__all" href="{{ picks_collection.url }}">{{ 'yarn_project.card_view_all' | t }} →</a>{%- endif -%}
     </div>
-    {%- if picks_note != blank -%}<p class="yx-picks__note">{{ picks_note | escape }}</p>{%- endif -%}
     <div class="yx-picks__body{% if section.settings.exit_enabled %} yx-picks__body--with-exit{% endif %}">
     {%- if section.settings.exit_enabled -%}
       <aside class="yx-exit yx-picks__exit">
@@ -45,16 +75,27 @@
         {%- if exit_note != blank -%}<p class="yx-exit__note">{{ exit_note | escape }}</p>{%- endif -%}
       </aside>
     {%- endif -%}
-    {%- if picks_collection != blank and picks_collection.products_count > 0 -%}
       <div class="yx-picks__grid">
-        {%- for pick_product in picks_collection.products limit: picks_limit -%}
-          {%- render 'yarn-pick-card', card_product: pick_product -%}
-        {%- endfor -%}
+        {%- if picks_mode == 'sale' -%}
+          {%- assign sale_products = picks_collection.products -%}
+          {%- for sale_key in sale_keys limit: picks_limit -%}
+            {%- assign sale_index = sale_key | split: '-' | last | minus: 1000 -%}
+            {%- render 'yarn-pick-card', card_product: sale_products[sale_index], show_discount: true -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- assign picks_beginner = false -%}
+          {%- if picks_mode == 'beginner' -%}{%- assign picks_beginner = true -%}{%- endif -%}
+          {%- assign picks_handmade = false -%}
+          {%- if picks_mode == 'handmade' -%}{%- assign picks_handmade = true -%}{%- endif -%}
+          {%- for pick_product in picks_collection.products limit: picks_limit -%}
+            {%- render 'yarn-pick-card', card_product: pick_product, beginner: picks_beginner, handmade: picks_handmade -%}
+          {%- endfor -%}
+        {%- endif -%}
       </div>
-    {%- endif -%}
     </div>
   </div>
 </section>
+{%- endif -%}
 
 {% schema %}
 {
@@ -67,7 +108,20 @@
     { "type": "text", "id": "note_zh", "label": "中文 · 辅助说明(可空)" },
     { "type": "text", "id": "note_en", "label": "英文 · 辅助说明(可空)" },
     { "type": "collection", "id": "collection", "label": "集合" },
+    {
+      "type": "select",
+      "id": "mode",
+      "label": "显示方式",
+      "options": [
+        { "value": "collection", "label": "按集合顺序" },
+        { "value": "sale", "label": "优惠:只显示有划线价的商品,按折扣力度排序" },
+        { "value": "beginner", "label": "新手友好:显示商品字段 yarn.beginner_reason 里的理由" },
+        { "value": "handmade", "label": "手工成品:显示「仅剩 N 件」或「售罄」(库存 10 件及以下时)" }
+      ],
+      "default": "collection"
+    },
     { "type": "range", "id": "products_to_show", "min": 2, "max": 8, "step": 1, "default": 4, "label": "商品数" },
+    { "type": "range", "id": "products_to_show_mobile", "min": 2, "max": 8, "step": 1, "default": 8, "label": "手机最多显示", "info": "手机上只显示前几件；大于商品数时按商品数显示" },
     { "type": "range", "id": "columns_desktop", "min": 2, "max": 4, "step": 1, "default": 4, "label": "桌面列数" },
     { "type": "header", "content": "出口卡钩子(可选)" },
     { "type": "checkbox", "id": "exit_enabled", "label": "显示出口卡", "default": false },

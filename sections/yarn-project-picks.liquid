@@ -1,0 +1,56 @@
+{{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
+{% comment %}
+  首页「按作品图选」:运营挑选的 yarn_project 作品卡(未挑选时按作品库顺序)(封面 + 标题 + 真实购买标签),点击进入作品详情选择买成品或自己做。
+  只显示可公开的作品(yarn-project-visible);一件都没有时整块不渲染。
+  三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
+{% endcomment %}
+{%- capture pp_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'heading' -%}{%- endcapture -%}
+{%- capture pp_note -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'note' -%}{%- endcapture -%}
+{%- capture pp_cards -%}
+  {%- assign pp_shown = 0 -%}
+  {%- assign pp_projects = section.settings.projects -%}
+  {%- if pp_projects.size == 0 -%}{%- assign pp_projects = shop.metaobjects.yarn_project.values -%}{%- endif -%}
+  {%- for project in pp_projects -%}
+    {%- if pp_shown >= section.settings.limit -%}{%- break -%}{%- endif -%}
+    {%- capture pp_visible -%}{%- render 'yarn-kit-visible', project: project -%}{%- endcapture -%}
+    {%- if pp_visible == 'true' and project.cover.value != blank -%}
+      {%- assign pp_shown = pp_shown | plus: 1 -%}
+      {%- render 'yarn-project-pick-card', project: project -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- if pp_cards contains 'yx-project-pick' -%}
+<section class="yx-picks yarn-shell-block color-{{ section.settings.color_scheme }}" aria-labelledby="ProjectPicks-{{ section.id }}">
+  <div class="yx-picks__inner page-width">
+    <div class="yx-picks__head">
+      <div class="yx-picks__titles">
+        <h2 id="ProjectPicks-{{ section.id }}">{{ pp_heading | escape }}</h2>
+        {%- if pp_note != blank -%}<p class="yx-picks__note">{{ pp_note | escape }}</p>{%- endif -%}
+      </div>
+      {%- if section.settings.all_link != blank -%}<a class="yx-picks__all" href="{{ section.settings.all_link }}">{{ 'yarn_project.card_view_all' | t }} →</a>{%- endif -%}
+    </div>
+    <div class="yx-project-picks">{{ pp_cards }}</div>
+  </div>
+</section>
+{%- elsif request.design_mode -%}
+  <p class="yx-picks__note page-width">{{ pp_heading | escape }}：请在右侧选择已公开且有封面的作品，没有可显示的作品时本区块不在店面显示。</p>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "按作品图选",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "日文 · 标题", "default": "作品から選ぶ" },
+    { "type": "text", "id": "heading_zh", "label": "中文 · 标题", "default": "按作品图选" },
+    { "type": "text", "id": "heading_en", "label": "英文 · 标题", "default": "Shop by project" },
+    { "type": "text", "id": "note", "label": "日文 · 辅助说明(可空)", "default": "気になる作品から、完成品を買うか自分で編むかを選べます。" },
+    { "type": "text", "id": "note_zh", "label": "中文 · 辅助说明(可空)", "default": "看中一件作品，再决定买成品还是自己做。" },
+    { "type": "text", "id": "note_en", "label": "英文 · 辅助说明(可空)", "default": "Find a piece you love, then buy it finished or make it yourself." },
+    { "type": "metaobject_list", "id": "projects", "label": "作品及顺序", "metaobject_type": "yarn_project", "limit": 8 },
+    { "type": "range", "id": "limit", "min": 2, "max": 8, "step": 1, "default": 4, "label": "最多显示" },
+    { "type": "url", "id": "all_link", "label": "查看全部链接(可空)" },
+    { "type": "select", "id": "color_scheme", "label": "配色", "options": [ { "value": "scheme-1", "label": "默认" } ], "default": "scheme-1" }
+  ],
+  "presets": [ { "name": "按作品图选" } ]
+}
+{% endschema %}

@@ -1,0 +1,171 @@
+{% comment %}
+  首屏下方导览条:左侧标题,右侧节点(一笔画图标圆 + 编号 + 标题 + 说明)像毛线挂饰一样,由短线挂在一根下垂的捻股毛线上。
+  桌面端线头趴着一只抱着线球睡觉的小猫(九帧精灵图);悬停或聚焦节点时小猫醒来,沿挂线走到该节点旁,线球滚在它前面,到达后停下睡觉。手机端不显示小猫。
+  三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。动效由 yarn-guide-strip.js 增强,减少动态时关闭。
+{% endcomment %}
+{{ 'yarn-guide-strip.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'yarn-guide-strip.js' | asset_url }}" defer="defer"></script>
+
+{%- capture guide_eyebrow -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'eyebrow' -%}{%- endcapture -%}
+{%- capture guide_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'heading' -%}{%- endcapture -%}
+{%- capture starter_title -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'starter_title' -%}{%- endcapture -%}
+{%- capture starter_text -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'starter_text' -%}{%- endcapture -%}
+{%- capture starter_label -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'starter_label' -%}{%- endcapture -%}
+
+<section class="yarn-guide" data-yarn-guide aria-labelledby="YarnGuideHeading-{{ section.id }}">
+  <div class="yarn-guide__inner">
+    <div class="yarn-guide__head">
+      {%- if guide_eyebrow != blank -%}<p class="yarn-guide__eyebrow">{{ guide_eyebrow | escape }}</p>{%- endif -%}
+      <h2 class="yarn-guide__heading" id="YarnGuideHeading-{{ section.id }}">{{ guide_heading | escape }}</h2>
+    </div>
+
+    {%- comment -%}
+      Hanging line: sags between hang points; each hang point sits exactly above a node center.
+      Nodes sit in equal grid columns, so centers are at (2i + 1) / (2N) of the rail width. This Liquid path is the
+      no-JS fallback; yarn-guide-strip.js rebuilds it in pixels and, on desktop, pins both ends to the strip's top edge.
+    {%- endcomment -%}
+    {%- liquid
+      assign node_count = section.blocks.size | at_least: 1
+      assign hang_step = 1000.0 | divided_by: node_count
+      assign first_x = hang_step | divided_by: 2
+      capture thread_d
+        echo 'M0 18 Q '
+        echo first_x | divided_by: 2
+        echo ' 26 '
+        echo first_x
+        echo ' 8'
+        for i in (1..node_count)
+          if i < node_count
+            assign x_prev = i | minus: 1 | times: hang_step | plus: first_x
+            assign x_here = i | times: hang_step | plus: first_x
+            echo ' Q '
+            echo x_prev | plus: x_here | divided_by: 2
+            echo ' 30 '
+            echo x_here
+            echo ' 8'
+          endif
+        endfor
+        assign x_last = node_count | minus: 1 | times: hang_step | plus: first_x
+        echo ' Q '
+        echo x_last | plus: 1000 | divided_by: 2
+        echo ' 26 1000 18'
+      endcapture
+    -%}
+    <div class="yarn-guide__rail">
+      {%- comment -%} Plied yarn: a light core plus dashed ply ridges, revealed together through one drawing mask. {%- endcomment -%}
+      <svg class="yarn-guide__thread" viewBox="0 0 1000 40" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <defs>
+          <mask id="YarnGuideDraw-{{ section.id }}" style="mask-type: alpha;" maskUnits="userSpaceOnUse" x="-4000" y="-400" width="10000" height="800">
+            <path class="yarn-guide__draw" d="{{ thread_d | strip }}" pathLength="1" vector-effect="non-scaling-stroke"/>
+          </mask>
+        </defs>
+        <g mask="url(#YarnGuideDraw-{{ section.id }})">
+          <path class="yarn-guide__ply-core" d="{{ thread_d | strip }}" vector-effect="non-scaling-stroke"/>
+          <path class="yarn-guide__ply-ridge" d="{{ thread_d | strip }}" vector-effect="non-scaling-stroke"/>
+        </g>
+        <circle class="yarn-guide__knot" r="4.5" cx="0" cy="0"/>
+        <circle class="yarn-guide__knot" r="4.5" cx="0" cy="0"/>
+      </svg>
+      <span class="yarn-guide__cat" data-cat aria-hidden="true" style="background-image: url('{{ 'yarn-guide-cat.webp' | asset_url }}');"></span>
+      <svg class="yarn-guide__ball" viewBox="-11 -11 22 22" aria-hidden="true" focusable="false">
+        <clipPath id="YarnGuideBall-{{ section.id }}"><circle r="9.6"/></clipPath>
+        <circle class="yarn-guide__ball-body" r="10"/>
+        <g clip-path="url(#YarnGuideBall-{{ section.id }})">
+          <path transform="rotate(-20)" d="M-11 -3.4Q0 -7.6 11 -3.4M-11 -1.8Q0 -6 11 -1.8M-11 -.2Q0 -4.4 11 -.2M-11 1.4Q0 -2.8 11 1.4"/>
+          <path transform="rotate(40)" d="M-11 -1.2Q0 -5.4 11 -1.2M-11 .4Q0 -3.8 11 .4M-11 2Q0 -2.2 11 2M-11 3.6Q0 -.6 11 3.6"/>
+          <path transform="rotate(100)" d="M-11 -2.9Q0 -7.1 11 -2.9M-11 -1.3Q0 -5.5 11 -1.3M-11 .3Q0 -3.9 11 .3M-11 1.9Q0 -2.3 11 1.9"/>
+        </g>
+        <circle class="yarn-guide__ball-rim" r="10"/>
+      </svg>
+
+      <ol class="yarn-guide__nodes" role="list">
+        {%- for block in section.blocks -%}
+          {%- capture node_title -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'title' -%}{%- endcapture -%}
+          {%- capture node_text -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'text' -%}{%- endcapture -%}
+          <li class="yarn-guide__item" style="--swing-delay: {{ forloop.index0 | times: -1.7 }}s;" {{ block.shopify_attributes }}>
+            <a class="yarn-guide__node" href="{{ block.settings.link | default: routes.collections_url }}">
+              <span class="yarn-guide__hang">
+                <span class="yarn-guide__strand" aria-hidden="true"></span>
+                <span class="yarn-guide__dot yarn-guide__dot--{{ block.settings.icon }}">
+                  {%- render 'yarn-guide-icon', icon: block.settings.icon -%}
+                </span>
+              </span>
+              <span class="yarn-guide__num" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+              <span class="yarn-guide__title">{{ node_title | escape }}</span>
+              {%- if node_text != blank -%}<span class="yarn-guide__text">{{ node_text | escape }}</span>{%- endif -%}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ol>
+    </div>
+  </div>
+  {%- if starter_title != blank and section.settings.starter_link != blank -%}
+    <a class="yarn-guide__starter" href="{{ section.settings.starter_link }}">
+      <span class="yarn-guide__starter-icon" aria-hidden="true">{%- render 'yarn-guide-icon', icon: 'yarn' -%}</span>
+      <span class="yarn-guide__starter-text">
+        <span class="yarn-guide__starter-title">{{ starter_title | escape }}</span>
+        {%- if starter_text != blank -%}<span class="yarn-guide__starter-sub">{{ starter_text | escape }}</span>{%- endif -%}
+      </span>
+      {%- if starter_label != blank -%}<span class="yarn-guide__starter-cta">{{ starter_label | escape }} <span aria-hidden="true">→</span></span>{%- endif -%}
+    </a>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "导览条",
+  "tag": "div",
+  "class": "section-yarn-guide-strip",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "header", "content": "日文(默认)" },
+    { "type": "text", "id": "eyebrow", "label": "小标题", "default": "ご案内" },
+    { "type": "text", "id": "heading", "label": "标题", "default": "どこから始めますか？" },
+    { "type": "header", "content": "中文" },
+    { "type": "text", "id": "eyebrow_zh", "label": "小标题", "default": "导览" },
+    { "type": "text", "id": "heading_zh", "label": "标题", "default": "从哪开始？" },
+    { "type": "header", "content": "英文" },
+    { "type": "text", "id": "eyebrow_en", "label": "小标题", "default": "Guide" },
+    { "type": "text", "id": "heading_en", "label": "标题", "default": "Where to start?" },
+    { "type": "header", "content": "新手入口(标题和链接都填写才显示)" },
+    { "type": "url", "id": "starter_link", "label": "链接(新手集合)" },
+    { "type": "text", "id": "starter_title", "label": "日文 · 标题", "default": "はじめて編む方へ" },
+    { "type": "text", "id": "starter_text", "label": "日文 · 说明" },
+    { "type": "text", "id": "starter_label", "label": "日文 · 按钮文字", "default": "はじめての方へ" },
+    { "type": "text", "id": "starter_title_zh", "label": "中文 · 标题", "default": "第一次织？从这里开始" },
+    { "type": "text", "id": "starter_text_zh", "label": "中文 · 说明" },
+    { "type": "text", "id": "starter_label_zh", "label": "中文 · 按钮文字", "default": "新手入门" },
+    { "type": "text", "id": "starter_title_en", "label": "英文 · 标题", "default": "New to knitting? Start here" },
+    { "type": "text", "id": "starter_text_en", "label": "英文 · 说明" },
+    { "type": "text", "id": "starter_label_en", "label": "英文 · 按钮文字", "default": "Beginner's guide" }
+  ],
+  "blocks": [
+    {
+      "type": "node",
+      "name": "节点",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "图标",
+          "options": [
+            { "value": "yarn", "label": "猫团子线团(湖绿底)" },
+            { "value": "kit", "label": "挂卡材料包(粉底)" },
+            { "value": "sweater", "label": "胸前有猫的毛衣(奶茶底)" },
+            { "value": "tools", "label": "交叉棒针与线圈(奶白底)" }
+          ],
+          "default": "yarn"
+        },
+        { "type": "url", "id": "link", "label": "链接" },
+        { "type": "text", "id": "title", "label": "标题 · 日文" },
+        { "type": "text", "id": "text", "label": "说明 · 日文" },
+        { "type": "text", "id": "title_zh", "label": "标题 · 中文" },
+        { "type": "text", "id": "text_zh", "label": "说明 · 中文" },
+        { "type": "text", "id": "title_en", "label": "标题 · 英文" },
+        { "type": "text", "id": "text_en", "label": "说明 · 英文" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "导览条" }]
+}
+{% endschema %}

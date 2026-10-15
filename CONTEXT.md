@@ -1,6 +1,6 @@
 # Yarn Commerce Domain
 
-该上下文描述毛线、编织项目和材料套件之间的统一产品语言，避免在商品、教程和平台功能之间混用概念。
+该上下文描述当前毛线、作品材料方案与商品之间的统一语言。当前 MVP 边界采用用户 2026-10-15 对 #131 / PR #136 的确认；未来平台词汇不自动进入当前实施范围。
 
 ## Language
 
@@ -13,7 +13,7 @@ _Avoid_: Item, Listing
 _Avoid_: SKU（除非明确指库存编码）
 
 **Project**:
-围绕一个目标作品组织展示、成品购买与手作准备的统一内容入口。可支持成品、材料购买或两者；没有这两种购买能力的记录在发现页归为 Inspiration。可跟做的手作内容再包含难度、时间、材料要求与制作指导。
+围绕一个目标作品组织真实照片、所需毛线与团数、制作准备及教程领取安排的内容入口。当前使用 yarn_project，不是可购买 Product；公开的完整方案在消费者界面称「材料包」。
 _Avoid_: Kit, Product
 
 **Draft Project**:
@@ -21,20 +21,24 @@ _Avoid_: Kit, Product
 _Avoid_: Inspiration, Published Project
 
 **Inspiration**:
-由品牌或编辑团队策划的作品展示。按 2026-09-07 用户决定，在当前作品发现页中指没有成品与材料购买能力的作品；可以保留说明或教程来源，不承诺本店供货。这个分类与旧 `inspiration` Metaobject 载体不等同，旧记录不因此自动迁移。
+品牌或编辑策划的作品展示内容，不承诺本店供货。当前新体验不设仅灵感分类；旧记录不自动迁移、公开或删除。
 _Avoid_: Project, Tutorial
 
 **Project Kit**:
-为完成某个 Project 而组合销售的毛线、工具与图样说明，是 Product 的一种；团队沟通中称「编织包」或「材料包」。MVP 阶段整包从中国采购入库、拥有独立库存，日本端不重新组装（选品组 2026-09-17 确认）。
+某个 Project 的默认毛线购买方案，团队与消费者称「材料包」。当前由 yarn_material 引用 Variant × 团数，不是独立 Product，没有独立库存或包内折扣；顾客可选同款可售颜色，购物车中仍是各毛线 Variant。此前整包采购、独立库存模式不适用于 #131。
 _Avoid_: Project, Tutorial
 
 **Finished Piece（成品）**:
-按某个作品制作完成、可直接购买的实物商品，是 Product 的一种；可以关联对应 Project，也可以不关联任何 Project 单独销售。
+可直接购买的手工实物，是 Product 的一种。当前独立购买，不与材料包互链；按实际库存展示余量，售罄保留。
 _Avoid_: Member Work, Project
 
 **Yarn Product（毛线）**:
 以卷／团为单位单独销售的线材 Product。其顾客通常自带明确制作目标，选购不依赖 Project 引导。
 _Avoid_: Material Requirement, Kit Component
+
+**Tool Product（工具）**:
+钩针、棒针、辅料等工具 Product 的既有或未来记录。工具不在 #131 当前售卖范围；制作准备中仍可说明自备工具，不自动增购。
+_Avoid_: Kit Component, Material Requirement
 
 **Reference Standard（参照标准）**:
 帮助顾客估算用量或成品尺寸的参照信息，例如一卷线可织多大的围巾；它是内容提示，不构成 Material Requirement，也不构成完成承诺。
@@ -49,11 +53,11 @@ _Avoid_: Product, Variant, Kit Component
 _Avoid_: Material Requirement, Kit Component
 
 **Kit Component**:
-某个 Project Kit 配置所需的一项既有 Variant 及其数量。它引用同一份实际商品库存，不建立重复库存。
+当前 Project Kit 中一项毛线 Variant 及其所需团数，使用既有 yarn_material 承载。只引用真实商品，不复制库存。其他自备材料或工具可说明但不进入当前材料包加购。
 _Avoid_: Variant, Copied Product
 
 **Tutorial**:
-用于帮助 Visitor 或 Member 完成 Project 的图解、视频或步骤内容；可以是 Project 专属指南，也可以是跨 Project 复用的通用技巧。
+帮助完成 Project 的图解、视频或步骤资料。当前通过官方 LINE，由店员核对订单号和作品名称后发送；本轮没有站内教程阅读、自动核验或发放。
 _Avoid_: Project
 
 **Customization Inquiry**:
@@ -102,48 +106,27 @@ _Avoid_: Project, Product
 
 ## Relationships
 
-- 一个 **Product** 有一个或多个 **Variants**。
-- **Draft Project** 达到可执行标准后才能成为公开 **Project**。
-- **Project** 的成品购买能力、材料购买能力与教程内容分别维护；可跟做内容的完整性要求不用于阻止仅成品作品展示。当前发现页对两种购买能力皆无的作品显示 **Inspiration**。
-- 一个 **Material Requirement** 可以有零个或多个 **Product Recommendation**；推荐商品缺货、停售或替换不改变 Project 本身。
-- **Project** 是发现与购买的组织入口，不要求本店供应所有 Material Requirements；可单独销售已提供的配件，未供应、自备与信息待补项仍在清单中明确展示。作品方案不自动等同于固定 Project Kit。
-- 毛线 **Material Requirement** 可以使用重量和／或长度表达大致用量；具体商品需要购买几团可以在 **Product Recommendation** 中另行说明。
-- **Project Kit** 是满足 Project Material Requirements 的一种固定可购买配置，但不是完成 Project 的唯一方式。
-- **Inspiration** 可以推荐 **Product** 或关联可执行 **Project**，但不承诺 Visitor 或 Member 能仅凭该内容完成作品。
-- 一个自然人可以先以 **Visitor** 身份访问，注册后成为 **Member**，并在完成购买后同时拥有 **Buyer** 角色。
-- **Member** 可以关联一个 **Shopify Customer** 记录，但两者不是同一个领域概念。
-- **Creator**、**Seller** 和 **Buyer** 是 **Member** 可以同时拥有的角色。
-- **Member** 无需成为 **Buyer** 即可使用 **My Project**。
-- **Member** 可以收藏公开作品或 **Product**；**Favorite** 不属于 **My Project**，也不会自动创建 **Making**。收藏保存于账号下，不是仅当前浏览器的临时状态。
-- **My Project** 包含该 Member 的一个或多个 **Makings**。
-- 每个 **Making** 引用一个公开 **Project**；同一 Member 可以为同一 Project 建立多个 Makings。
-- 一个 **Project** 可以对应零个、一个或多个 **Project Kits**；MVP 阶段每个 Project 最多对应一个。
-- 一个 **Project** 可以对应零或一个 **Finished Piece**；**Finished Piece** 与 **Project Kit** 只在个别 Project 上同时存在，这种交集是可选而非结构性的（选品组 2026-09-17 确认）。
-- **Project** 的公开可见性独立于 **Project Kit** 库存；对应 Kit 售罄时，Project 仍保持可发现。
-- 每个 **Project Kit** 都是一个可售 **Product**，可以通过 **Variants** 表达少量明确配置。
-- MVP 阶段 **Project Kit** 整包采购、独立库存，不通过 **Kit Components** 引用毛线 **Variants**，与 **Yarn Product** 库存互不影响（选品组 2026-09-17 确认）。
-- **Kit Component** 共享库存模型仅适用于未来日本端自组材料包：届时 Kit 的 **Variant** 由一个或多个 **Kit Components** 构成，可售数量受组件共享库存约束；任一组件缺货则该 Variant 不可购买，材料不得被系统自动替换。
-- **Yarn Product** 在 MVP 阶段不通过 **Material Requirement**／**Product Recommendation** 与 **Project** 建立选购引导关系；其页面通过 **Reference Standard** 提供估算参照。
-- **Tutorial** 在 MVP 阶段免费提供并拥有独立入口；保留未来转为付费商品的可能（2026-09-13 确认）。
-- MVP 阶段不单独销售钩针等编织工具（2026-09-18 确认），工具仅作为 **Project Kit** 内容物存在；Bundles 与配件类 kit 的形态在 MVP 后评估。
-- 一个 **Project** 可以关联多个 **Tutorial**，并指定主要制作教程。
-- **Customization Inquiry** 可以引用目标 **Project**，但其提交不表示已购买材料或成品，也不构成制作或交付承诺。
-- 一个通用 **Tutorial** 可以被多个 **Project** 复用。
-- 一个 **Member Work** 可以由一个 **Making** 产生，但不要求购买其 **Project Kit**，也不自动成为可售 **Product**。
-- **Member Work** 可以被品牌或编辑团队精选到 **Inspiration** 或 **Project** 页面中，但仍保持 Member Work 身份。
+- 一个 **Product** 有一个或多个 **Variants**；价格、可售性、库存和购物车真值只在 Shopify。
+- **Project** 用真实照片、所需毛线/团数与教程安排形成可公开方案。资料未齐是 **Draft Project**，不因演示开关出现在当前材料包路径。
+- **Material Requirement** 描述制作要求；**Product Recommendation** 关联适用商品。当前 **Project Kit** 用 **Kit Components** 表达可购买的默认毛线与团数，不成为新的 Product。
+- 默认原作色号与团数可由顾客改为同款、相同其他规格的可售颜色；最终加入购物车的是选定 **Variant** 与数量。
+- 任一所需毛线缺货、未定价或资料缺失时禁止整份加购，不能静默跳过或自动替代；仍可逐项购买其他可售毛线。
+- **Project** 的公开完整性与库存不同：资料完整的材料包可继续展示缺货项；缺货不自动隐藏真实作品。
+- **Finished Piece** 独立销售，当前不与材料包互链，不推定顾客可以从成品购买材料或教程。
+- **Tutorial** 的人工领取须有对应支持教程的作品安排；购买普通毛线不自动获得任何教程。
+- **Visitor** 可以浏览并购买；**Shopify Customer** 是商业身份记录，可能早于首笔订单。**Buyer** 表示已购买角色，不是额外账号。
+- **Favorite**、**My Project**、**Making**、**Member Work** 与社区属于各自既有或后续平台范围，不能从材料包购买推定已经创建制作记录或获得创作者身份。
 
 ## Example dialogue
 
-> **Dev:** “用户打开一个 **Project** 时，是否直接购买它？”
-> **Domain expert:** “不是。**Project** 表达想完成的作品；顾客购买的是对应 **Project Kit**，或者单独选择其中的 **Variants**。”
+> **Dev:** “材料包是不是一种独立商品？”
+> **Domain expert:** “不是。Project 展示作品；Project Kit 是其中的毛线方案。顾客选择颜色与团数，购物车加入实际毛线 Variant。”
 
-## Flagged ambiguities
+## 词义边界
 
-- 过去“Project”有时同时指教程和套件；现已拆分为 **Project**、**Tutorial** 和 **Project Kit**。
-- **Inspiration** 不是 **Draft Project** 的发布状态；前者有意提供非指导型展示内容，后者正在准备成为可执行 Project。
-- 面向顾客的「新手作品」和「找灵感」均指 **Project** 的发现入口，不是两类作品；「找灵感」这一栏目名不等于领域中的非指导型 **Inspiration**。
-- 查看 **Tutorial** 不等于发起 **Making**；「开始制作」不能仅凭按钮名称被解释为已经建立一次个人制作记录。
-- “用户”不是正式领域术语；涉及身份或权限时必须明确使用 **Visitor**、**Member**、**Buyer**、**Creator** 或 **Seller**。
-- Shopify API 中的 `Customer` 必须写作 **Shopify Customer**；不得用它指代已经购买的人，后者统一称为 **Buyer**。
-- 团队口语中的「编织包」「材料包」「kit」统一映射到 **Project Kit**；「成品」映射到 **Finished Piece**，与 **Member Work**（会员分享的作品）是不同概念。
-- 首页主推位（编织包、毛线、成品谁为主角）是待确认的运营决策，只影响入口摆放，不改变本文件的商品类型与关系（见 Issue #50）。
+- 当前「材料包」「编织包」「kit」指内容中的 **Project Kit** 方案，不指旧独立库存套装。
+- **Draft Project** 表示资料尚未达到公开标准，不能以 Inspiration 或样例名义绕过当前公开要求。
+- 「暂未开售」表示售价或销售资料尚未确认；「售罄」表示已确认商品的库存状态，两者不能混用。
+- 色卡是颜色参考，不等于 Shopify 可售 **Variants**，不证明任何库存。
+- **Customization Inquiry**、**Tool Product**、**Seller** 等词汇可描述历史或未来领域，当前 #131 不实现这些购买或服务路径。
+- Shopify API 的 Customer 写作 **Shopify Customer**；内部表达须区分浏览者、会员、买家等实际角色，不混用「用户」。

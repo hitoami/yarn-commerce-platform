@@ -1,6 +1,6 @@
 # 搜索与首页内容区设计约束
 
-来源：[Issue #22](https://github.com/mewool-yarn/yarn-commerce-platform/issues/22)，2026-09-09 用户确认。行为与领域边界以 PRODUCT.md、CONTEXT.md 和作品体验合同为准；本页记录当前视觉约束，不将候选稿写成 DESIGN.md。
+来源：[Issue #22](https://github.com/hitoami/yarn-commerce-platform/issues/22)，2026-09-09 用户确认。行为与领域边界以 PRODUCT.md、CONTEXT.md 和作品体验合同为准；本页记录当前视觉约束，不将候选稿写成 DESIGN.md。
 
 ## 当前方向
 

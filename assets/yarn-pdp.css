@@ -1,0 +1,180 @@
+/*
+ * 毛线详情页（Issue #120，Claude Design「Yarn PDP」1a，手机 390 优先）。
+ * 只作用于 .yarn-product-page--yarn；编织包 / 成品详情页沿用 yarn-product-context.css。
+ * 用户 2026-10-02 决定：加入按钮、选中态与价格用 home-action 灰棕；标题 24px 中粗；主图 1:1 完整显示。
+ */
+
+/* 图库：1:1 方框完整显示商品，一行 4 张缩略图，收藏在右上角 */
+product-info.yarn-product-page--yarn .product__media-wrapper { position: relative; }
+product-info.yarn-product-page--yarn .product__media-wrapper > .yarn-favorite { top: var(--yarn-space-2); right: var(--yarn-space-2); z-index: 2; }
+product-info.yarn-product-page--yarn .product-media-container { --aspect-ratio: 1; }
+product-info.yarn-product-page--yarn .product__media { background: var(--yarn-bg-sunken); border-radius: var(--yarn-card-radius); }
+product-info.yarn-product-page--yarn .product__media img { object-fit: contain; }
+product-info.yarn-product-page--yarn .thumbnail { border-radius: var(--yarn-card-radius); background: var(--yarn-bg-sunken); }
+product-info.yarn-product-page--yarn .thumbnail[aria-current] { box-shadow: inset 0 0 0 2px var(--yarn-home-action); border-color: var(--yarn-home-action); }
+
+/* 标签、标题、价格、说明 */
+product-info.yarn-product-page--yarn .yp-yarn-badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+product-info.yarn-product-page--yarn .yp-yarn-badge { display: inline-flex; align-items: center; padding: 5px 9px; border-radius: var(--yarn-radius-pill); font-size: 12px; font-weight: 600; line-height: 1.2; white-space: nowrap; }
+product-info.yarn-product-page--yarn .yp-yarn-badge--yarn { background: var(--yarn-tint-blush); color: var(--yarn-text-heading); }
+product-info.yarn-product-page--yarn .yp-yarn-badge--beginner { background: var(--yarn-tint-sage); color: var(--yarn-text-secondary); }
+product-info.yarn-product-page.yarn-product-page--yarn .product__title h1 { color: var(--yarn-text-primary); font-family: var(--yarn-display); font-size: 24px; font-weight: 600; line-height: 1.35; }
+product-info.yarn-product-page--yarn .yp-yarn-price { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; row-gap: 2px; }
+product-info.yarn-product-page--yarn .yp-yarn-price > * { margin: 0; }
+product-info.yarn-product-page.yarn-product-page--yarn .yp-yarn-price .price { color: var(--yarn-home-action); font-size: 21px; font-weight: 600; line-height: 1.3; }
+product-info.yarn-product-page--yarn .yp-yarn-price .price .price-item { font-size: inherit; }
+product-info.yarn-product-page--yarn .yp-yarn-price__unit,
+product-info.yarn-product-page.yarn-product-page--yarn .yp-yarn-price .product__tax { color: var(--yarn-text-muted); font-size: 13px; line-height: 1.5; }
+product-info.yarn-product-page.yarn-product-page--yarn .yp-yarn-intro { color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.75; text-wrap: pretty; }
+product-info.yarn-product-page--yarn .yp-yarn-intro p { margin: 0; }
+
+/* 颜色：原生 Variant 按钮呈圆形色号，选中为 2px 灰棕环 */
+product-info.yarn-product-page--yarn .product-form__input--pill { display: flex; flex-wrap: wrap; gap: 6px; }
+product-info.yarn-product-page--yarn .product-form__input--pill .form__label { flex: 0 0 100%; margin-bottom: 6px; color: var(--yarn-text-primary); font-size: 14px; }
+product-info.yarn-product-page--yarn .product-form__input--pill .yp-option-name { color: var(--yarn-text-muted); }
+product-info.yarn-product-page--yarn .product-form__input--pill input[type='radio'] + label {
+  display: inline-grid; place-items: center; min-width: var(--yarn-touch); height: var(--yarn-touch); margin: 0; padding: 0 10px;
+  border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-radius-pill);
+  background: var(--yarn-bg-surface); color: var(--yarn-text-primary); font-size: 13px; line-height: 1;
+}
+/* yarn-prototype.css 以 !important 把选中态涂成陶土红；毛线页按视觉稿只用灰棕环，需同等强度覆盖。 */
+product-info.yarn-product-page--yarn .product-form__input--pill input[type='radio']:checked + label {
+  border-color: var(--yarn-home-action) !important; box-shadow: inset 0 0 0 1px var(--yarn-home-action);
+  background-color: var(--yarn-bg-surface) !important; color: var(--yarn-text-primary) !important; font-weight: 600;
+}
+product-info.yarn-product-page--yarn .product-form__input--pill input[type='radio']:focus-visible + label { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: 2px; }
+/* 有色值时的原生色板（视觉稿 1a）：44px 圆，选中为 2px 灰棕环，色块带细线。 */
+product-info.yarn-product-page--yarn .product-form__input--swatch { display: flex; flex-wrap: wrap; gap: 6px; }
+product-info.yarn-product-page--yarn .product-form__input--swatch .form__label { flex: 0 0 100%; margin-bottom: 6px; color: var(--yarn-text-primary); font-size: 14px; }
+product-info.yarn-product-page--yarn .product-form__input--swatch .yp-option-name { color: var(--yarn-text-muted); }
+product-info.yarn-product-page--yarn .swatch-input__input + .swatch-input__label {
+  --swatch-input--size: 100%; display: block; width: var(--yarn-touch); height: var(--yarn-touch); margin: 0; padding: 3px;
+  border: 2px solid transparent; border-radius: var(--yarn-radius-pill); outline: none;
+}
+/* yarn-prototype.css 对所有选中单选标签用 !important 涂陶土红，色块也会命中，需同等强度覆盖。 */
+product-info.yarn-product-page--yarn .swatch-input__input:checked + .swatch-input__label { border-color: var(--yarn-home-action) !important; background-color: transparent !important; outline: none; }
+product-info.yarn-product-page--yarn .swatch-input__input + .swatch-input__label:hover,
+product-info.yarn-product-page--yarn .swatch-input__input:hover + .swatch-input__label { outline: none; }
+product-info.yarn-product-page--yarn .swatch-input__input:not(:checked):hover + .swatch-input__label { border-color: var(--yarn-border-card); }
+product-info.yarn-product-page--yarn .swatch-input__input:focus-visible + .swatch-input__label { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: 2px; box-shadow: none; }
+product-info.yarn-product-page--yarn .swatch-input__label .swatch { width: 100%; height: 100%; border-radius: var(--yarn-radius-pill); box-shadow: inset 0 0 0 1px var(--yarn-border-card); }
+
+/* 页内加购：灰棕实心主按钮 */
+product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit { background: var(--yarn-home-action); color: var(--yarn-text-inverse); font-family: var(--yarn-display); font-size: 16px; font-weight: 600; }
+product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit:not([disabled]):hover { filter: brightness(0.92); }
+product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit[disabled] { background: var(--yarn-border-disabled); color: var(--yarn-text-disabled); opacity: 1; }
+
+/* 下方内容 */
+.yp-yarn-details { display: flex; flex-direction: column; gap: var(--yarn-space-6); margin-top: var(--yarn-space-6); color: var(--yarn-text-primary); }
+.yp-yarn-details:empty { display: none; }
+.yp-yarn-block__title { margin: 0 0 var(--yarn-space-2); color: var(--yarn-text-primary); font-family: var(--yarn-display); font-size: 20px; font-weight: 600; line-height: 1.35; }
+.yp-yarn-block__title--section { margin: 0; font-size: 24px; line-height: 1.3; }
+.yp-yarn-block__head { display: flex; flex-direction: column; gap: var(--yarn-space-2); margin-bottom: 14px; }
+.yp-yarn-block__head p { margin: 0; color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.5; }
+
+.yp-yarn-spec { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--yarn-space-4); margin: 0; border-top: 1px solid var(--yarn-border-subtle); }
+.yp-yarn-spec__row { display: flex; flex-direction: column; gap: 2px; padding: var(--yarn-space-3) 0; border-bottom: 1px solid var(--yarn-border-subtle); }
+.yp-yarn-spec dt { color: var(--yarn-text-muted); font-size: 12px; line-height: 1.4; }
+.yp-yarn-spec dd { margin: 0; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+
+.yp-usage { display: block; margin-top: calc(var(--yarn-space-2) - var(--yarn-space-6)); padding: 20px; border-radius: 20px; background: var(--yarn-bg-band); }
+.yp-usage section { display: flex; flex-direction: column; gap: 14px; }
+.yp-usage__head { display: flex; flex-direction: column; gap: var(--yarn-space-1); }
+.yp-usage__head .yp-yarn-block__title { margin: 0; }
+.yp-usage__head p { margin: 0; color: var(--yarn-text-secondary); font-size: 13px; line-height: 1.5; }
+.yp-usage__options { display: flex; flex-wrap: wrap; gap: var(--yarn-space-2); }
+.yp-usage__options[hidden], .yp-usage__result[hidden], .yp-usage__fill[hidden] { display: none; }
+.yp-usage__option {
+  min-height: var(--yarn-touch); padding: 0 18px; border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-radius-pill);
+  background: var(--yarn-bg-surface); color: var(--yarn-text-primary); font-family: var(--yarn-display); font-size: 15px; cursor: pointer;
+  transition: background-color 160ms ease-out, color 160ms ease-out, border-color 160ms ease-out;
+}
+.yp-usage__option[aria-pressed='true'] { border-color: var(--yarn-home-action); background: var(--yarn-home-action); color: var(--yarn-text-inverse); }
+.yp-usage__result { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+.yp-usage__result p { margin: 0; font-size: 14px; line-height: 1.6; }
+.yp-usage__result .yp-usage__note { margin-top: calc(-14px + var(--yarn-space-1)); color: var(--yarn-text-muted); font-size: 12px; line-height: 1.5; }
+.yp-usage__fill {
+  min-height: var(--yarn-touch); padding: 0 14px; border: 0; border-radius: var(--yarn-radius-pill);
+  background: transparent; color: var(--yarn-home-action); font-family: var(--yarn-display); font-size: 14px; font-weight: 600; cursor: pointer;
+  margin-left: -14px; transition: background-color 160ms ease-out;
+}
+.yp-usage__fill:hover { background: var(--yarn-action-subtle-hover); }
+.yp-usage__option:focus-visible, .yp-usage__fill:focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: 2px; }
+
+/* 无配对时的通用编织包入口：图片按方形缩略显示，不被 img 的 height 属性撑高 */
+.yp-yarn-details .yx-exit__media--row img { height: auto; }
+
+.yp-yarn-details .yx-product-card__price { color: var(--yarn-home-action); }
+
+.yp-yarn-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+.yp-yarn-care { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--yarn-border-subtle); }
+.yp-yarn-care li { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 6px 0; border-bottom: 1px solid var(--yarn-border-subtle); font-size: 14px; line-height: 1.5; }
+.yp-yarn-care .svg-wrapper { flex: none; width: 20px; height: 20px; color: var(--yarn-text-secondary); }
+.yp-yarn-care svg { width: 20px; height: 20px; }
+
+/* 手机常驻购买栏：原加购区滚出视口时滑入；750px 及以上不显示 */
+.yp-sticky { position: fixed; inset: auto 0 0; z-index: 3; display: block; transform: translateY(100%); transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1); }
+.yp-sticky[data-visible='true'] { transform: none; }
+.yp-sticky__error { margin: 0; padding: var(--yarn-space-2) var(--yarn-space-4); border-top: 1px solid var(--yarn-border-subtle); background: var(--yarn-bg-surface); color: var(--yarn-action); font-size: 13px; line-height: 1.5; }
+.yp-sticky__error[hidden] { display: none; }
+.yp-sticky__bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: var(--yarn-space-3) var(--yarn-space-4) calc(var(--yarn-space-4) + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--yarn-border-subtle); background: var(--yarn-bg-surface);
+}
+.yp-sticky__chip { flex: none; display: grid; place-items: center; }
+.yp-sticky__swatch { display: block; width: var(--yarn-touch); height: var(--yarn-touch); border-radius: var(--yarn-radius-pill); background-size: cover; background-position: center; box-shadow: inset 0 0 0 1px var(--yarn-border-card); }
+.yp-sticky__value {
+  display: grid; place-items: center; min-width: var(--yarn-touch); max-width: 72px; height: var(--yarn-touch); padding: 0 8px;
+  overflow: hidden; border: 2px solid var(--yarn-home-action); border-radius: var(--yarn-radius-pill);
+  color: var(--yarn-text-primary); font-size: 13px; font-weight: 600; white-space: nowrap; text-overflow: ellipsis;
+}
+.yp-sticky__qty { flex: none; display: inline-flex; align-items: center; border: 1px solid var(--yarn-border-control); border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); }
+.yp-sticky__qty[hidden] { display: none; }
+.yp-sticky__qty button { display: grid; place-items: center; width: var(--yarn-touch); height: var(--yarn-touch); padding: 0; border: 0; border-radius: var(--yarn-radius-pill); background: transparent; color: var(--yarn-text-primary); cursor: pointer; }
+.yp-sticky__qty button[disabled] { color: var(--yarn-text-disabled); cursor: not-allowed; }
+.yp-sticky__qty .svg-wrapper, .yp-sticky__qty svg { width: 12px; height: 12px; }
+.yp-sticky__qty-value { min-width: 28px; font-size: 16px; text-align: center; font-variant-numeric: tabular-nums; }
+.yp-sticky__add {
+  flex: 1 1 auto; min-width: 0; min-height: 48px; padding: 0 var(--yarn-space-4); border: 0; border-radius: var(--yarn-radius-pill);
+  background: var(--yarn-home-action); color: var(--yarn-text-inverse); font-family: var(--yarn-display); font-size: 15px; font-weight: 600; line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; font-variant-numeric: tabular-nums;
+}
+.yp-sticky__add:not([disabled]):active { transform: scale(0.98); }
+.yp-sticky__add[disabled] { background: var(--yarn-border-disabled); color: var(--yarn-text-disabled); cursor: not-allowed; }
+.yp-sticky button:focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .yp-sticky { transition: none; } }
+
+@media (max-width: 749px) {
+  body:has(product-info.yarn-product-page--yarn) { padding-bottom: 76px; }
+  product-info.yarn-product-page--yarn { padding-top: var(--yarn-space-2); }
+  /* #122：手机只保留底部常驻栏作为购买入口（视觉稿 1a）。原生表单与加购按钮仍在 DOM 中，由常驻栏驱动。 */
+  product-info.yarn-product-page--yarn .product-form__quantity,
+  product-info.yarn-product-page--yarn .product-form__buttons,
+  product-info.yarn-product-page--yarn .product-form__error-message-wrapper,
+  product-info.yarn-product-page--yarn .product__inventory,
+  product-info.yarn-product-page--yarn .product__text { display: none; }
+  /* 图库：去掉放大镜与缩略图箭头，缩略图一行 4 张，多出的横向滑动。 */
+  product-info.yarn-product-page--yarn .product__media-icon { display: none; }
+  product-info.yarn-product-page--yarn .thumbnail-slider .slider-button { display: none; }
+  product-info.yarn-product-page--yarn .thumbnail-slider .thumbnail-list { width: 100%; }
+  /* Rise 手机图库的首张偏移（grid--peek）让主图偏右；毛线主图按视觉稿铺满内容宽度。 */
+  product-info.yarn-product-page--yarn .product__media-list.grid--peek.slider .product__media-item:first-of-type { margin-left: 0; }
+  product-info.yarn-product-page--yarn .product__media-list.grid--peek.slider::after { display: none; }
+  product-info.yarn-product-page--yarn .thumbnail-list { gap: var(--yarn-space-2); }
+  product-info.yarn-product-page--yarn .thumbnail-list__item.slider__slide { width: calc((100% - 3 * var(--yarn-space-2)) / 4); }
+  product-info.yarn-product-page--yarn .product__info-wrapper { padding-top: 20px; }
+  product-info.yarn-product-page--yarn .product__info-container > * + * { margin-block: 10px; }
+  .yp-yarn-details { margin-top: var(--yarn-space-3); }
+  product-info.yarn-product-page--yarn .product__info-container > variant-selects,
+  product-info.yarn-product-page--yarn .product__info-container > .product-form__quantity { margin-top: 20px; }
+}
+
+@media (min-width: 750px) {
+  .yp-sticky { display: none; }
+  .yp-yarn-details { max-width: 1104px; margin: var(--yarn-space-7) auto 0; gap: var(--yarn-space-7); }
+  .yp-usage { margin-top: calc(var(--yarn-space-5) - var(--yarn-space-7)); padding: var(--yarn-space-5); }
+  .yp-yarn-spec { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--yarn-space-5); }
+  .yp-yarn-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+}

@@ -2,7 +2,7 @@
   "$comment": "唯一颜色源。修改后运行 npm run tokens 生成 assets/yarn-design-tokens.css 颜色段、config/settings_data.json 的 color_schemes 与 DESIGN.md 颜色 YAML。页面只能引用 roles；palette 只在本文件内被 roles 引用。",
   "palette": {
     "cream-50": "#fffefa",
-    "cream-100": "#f7f7f5",
+    "cream-100": "#f9f6f0",
     "cream-150": "#fff9e9",
     "cream-200": "#fff3de",
     "sand-50": "#f5f1e8",
@@ -39,12 +39,14 @@
     "umber-700": "#675144"
   },
   "roles": {
-    "home-action": { "value": "umber-700", "use": "hitoami 首页低饱和按钮" },
+    "home-action": { "value": "umber-700", "use": "hitoami 低饱和主操作：首页按钮；毛线详情页加入、选中与价格" },
     "home-thread": { "value": "sand-600", "use": "hitoami 小猫展开的装饰毛线" },
+    "home-rope": { "value": "sand-400", "use": "首页导览条挂线的线芯（线纹用 home-thread）；不得用于文字" },
     "bg-page": { "value": "cream-100", "use": "页面底" },
     "bg-surface": { "value": "cream-50", "use": "卡片、导航、横幅、输入框面" },
-    "bg-sunken": { "value": "sand-100", "use": "次级区块（暖砂）" },
+    "bg-sunken": { "value": "sand-100", "use": "次级区块（暖砂）、页脚" },
     "bg-warm": { "value": "sand-150", "use": "暖米区块（配色方案 5）", "pending": "P3：与 bg-sunken 合并或删除" },
+    "bg-band": { "value": "sand-50", "use": "暖米面板：毛线详情「要买几团？」估算面板" },
     "bg-inverse": { "value": "clay-700", "use": "深色反白区块" },
 
     "text-primary": { "value": "charcoal-900", "use": "正文、通用标题、Rise 原生文字" },
@@ -60,7 +62,7 @@
     "action": { "value": "clay-600", "use": "链接、文字按钮、图标勾选、编号徽章文字" },
     "accent": { "value": "clay-550", "use": "价格、跨区导航与结账等实心按钮", "pending": "P3：与 action 合并或拉开层级" },
     "action-strong": { "value": "clay-700", "use": "按下态、深色强调面" },
-    "action-subtle-bg": { "value": "cream-150", "use": "浅色操作面：导航选中、帮助、页脚" },
+    "action-subtle-bg": { "value": "cream-150", "use": "浅色操作面：导航选中、帮助" },
     "action-subtle-hover": { "value": "cream-200", "use": "浅色操作面的悬停" },
 
     "cta-bg": { "value": "butter-200", "use": "奶油主按钮：加购、Hero 主按钮、选中筛选" },
@@ -105,6 +107,7 @@
     "$comment": "声明实际使用的文字/背景搭配；min 为 WCAG 最低对比度（正文 4.5，大字与控件 3）。",
     "pairs": [
       ["text-inverse", "home-action", 4.5],
+      ["home-action", "bg-surface", 4.5], ["home-action", "bg-band", 4.5], ["text-primary", "bg-band", 4.5], ["text-secondary", "bg-band", 4.5], ["text-muted", "bg-band", 4.5], ["text-secondary", "tint-sage", 4.5], ["text-heading", "tint-blush", 4.5],
       ["text-primary", "bg-page", 4.5], ["text-primary", "bg-surface", 4.5], ["text-primary", "bg-sunken", 4.5], ["text-primary", "action-subtle-bg", 4.5],
       ["text-primary", "tint-butter", 4.5], ["text-primary", "tint-blush", 4.5], ["text-primary", "tint-sage", 4.5],
       ["text-heading", "bg-page", 4.5], ["text-heading", "bg-surface", 4.5], ["text-heading", "cta-bg", 4.5],

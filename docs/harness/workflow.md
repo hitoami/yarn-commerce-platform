@@ -78,10 +78,10 @@ PR 简记对应 Issue、最终行为、实际检查及结果、适用设备 / �
 
 ## 仓库与外部连接
 
-仓库在 GitHub 组织 `mewool-yarn` 下：`mewool-yarn/yarn-commerce-platform`（2026-09-26 从个人账号转入，[Issue #80](https://github.com/mewool-yarn/yarn-commerce-platform/issues/80)）。旧地址会跳转，但以后新写的链接一律用新地址。
+仓库在 GitHub 组织 `hitoami` 下：`hitoami/yarn-commerce-platform`（2026-09-26 从个人账号转入组织 `mewool-yarn`，同日组织改名为 `hitoami`，[Issue #80](https://github.com/hitoami/yarn-commerce-platform/issues/80)）。旧地址会跳转，但旧组织名一旦被他人注册，跳转就失效；新写的链接一律用新地址。
 
-- 团队地图页：`https://mewool-yarn.github.io/yarn-commerce-platform/`。GitHub Pages 地址跟随仓库所有者，改名 / 转移时不跳转，必须重新发给同事。
-- GitHub App 按所有者安装：Codex、Claude 等要访问仓库，需装在组织 `mewool-yarn` 上，个人账号上的安装不覆盖组织仓库。
+- 团队地图页：`https://hitoami.github.io/yarn-commerce-platform/`。GitHub Pages 地址跟随仓库所有者，改名 / 转移时不跳转，必须重新发给同事。
+- GitHub App 按所有者安装：Codex、Claude 等要访问仓库，需装在组织 `hitoami` 上，个人账号上的安装不覆盖组织仓库。
 - Shopify 主题 `yarn-commerce-platform/main` 是用 CLI 推送的普通主题，没有连接 GitHub；仓库迁移不影响它。
 - 查主题列表用 `npx shopify theme list --store tutaka-54.myshopify.com --json`；`npm run admin` 的应用没有 `read_themes` 权限。
 - 再次改名或转移仓库前，按以上各项逐一检查，并用一个测试 PR 验证预览。

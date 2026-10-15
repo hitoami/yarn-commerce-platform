@@ -1,45 +1,9 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "yarn-hero": {
-      "type": "hitoami-home",
-      "settings": {
-        "enable_cat": true,
-        "show_story": true,
-        "story_heading": "最初のひと目から、\n編みもので、人と暮らしをやさしくつなぐ。",
-        "story_heading_zh": "从第一针开始，\n用编织，温柔连接人与生活。",
-        "story_heading_en": "From the first stitch,\nweaving warmth into everyday connections.",
-        "story_text": "<p>hitoami は、「一」と「編む」という想いから生まれました。</p><p>最初のひと目から、糸と色、ひらめきを少しずつ暮らしの中へ。初めて毛糸に触れる人も、手づくりが好きな人も。ひと目ひと目に自分のペースを見つけ、編みものを愛する誰かと出会える場所でありたいと願っています。</p>",
-        "story_text_zh": "<p>hitoami，取意于「一」与「编织」。</p><p>从第一针开始，把线、色彩与灵感慢慢编进日常。无论初次拿起毛线，还是早已钟情手作，都能在一针一线之间找到自己的节奏，也与同样热爱编织的人相遇。</p>",
-        "story_text_en": "<p>hitoami brings together the ideas of “one” and “knitting”.</p><p>From the first stitch, bring yarn, colour and imagination into everyday life. Whether you are picking up yarn for the first time or have always loved making, find your own rhythm, one stitch at a time—and connect with others who share that love.</p>"
-      },
+    "hero": {
+      "type": "hitoami-hero",
       "blocks": {
-        "welcome": {
-          "type": "slide",
-          "settings": {
-            "scene": "kit",
-            "focus": 50,
-            "tone": "dark",
-            "heading": "キットを開いて、\n最初のひと目から。",
-            "heading_zh": "打开编织包，\n从第一针慢慢开始。",
-            "heading_en": "Open a kit.\nBegin with one stitch.",
-            "text": "材料と編み図を、ゆっくり選ぼう。",
-            "text_zh": "材料与图解，一起慢慢挑。",
-            "text_en": "Find your yarn, your pattern, your pace.",
-            "cta": "編みキットを見る",
-            "cta_zh": "看看编织包",
-            "cta_en": "Explore the kits"
-          }
-        },
-        "yarn": {
+        "slide-yarn": {
           "type": "slide",
           "settings": {
             "scene": "yarn",
@@ -51,12 +15,29 @@
             "text": "色と手ざわりから、お気に入りを探そう。",
             "text_zh": "从颜色与手感开始，找到自己的节奏。",
             "text_en": "Explore colour and texture at your own pace.",
-            "cta": "毛糸を選ぶ",
-            "cta_zh": "挑选毛线",
-            "cta_en": "Explore the yarn"
+            "cta": "",
+            "cta_zh": "",
+            "cta_en": ""
           }
         },
-        "finished": {
+        "slide-kit": {
+          "type": "slide",
+          "settings": {
+            "scene": "kit",
+            "focus": 50,
+            "tone": "dark",
+            "heading": "キットを開いて、\n最初のひと目から。",
+            "heading_zh": "打开编织包，\n从第一针慢慢开始。",
+            "heading_en": "Open a kit.\nBegin with one stitch.",
+            "text": "材料と編み図を、ゆっくり選ぼう。",
+            "text_zh": "材料与图解，一起慢慢挑。",
+            "text_en": "Find your yarn, your pattern, your pace.",
+            "cta": "",
+            "cta_zh": "",
+            "cta_en": ""
+          }
+        },
+        "slide-finished": {
           "type": "slide",
           "settings": {
             "scene": "finished",
@@ -68,97 +49,262 @@
             "text": "お気に入りのひと品を、あなたのもとへ。",
             "text_zh": "挑一件喜欢的手作，陪伴每一天。",
             "text_en": "Find a handmade piece to make your days a little warmer.",
-            "cta": "完成品を見る",
-            "cta_zh": "挑选成品",
-            "cta_en": "Explore finished pieces"
+            "cta": "",
+            "cta_zh": "",
+            "cta_en": ""
           }
         }
       },
       "block_order": [
-        "yarn",
-        "welcome",
-        "finished"
-      ]
+        "slide-yarn",
+        "slide-kit",
+        "slide-finished"
+      ],
+      "settings": {
+        "catalog_layout": true
+      }
     },
-    "picks-yarn": {
+    "guide-strip": {
+      "type": "yarn-guide-strip",
+      "blocks": {
+        "node-yarn": {
+          "type": "node",
+          "settings": {
+            "icon": "yarn",
+            "link": "shopify://collections/yarn",
+            "title": "毛糸を選ぶ",
+            "text": "太さと素材で糸を探す",
+            "title_zh": "挑毛线",
+            "text_zh": "按粗细和材质找线",
+            "title_en": "Pick yarn",
+            "text_en": "Find yarn by weight and fiber"
+          }
+        },
+        "node-kit": {
+          "type": "node",
+          "settings": {
+            "icon": "kit",
+            "link": "shopify://collections/knit-kits",
+            "title": "編みキットを見る",
+            "text": "糸と編み図をひとつに",
+            "title_zh": "看编织包",
+            "text_zh": "线材与图解配成一包",
+            "title_en": "Browse kits",
+            "text_en": "Yarn and pattern in one pack"
+          }
+        },
+        "node-finished": {
+          "type": "node",
+          "settings": {
+            "icon": "sweater",
+            "link": "shopify://collections/finished-goods",
+            "title": "完成品をおうちへ",
+            "text": "編まなくても手に入る",
+            "title_zh": "带成品回家",
+            "text_zh": "不动手也能拥有",
+            "title_en": "Take one home",
+            "text_en": "Yours without knitting"
+          }
+        },
+        "node-tools": {
+          "type": "node",
+          "settings": {
+            "icon": "tools",
+            "link": "/collections/tools",
+            "title": "道具を選ぶ",
+            "text": "かぎ針・棒針と小物",
+            "title_zh": "挑工具",
+            "text_zh": "钩针、棒针与小配件",
+            "title_en": "Pick tools",
+            "text_en": "Hooks, needles and notions"
+          }
+        }
+      },
+      "block_order": [
+        "node-yarn",
+        "node-kit",
+        "node-finished",
+        "node-tools"
+      ],
+      "settings": {},
+      "disabled": true
+    },
+    "story": {
+      "type": "hitoami-story",
+      "settings": {
+        "use_brand_scene": true,
+        "story_heading": "最初のひと目から、\n編みもので、人と暮らしをやさしくつなぐ。",
+        "story_heading_zh": "从第一针开始，\n用编织，温柔连接人与生活。",
+        "story_heading_en": "From the first stitch,\nweaving warmth into everyday connections.",
+        "story_text": "<p>hitoami は、「一」と「編む」という想いから生まれました。</p><p>最初のひと目から、糸と色、ひらめきを少しずつ暮らしの中へ。初めて毛糸に触れる人も、手づくりが好きな人も。ひと目ひと目に自分のペースを見つけ、編みものを愛する誰かと出会える場所でありたいと願っています。</p>",
+        "story_text_zh": "<p>hitoami，取意于「一」与「编织」。</p><p>从第一针开始，把线、色彩与灵感慢慢编进日常。无论初次拿起毛线，还是早已钟情手作，都能在一针一线之间找到自己的节奏，也与同样热爱编织的人相遇。</p>",
+        "story_text_en": "<p>hitoami brings together the ideas of “one” and “knitting”.</p><p>From the first stitch, bring yarn, colour and imagination into everyday life. Whether you are picking up yarn for the first time or have always loved making, find your own rhythm, one stitch at a time—and connect with others who share that love.</p>"
+      }
+    },
+    "yarn-entries": {
+      "type": "yarn-entry-circles",
+      "blocks": {
+        "entry-1": {
+          "type": "entry",
+          "settings": {
+            "field": "yarn.texture",
+            "entry": "gradient",
+            "source_photo": "hitoami-source-texture-7.jpeg"
+          }
+        },
+        "entry-2": {
+          "type": "entry",
+          "settings": {
+            "field": "yarn.texture",
+            "entry": "fluffy",
+            "source_photo": "hitoami-source-texture-14.jpeg"
+          }
+        },
+        "entry-3": {
+          "type": "entry",
+          "settings": {
+            "field": "yarn.texture",
+            "entry": "loop-fancy",
+            "source_photo": "hitoami-source-texture-23.jpeg"
+          }
+        },
+        "entry-4": {
+          "type": "entry",
+          "settings": {
+            "field": "yarn.texture",
+            "entry": "fine-airy",
+            "source_photo": "hitoami-source-texture-8.jpeg"
+          }
+        },
+        "entry-5": {
+          "type": "entry",
+          "settings": {
+            "field": "yarn.texture",
+            "entry": "basic-solid",
+            "source_photo": "hitoami-source-texture-5.jpeg"
+          }
+        }
+      },
+      "block_order": [
+        "entry-1",
+        "entry-2",
+        "entry-3",
+        "entry-4",
+        "entry-5"
+      ],
+      "settings": {
+        "collection": "yarn",
+        "show_cat": true,
+        "heading_zh": "今天，想织点什么？",
+        "heading": "今日は、何を編みましょう？",
+        "heading_en": "What would you like to knit today?"
+      }
+    },
+    "sale-picks": {
       "type": "yarn-picks",
       "settings": {
-        "heading": "おすすめの毛糸",
-        "note": "内部サンプル · デモカタログ",
-        "collection": "yarn",
+        "heading": "セール",
+        "heading_zh": "优惠",
+        "heading_en": "Sale",
+        "note": "",
+        "note_zh": "",
+        "note_en": "",
+        "collection": "sale",
+        "mode": "sale",
         "products_to_show": 4,
         "columns_desktop": 4,
         "exit_enabled": false,
+        "color_scheme": "scheme-1"
+      },
+      "disabled": true
+    },
+    "project-picks": {
+      "type": "yarn-project-picks",
+      "settings": {
+        "limit": 4,
+        "all_link": "/pages/kits",
         "color_scheme": "scheme-1",
-        "heading_zh": "毛线精选",
-        "heading_en": "Yarn picks",
-        "note_zh": "内部示例 · 演示目录",
-        "note_en": "Internal sample · demo catalogue"
+        "heading": "わたしたちの毛糸で編めるもの",
+        "heading_zh": "用我们的毛线可以织",
+        "heading_en": "What you can knit with our yarn",
+        "note": "",
+        "note_zh": "",
+        "note_en": ""
       }
     },
-    "picks-kits": {
+    "beginner-kits": {
       "type": "yarn-picks",
       "settings": {
-        "heading": "おすすめの編みものキット",
-        "note": "",
+        "heading": "初心者向けの編みキット",
+        "heading_zh": "新手友好编织包",
+        "heading_en": "Beginner-friendly kits",
+        "note": "「初心者向け」のマークには、理由を添えています。",
+        "note_zh": "带「新手友好」标签的，都写明了理由。",
+        "note_en": "Every beginner-friendly tag comes with a reason.",
         "collection": "knit-kits",
-        "products_to_show": 2,
-        "columns_desktop": 2,
-        "exit_enabled": true,
-        "exit_title": "毛糸から何ができるか見てみたい?",
-        "exit_text": "小さな動物から始めよう。材料もチュートリアルも揃っています。",
-        "exit_cta": "キットを見る",
-        "exit_note": "内部サンプル · 自社毛糸との組み合わせは確認中",
-        "color_scheme": "scheme-1",
-        "heading_zh": "编织包精选",
-        "heading_en": "Kit picks",
-        "exit_title_zh": "想看看线能织成什么?",
-        "exit_title_en": "Curious what yarn can become?",
-        "exit_text_zh": "从一只小动物开始,材料和教程都备好了。",
-        "exit_text_en": "Start with a little animal — materials and tutorial included.",
-        "exit_cta_zh": "看编织包",
-        "exit_cta_en": "Browse kits",
-        "exit_note_zh": "内部示例 · 与自家毛线的配对待核实",
-        "exit_note_en": "Internal sample · yarn pairings to be confirmed"
-      }
+        "mode": "beginner",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "exit_enabled": false,
+        "color_scheme": "scheme-1"
+      },
+      "disabled": true
+    },
+    "filter-switch": {
+      "type": "yarn-filter-switch",
+      "settings": {
+        "collection": "yarn",
+        "material_field": "yarn.material",
+        "weight_field": "yarn.weight"
+      },
+      "disabled": true
     },
     "picks-finished": {
       "type": "yarn-picks",
       "settings": {
-        "heading": "おすすめの完成品",
-        "note": "編まなくても、やさしさをそのまま持ち帰れます。",
+        "heading": "手編みの完成品",
+        "note": "編み手がひと目ずつ編んだ、数量限定の完成品です。",
         "collection": "finished-goods",
-        "products_to_show": 2,
-        "columns_desktop": 2,
+        "products_to_show": 4,
+        "products_to_show_mobile": 2,
+        "columns_desktop": 4,
         "exit_enabled": false,
         "color_scheme": "scheme-1",
-        "heading_zh": "成品精选",
-        "heading_en": "Finished picks",
-        "note_zh": "不想动手,也能直接把温柔带回家。",
-        "note_en": "Not into making? Take a finished piece home."
-      }
+        "heading_zh": "手工成品精选",
+        "heading_en": "Handmade pieces",
+        "note_zh": "织女一针一针织成，每款只有少量库存。",
+        "note_en": "Knitted stitch by stitch, in small numbers.",
+        "mode": "handmade"
+      },
+      "disabled": true
     },
-    "content-pick": {
-      "type": "yarn-content-pick",
+    "yarn-hero": {
+      "type": "yarn-hero",
       "settings": {
-        "heading": "読みものセレクション",
-        "badge": "チュートリアル · ストーリー",
-        "title": "小さなペンギンの誕生",
-        "text": "一玉の糸から、手づくりの日常を記録。",
-        "link_label": "ストーリーを読む",
-        "link": "/pages/projects/demo-pierre-penguin",
         "color_scheme": "scheme-1",
-        "heading_zh": "内容精选",
-        "heading_en": "Stories & guides",
-        "badge_zh": "教程 · 故事",
-        "badge_en": "Tutorial · Story",
-        "title_zh": "一只小企鹅的诞生",
-        "title_en": "The birth of a little penguin",
-        "text_zh": "从一团线,记录制作的日常。",
-        "text_en": "A making diary that starts with one ball of yarn.",
-        "link_label_zh": "阅读故事",
-        "link_label_en": "Read the story"
-      }
+        "heading": "お気に入りの毛糸を、\nひと玉選ぼう。",
+        "text": "<p>ひと玉の毛糸から、あなたの日常を編み出そう。</p>",
+        "cta_label": "毛糸を選ぶ",
+        "flow_project": "編みキットを見る",
+        "flow_yarn": "毛糸を選ぶ",
+        "flow_tools": "完成品をおうちへ",
+        "flow_tutorial": "作り方を見る",
+        "heading_zh": "挑一团好线",
+        "text_zh": "<p>从一团线，织出你的日常。</p>",
+        "cta_label_zh": "开始挑选",
+        "flow_project_zh": "看编织包",
+        "flow_yarn_zh": "挑毛线",
+        "flow_tools_zh": "带成品回家",
+        "flow_tutorial_zh": "看教程",
+        "heading_en": "Pick a ball of\nyarn you love.",
+        "text_en": "<p>From one ball of yarn, knit your everyday.</p>",
+        "cta_label_en": "Start picking",
+        "flow_project_en": "Browse kits",
+        "flow_yarn_en": "Pick yarn",
+        "flow_tools_en": "Take one home",
+        "flow_tutorial_en": "View tutorial"
+      },
+      "disabled": true
     },
     "line-support": {
       "type": "yarn-line-contact",
@@ -171,15 +317,154 @@
         "secondary_label": "お問い合わせ",
         "secondary_link": "shopify://pages/contact",
         "color_scheme": "scheme-3"
+      },
+      "disabled": true
+    },
+    "season": {
+      "type": "yarn-season-feature",
+      "settings": {
+        "label": "",
+        "label_zh": "",
+        "label_en": "",
+        "heading": "絵画のような色を、\n暮らしの編みものに。",
+        "heading_zh": "把油画里的颜色，\n慢慢织进生活。",
+        "heading_en": "Knit a little colour\ninto everyday life.",
+        "text": "ループの表情と豊かな色で、次のマフラーに彩りを。",
+        "text_zh": "圈圈纹理与丰富色彩，给下一条围巾添一点新鲜感。",
+        "text_en": "Looped texture and rich colours for your next scarf.",
+        "collection": "yarn",
+        "tag": "catalog-2026-10-season",
+        "link": "/pages/season?view=season",
+        "link_label": "今季の特集を読む",
+        "link_label_zh": "阅读本季专题",
+        "link_label_en": "Read this season's feature",
+        "source_image": true
       }
+    },
+    "catalog": {
+      "type": "yarn-catalog",
+      "settings": {
+        "products": [
+          "mvp-yarn-05",
+          "mvp-yarn-12",
+          "mvp-yarn-17",
+          "mvp-yarn-26",
+          "mvp-yarn-01",
+          "mvp-yarn-07",
+          "yarn-tyndall",
+          "yarn-qinrou-gradient"
+        ]
+      }
+    },
+    "guide": {
+      "type": "yarn-home-guide",
+      "settings": {},
+      "blocks": {
+        "item-1": {
+          "type": "item",
+          "settings": {
+            "title": "気になる毛糸を知る",
+            "title_zh": "认识一团喜欢的毛线",
+            "title_en": "Meet a yarn you like",
+            "text": "実物の写真を見て、素材・重さ・用途を確かめましょう。",
+            "text_zh": "先看实物图，再了解成分、重量与用途。",
+            "text_en": "Start with real photos, then explore the fibre, weight and uses."
+          }
+        },
+        "item-2": {
+          "type": "item",
+          "settings": {
+            "title": "色と販売状況を確かめる",
+            "title_zh": "确认颜色与开售状态",
+            "title_en": "Check colours and availability",
+            "text": "「販売準備中」の毛糸は、現在は閲覧のみです。",
+            "text_zh": "标注“暂未开售”的毛线，目前仅供浏览。",
+            "text_en": "Yarns marked “Not yet on sale” are currently for browsing."
+          }
+        },
+        "item-3": {
+          "type": "item",
+          "settings": {
+            "title": "作品を見ながら編みたい方へ",
+            "title_zh": "想跟着作品织？",
+            "title_en": "Want to follow a project?",
+            "text": "材料と作り方を確認した作品から、ご案内します。",
+            "text_zh": "材料与教程核实后，再为你提供完整方案。",
+            "text_en": "Project guides will be available once their materials and instructions are verified."
+          }
+        }
+      },
+      "block_order": [
+        "item-1",
+        "item-2",
+        "item-3"
+      ]
+    },
+    "faq": {
+      "type": "yarn-home-guide",
+      "settings": {
+        "mode": "faq",
+        "heading_zh": "你可能想问",
+        "heading": "よくあるご質問",
+        "heading_en": "You might be wondering"
+      },
+      "blocks": {
+        "item-1": {
+          "type": "item",
+          "settings": {
+            "title": "購入できない毛糸があるのはなぜですか？",
+            "title_zh": "为什么现在有些毛线不能购买？",
+            "title_en": "Why can’t I buy some yarns yet?",
+            "text": "価格と販売する色が決まり次第、購入できるようになります。販売準備中は、実物の写真と素材情報をご覧いただけます。",
+            "text_zh": "售价与可售颜色确认后才会开放购买。暂未开售的款式，可以先浏览实物图和线材资料。",
+            "text_en": "Purchasing opens once prices and available colours are confirmed. For now, browse their real photos and fibre details."
+          }
+        },
+        "item-2": {
+          "type": "item",
+          "settings": {
+            "title": "色見本の色はすべて購入できますか？",
+            "title_zh": "色卡里的颜色都可以买到吗？",
+            "title_en": "Can I buy every colour on the colour card?",
+            "text": "色見本は色の参考です。販売する色は、販売開始後の商品オプションでご確認ください。",
+            "text_zh": "色卡用于了解颜色，可售色号以开售后的商品选项为准。",
+            "text_en": "Colour cards are a reference. Available colours are shown in the product options when purchasing opens."
+          }
+        },
+        "item-3": {
+          "type": "item",
+          "settings": {
+            "title": "材料購入後、作り方はどう受け取りますか？",
+            "title_zh": "购买材料后，怎样领取教程？",
+            "title_en": "How do I receive the instructions?",
+            "text": "作り方の提供対象となる作品は、公式 LINE で注文番号と作品名をお知らせください。スタッフが確認後、対応する作り方をお送りします。",
+            "text_zh": "支持教程的作品开放购买后，请通过官方 LINE 提供订单号和作品名称，由店员核对并发送对应教程。",
+            "text_en": "For eligible projects, send your order number and project name through our official LINE. Our staff will verify your order and send the matching instructions."
+          }
+        }
+      },
+      "block_order": [
+        "item-1",
+        "item-2",
+        "item-3"
+      ]
     }
   },
   "order": [
-    "yarn-hero",
-    "picks-yarn",
-    "picks-kits",
+    "hero",
+    "story",
+    "yarn-entries",
+    "catalog",
+    "season",
+    "guide",
+    "project-picks",
     "picks-finished",
-    "content-pick",
+    "faq",
+    "guide-strip",
+    "sale-picks",
+    "beginner-kits",
+    "filter-switch",
+    "yarn-hero",
     "line-support"
   ]
 }
