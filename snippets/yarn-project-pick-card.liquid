@@ -1,15 +1,45 @@
 {%- comment -%}
-  作品卡（封面 + 标题 + 真实购买标签）：首页「按作品图选」与毛线详情页「用这款线能织」共用。
-  调用方负责只传入可公开且有封面的 project。
+  材料包卡(#131;原作品卡):首页「用我们的毛线可以织」与毛线详情页「用这款线能织」共用。
+  封面 + 「材料包」角标 + 标题 + 所需毛线(配件里类型为「毛线」且关联了 Variant 的条目:商品名 × 团数)+ 参考价(各 Variant 价格 × 团数之和)+ 教程在 LINE。
+  内容卡,不能直接加购;没有关联毛线的作品只显示封面与标题。调用方负责只传入可公开且有封面的 project。
 {%- endcomment -%}
-{%- capture pick_tags -%}{%- render 'yarn-project-offer-tags', project: project -%}{%- endcapture -%}
+{%- liquid
+  assign kit_yarn_name = blank
+  assign kit_yarn_count = 0
+  assign kit_yarn_kinds = 0
+  assign kit_total = 0
+  for kit_component in project.components.value
+    if kit_component.component_type.value == '毛线' and kit_component.variant.value != blank
+      assign kit_variant = kit_component.variant.value
+      assign kit_qty = kit_component.quantity.value | default: 1
+      assign kit_yarn_kinds = kit_yarn_kinds | plus: 1
+      if kit_yarn_name == blank
+        assign kit_yarn_name = kit_variant.product.title
+        assign kit_yarn_count = kit_qty
+      endif
+      assign kit_line = kit_variant.price | times: kit_qty
+      assign kit_total = kit_total | plus: kit_line
+    endif
+  endfor
+  assign kit_price = kit_total | money_without_trailing_zeros
+-%}
 <a class="yx-project-pick" href="{{ project.system.url }}">
-  <span class="yx-project-pick__media">{{ project.cover.value | image_url: width: 800 | image_tag: widths: '300, 450, 600, 800', sizes: '(min-width: 750px) 300px, 45vw', loading: 'lazy', alt: '' }}</span>
+  <span class="yx-project-pick__media">
+    {{ project.cover.value | image_url: width: 800 | image_tag: widths: '300, 450, 600, 800', sizes: '(min-width: 750px) 300px, 45vw', loading: 'lazy', alt: '' }}
+    <span class="yx-project-pick__badge">{{ 'yarn_project.kit_badge' | t }}</span>
+  </span>
   <span class="yx-project-pick__title">{{ project.title.value | escape }}</span>
-  {%- assign pick_tag_list = pick_tags | split: ',' -%}
-  {%- if pick_tag_list.size > 0 -%}
-    <span class="yx-project-pick__tags">
-      {%- for pick_tag in pick_tag_list -%}<span class="yx-project-pick__tag yx-project-pick__tag--{{ pick_tag }}">{{ pick_tag | prepend: 'yarn_project.tag_' | t }}</span>{%- endfor -%}
+  {%- if kit_yarn_name != blank -%}
+    <span class="yx-project-pick__yarn">
+      {{- 'yarn_project.kit_yarn_line' | t: name: kit_yarn_name, count: kit_yarn_count -}}
+      {%- if kit_yarn_kinds > 1 %} · {{ 'yarn_project.kit_yarn_more' | t: count: kit_yarn_kinds }}{% endif -%}
+    </span>
+  {%- endif -%}
+  {%- if kit_total > 0 or project.tutorial_url.value != blank -%}
+    <span class="yx-project-pick__meta">
+      {%- if kit_total > 0 -%}{{ 'yarn_project.kit_price_about' | t: price: kit_price }}{%- endif -%}
+      {%- if kit_total > 0 and project.tutorial_url.value != blank %} · {% endif -%}
+      {%- if project.tutorial_url.value != blank -%}{{ 'yarn_project.kit_tutorial_line' | t }}{%- endif -%}
     </span>
   {%- endif -%}
 </a>

@@ -14,6 +14,7 @@ const KEEP = {
   'sections/yarn-project-library.liquid': '作品库，用户 2026-09-23 决定保留（#65）',
   'sections/yarn-project-discovery.liquid': '作品发现，用户 2026-09-23 决定保留（#65）',
   'sections/yarn-starter-project.liquid': '新手作品，用户 2026-09-23 决定保留（#65）',
+  'sections/yarn-project-detail.liquid': '旧作品双模式详情；#131 材料包页改用 yarn-kit-detail，待清理 PR⑤ 删除',
 };
 
 const list = dir => (fs.existsSync(dir) ? fs.readdirSync(dir, { recursive: true }) : [])

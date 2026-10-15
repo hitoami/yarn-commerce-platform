@@ -24,9 +24,9 @@
             "text": "色と手ざわりから、お気に入りを探そう。",
             "text_zh": "从颜色与手感开始，找到自己的节奏。",
             "text_en": "Explore colour and texture at your own pace.",
-            "cta": "毛糸を選ぶ",
-            "cta_zh": "挑选毛线",
-            "cta_en": "Explore the yarn"
+            "cta": "",
+            "cta_zh": "",
+            "cta_en": ""
           }
         },
         "slide-kit": {
@@ -41,9 +41,9 @@
             "text": "材料と編み図を、ゆっくり選ぼう。",
             "text_zh": "材料与图解，一起慢慢挑。",
             "text_en": "Find your yarn, your pattern, your pace.",
-            "cta": "編みキットを見る",
-            "cta_zh": "看看编织包",
-            "cta_en": "Explore the kits"
+            "cta": "",
+            "cta_zh": "",
+            "cta_en": ""
           }
         },
         "slide-finished": {
@@ -58,9 +58,9 @@
             "text": "お気に入りのひと品を、あなたのもとへ。",
             "text_zh": "挑一件喜欢的手作，陪伴每一天。",
             "text_en": "Find a handmade piece to make your days a little warmer.",
-            "cta": "完成品を見る",
-            "cta_zh": "挑选成品",
-            "cta_en": "Explore finished pieces"
+            "cta": "",
+            "cta_zh": "",
+            "cta_en": ""
           }
         }
       },
@@ -132,7 +132,8 @@
         "node-finished",
         "node-tools"
       ],
-      "settings": {}
+      "settings": {},
+      "disabled": true
     },
     "story": {
       "type": "hitoami-story",
@@ -241,8 +242,14 @@
       "type": "yarn-project-picks",
       "settings": {
         "limit": 4,
-        "all_link": "/pages/projects",
-        "color_scheme": "scheme-1"
+        "all_link": "/pages/kits",
+        "color_scheme": "scheme-1",
+        "heading": "わたしたちの毛糸で編めるもの",
+        "heading_zh": "用我们的毛线可以织",
+        "heading_en": "What you can knit with our yarn",
+        "note": "",
+        "note_zh": "",
+        "note_en": ""
       }
     },
     "beginner-kits": {
@@ -260,7 +267,8 @@
         "columns_desktop": 4,
         "exit_enabled": false,
         "color_scheme": "scheme-1"
-      }
+      },
+      "disabled": true
     },
     "filter-switch": {
       "type": "yarn-filter-switch",
@@ -274,18 +282,19 @@
     "picks-finished": {
       "type": "yarn-picks",
       "settings": {
-        "heading": "ショップおすすめの完成品",
-        "note": "編まなくても、やさしさをそのまま持ち帰れます。",
+        "heading": "手編みの完成品",
+        "note": "編み手がひと目ずつ編んだ、数量限定の完成品です。",
         "collection": "finished-goods",
         "products_to_show": 4,
         "products_to_show_mobile": 2,
         "columns_desktop": 4,
         "exit_enabled": false,
         "color_scheme": "scheme-1",
-        "heading_zh": "店铺精选成品",
-        "heading_en": "Finished pieces we recommend",
-        "note_zh": "不想动手，也能直接把温柔带回家。",
-        "note_en": "Not into making? Take a finished piece home."
+        "heading_zh": "手工成品精选",
+        "heading_en": "Handmade pieces",
+        "note_zh": "织女一针一针织成，每款只有少量库存。",
+        "note_en": "Knitted stitch by stitch, in small numbers.",
+        "mode": "handmade"
       }
     },
     "yarn-hero": {
@@ -327,6 +336,27 @@
         "secondary_label": "お問い合わせ",
         "secondary_link": "shopify://pages/contact",
         "color_scheme": "scheme-3"
+      },
+      "disabled": true
+    },
+    "season": {
+      "type": "yarn-season-feature",
+      "settings": {
+        "label": "",
+        "label_zh": "",
+        "label_en": "",
+        "heading": "この季節、\n編みたい色。",
+        "heading_zh": "这一季，\n想织的颜色",
+        "heading_en": "This season,\nthe colours we want to knit",
+        "text": "店で選んだ今季の毛糸。ひと玉ごとに、色の物語があります。",
+        "text_zh": "店里挑的当季毛线，每一团都有自己的颜色故事。",
+        "text_en": "Yarns we picked for the season, each with its own colour story.",
+        "collection": "yarn",
+        "tag": "预订爆款",
+        "link": "/pages/season?view=season",
+        "link_label": "今季の特集を読む",
+        "link_label_zh": "阅读本季专题",
+        "link_label_en": "Read this season's feature"
       }
     }
   },
@@ -335,6 +365,7 @@
     "guide-strip",
     "story",
     "yarn-entries",
+    "season",
     "sale-picks",
     "project-picks",
     "beginner-kits",

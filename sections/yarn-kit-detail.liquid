@@ -1,0 +1,189 @@
+{% comment %}
+  材料包详情(#131,yarn_project 网页):内容页,买的始终是毛线商品本身,购物车里没有「材料包」这种商品。
+  所需毛线 = 配件(yarn_material)里类型为「毛线」且关联了 Variant 的条目;团数取配件的 quantity(空为 1)。
+  只有 1 行毛线时显示购买框(团数预填、可改,一键加入购物车),看起来像商品页;2 行及以上显示清单(逐个加购)+ 合计 + 全部加入购物车。
+  其他配件(非毛线或未关联商品)列在「需要自备」,不进购物车。教程不在网站上:tutorial_url 填官方 LINE 链接,按钮说明购买后在 LINE 获取。
+  加购带隐藏属性 _Kit / _Kit handle,方便以后在购物车或订单里认出来源。
+{% endcomment %}
+{{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
+{{ 'yarn-kit.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'yarn-kit.js' | asset_url }}" defer="defer"></script>
+{%- assign project = metaobject -%}
+{%- capture visible -%}{%- render 'yarn-project-visible', project: project -%}{%- endcapture -%}
+{%- liquid
+  assign yarn_rows = 0
+  assign yarn_balls = 0
+  assign yarn_total = 0
+  assign self_rows = 0
+  for component in project.components.value
+    if component.component_type.value == '毛线' and component.variant.value != blank
+      assign yarn_rows = yarn_rows | plus: 1
+      assign row_qty = component.quantity.value | default: 1
+      assign yarn_balls = yarn_balls | plus: row_qty
+      assign row_total = component.variant.value.price | times: row_qty
+      assign yarn_total = yarn_total | plus: row_total
+    else
+      assign self_rows = self_rows | plus: 1
+    endif
+  endfor
+-%}
+<article class="yk-detail">
+  {%- if visible == 'true' -%}
+  <nav class="yk-crumb" aria-label="breadcrumb">
+    <a href="{{ section.settings.list_url | default: '/pages/kits' }}">{{ 'yarn_project.kit_all' | t }}</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">{{ project.title.value | escape }}</span>
+  </nav>
+  <div class="yk-layout">
+    <div class="yk-cover">
+      {%- if project.cover.value != blank -%}
+        {{ project.cover.value | image_url: width: 1600 | image_tag: widths: '390, 600, 900, 1200, 1600', sizes: '(min-width: 990px) 50vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: project.title.value }}
+      {%- else -%}
+        <div class="yk-placeholder" aria-hidden="true"></div>
+      {%- endif -%}
+    </div>
+    <div class="yk-main">
+      <header class="yk-head">
+        {%- if project.release_scope.value == '仅内部原型' -%}<p class="yk-demo">{{ 'yarn_project.demo_content' | t }}</p>{%- endif -%}
+        <span class="yk-pill">{{ 'yarn_project.kit_no_tools' | t }}</span>
+        <h1 class="yk-title">{{ project.title.value | escape }}</h1>
+        {%- if project.summary.value != blank -%}<p class="yk-summary">{{ project.summary.value | escape | newline_to_br }}</p>{%- endif -%}
+        {%- if project.difficulty.value != blank or project.made_for.value != blank or project.holiday.value != blank -%}
+          <ul class="yk-facts" role="list">
+            {%- if project.difficulty.value != blank -%}<li>{% render 'yarn-project-label', value: project.difficulty.value %}</li>{%- endif -%}
+            {%- if project.made_for.value != blank -%}<li>{{ project.made_for.value | escape }}</li>{%- endif -%}
+            {%- if project.holiday.value != blank -%}<li>{{ project.holiday.value | escape }}</li>{%- endif -%}
+          </ul>
+        {%- endif -%}
+      </header>
+
+      {%- if yarn_rows > 0 -%}
+      <yarn-kit-buy class="yk-buy{% if yarn_rows == 1 %} yk-buy--single{% endif %}"
+        data-pending="{{ 'yarn_project.kit_adding' | t | escape }}" data-success="{{ 'yarn_project.kit_added' | t | escape }}"
+        data-error="{{ 'yarn_project.kit_add_error' | t | escape }}" data-uncertain="{{ 'yarn_project.kit_uncertain' | t | escape }}"
+        data-add-url="{{ routes.cart_add_url }}" data-kit="{{ project.title.value | escape }}" data-kit-handle="{{ project.system.handle | escape }}">
+        {%- if yarn_rows > 1 -%}<h2 class="yk-h2">{{ 'yarn_project.kit_yarn_needed' | t }}</h2>{%- endif -%}
+        <ul class="yk-rows" role="list">
+          {%- for component in project.components.value -%}
+            {%- if component.component_type.value == '毛线' and component.variant.value != blank -%}
+              {%- liquid
+                assign row_variant = component.variant.value
+                assign row_product = row_variant.product
+                assign row_qty = component.quantity.value | default: 1
+                assign row_image = component.image.value | default: row_variant.featured_image | default: row_product.featured_image
+              -%}
+              <li class="yk-row" data-kit-row data-variant="{{ row_variant.id }}" data-price="{{ row_variant.price }}" data-available="{{ row_variant.available }}">
+                <a class="yk-row__media" href="{{ row_variant.url }}" tabindex="-1" aria-hidden="true">
+                  {%- if row_image != blank -%}{{ row_image | image_url: width: 200 | image_tag: width: 72, height: 72, loading: 'lazy', alt: '' }}{%- endif -%}
+                </a>
+                <div class="yk-row__info">
+                  <a class="yk-row__name" href="{{ row_variant.url }}">{{ row_product.title | escape }}</a>
+                  {%- unless row_product.has_only_default_variant -%}<span class="yk-row__variant">{{ row_variant.title | escape }}</span>{%- endunless -%}
+                  <span class="yk-row__need">{{ 'yarn_project.kit_qty_needed' | t: count: row_qty }}</span>
+                </div>
+                <div class="yk-row__buy">
+                  <span class="yk-row__price">{{ row_variant.price | money }}</span>
+                  {%- if yarn_rows == 1 -%}
+                    <label class="yk-qty">
+                      <span>{{ 'yarn_project.kit_qty_label' | t }}</span>
+                      <input type="number" data-kit-qty name="quantity" value="{{ row_qty }}" min="1" inputmode="numeric">
+                    </label>
+                  {%- else -%}
+                    <input type="hidden" data-kit-qty value="{{ row_qty }}">
+                    {%- if row_variant.available -%}
+                      <button type="button" class="yk-add-one" data-kit-add="row">{{ 'yarn_project.kit_add_one' | t }}</button>
+                    {%- else -%}
+                      <span class="yk-soldout">{{ 'yarn_project.kit_sold_out' | t }}</span>
+                    {%- endif -%}
+                  {%- endif -%}
+                </div>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+        {%- if yarn_rows > 1 -%}
+          <div class="yk-total">
+            <span>{{ 'yarn_project.kit_total' | t: count: yarn_balls }}</span>
+            <strong>{{ yarn_total | money }}</strong>
+          </div>
+        {%- endif -%}
+        {%- if yarn_rows == 1 -%}
+          {%- assign single_variant = blank -%}
+          {%- for component in project.components.value -%}{%- if component.component_type.value == '毛线' and component.variant.value != blank -%}{%- assign single_variant = component.variant.value -%}{%- endif -%}{%- endfor -%}
+          {%- if single_variant.available -%}
+            <button type="button" class="yk-add-all" data-kit-add="all">{{ 'yarn_project.kit_add' | t }}</button>
+          {%- else -%}
+            <button type="button" class="yk-add-all" disabled>{{ 'yarn_project.kit_sold_out' | t }}</button>
+          {%- endif -%}
+        {%- else -%}
+          <button type="button" class="yk-add-all" data-kit-add="all">{{ 'yarn_project.kit_add_all' | t }}</button>
+          <p class="yk-note">{{ 'yarn_project.kit_cart_note' | t }}</p>
+        {%- endif -%}
+        <p class="yk-status" data-kit-status role="status" aria-live="polite" hidden></p>
+        <a class="yk-cart-link" data-kit-cart href="{{ routes.cart_url }}" hidden>{{ 'yarn_project.kit_view_cart' | t }}</a>
+      </yarn-kit-buy>
+      {%- endif -%}
+
+      {%- if self_rows > 0 -%}
+        <section class="yk-section">
+          <h2 class="yk-h2">{{ 'yarn_project.kit_self_supply' | t }}</h2>
+          <ul class="yk-self" role="list">
+            {%- for component in project.components.value -%}
+              {%- unless component.component_type.value == '毛线' and component.variant.value != blank -%}
+                <li><strong>{{ component.title.value | escape }}</strong>{%- if component.specification.value != blank -%}<span>{{ component.specification.value | escape }}</span>{%- endif -%}</li>
+              {%- endunless -%}
+            {%- endfor -%}
+          </ul>
+        </section>
+      {%- endif -%}
+
+      {%- if project.preparation.value != blank -%}
+        <section class="yk-section">
+          <h2 class="yk-h2">{{ 'yarn_project.kit_notes' | t }}</h2>
+          <div class="yk-rte rte">{{ project.preparation | metafield_tag }}</div>
+        </section>
+      {%- endif -%}
+
+      {%- if project.tutorial_url.value != blank -%}
+        <section class="yk-tutorial">
+          <h2 class="yk-h2">{{ 'yarn_project.kit_tutorial' | t }}</h2>
+          <p>{{ 'yarn_project.kit_tutorial_note' | t }}</p>
+          <a class="yk-tutorial__cta" href="{{ project.tutorial_url.value | escape }}" target="_blank" rel="noopener noreferrer">{{ 'yarn_project.kit_tutorial_cta' | t }}</a>
+        </section>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- capture more_cards -%}
+    {%- assign more_shown = 0 -%}
+    {%- for other in shop.metaobjects.yarn_project.values -%}
+      {%- if more_shown >= 4 -%}{%- break -%}{%- endif -%}
+      {%- if other.system.handle != project.system.handle and other.cover.value != blank -%}
+        {%- capture other_visible -%}{%- render 'yarn-project-visible', project: other -%}{%- endcapture -%}
+        {%- if other_visible == 'true' -%}
+          {%- assign more_shown = more_shown | plus: 1 -%}
+          {%- render 'yarn-project-pick-card', project: other -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if more_cards contains 'yx-project-pick' -%}
+    <section class="yk-more">
+      <h2 class="yk-h2">{{ 'yarn_project.kit_more' | t }}</h2>
+      <div class="yx-project-picks">{{ more_cards }}</div>
+    </section>
+  {%- endif -%}
+  {%- else -%}
+    <div class="yk-empty"><h1>{{ 'yarn_project.missing' | t }}</h1><p>{{ 'yarn_project.missing_hint' | t }}</p></div>
+  {%- endif -%}
+</article>
+
+{% schema %}
+{
+  "name": "材料包详情",
+  "settings": [
+    { "type": "paragraph", "content": "在 内容 → 元对象 → 编织作品 编辑：封面、标题、简介、难度、适合人群、配件（毛线类配件选 Variant 并填团数）、作品说明（preparation）、教程链接（tutorial_url 填官方 LINE）。" },
+    { "type": "url", "id": "list_url", "label": "材料包列表页链接", "info": "面包屑「材料包」指向这里；留空为 /pages/kits。" }
+  ]
+}
+{% endschema %}

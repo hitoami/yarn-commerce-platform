@@ -1,5 +1,6 @@
 {% comment %}
   首页首屏:整幅场景轮播,标题、说明与按钮压在左侧留白处(桌面对齐 1200 内容轴);圆点居中在底部的白色胶囊里(#126 Claude Design 1a);底边是一道波浪。
+  #131 活动图:标题、说明与按钮都留空时只显示图片(不加遮罩),填了链接则整张图可点;选「浅色占位」时未上传图片显示浅色占位块。
   作为首页第一个 section 时,页头透明地叠在图上(规则在 hitoami-hero.css)。
   与首屏下方的导览条互不关联:切换幻灯片不影响导览条,导览条也不控制幻灯片。
   场景图可在每张幻灯片上传(桌面 / 手机),未上传时用内置的三张氛围图(来源见 docs/design/approved/home-scheme-c.source.md)。
@@ -35,8 +36,16 @@
             capture cta
               render 'yarn-setting-text', settings: block.settings, key: 'cta'
             endcapture
+            assign image_only = false
+            if heading == blank and text == blank and cta == blank
+              assign image_only = true
+            endif
+            assign placeholder = false
+            if block.settings.scene == 'placeholder' and desktop_image == blank
+              assign placeholder = true
+            endif
             assign target = block.settings.link
-            if target == blank
+            if target == blank and image_only == false
               assign target = collections['knit-kits'].url | default: routes.all_products_collection_url
               if block.settings.scene == 'yarn'
                 assign target = collections['yarn'].url | default: routes.all_products_collection_url
@@ -45,7 +54,12 @@
               endif
             endif
           %}
-          <article id="HitoamiSlide-{{ block.id }}" class="hitoami-slide hitoami-slide--{{ block.settings.tone }}{% if desktop_image == blank %} hitoami-slide--default-scene{% endif %}" data-scene="{{ block.settings.scene }}" data-slide data-block-id="{{ block.id }}" aria-roledescription="{{ 'sections.slideshow.slide' | t }}" aria-label="{{ forloop.index }} / {{ section.blocks.size }}" {% unless forloop.first %}hidden inert{% endunless %} {{ block.shopify_attributes }}>
+          <article id="HitoamiSlide-{{ block.id }}" class="hitoami-slide hitoami-slide--{{ block.settings.tone }}{% if desktop_image == blank and placeholder == false %} hitoami-slide--default-scene{% endif %}{% if image_only %} hitoami-slide--image-only{% endif %}" data-scene="{{ block.settings.scene }}" data-slide data-block-id="{{ block.id }}" aria-roledescription="{{ 'sections.slideshow.slide' | t }}" aria-label="{{ forloop.index }} / {{ section.blocks.size }}" {% unless forloop.first %}hidden inert{% endunless %} {{ block.shopify_attributes }}>
+            {%- if image_only and forloop.first -%}<h1 class="visually-hidden">{{ shop.name | escape }}</h1>{%- endif -%}
+            {%- if image_only and target != blank -%}<a class="hitoami-slide__link" href="{{ target }}" aria-label="{{ forloop.index }} / {{ section.blocks.size }}">{%- endif -%}
+            {%- if placeholder -%}
+              <div class="hitoami-scene hitoami-scene--placeholder" aria-hidden="true"></div>
+            {%- else -%}
             <picture class="hitoami-scene" style="--scene-focus: {{ block.settings.focus }}%;">
               {% if mobile_image != blank %}
                 <source media="(max-width: 749px)" srcset="{{ mobile_image | image_url: width: 600 }} 600w, {{ mobile_image | image_url: width: 900 }} 900w" sizes="100vw">
@@ -58,11 +72,15 @@
                 <img src="{{ desktop_asset | asset_url }}" width="1672" height="941" alt="" {% if forloop.first %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}>
               {% endif %}
             </picture>
+            {%- endif -%}
+            {%- if image_only and target != blank -%}</a>{%- endif -%}
+            {%- unless image_only -%}
             <div class="hitoami-copy">
               {% if forloop.first %}<h1 class="hitoami-heading">{{ heading | escape | newline_to_br }}</h1>{% else %}<h2 class="hitoami-heading">{{ heading | escape | newline_to_br }}</h2>{% endif %}
               {% if text != blank %}<p class="hitoami-subtitle">{{ text | escape }}</p>{% endif %}
               {% if cta != blank %}<a class="hitoami-cta" href="{{ target }}">{{ cta | escape }}<span aria-hidden="true">{{ 'icon-arrow.svg' | inline_asset_content }}</span></a>{% endif %}
             </div>
+            {%- endunless -%}
           </article>
         {% endfor %}
       </div>
@@ -96,9 +114,13 @@
           "type": "select",
           "id": "scene",
           "label": "默认氛围图",
-          "info": "未上传图片时使用对应的内置场景；按钮链接留空时进入对应集合。",
+          "info": "未上传图片时使用对应的内置场景；按钮链接留空时进入对应集合。活动图选「浅色占位」，上传图片前显示浅色块。",
           "default": "kit",
           "options": [
+            {
+              "value": "placeholder",
+              "label": "浅色占位(活动图)"
+            },
             {
               "value": "kit",
               "label": "手作桌(编织包)"
@@ -208,8 +230,8 @@
         {
           "type": "url",
           "id": "link",
-          "label": "按钮链接",
-          "info": "留空时进入对应的毛线、材料包或成品集合；可链接任意活动、商品或内容页。"
+          "label": "链接",
+          "info": "有按钮时是按钮链接，留空进入对应集合。标题、说明、按钮都留空时只显示图片，填了链接则整张图可点。"
         }
       ]
     }

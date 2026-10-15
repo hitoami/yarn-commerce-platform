@@ -1,0 +1,32 @@
+/* Home "this season" entry (#131): an open editorial spread on the page paper (no panel), the whole block links to the season feature page.
+   Mobile stacks image then copy; desktop puts copy left and a large image right, the mirror of the brand story above it. */
+.yx-season { display: grid; gap: var(--yarn-space-5); width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter))); margin: 0 auto; padding: 40px 0; box-sizing: border-box; color: var(--yarn-text-primary); text-decoration: none; }
+.yx-season:focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 6px; border-radius: var(--yarn-radius-panel); }
+.yx-season__media { overflow: hidden; aspect-ratio: 4 / 5; border-radius: var(--yarn-radius-media); background: var(--yarn-bg-sunken); }
+.yx-season__media img, .yx-season__placeholder { display: block; width: 100%; height: 100%; object-fit: cover; }
+.yx-season__media img { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+a.yx-season:hover .yx-season__media img { transform: scale(1.03); }
+.yx-season__collage { display: grid; grid-template-columns: 3fr 2fr; grid-template-rows: 1fr 1fr; gap: 4px; height: 100%; background: var(--yarn-bg-page); }
+.yx-season__collage img:first-child { grid-row: 1 / -1; }
+.yx-season__collage--1 img:first-child { grid-column: 1 / -1; }
+.yx-season__collage--2 img:last-child { grid-row: 1 / -1; }
+.yx-season__body { display: grid; gap: var(--yarn-space-4); justify-items: start; }
+.yx-season__heading { margin: 0; color: var(--yarn-text-heading); font: 700 3.2rem/1.2 var(--yarn-display); text-wrap: balance; }
+.yx-season__text { max-width: 26em; margin: 0; color: var(--yarn-text-secondary); font-size: 1.5rem; line-height: 1.8; }
+.yx-season__label { padding: 5px 14px; border: 1px solid var(--yarn-cta-border); border-radius: var(--yarn-radius-pill); color: var(--yarn-text-warm); font-size: 1.3rem; font-weight: 600; }
+.yx-season__link { display: inline-flex; align-items: center; gap: 8px; min-height: var(--yarn-touch); margin-top: var(--yarn-space-2); padding: 0 24px; box-sizing: border-box; border: 1px solid var(--yarn-text-heading); border-radius: var(--yarn-radius-pill); color: var(--yarn-text-heading); font-size: 1.5rem; font-weight: 600; transition: background-color 0.2s ease, color 0.2s ease; }
+a.yx-season:hover .yx-season__link { background: var(--yarn-text-heading); color: var(--yarn-text-inverse); }
+
+@media (min-width: 750px) {
+  .yx-season { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; gap: 72px; padding: 72px 0; }
+  .yx-season__media { order: 2; aspect-ratio: 7 / 6; border-radius: var(--yarn-radius-panel); }
+  .yx-season__collage { gap: 6px; }
+  .yx-season__body { gap: var(--yarn-space-5); }
+  .yx-season__heading { font-size: clamp(4rem, 4vw, 5.6rem); line-height: 1.15; }
+  .yx-season__text { font-size: 1.6rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yx-season__media img, .yx-season__link { transition: none; }
+  a.yx-season:hover .yx-season__media img { transform: none; }
+}

@@ -1,6 +1,6 @@
 /* Home "pick yarn" band (#126, Claude Design 1a): segmented switch + two-row horizontal strip of square entry cards. */
 .section-yarn-entry-circles { background: var(--yarn-bg-band); }
-.yarn-entries { padding: 32px 0 36px; background: var(--yarn-bg-band); color: var(--yarn-text-primary); }
+.yarn-entries { padding: 40px 0; background: var(--yarn-bg-band); color: var(--yarn-text-primary); }
 .yarn-entries__inner { width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter))); margin: 0 auto; }
 .yarn-entries__head { text-align: center; }
 .yarn-entries__eyebrow { margin: 0; color: var(--yarn-text-muted); font-size: 12px; letter-spacing: 0.5em; text-indent: 0.5em; }
@@ -37,8 +37,8 @@
 .yarn-entries :is(a, button):focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: var(--yarn-focus-offset); }
 
 @media (min-width: 750px) {
-  .yarn-entries { padding: 64px 0; }
-  .yarn-entries__heading { margin-top: 6px; font-size: 30px; }
+  .yarn-entries { padding: 72px 0; }
+  .yarn-entries__heading { margin-top: 6px; font-size: 32px; }
   .yarn-entries__flourish { width: 280px; margin: 6px auto 24px; }
   /* Total on the left, switch in the middle, page arrows on the right. */
   .yarn-entries__bar, .yarn-entries__bar:not(:has(.yarn-entries__tabs)) { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 44px; margin-bottom: 28px; }

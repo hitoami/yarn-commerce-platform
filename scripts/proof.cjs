@@ -2,7 +2,7 @@
 // npm run proof：对本地预览（shopify theme dev）生成证据包，写到被忽略的 .proof/。
 // 语言泄漏 + 首屏截图清单 + 横向溢出 / 图片 / 脚本错误断言。PR 只引用 .proof/report.md 的结论。
 //
-// 用法：npm run proof -- [--base <url>] [--pages home,kit-pdp] [--locales zh,en] [--viewports mobile]
+// 用法：npm run proof -- [--base <url>] [--pages home,yarn-pdp] [--locales zh,en] [--viewports mobile]
 
 const fs = require('node:fs');
 const path = require('node:path');

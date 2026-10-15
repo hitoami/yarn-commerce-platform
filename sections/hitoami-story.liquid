@@ -1,17 +1,43 @@
 {% comment %}
-  首页品牌介绍:居中的品牌标语与一段品牌故事(取自线上首页 #110 / #111,拆成独立 section,位置在编辑器调整)。
-  桌面在标语上方加一行小标题「关于品牌」(#126 Claude Design 1a),手机不显示。
+  首页品牌介绍:品牌图 + 小标题 + 品牌标语 + 品牌故事,下方附一张 LINE 卡片(#131,取代首页底部的 LINE 帮助条)。
+  手机上下排列(图 → 文字 → LINE 卡片);桌面左图右文。品牌图未上传时显示浅色占位块。
+  LINE 卡片的按钮链到「LINE 链接」,未填写时链到联系页(同原帮助条规则);二维码图只在桌面显示,手机直接点按钮加好友。
   三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
 {% endcomment %}
 {{ 'hitoami-story.css' | asset_url | stylesheet_tag }}
 {%- capture story_eyebrow -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'story_eyebrow' -%}{%- endcapture -%}
 {%- capture story_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'story_heading' -%}{%- endcapture -%}
 {%- capture story_text -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'story_text' -%}{%- endcapture -%}
+{%- capture line_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'line_heading' -%}{%- endcapture -%}
+{%- capture line_text -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'line_text' -%}{%- endcapture -%}
+{%- capture line_cta -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'line_cta' -%}{%- endcapture -%}
 {%- if story_heading != blank or story_text != blank -%}
 <div class="hitoami-story" {% if story_heading != blank %}aria-labelledby="HitoamiStory-{{ section.id }}"{% endif %}>
-  {%- if story_eyebrow != blank -%}<p class="hitoami-story__eyebrow">{{ story_eyebrow | escape }}</p>{%- endif -%}
-  {%- if story_heading != blank -%}<h2 id="HitoamiStory-{{ section.id }}">{{ story_heading | escape | newline_to_br }}</h2>{%- endif -%}
-  {%- if story_text != blank -%}<div class="rte">{{ story_text }}</div>{%- endif -%}
+  <div class="hitoami-story__media">
+    {%- if section.settings.image != blank -%}
+      {{ section.settings.image | image_url: width: 1200 | image_tag: widths: '400, 600, 900, 1200', sizes: '(min-width: 750px) 46vw, calc(100vw - 32px)', loading: 'lazy', alt: section.settings.image.alt | escape }}
+    {%- else -%}
+      <div class="hitoami-story__placeholder" aria-hidden="true"></div>
+    {%- endif -%}
+  </div>
+  <div class="hitoami-story__body">
+    {%- if story_eyebrow != blank -%}<p class="hitoami-story__eyebrow">{{ story_eyebrow | escape }}</p>{%- endif -%}
+    {%- if story_heading != blank -%}<h2 id="HitoamiStory-{{ section.id }}">{{ story_heading | escape | newline_to_br }}</h2>{%- endif -%}
+    {%- if story_text != blank -%}<div class="rte">{{ story_text }}</div>{%- endif -%}
+    {%- if line_cta != blank -%}
+      {%- assign line_href = section.settings.line_link | default: pages.contact.url -%}
+      <div class="hitoami-story__line">
+        {%- if section.settings.line_qr != blank -%}
+          <div class="hitoami-story__qr">{{ section.settings.line_qr | image_url: width: 240 | image_tag: width: 96, height: 96, loading: 'lazy', alt: '' }}</div>
+        {%- endif -%}
+        <div class="hitoami-story__line-copy">
+          {%- if line_heading != blank -%}<p class="hitoami-story__line-title">{{ line_heading | escape }}</p>{%- endif -%}
+          {%- if line_text != blank -%}<p class="hitoami-story__line-text">{{ line_text | escape }}</p>{%- endif -%}
+        </div>
+        <a class="hitoami-story__line-cta" href="{{ line_href }}"{% if section.settings.line_link != blank %} target="_blank" rel="noopener"{% endif %}>{{ line_cta | escape }}</a>
+      </div>
+    {%- endif -%}
+  </div>
 </div>
 {%- endif -%}
 
@@ -21,9 +47,10 @@
   "tag": "section",
   "class": "section hitoami-story-section",
   "settings": [
-    { "type": "text", "id": "story_eyebrow", "label": "日文 · 小标题（仅桌面）", "default": "ブランドについて" },
-    { "type": "text", "id": "story_eyebrow_zh", "label": "中文 · 小标题（仅桌面）", "default": "关于品牌" },
-    { "type": "text", "id": "story_eyebrow_en", "label": "英文 · 小标题（仅桌面）", "default": "About hitoami" },
+    { "type": "image_picker", "id": "image", "label": "品牌图", "info": "未上传时显示浅色占位块。" },
+    { "type": "text", "id": "story_eyebrow", "label": "日文 · 小标题", "default": "ブランドについて" },
+    { "type": "text", "id": "story_eyebrow_zh", "label": "中文 · 小标题", "default": "关于品牌" },
+    { "type": "text", "id": "story_eyebrow_en", "label": "英文 · 小标题", "default": "About hitoami" },
     {
       "type": "textarea",
       "id": "story_heading",
@@ -59,7 +86,19 @@
       "id": "story_text_en",
       "label": "英文 · 品牌故事",
       "default": "<p>hitoami brings together the ideas of “one” and “knitting”.</p><p>From the first stitch, bring yarn, colour and imagination into everyday life. Whether you are picking up yarn for the first time or have always loved making, find your own rhythm, one stitch at a time—and connect with others who share that love.</p>"
-    }
+    },
+    { "type": "header", "content": "LINE 卡片" },
+    { "type": "url", "id": "line_link", "label": "LINE 链接", "info": "官方 LINE 加好友链接；留空时按钮链到联系页。" },
+    { "type": "image_picker", "id": "line_qr", "label": "LINE 二维码(仅桌面显示)" },
+    { "type": "text", "id": "line_heading", "label": "日文 · LINE 标题", "default": "hitoami 公式 LINE" },
+    { "type": "text", "id": "line_heading_zh", "label": "中文 · LINE 标题", "default": "hitoami 官方 LINE" },
+    { "type": "text", "id": "line_heading_en", "label": "英文 · LINE 标题", "default": "hitoami on LINE" },
+    { "type": "text", "id": "line_text", "label": "日文 · LINE 说明", "default": "糸選び、必要な量、作り方の受け取りまで、気軽にどうぞ。" },
+    { "type": "text", "id": "line_text_zh", "label": "中文 · LINE 说明", "default": "选线、算用量、领取教程，都可以问我们。" },
+    { "type": "text", "id": "line_text_en", "label": "英文 · LINE 说明", "default": "Ask us about yarn, amounts and getting your pattern." },
+    { "type": "text", "id": "line_cta", "label": "日文 · LINE 按钮", "default": "LINE で友だち追加" },
+    { "type": "text", "id": "line_cta_zh", "label": "中文 · LINE 按钮", "default": "添加 LINE 好友" },
+    { "type": "text", "id": "line_cta_en", "label": "英文 · LINE 按钮", "default": "Add us on LINE" }
   ],
   "presets": [
     {

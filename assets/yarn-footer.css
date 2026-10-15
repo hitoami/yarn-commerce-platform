@@ -1,7 +1,7 @@
 /* Shopify owns all footer content and form behavior; this file owns presentation. */
 .footer.yarn-footer {
   border-top: 1px solid var(--yarn-border-subtle);
-  background: var(--yarn-action-subtle-bg);
+  background: var(--yarn-bg-sunken);
   color: var(--yarn-text-primary);
 }
 .yarn-footer .page-width {

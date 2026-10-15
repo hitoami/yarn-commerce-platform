@@ -38,9 +38,9 @@ html[lang]:root {
   --yarn-home-action: #675144; /* umber-700 · hitoami 低饱和主操作：首页按钮；毛线详情页加入、选中与价格 */
   --yarn-home-thread: #8c8880; /* sand-600 · hitoami 小猫展开的装饰毛线 */
   --yarn-home-rope: #b8b1a4; /* sand-400 · 首页导览条挂线的线芯（线纹用 home-thread）；不得用于文字 */
-  --yarn-bg-page: #f7f7f5; /* cream-100 · 页面底 */
+  --yarn-bg-page: #f9f6f0; /* cream-100 · 页面底 */
   --yarn-bg-surface: #fffefa; /* cream-50 · 卡片、导航、横幅、输入框面 */
-  --yarn-bg-sunken: #ebe5dc; /* sand-100 · 次级区块（暖砂） */
+  --yarn-bg-sunken: #ebe5dc; /* sand-100 · 次级区块（暖砂）、页脚 */
   --yarn-bg-warm: #ece8dc; /* sand-150 · 暖米区块（配色方案 5） */
   --yarn-bg-band: #f5f1e8; /* sand-50 · 暖米面板：毛线详情「要买几团？」估算面板 */
   --yarn-bg-inverse: #8f3c26; /* clay-700 · 深色反白区块 */
@@ -56,7 +56,7 @@ html[lang]:root {
   --yarn-action: #a6472e; /* clay-600 · 链接、文字按钮、图标勾选、编号徽章文字 */
   --yarn-accent: #b93b20; /* clay-550 · 价格、跨区导航与结账等实心按钮 */
   --yarn-action-strong: #8f3c26; /* clay-700 · 按下态、深色强调面 */
-  --yarn-action-subtle-bg: #fff9e9; /* cream-150 · 浅色操作面：导航选中、帮助、页脚 */
+  --yarn-action-subtle-bg: #fff9e9; /* cream-150 · 浅色操作面：导航选中、帮助 */
   --yarn-action-subtle-hover: #fff3de; /* cream-200 · 浅色操作面的悬停 */
   --yarn-cta-bg: #f8e5a9; /* butter-200 · 奶油主按钮：加购、Hero 主按钮、选中筛选 */
   --yarn-cta-hover: #f6dfa0; /* butter-300 · 奶油主按钮悬停 */

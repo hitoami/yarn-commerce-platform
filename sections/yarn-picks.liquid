@@ -3,6 +3,7 @@
   首页精选区块(卡片家族):标题 + 查看全部 + 可选出口卡钩子 + 商品卡网格。
   模式:collection 按集合顺序;sale 只取有真实划线价的商品、按折扣力度从大到小,没有折扣商品时整块不渲染;
   beginner 在卡片上显示「新手友好」及商品 metafield yarn.beginner_reason 里的理由,没有理由的商品不显示标签。
+  handmade(#131 手工成品):库存由 Shopify 跟踪且 10 件及以下时显示「仅剩 N 件」,卖完显示「售罄」(不隐藏)。
   三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
 {% endcomment %}
 {%- liquid
@@ -84,8 +85,10 @@
         {%- else -%}
           {%- assign picks_beginner = false -%}
           {%- if picks_mode == 'beginner' -%}{%- assign picks_beginner = true -%}{%- endif -%}
+          {%- assign picks_handmade = false -%}
+          {%- if picks_mode == 'handmade' -%}{%- assign picks_handmade = true -%}{%- endif -%}
           {%- for pick_product in picks_collection.products limit: picks_limit -%}
-            {%- render 'yarn-pick-card', card_product: pick_product, beginner: picks_beginner -%}
+            {%- render 'yarn-pick-card', card_product: pick_product, beginner: picks_beginner, handmade: picks_handmade -%}
           {%- endfor -%}
         {%- endif -%}
       </div>
@@ -112,7 +115,8 @@
       "options": [
         { "value": "collection", "label": "按集合顺序" },
         { "value": "sale", "label": "优惠:只显示有划线价的商品,按折扣力度排序" },
-        { "value": "beginner", "label": "新手友好:显示商品字段 yarn.beginner_reason 里的理由" }
+        { "value": "beginner", "label": "新手友好:显示商品字段 yarn.beginner_reason 里的理由" },
+        { "value": "handmade", "label": "手工成品:显示「仅剩 N 件」或「售罄」(库存 10 件及以下时)" }
       ],
       "default": "collection"
     },

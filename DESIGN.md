@@ -5,7 +5,7 @@ colors:
   home-action: "#675144"
   home-thread: "#8c8880"
   home-rope: "#b8b1a4"
-  bg-page: "#f7f7f5"
+  bg-page: "#f9f6f0"
   bg-surface: "#fffefa"
   bg-sunken: "#ebe5dc"
   bg-warm: "#ece8dc"
@@ -313,10 +313,10 @@ components:
 
 | 分组 | 角色 | 用途 |
 |---|---|---|
-| 背景 | `bg-page` / `bg-surface` / `bg-sunken` / `bg-inverse` / `bg-band` | 页面底 / 卡片与导航面 / 暖砂次级区块 / 深色反白区块 / 毛线详情估算面板 |
+| 背景 | `bg-page` / `bg-surface` / `bg-sunken` / `bg-inverse` / `bg-band` | 页面底 / 卡片与导航面 / 暖砂次级区块与页脚 / 深色反白区块 / 毛线详情估算面板 |
 | 文字 | `text-primary` / `text-secondary` / `text-muted` / `text-disabled` | 正文与通用标题 / 次级正文 / 辅助说明 / 不可用 |
 | 文字（特定底） | `text-inverse` / `text-on-action` / `text-on-cta` | 深色区块 / 陶土实心按钮 / 奶油主按钮 |
-| 操作 | `action` / `accent` / `action-strong` / `action-subtle-bg` / `action-subtle-hover` | 链接与文字按钮 / 价格与实心按钮 / 按下与深色强调 / 导航选中、帮助、页脚浅面 / 其悬停 |
+| 操作 | `action` / `accent` / `action-strong` / `action-subtle-bg` / `action-subtle-hover` | 链接与文字按钮 / 价格与实心按钮 / 按下与深色强调 / 导航选中、帮助浅面 / 其悬停 |
 | 主按钮 | `cta-bg` / `cta-hover` / `cta-border` | 奶油主按钮（加购、Hero、选中筛选） |
 | 边线 | `border-subtle` / `border-card` / `border-control` / `border-disabled` | 分组细线 / 卡片边 / 输入与筛选控件边（≥3:1）/ 不可用 |
 | 柔色面 | `tint-blush` / `tint-butter` / `tint-sage` | 品类角标毛线 / 编织包 / 成品，及信息卡；只表达分类 |
@@ -357,7 +357,7 @@ components:
 ## Components(现行规则)
 
 - **导航**:暖白底细线,当前页浅奶油胶囊 + 陶土字;菜单项来自 Shopify Navigation,含集合入口(编织包/毛线/成品);44px 触控、24px 图标。
-- **首页**(Claude Design 1a,#126;信息架构沿用方案 C #93):首屏手作小屋整幅轮播(页头透明叠图、底边波浪)→ 导览条(晾衣绳式挂线两端钉在首屏底边、以页面中线对称,四个品类挂饰;小猫沿绳走到悬停的入口,保持不变)→ 品牌介绍 → 挑毛线 → 按作品图选 → 新手友好编织包 → 店铺精选成品 → 帮助条。优惠区块停用(1a 不含)。每块是独立 section,没有真实数据的模块整块不渲染。区块节奏:桌面色带之间 64px、连续商品区之间 32px,内容轴 1200px。
+- **首页**(Claude Design 1a,#126;信息架构沿用方案 C #93):首屏手作小屋整幅轮播(页头透明叠图、底边波浪)→ 导览条(晾衣绳式挂线两端钉在首屏底边、以页面中线对称,四个品类挂饰;小猫沿绳走到悬停的入口,保持不变)→ 品牌介绍 → 挑毛线 → 按作品图选 → 新手友好编织包 → 店铺精选成品 → 帮助条。优惠区块停用(1a 不含)。每块是独立 section,没有真实数据的模块整块不渲染。区块节奏(#131 统一):页面底为暖纸色 `bg-page`,商品 / 材料包 / 成品区不另铺底色,只有「挑毛线」`bg-band` 色带与本季主推奶油卡作分区;区块上下间距桌面 72px、手机 40px;区块标题 Klee One / 霞鹜文楷 600,桌面 32px、手机 24px,「查看全部 →」为 `action` 色 15px 粗体文字链(悬停下划线)。内容轴 1200px。
   - **挑毛线**:`bg-band` 色带;居中小标题(12px、宽字距)+ 标题(手机 24 / 桌面 30px)+ 花饰图;按商品字段分段的胶囊切换(白底,选中 `home-action`);方卡 1:1、10px 圆角,名称 16 / 18px 中粗、说明 12 / 14px(未填说明时显示款数);一段超过 4 个(手机)/ 6 个(桌面)排两行,横向滑动,手机露出下一列并在下方写「共 N 类 · 左右滑动查看更多」,桌面左侧「共 N 类」、右侧圆形翻页箭头;底部 `bg-sunken` 次级按钮「查看全部毛线」。
   - **商品与作品卡**:标题左上、说明紧贴标题下方、「查看全部」在右侧;手机 2 列 12px 间距,桌面 4 列 24px 间距;成品手机只显示前 2 件。首页商品卡无边框、方形照片即卡片;折扣角标为图片左上 `tint-blush` 胶囊,只在有划线价时出现;「新手友好」为 `tint-sage` 小标签,必须带商品字段里的理由;作品卡标签只写有成品 / 有编织包 / 可买材料。
   - **帮助条**:`action-subtle-bg` 浅黄面、`cta-border` 细线、16px 圆角,不放图标;手机为标题 + 文字链接,桌面为标题 + 说明 + `home-action` 实心按钮。

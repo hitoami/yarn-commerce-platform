@@ -17,11 +17,12 @@ module.exports = {
   pages: [
     { key: 'home', path: '/' },
     { key: 'yarn-collection', path: '/collections/yarn' },
-    { key: 'yarn-pdp', path: '/products/demo-cotton-candy-yarn-50g' },
-    { key: 'kit-pdp', path: '/products/demo-pierre-penguin-crochet-kit' },
-    { key: 'finished-pdp', path: '/products/demo-flower-bouquet-blanket-finished' },
-    { key: 'cart-drawer', path: '/products/demo-nukumori-yarn-50g', openCart: true },
-    { key: 'search', path: '/search?q=demo' },
+    // #131：演示商品已删除，编织包不再销售；成品详情等真实成品上架后再加回。
+    { key: 'yarn-pdp', path: '/products/mvp-yarn-18' },
+    // 本季主推专题页：后台页面已建（handle season）；page.season 上线正式主题、后台改选该模板前，用 ?view 预览。
+    { key: 'season', path: '/pages/season?view=season' },
+    { key: 'cart-drawer', path: '/products/mvp-yarn-18', openCart: true },
+    { key: 'search', path: '/search?q=%E6%AF%9B%E7%BA%BF' },
     { key: 'commercial-disclosure', path: '/pages/commercial-disclosure' },
     { key: 'returns-exchanges', path: '/pages/returns-exchanges' },
     { key: 'shipping', path: '/pages/shipping' },
@@ -41,7 +42,7 @@ module.exports = {
     '.cart-item__name', '.cart-item__details', '.cart-notification-product',
     '.collection-hero__title', '.collection-hero__description',
     '.header__menu-item', '.menu-drawer__menu-item', '.list-menu__item', '.footer-block__details-content',
-    '.predictive-search', '.yx-project-pick__title', '[data-proof-content]',
+    '.predictive-search', '.yx-project-pick__title', '.yx-project-pick__yarn', '.yx-season-page__toc', '.yx-season-page__name', '.yx-season-page__facts', '.yx-season-page__note', '.yarn-favorite', '[data-proof-content]',
   ],
 
   // 有意显示多种语言或品牌名的区域：语言切换器、支付方式图标。

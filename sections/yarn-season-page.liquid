@@ -1,0 +1,166 @@
+{% comment %}
+  本季主推专题页(#131,page.season 模板):首页「本季主推」入口卡点进来的一页。
+  杂志式:封面(上传大图,或选品前 4 款毛线主图拼贴)+ 大标题 + 导语 + 目录;下面每款毛线一段,图文左右交替,每第 3 款通栏大图;商品资料排成细线规格表。
+  选品:所选集合(留空用 毛线 集合)里带指定标签的商品(默认 tag「预订爆款」,前 50 件中取前 N 件),运营改标签即可调整;
+  标签只用于选品,不显示在页面上,也不出现「爆款」「热销」等字样。
+  每款介绍:有同一商品的「毛线介绍」block 时用 block 三语文案与配图(配图未上传时用商品主图);商品资料取商品描述(成分、规格、用途)。
+  价格为 0 或无货时不显示价格与「加入购物车」,只保留「查看商品」;多颜色商品去详情页选色,不在这里直接加购。
+  三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置;通用按钮用 Theme locales。
+{% endcomment %}
+{%- liquid
+  assign sp_collection = section.settings.collection | default: collections['yarn']
+  assign sp_tag = section.settings.tag | strip
+  assign sp_handles = ''
+  if sp_collection != blank
+    for sp_product in sp_collection.products limit: 50
+      if sp_tag == blank or sp_product.tags contains sp_tag
+        assign sp_handles = sp_handles | append: sp_product.handle | append: ','
+      endif
+    endfor
+  endif
+  assign sp_handles = sp_handles | split: ','
+  assign sp_count = sp_handles.size
+  if sp_count > section.settings.products_to_show
+    assign sp_count = section.settings.products_to_show
+  endif
+  assign sp_last = sp_count | minus: 1
+  capture sp_eyebrow
+    render 'yarn-setting-text', settings: section.settings, key: 'eyebrow'
+  endcapture
+  capture sp_heading
+    render 'yarn-setting-text', settings: section.settings, key: 'heading'
+  endcapture
+  capture sp_text
+    render 'yarn-setting-text', settings: section.settings, key: 'text'
+  endcapture
+  if sp_heading == blank
+    assign sp_heading = page.title
+  endif
+-%}
+{{ 'yarn-season-page.css' | asset_url | stylesheet_tag }}
+<article class="yx-season-page">
+  <header class="yx-season-page__cover">
+    <div class="yx-season-page__art{% if section.settings.image == blank %} yx-season-page__art--mosaic{% endif %}">
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 2000 | image_tag: widths: '600, 900, 1200, 1600, 2000', sizes: '(min-width: 750px) 55vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: '' }}
+      {%- else -%}
+        {%- for sp_at in (0..sp_last) limit: 4 -%}
+          {%- assign sp_cover = all_products[sp_handles[sp_at]].featured_image -%}
+          {%- if sp_cover != blank -%}
+            {%- if forloop.first -%}{%- assign sp_w = 1200 -%}{%- else -%}{%- assign sp_w = 600 -%}{%- endif -%}
+            {{ sp_cover | image_url: width: sp_w | image_tag: widths: '300, 600, 900, 1200', sizes: '(min-width: 750px) 30vw, 50vw', loading: 'eager', alt: '' }}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+    <div class="yx-season-page__intro">
+      <h1 class="yx-season-page__heading">{{ sp_heading | escape | newline_to_br }}</h1>
+      {%- if sp_text != blank -%}<p class="yx-season-page__text">{{ sp_text | escape }}</p>{%- endif -%}
+      {%- if sp_count > 1 -%}
+        <nav class="yx-season-page__toc" aria-label="{{ 'yarn_project.season_contents' | t }}">
+          <p class="yx-season-page__toc-label">{{ 'yarn_project.season_contents' | t }}{% if sp_eyebrow != blank %}<span>{{ sp_eyebrow | escape }}</span>{% endif %}</p>
+          <ol>
+            {%- for sp_at in (0..sp_last) -%}
+              {%- assign sp_item = all_products[sp_handles[sp_at]] -%}
+              <li><a href="#SeasonYarn-{{ forloop.index }}"><span class="yx-season-page__toc-num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>{{ sp_item.title | escape }}</a></li>
+            {%- endfor -%}
+          </ol>
+        </nav>
+      {%- endif -%}
+    </div>
+  </header>
+
+  {%- if sp_count == 0 -%}
+    {%- if request.design_mode -%}<p class="yx-season-page__empty">本季主推：所选集合里没有带「{{ sp_tag | escape }}」标签的商品。</p>{%- endif -%}
+  {%- else -%}
+    <ol class="yx-season-page__list">
+      {%- for sp_at in (0..sp_last) -%}
+        {%- assign sp_item = all_products[sp_handles[sp_at]] -%}
+        {%- assign sp_note = blank -%}
+        {%- assign sp_image = blank -%}
+        {%- for block in section.blocks -%}
+          {%- if block.settings.product.handle == sp_item.handle -%}
+            {%- capture sp_note -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'note' -%}{%- endcapture -%}
+            {%- assign sp_image = block.settings.image -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if sp_image == blank -%}{%- assign sp_image = sp_item.metafields.yarn.card_image.value | default: sp_item.featured_image -%}{%- endif -%}
+        {%- assign sp_variant = sp_item.selected_or_first_available_variant -%}
+        {%- assign sp_buyable = false -%}
+        {%- if sp_item.has_only_default_variant and sp_variant.available and sp_variant.price > 0 -%}{%- assign sp_buyable = true -%}{%- endif -%}
+        {%- assign sp_num = forloop.index | prepend: '0' | slice: -2, 2 -%}
+        {%- assign sp_mod = forloop.index | modulo: 3 -%}
+        <li class="yx-season-page__yarn{% if sp_mod == 0 %} yx-season-page__yarn--wide{% elsif sp_mod == 2 %} yx-season-page__yarn--flip{% endif %}" id="SeasonYarn-{{ forloop.index }}">
+          <figure class="yx-season-page__figure">
+            <a class="yx-season-page__media" href="{{ sp_item.url }}" tabindex="-1" aria-hidden="true">
+              {%- if sp_image != blank -%}
+                {{ sp_image | image_url: width: 1600 | image_tag: widths: '400, 600, 900, 1200, 1600', sizes: '(min-width: 750px) 60vw, calc(100vw - 32px)', loading: 'lazy', alt: '' }}
+              {%- endif -%}
+            </a>
+            <figcaption>No.{{ sp_num }} — {{ sp_item.title | escape }}</figcaption>
+          </figure>
+          <div class="yx-season-page__copy">
+            <span class="yx-season-page__num" aria-hidden="true">{{ sp_num }}</span>
+            <h2 class="yx-season-page__name"><a href="{{ sp_item.url }}">{{ sp_item.title | escape }}</a></h2>
+            {%- if sp_note != blank -%}<p class="yx-season-page__note">{{ sp_note | escape }}</p>{%- endif -%}
+            {%- if sp_item.description != blank -%}<div class="yx-season-page__facts">{{ sp_item.description | replace: '</strong>：', '</strong>' | replace: '</strong>:', '</strong>' }}</div>{%- endif -%}
+            <div class="yx-season-page__buy">
+              {%- if sp_buyable -%}
+                <span class="yx-season-page__price">
+                  {%- if sp_variant.compare_at_price > sp_variant.price -%}<s>{{ sp_variant.compare_at_price | money }}</s> {% endif -%}
+                  {{ sp_variant.price | money }}
+                </span>
+              {%- endif -%}
+              <div class="yx-season-page__actions">
+                <a class="yx-season-page__btn" href="{{ sp_item.url }}">{{ 'yarn_project.season_view_yarn' | t }} <span aria-hidden="true">→</span></a>
+                {%- if sp_buyable -%}
+                  {%- form 'product', sp_item, class: 'yx-season-page__form' -%}
+                    <input type="hidden" name="id" value="{{ sp_variant.id }}">
+                    <button type="submit" class="yx-season-page__btn yx-season-page__btn--cart">{{ 'products.product.add_to_cart' | t }}</button>
+                  {%- endform -%}
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ol>
+  {%- endif -%}
+</article>
+
+{% schema %}
+{
+  "name": "本季主推专题",
+  "tag": "section",
+  "class": "section yx-season-page-section",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "封面大图", "info": "未上传时用选品前 4 款毛线主图拼贴。" },
+    { "type": "collection", "id": "collection", "label": "选品集合", "info": "留空时使用「毛线」集合。" },
+    { "type": "text", "id": "tag", "label": "选品标签", "default": "预订爆款", "info": "只取集合里带这个标签的商品；标签不会显示在页面上。" },
+    { "type": "range", "id": "products_to_show", "min": 2, "max": 12, "step": 1, "default": 7, "label": "最多显示几款" },
+    { "type": "text", "id": "eyebrow", "label": "日文 · 刊名（目录旁）", "default": "今季の特集" },
+    { "type": "text", "id": "eyebrow_zh", "label": "中文 · 刊名（目录旁）", "default": "本季专题" },
+    { "type": "text", "id": "eyebrow_en", "label": "英文 · 刊名（目录旁）", "default": "This season's feature" },
+    { "type": "textarea", "id": "heading", "label": "日文 · 标题", "default": "この季節、\n編みたい色。" },
+    { "type": "textarea", "id": "heading_zh", "label": "中文 · 标题", "default": "这一季，\n想织的颜色" },
+    { "type": "textarea", "id": "heading_en", "label": "英文 · 标题", "default": "This season,\nthe colours we want to knit" },
+    { "type": "textarea", "id": "text", "label": "日文 · 导语", "default": "店で選んだ今季の毛糸。ひと玉ごとに、色の物語があります。" },
+    { "type": "textarea", "id": "text_zh", "label": "中文 · 导语", "default": "店里挑的当季毛线，每一团都有自己的颜色故事。" },
+    { "type": "textarea", "id": "text_en", "label": "英文 · 导语", "default": "Yarns we picked for the season, each with its own colour story." }
+  ],
+  "blocks": [
+    {
+      "type": "note",
+      "name": "毛线介绍",
+      "settings": [
+        { "type": "product", "id": "product", "label": "毛线" },
+        { "type": "image_picker", "id": "image", "label": "配图", "info": "未上传时用商品主图。" },
+        { "type": "textarea", "id": "note", "label": "日文 · 介绍" },
+        { "type": "textarea", "id": "note_zh", "label": "中文 · 介绍" },
+        { "type": "textarea", "id": "note_en", "label": "英文 · 介绍" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "本季主推专题" }]
+}
+{% endschema %}
