@@ -152,13 +152,13 @@ components:
 | 角色 | 当前用途 |
 | --- | --- |
 | `bg-page` / `bg-surface` | 暖纸页面 / 卡片、导航与输入面 |
-| `bg-band` / `bg-sunken` / `bg-warm` | 浅米 FAQ 与估算面板 / 暖砂次级面 / 可选暖米配色方案 |
+| `bg-band` / `bg-sunken` / `bg-warm` | 浅米 FAQ 与估算面板 / 暖砂次级面与页脚 / 可选暖米配色方案 |
 | `text-primary` / `text-heading` / `text-warm` | 正文与毛线详情标题 / 商品卡和目录标题 / Hero 等暖色文字 |
 | `text-secondary` / `text-muted` / `text-disabled` | 次级正文 / 规格与说明 / 不可用文字 |
 | `home-action` | 首页桌面联系按钮；毛线详情价格、购买按钮和选中环 |
 | `action` / `accent` / `action-strong` | 链接、导航当前项 / 商品卡价格和部分交易动作 / 深色交互态 |
 | `cta-bg` / `cta-hover` / `cta-border` | 目录筛选选中、通用商品加购等奶油变体；当前首页 Hero 不显示购买按钮 |
-| `action-subtle-bg` / `action-subtle-hover` | 导航选中、帮助、页脚等浅色操作面 |
+| `action-subtle-bg` / `action-subtle-hover` | 导航选中、帮助及页脚控件 hover 等浅色操作面 |
 | `border-subtle` / `border-card` / `border-control` / `border-disabled` | 分隔 / 卡片边 / 输入和数量控件边 / 禁用边 |
 | `tint-blush` / `tint-butter` / `tint-sage` | 分类与信息面；颜色不证明库存、齐套、难度或优惠 |
 | `focus` | 键盘焦点，2px 轮廓与 4px 偏移，与 hover 分开 |
@@ -199,7 +199,7 @@ Shopify scheme-1 至 scheme-5 分别用于默认、暖砂、深色反白、柔�
 
 共享容器 `--yarn-content-max: 1320px`，商品内容轴 `--yarn-commerce-max: 1200px`；共享 gutter 为桌面 48px、≤989px 时 24px、≤749px 时 16px。页面可以在自己的作用域收窄阅读宽度，不能覆盖全局 `.page-width`。
 
-间距角色为 4 / 8 / 12 / 16 / 24 / 32 / 48px。首页当前构图另有局部间距：手机品牌、分类、新手和 FAQ 等正文左右 24px；`yarn-home-catalog` 也为 24px。普通目录手机边距 16px。首页商品区与新手/FAQ 上下 36px，桌面 56px，不应套用旧文档的全站 40 / 72px。
+间距角色为 4 / 8 / 12 / 16 / 24 / 32 / 48px。首页当前构图另有局部间距：手机品牌、分类与本季入口左右 24px；商品区、新手与 FAQ 的 `.page-width` 规则沿共享 gutter 使用 16px。普通目录手机边距也为 16px。首页商品区与新手/FAQ 上下 36px，桌面 56px，不应套用旧文档的全站 40 / 72px。
 
 商品网格手机两列、列距 12px；桌面四列、间距 24px。首页分类在手机以 85px 圆图横向浏览、间距 16px，桌面显示五列。桌面新手指引三列，FAQ 标题与问题分两列。Hero 保持独立全幅场景画布，不受商品网格裁切规则约束。
 
