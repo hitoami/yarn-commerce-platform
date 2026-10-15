@@ -40,9 +40,11 @@
 {{ 'yarn-season-page.css' | asset_url | stylesheet_tag }}
 <article class="yx-season-page">
   <header class="yx-season-page__cover">
-    <div class="yx-season-page__art{% if section.settings.image == blank %} yx-season-page__art--mosaic{% endif %}">
+    <div class="yx-season-page__art{% if section.settings.image == blank and section.settings.source_image == false %} yx-season-page__art--mosaic{% endif %}">
       {%- if section.settings.image != blank -%}
         {{ section.settings.image | image_url: width: 2000 | image_tag: widths: '600, 900, 1200, 1600, 2000', sizes: '(min-width: 750px) 55vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: '' }}
+      {%- elsif section.settings.source_image -%}
+        <img src="{{ 'hitoami-source-oil-loop.jpeg' | asset_url }}" width="790" height="885" loading="eager" fetchpriority="high" alt="">
       {%- else -%}
         {%- for sp_at in (0..sp_last) limit: 4 -%}
           {%- assign sp_cover = all_products[sp_handles[sp_at]].featured_image -%}
@@ -135,6 +137,7 @@
   "tag": "section",
   "class": "section yx-season-page-section",
   "settings": [
+    { "type": "checkbox", "id": "source_image", "label": "使用本次油画圈圈线原图作为封面", "default": false },
     { "type": "image_picker", "id": "image", "label": "封面大图", "info": "未上传时用选品前 4 款毛线主图拼贴。" },
     { "type": "collection", "id": "collection", "label": "选品集合", "info": "留空时使用「毛线」集合。" },
     { "type": "text", "id": "tag", "label": "选品标签", "default": "预订爆款", "info": "只取集合里带这个标签的商品；标签不会显示在页面上。" },

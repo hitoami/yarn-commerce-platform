@@ -1,4 +1,4 @@
-/* #131 approved mobile composition. Desktop art direction awaits its own approval. */
+/* #131 home composition. Preserve the original hero; align the remaining sections to the supplied reference. */
 .yarn-home-catalog, .yarn-home-guide { padding-block: 36px; color: var(--yarn-text-primary); }
 .yarn-home-catalog h2, .yarn-home-guide h2 { margin: 0 0 12px; font: 400 24px/1.45 var(--yarn-display); }
 .yarn-home-catalog > p, .yarn-home-guide p { color: var(--yarn-text-muted); font-size: 13px; line-height: 1.85; }
@@ -34,4 +34,38 @@
   .yarn-home-catalog, .yarn-home-guide { padding-inline: 24px; }
   body:has(.hitoami-hero--catalog) .yx-season { margin: 0; width: auto; padding: 12px 24px 36px; gap: 23px; background: none; }
   body:has(.hitoami-hero--catalog) .yx-season__heading { font-size: 27px; font-weight: 400; }
+}
+
+/* The supplied desktop reference uses compact circles and a shared content axis. */
+body:has(.hitoami-hero--catalog) .yarn-entries__photo { border-radius: 50%; }
+body:has(.hitoami-hero--catalog) .yarn-entries__head { text-align: left; position: relative; }
+body:has(.hitoami-hero--catalog) .yarn-entries__eyebrow { color: var(--yarn-action); letter-spacing: .08em; text-indent: 0; }
+body:has(.hitoami-hero--catalog) .yarn-entries__head yarn-companion { height: 68px; }
+.yarn-home-catalog.page-width, .yarn-home-guide.page-width { width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter))); max-width: none; margin-inline: auto; padding-inline: 0; }
+.yarn-home-guide summary { position: relative; }
+@media (min-width: 750px) {
+  body:has(.hitoami-hero--catalog) .yarn-entries { padding-block: 48px; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__heading { font-size: 26px; font-weight: 400; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__head yarn-companion { position: absolute; width: 40%; right: 0; bottom: 0; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__bar:not(:has(.yarn-entries__tabs)) { display: none; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__scroller { margin-top: 32px; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__track { width: 100%; grid-auto-columns: minmax(0, 1fr); gap: 48px; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__name { text-align: center; font-size: 16px; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__hint { text-align: center; font-size: 12px; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__all { min-height: 44px; margin-top: 20px; padding: 0; background: none; border: 0; font-size: 14px; }
+  .yarn-home-catalog, .yarn-home-guide { padding-block: 56px; }
+  .yarn-home-catalog h2, .yarn-home-guide h2 { font-size: 28px; }
+  .yarn-home-catalog__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+  .yarn-home-guide--steps ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; list-style: none; padding: 0; counter-reset: steps; }
+  .yarn-home-guide--steps li { padding: 22px; border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-card-radius); counter-increment: steps; }
+  .yarn-home-guide--steps li::before { content: counter(steps); display: grid; place-items: center; width: 30px; height: 30px; margin-bottom: 14px; border-radius: 50%; background: var(--yarn-tint-butter); color: var(--yarn-text-primary); }
+  .yarn-home-guide--faq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 0 72px; }
+  .yarn-home-guide--faq h2 { grid-row: 1 / span 20; }
+  .yarn-home-guide--faq details { grid-column: 2; }
+  body:has(.hitoami-hero--catalog) .hitoami-story:not(:has(.hitoami-story__media)) { grid-template-columns: 1fr; max-width: 800px; }
+}
+@media (min-width: 750px) and (max-width: 989px) {
+  body:has(.hitoami-hero--catalog) .yarn-entries__track { gap: 24px; }
+  .yarn-home-guide--steps ol { gap: 12px; }
+  .yarn-home-guide--steps li { padding: 16px; }
 }

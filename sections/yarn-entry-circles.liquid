@@ -113,7 +113,7 @@
       {%- if ec_eyebrow != blank -%}<p class="yarn-entries__eyebrow">{{ ec_eyebrow | escape }}</p>{%- endif -%}
       <h2 class="yarn-entries__heading" id="EntryCircles-{{ section.id }}">{{ ec_heading | escape }}</h2>
       {% if section.settings.show_cat %}{% render 'yarn-companion' %}{% endif %}
-      <img class="yarn-entries__flourish" src="{{ 'impeccable-category-heading-flourish.png' | asset_url }}" alt="" width="1706" height="368" loading="lazy">
+      {% unless section.settings.show_cat %}<img class="yarn-entries__flourish" src="{{ 'impeccable-category-heading-flourish.png' | asset_url }}" alt="" width="1706" height="368" loading="lazy">{% endunless %}
     </div>
     <div class="yarn-entries__bar">
       <span class="yarn-entries__total" data-entries-total>{{ 'yarn_project.entries_total' | t: count: ec_first_total }}</span>

@@ -8,9 +8,10 @@
         "collection": "yarn",
         "tag": "catalog-2026-10-season",
         "products_to_show": 7,
-        "text": "涼しくなると、何か編みたくなる。今季は店の毛糸から7つを選びました。段染め、グラデーション、長い毛足。ひと玉ごとに、色の物語があります。",
-        "text_zh": "天气一凉，就想织点什么。这一季我们从店里挑了 7 款毛线：段染、渐变、长绒，每一团都有自己的颜色故事。",
-        "text_en": "When the air turns cool, we want to knit. This season we picked seven yarns from the shop — segment-dyed, gradient, long-pile — each with its own colour story."
+        "text": "色の重なりと糸の表情。お気に入りの一色を探してみませんか。",
+        "text_zh": "看看色彩的层次与线材的质感，寻找想织进生活的颜色。",
+        "text_en": "Explore layers of colour and texture, and find a shade to bring into everyday life.",
+        "source_image": true
       }
     }
   },

@@ -1,6 +1,6 @@
 {% comment %}
   首页品牌介绍:品牌图 + 小标题 + 品牌标语 + 品牌故事,下方附一张 LINE 卡片(#131,取代首页底部的 LINE 帮助条)。
-  手机上下排列(图 → 文字 → LINE 卡片);桌面左图右文。品牌图未上传时显示浅色占位块。
+  手机上下排列(图 → 文字 → LINE 卡片);桌面左图右文。品牌图优先用上传素材，也可启用本轮生成的编织与猫氛围图；两者都没有时不渲染媒体。
   LINE 卡片的按钮链到「LINE 链接」,未填写时链到联系页(同原帮助条规则);二维码图只在桌面显示,手机直接点按钮加好友。
   三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
 {% endcomment %}
@@ -13,11 +13,11 @@
 {%- capture line_cta -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'line_cta' -%}{%- endcapture -%}
 {%- if story_heading != blank or story_text != blank -%}
 <div class="hitoami-story" {% if story_heading != blank %}aria-labelledby="HitoamiStory-{{ section.id }}"{% endif %}>
-  {% if section.settings.image != blank %}<div class="hitoami-story__media">
+  {% if section.settings.image != blank or section.settings.use_brand_scene %}<div class="hitoami-story__media">
     {%- if section.settings.image != blank -%}
       {{ section.settings.image | image_url: width: 1200 | image_tag: widths: '400, 600, 900, 1200', sizes: '(min-width: 750px) 46vw, calc(100vw - 32px)', loading: 'lazy', alt: section.settings.image.alt | escape }}
     {%- else -%}
-      <div class="hitoami-story__placeholder" aria-hidden="true"></div>
+      <img src="{{ 'hitoami-brand-knitting-cat.png' | asset_url }}" width="1536" height="1024" loading="lazy" alt="">
     {%- endif -%}
   </div>
   {% endif %}<div class="hitoami-story__body">
@@ -47,8 +47,8 @@
   "name": "品牌介绍",
   "tag": "section",
   "class": "section hitoami-story-section",
-  "settings": [{"type":"text","id":"line_fallback","label":"未配置 LINE · 日文","default":"毛糸選びについてお問い合わせ"},{"type":"text","id":"line_fallback_zh","label":"未配置 LINE · 中文","default":"选线遇到问题？联系我们"},{"type":"text","id":"line_fallback_en","label":"未配置 LINE · 英文","default":"Need help choosing yarn? Contact us"},
-    { "type": "image_picker", "id": "image", "label": "品牌图", "info": "未上传时显示浅色占位块。" },
+  "settings": [{"type":"checkbox","id":"use_brand_scene","label":"使用编织与猫的品牌氛围图","default":false},{"type":"text","id":"line_fallback","label":"未配置 LINE · 日文","default":"毛糸選びについてお問い合わせ"},{"type":"text","id":"line_fallback_zh","label":"未配置 LINE · 中文","default":"选线遇到问题？联系我们"},{"type":"text","id":"line_fallback_en","label":"未配置 LINE · 英文","default":"Need help choosing yarn? Contact us"},
+    { "type": "image_picker", "id": "image", "label": "品牌图", "info": "上传图优先；未上传时可启用本轮品牌氛围图。" },
     { "type": "text", "id": "story_eyebrow", "label": "日文 · 小标题", "default": "ブランドについて" },
     { "type": "text", "id": "story_eyebrow_zh", "label": "中文 · 小标题", "default": "关于品牌" },
     { "type": "text", "id": "story_eyebrow_en", "label": "英文 · 小标题", "default": "About hitoami" },

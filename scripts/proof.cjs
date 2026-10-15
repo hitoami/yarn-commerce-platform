@@ -182,6 +182,16 @@ async function runJob(browser, job, baseUrl) {
     if (found.pendingImages) result.warnings.push(`${found.pendingImages} 张图片 8 秒内未加载完`);
     if (found.placeholders) result.warnings.push(`${found.placeholders} 个占位图（未设置图片）`);
 
+    // Layout checks alone can pass a blank page. Required content is part of acceptance.
+    for (const expected of target.requiredContent || []) {
+      const visible = await page.locator(expected.selector).evaluateAll(elements => elements.filter(element => {
+        const box = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return box.width > 0 && box.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+      }).length);
+      if (visible < expected.minimum) result.failures.push(`内容未齐：${expected.label}（实际 ${visible}，至少 ${expected.minimum}）`);
+    }
+
     if (target.openCart) await openCartDrawer(page);
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(300);
