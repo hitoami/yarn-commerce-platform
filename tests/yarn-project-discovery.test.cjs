@@ -31,46 +31,45 @@ test('all literal and dynamic UI translations exist in the three section locales
   }
 });
 
-test('homepage follows scheme C: category entries and sale (Issue #93, approved 2026-09-26)', () => {
-  // 首屏手作小屋轮播（与导览条解耦）→ 四个品类入口 + 新手入口 → 优惠 → 按作品图选 → 新手友好编织包 → 材质 / 粗细 → 店铺精选成品 → LINE 帮助。
-  // 每个模块都是独立 section，顺序与开关在主题编辑器调整；原三节点 Hero 保留为停用 section。
-  // Issue #117：挑毛线圆图入口接在品牌介绍之后；原「按材质 / 粗细」标签页区块停用（材质 / 粗细改在集合页「更多筛选」）。
-  // Issue #126：挑毛线改为按字段分段的两行横滑方卡（Claude Design 1a），数据仍是 #117 的入口。
-  assert.deepEqual(index.order, ['hero', 'guide-strip', 'story', 'yarn-entries', 'sale-picks', 'project-picks', 'beginner-kits', 'filter-switch', 'picks-finished', 'yarn-hero', 'line-support']);
-  assert.equal(index.sections['filter-switch'].disabled, true);
+test('homepage follows the #131 IA: yarn first, then season feature, yarn sets and handmade pieces', () => {
+  // #131（2026-10-10 锦晨确认）：活动图 → 品牌介绍（附 LINE）→ 挑毛线 → 本季主推（编辑专题）→ 用我们的毛线可以织（材料包）→ 手工成品精选。
+  // 导览条、新手友好编织包、底部 LINE 帮助条停用而不删除，编辑器里可重新打开。
+  const live = index.order.filter(id => !index.sections[id].disabled);
+  assert.deepEqual(live, ['hero', 'story', 'yarn-entries', 'catalog', 'season', 'guide', 'project-picks', 'faq']);
+  for (const retired of ['guide-strip', 'beginner-kits', 'line-support', 'sale-picks', 'filter-switch', 'yarn-hero']) assert.equal(index.sections[retired].disabled, true, retired);
   assert.equal(index.sections.hero.type, 'hitoami-hero');
-  assert.ok(index.sections.hero.block_order.length >= 3);
+  assert.equal(index.sections.story.type, 'hitoami-story');
+  assert.equal(index.sections.season.type, 'yarn-season-feature');
+  assert.equal(index.sections.season.settings.link, '/pages/season?view=season');
+  assert.equal(index.sections['project-picks'].type, 'yarn-project-picks');
+  assert.equal(index.sections['picks-finished'].settings.collection, 'finished-goods');
+  assert.equal(index.sections['picks-finished'].settings.mode, 'handmade');
+  for (const retired of ['picks-yarn', 'picks-kits', 'picks-tools', 'content-pick']) assert.equal(index.sections[retired], undefined);
   // 解耦：首屏脚本不读导览条，导览条脚本不读首屏。
   assert.doesNotMatch(fs.readFileSync('assets/hitoami-hero.js', 'utf8'), /yarn-guide|data-category/);
   assert.doesNotMatch(fs.readFileSync('assets/yarn-guide-strip.js', 'utf8'), /hitoami|data-slide/);
-  assert.equal(index.sections['yarn-hero'].disabled, true);
-  assert.equal(index.sections['guide-strip'].type, 'yarn-guide-strip');
-  assert.equal(index.sections.story.type, 'hitoami-story');
-  assert.equal(index.sections['guide-strip'].block_order.length, 4);
-  // 新手入口按用户 2026-09-28 决定不在首页显示：链接留空时整条不渲染，编辑器里填写即可恢复。
-  assert.equal(index.sections['guide-strip'].settings.starter_link, undefined);
-  assert.equal(index.sections['sale-picks'].settings.mode, 'sale');
-  // #126 Claude Design 1a 的模块顺序里没有优惠：区块停用而不删除，编辑器里可重新打开。
-  assert.equal(index.sections['sale-picks'].disabled, true);
-  assert.equal(index.sections['project-picks'].type, 'yarn-project-picks');
-  assert.equal(index.sections['beginner-kits'].settings.mode, 'beginner');
-  assert.equal(index.sections['filter-switch'].type, 'yarn-filter-switch');
-  assert.equal(index.sections['picks-finished'].settings.collection, 'finished-goods');
-  for (const retired of ['picks-yarn', 'picks-kits', 'picks-tools', 'content-pick']) assert.equal(index.sections[retired], undefined);
 
-  // 真实数据边界：优惠只取有划线价的商品；新手标签必须有理由；作品标签不写「买毛线」；材质 / 粗细只来自商品字段。
+  // 真实数据边界：优惠只取有划线价的商品；新手标签必须有理由；成品库存只读 Shopify 真实库存；本季主推的选品标签不显示在页面上。
   const picks = fs.readFileSync('sections/yarn-picks.liquid', 'utf8');
   const pickCard = fs.readFileSync('snippets/yarn-pick-card.liquid', 'utf8');
-  const offerTags = fs.readFileSync('snippets/yarn-project-offer-tags.liquid', 'utf8');
-  const fswitch = fs.readFileSync('sections/yarn-filter-switch.liquid', 'utf8');
+  const season = fs.readFileSync('sections/yarn-season-page.liquid', 'utf8');
+  const seasonCard = fs.readFileSync('sections/yarn-season-feature.liquid', 'utf8');
+  const kitCard = fs.readFileSync('snippets/yarn-project-pick-card.liquid', 'utf8');
   assert.match(picks, /sale_product\.compare_at_price > sale_product\.price/);
   assert.match(picks, /\{%- if picks_count == 0 -%\}/);
   assert.match(pickCard, /metafields\.yarn\.beginner_reason/);
   assert.match(pickCard, /\{%- if card_reason != blank -%\}/);
-  const emitted = [...offerTags.matchAll(/'(\w+),'/g)].map(m => m[1]).sort();
-  assert.deepEqual(emitted, ['finished', 'kit', 'materials']);
-  assert.match(fswitch, /fs_product\.metafields\[fs_ns\]\[fs_key\]/);
-  assert.match(fswitch, /\{%- if fs_has_material or fs_has_weight -%\}/);
+  assert.match(pickCard, /card_variant\.inventory_management == 'shopify'/);
+  // 本季主推：首页只放一张整块可点的入口卡，7 款毛线在专题页（page.season）；价格为 0 或多颜色时不在专题页直接加购。
+  assert.doesNotMatch(seasonCard, /data-group|sf_note/);
+  assert.match(seasonCard, /<\{\{ sf_tag \}\} class="yx-season"/);
+  assert.equal(JSON.parse(fs.readFileSync('templates/page.season.json', 'utf8')).sections.main.settings.tag, 'catalog-2026-10-season');
+  assert.match(season, /sp_product\.tags contains sp_tag/);
+  assert.doesNotMatch(season.match(/<ol class="yx-season-page__list">[\s\S]*<\/ol>/)[0], /sp_tag/);
+  assert.match(season, /has_only_default_variant and sp_variant\.available and sp_variant\.price > 0/);
+  // 材料包卡只汇总关联了 Variant 的「毛线」配件，价格 = Variant 价格 × 团数。
+  assert.match(kitCard, /component_type\.value == '毛线' and kit_component\.variant\.value != blank/);
+  assert.match(kitCard, /kit_variant\.price \| times: kit_qty/);
 
   // 作品库组件保持完整,供内容层与回滚复用(不在首页 order 中)。
   assert.match(fs.readFileSync('sections/yarn-project-library.liquid', 'utf8'), /shop\.metaobjects\.yarn_project\.values/);
@@ -151,7 +150,7 @@ test('yarn entry circles and collection type chips share one filter (Issue #117,
   assert.equal(entries.settings.collection, 'yarn');
   const values = entries.block_order.map((id) => entries.blocks[id].settings);
   // 入口是 yarn_entry Metaobject：名称三语在 Translate & Adapt 维护，筛选参数用 GID，不用中文文字。
-  assert.deepEqual(values.map((v) => v.entry), ['gradient', 'fluffy', 'loop-fancy', 'fine-airy', 'basic-solid', 'amigurumi', 'bags-home', 'spring-summer-cotton']);
+  assert.deepEqual(values.map((v) => v.entry), ['gradient', 'fluffy', 'loop-fancy', 'fine-airy', 'basic-solid']);
   for (const v of values) assert.ok(['yarn.texture', 'yarn.use'].includes(v.field));
   const circles = fs.readFileSync('sections/yarn-entry-circles.liquid', 'utf8');
   const toolbar = fs.readFileSync('sections/yarn-browse-toolbar.liquid', 'utf8');
@@ -164,5 +163,5 @@ test('yarn entry circles and collection type chips share one filter (Issue #117,
   assert.match(toolbar, /cat_params contains filter\.param_name and cat_chips != blank/);
   // 列表页标签顺序与首页圆图一致，不随 Search & Discovery 的自动排序（各语言不同）变化。
   const order = toolbar.match(/"id": "category_order"[^}]*"default": "([^"]+)"/)[1].split(',');
-  assert.deepEqual(order, values.map((v) => v.entry));
+  assert.deepEqual(order.filter((entry) => values.some((v) => v.entry === entry)), values.map((v) => v.entry));
 });

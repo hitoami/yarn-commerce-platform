@@ -4,6 +4,7 @@
   原价只在 compare_at_price 真实存在时划线显示。整卡一个链接目标。
   show_discount:在图片左上角显示真实折扣比例(只在有划线价时)。
   beginner:读 metafield yarn.beginner_reason;有理由才显示「新手友好」标签,理由代替规格行;没有理由不显示标签。
+  handmade(#131):手工成品。规格行换成「手工制作」说明;库存由 Shopify 跟踪且 10 件及以下时左上角显示「仅剩 N 件」,卖完显示「售罄」。
 {% endcomment %}
 {%- liquid
   assign card_image = card_product.metafields.yarn.card_image.value | default: card_product.featured_image
@@ -15,6 +16,26 @@
   if show_discount and card_product.compare_at_price > card_product.price
     assign card_off = card_product.compare_at_price | minus: card_product.price | times: 100 | divided_by: card_product.compare_at_price
   endif
+  assign card_stock = blank
+  if handmade
+    if card_product.available == false
+      assign card_stock = 'yarn_project.card_sold_out' | t
+    else
+      assign card_left = 0
+      assign card_tracked = false
+      for card_variant in card_product.variants
+        if card_variant.inventory_management == 'shopify'
+          assign card_tracked = true
+          if card_variant.inventory_quantity > 0
+            assign card_left = card_left | plus: card_variant.inventory_quantity
+          endif
+        endif
+      endfor
+      if card_tracked and card_left > 0 and card_left <= 10
+        assign card_stock = 'yarn_project.card_stock_left' | t: count: card_left
+      endif
+    endif
+  endif
 -%}
 <a class="yx-product-card" href="{{ card_product.url }}">
   <div class="yx-product-card__media">
@@ -22,6 +43,7 @@
       {{ card_image | image_url: width: 600 | image_tag: widths: '300, 450, 600', sizes: '(min-width: 750px) 300px, 45vw', loading: 'lazy', alt: card_image.alt | default: card_product.title }}
     {%- endif -%}
     {%- if card_off > 0 -%}<span class="yx-product-card__off">-{{ card_off }}%</span>{%- endif -%}
+    {%- if card_stock != blank -%}<span class="yx-product-card__stock{% if card_product.available == false %} yx-product-card__stock--out{% endif %}">{{ card_stock }}</span>{%- endif -%}
   </div>
   <div class="yx-product-card__body">
     {%- if card_reason != blank -%}
@@ -32,14 +54,17 @@
     <span class="yx-product-card__title">{{ card_product.title | escape }}</span>
     {%- if card_reason != blank -%}
       <span class="yx-product-card__reason">{{ card_reason | escape }}</span>
+    {%- elsif handmade -%}
+      <span class="yx-product-card__spec">{{ 'yarn_project.card_handmade_note' | t }}</span>
     {%- else -%}
       <span class="yx-product-card__spec">{% render 'yarn-card-spec', product: card_product %}</span>
     {%- endif -%}
     <span class="yx-product-card__price">
+      {% if card_product.price <= 0 %}{{ 'yarn_project.kit_not_on_sale' | t }}{% else %}
       {%- if card_product.compare_at_price > card_product.price -%}
         <s class="yx-product-card__was">{{ card_product.compare_at_price | money }}</s>
       {%- endif -%}
-      {{ card_product.price | money }}
+      {{ card_product.price | money }}{% endif %}
     </span>
   </div>
 </a>

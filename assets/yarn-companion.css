@@ -1,0 +1,5 @@
+yarn-companion { display: block; position: relative; width: 100%; height: 78px; }
+.yarn-companion__button { position: absolute; right: 0; top: 8px; width: 99px; height: 66px; border: 0; background: none; cursor: pointer; }
+.yarn-companion__button:focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 4px; border-radius: var(--yarn-card-radius); }
+.yarn-companion__cat { position: absolute; left: 0; top: 0; width: 78px; height: 55px; background-size: 900% 100%; background-repeat: no-repeat; background-position: 0 0; transform: scaleX(var(--cat-direction, 1)); }
+.yarn-companion__ball { position: absolute; bottom: 7px; right: 0; width: 23px; height: 23px; fill: var(--yarn-tint-butter); stroke: var(--yarn-home-thread); stroke-width: 1.1; }

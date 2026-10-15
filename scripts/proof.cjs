@@ -2,7 +2,7 @@
 // npm run proof：对本地预览（shopify theme dev）生成证据包，写到被忽略的 .proof/。
 // 语言泄漏 + 首屏截图清单 + 横向溢出 / 图片 / 脚本错误断言。PR 只引用 .proof/report.md 的结论。
 //
-// 用法：npm run proof -- [--base <url>] [--pages home,kit-pdp] [--locales zh,en] [--viewports mobile]
+// 用法：npm run proof -- [--base <url>] [--pages home,yarn-pdp] [--locales zh,en] [--viewports mobile]
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -115,12 +115,21 @@ async function openCartDrawer(page) {
   await page.evaluate(async () => {
     const root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
     const product = await (await fetch(`${location.pathname}.js`)).json();
-    const variant = product.variants.find(v => v.available) || product.variants[0];
-    await fetch(`${root}cart/add.js`, {
+    const variant = product.variants.find(v => v.available && v.price > 0);
+    if (!variant) throw new Error('购买验收受阻：此商品没有已定价且可售的 Variant，未发送加购请求');
+    const response = await fetch(`${root}cart/add.js`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ items: [{ id: variant.id, quantity: 1 }] }),
     });
+    // Opening an empty drawer after a rejected request is not a successful cart check.
+    if (!response.ok) throw new Error(`加购失败 ${response.status}：${root}cart/add.js`);
+    const cartResponse = await fetch(`${root}cart.js`);
+    if (!cartResponse.ok) throw new Error(`读取购物车失败 ${cartResponse.status}`);
+    const cart = await cartResponse.json();
+    if (!cart.items?.some(item => Number(item.variant_id) === Number(variant.id) && item.quantity >= 1)) {
+      throw new Error('加购响应成功，但购物车未包含所选 Variant 和数量');
+    }
   });
   await page.reload({ waitUntil: 'load' });
   await page.click('#cart-icon-bubble');
@@ -149,7 +158,7 @@ async function runJob(browser, job, baseUrl) {
   });
   page.on('response', response => {
     if (response.status() >= 400 && new URL(response.url()).host === origin) {
-      result.warnings.push(`请求失败 ${response.status()}：${new URL(response.url()).pathname}`);
+      result.warnings.push(`请求失败 ${response.status}：${new URL(response.url()).pathname}`);
     }
   });
 
@@ -172,6 +181,16 @@ async function runJob(browser, job, baseUrl) {
     if (found.brokenImages.length) result.failures.push(`图片加载失败：${found.brokenImages.join('、')}`);
     if (found.pendingImages) result.warnings.push(`${found.pendingImages} 张图片 8 秒内未加载完`);
     if (found.placeholders) result.warnings.push(`${found.placeholders} 个占位图（未设置图片）`);
+
+    // Layout checks alone can pass a blank page. Required content is part of acceptance.
+    for (const expected of target.requiredContent || []) {
+      const visible = await page.locator(expected.selector).evaluateAll(elements => elements.filter(element => {
+        const box = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return box.width > 0 && box.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+      }).length);
+      if (visible < expected.minimum) result.failures.push(`内容未齐：${expected.label}（实际 ${visible}，至少 ${expected.minimum}）`);
+    }
 
     if (target.openCart) await openCartDrawer(page);
     await page.evaluate(() => window.scrollTo(0, 0));

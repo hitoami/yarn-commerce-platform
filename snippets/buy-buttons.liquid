@@ -50,6 +50,7 @@
           {% if product.selected_or_first_available_variant.available == false
             or quantity_rule_soldout
             or product.selected_or_first_available_variant == null
+              or product.selected_or_first_available_variant.price <= 0
           %}
             disabled
           {% endif %}
@@ -78,6 +79,7 @@
             {% if product.selected_or_first_available_variant.available == false
               or quantity_rule_soldout
               or product.selected_or_first_available_variant == null
+              or product.selected_or_first_available_variant.price <= 0
             %}
               disabled
             {% endif %}
@@ -85,6 +87,8 @@
             <span>
               {%- if product.selected_or_first_available_variant == null -%}
                 {{ 'products.product.unavailable' | t }}
+              {%- elsif product.selected_or_first_available_variant.price <= 0 -%}
+                {{ 'yarn_project.kit_not_on_sale' | t }}
               {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
                 {{ 'products.product.sold_out' | t }}
               {%- else -%}
@@ -94,7 +98,7 @@
             {%- render 'loading-spinner' -%}
           </button>
           {%- if show_dynamic_checkout -%}
-            {{ form | payment_button }}
+            <div data-product-dynamic-checkout {% if product.selected_or_first_available_variant.price <= 0 or product.selected_or_first_available_variant.available == false %}hidden inert{% endif %}>{{ form | payment_button }}</div>
           {%- endif -%}
         </div>
       {%- endform -%}

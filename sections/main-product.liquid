@@ -567,8 +567,6 @@
                   -%}
                   {%- if product.tags contains '編みものキット' -%}
                     {%- render 'yarn-kit-crosslinks', product: product, kind: 'yarn' -%}
-                  {%- elsif product.tags contains '完成品' -%}
-                    {%- render 'yarn-kit-crosslinks', product: product, kind: 'kit-from-finished' -%}
                   {%- endif -%}
                 {%- when 'rating' -%}
                   {%- if product.metafields.reviews.rating.value != blank -%}
@@ -774,7 +772,6 @@
         <div class="yarn-kit-story-full">
           {% render 'yarn-kit-story', product: product, part: 'about', fallback: 'raw' %}
           {% render 'yarn-kit-story', product: product, part: 'body', fallback: 'none', show_fact_icons: true %}
-          {% render 'yarn-kit-crosslinks', product: product, kind: 'finished' %}
           {% render 'yarn-kit-story', product: product, part: 'faq', fallback: 'none' %}
         </div>
       {%- endif -%}

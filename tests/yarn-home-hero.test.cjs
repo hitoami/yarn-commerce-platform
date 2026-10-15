@@ -24,13 +24,21 @@ test('hero shows three clickable intent nodes using real raster assets (Issue #5
   assert.match(heroCss, /\.yarn-hero--connected \.yarn-hero__thread/);
 });
 
-test('homepage opens with the editable cottage hero, decoupled from the guide strip (#93)', () => {
+test('homepage hero preserves the original atmosphere scenes with copy but no buttons (#131)', () => {
+  // #131：首屏暂用原 hitoami.com 的三张场景图与标题、说明，不放按钮；活动图模式（全部留空 / 浅色占位）仍由 section 支持。
   const home = index.sections.hero;
   assert.equal(home.type, 'hitoami-hero');
   assert.deepEqual(home.block_order.map(id => home.blocks[id].settings.scene), ['yarn', 'kit', 'finished']);
   for (const id of home.block_order) {
-    for (const key of ['heading', 'heading_zh', 'heading_en', 'cta', 'cta_zh', 'cta_en']) assert.ok(home.blocks[id].settings[key]);
+    const settings = home.blocks[id].settings;
+    assert.notEqual(settings.scene, 'placeholder', `${id}.scene`);
+    for (const key of ['heading', 'heading_zh', 'heading_en', 'text', 'text_zh', 'text_en']) assert.ok(settings[key], `${id}.${key}`);
+    for (const key of ['cta', 'cta_zh', 'cta_en']) assert.equal(settings[key] || '', '', `${id}.${key}`);
   }
+  const section = fs.readFileSync('sections/hitoami-hero.liquid', 'utf8');
+  assert.match(section, /heading == blank and text == blank and cta == blank/);
+  assert.match(section, /class="hitoami-slide__link"/);
+  assert.match(section, /<h1 class="visually-hidden">/);
   assert.equal(index.order[0], 'hero');
   assert.equal(index.sections['yarn-hero'].disabled, true);
 });

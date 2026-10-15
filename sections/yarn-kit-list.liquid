@@ -1,0 +1,42 @@
+{% comment %}
+  材料包列表页(#131,页面模板 page.kits):标题 + 说明 + 所有可公开且有封面的材料包卡(与首页同一张卡)。
+  材料包少,先不做筛选和排序;顺序同后台「编织作品」条目顺序。标题与说明三语在编辑器维护,留空时标题用页面标题。
+  三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
+{% endcomment %}
+{{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
+{{ 'yarn-kit.css' | asset_url | stylesheet_tag }}
+{%- capture kl_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'heading' -%}{%- endcapture -%}
+{%- capture kl_note -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'note' -%}{%- endcapture -%}
+{%- capture kl_cards -%}
+  {%- for project in shop.metaobjects.yarn_project.values -%}
+    {%- if project.cover.value != blank -%}
+      {%- capture kl_visible -%}{%- render 'yarn-kit-visible', project: project -%}{%- endcapture -%}
+      {%- if kl_visible == 'true' -%}{%- render 'yarn-project-pick-card', project: project -%}{%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+<section class="yk-list">
+  <header class="yk-list__head">
+    <h1 class="yk-title">{{ kl_heading | default: page.title | escape }}</h1>
+    {%- if kl_note != blank -%}<p class="yk-summary">{{ kl_note | escape }}</p>{%- endif -%}
+  </header>
+  {%- if kl_cards contains 'yx-project-pick' -%}
+    <div class="yx-project-picks yk-list__grid">{{ kl_cards }}</div>
+  {%- else -%}
+    <p class="yk-note">{{ 'yarn_project.kit_list_empty' | t }}</p>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "材料包列表",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "日文 · 标题", "default": "材料セット" },
+    { "type": "text", "id": "heading_zh", "label": "中文 · 标题", "default": "材料包" },
+    { "type": "text", "id": "heading_en", "label": "英文 · 标题", "default": "Yarn sets" },
+    { "type": "text", "id": "note", "label": "日文 · 说明", "default": "わたしたちの毛糸で、完成品と同じものを編んでみよう。" },
+    { "type": "text", "id": "note_zh", "label": "中文 · 说明", "default": "用我们的毛线，照着成品图织出同款。" },
+    { "type": "text", "id": "note_en", "label": "英文 · 说明", "default": "Knit the piece in the photo with our yarn." }
+  ]
+}
+{% endschema %}

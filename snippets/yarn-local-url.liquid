@@ -1,0 +1,9 @@
+{%- comment -%}Preserve locale on root-relative editorial links. External and already-prefixed links pass through.{%- endcomment -%}
+{%- liquid
+  assign root = routes.root_url | remove_last: '/'
+  assign page_prefix = url | slice: 0, 7
+  if root != blank and page_prefix == '/pages/'
+    echo root
+  endif
+  echo url
+-%}

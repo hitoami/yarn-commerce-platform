@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "main": {
+      "type": "yarn-season-page",
+      "blocks": {},
+      "block_order": [],
+      "settings": {
+        "collection": "yarn",
+        "tag": "catalog-2026-10-season",
+        "products_to_show": 7,
+        "text": "色の重なりと糸の表情。お気に入りの一色を探してみませんか。",
+        "text_zh": "看看色彩的层次与线材的质感，寻找想织进生活的颜色。",
+        "text_en": "Explore layers of colour and texture, and find a shade to bring into everyday life.",
+        "source_image": true
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -46,8 +46,9 @@
         <span class="svg-wrapper">{{- 'icon-plus.svg' | inline_asset_content -}}</span>
       </button>
     </div>
-    <button type="button" class="yp-sticky__add" data-sticky-add{% unless sticky_variant.available %} disabled{% endunless %}>
-      {%- if sticky_variant.available -%}
+    <button type="button" class="yp-sticky__add" data-sticky-add{% unless sticky_variant.available and sticky_variant.price > 0 %} disabled{% endunless %}>
+      {%- if sticky_variant.price <= 0 -%}{{ 'yarn_project.kit_not_on_sale' | t }}
+      {%- elsif sticky_variant.available -%}
         {{- 'yarn_pdp.sticky_add' | t: price: sticky_total -}}
       {%- else -%}
         {{- 'products.product.sold_out' | t -}}
