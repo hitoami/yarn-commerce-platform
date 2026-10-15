@@ -116,11 +116,19 @@ async function openCartDrawer(page) {
     const root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
     const product = await (await fetch(`${location.pathname}.js`)).json();
     const variant = product.variants.find(v => v.available) || product.variants[0];
-    await fetch(`${root}cart/add.js`, {
+    const response = await fetch(`${root}cart/add.js`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ items: [{ id: variant.id, quantity: 1 }] }),
     });
+    // Opening an empty drawer after a rejected request is not a successful cart check.
+    if (!response.ok) throw new Error(`加购失败 ${response.status()}：${root}cart/add.js`);
+    const cartResponse = await fetch(`${root}cart.js`);
+    if (!cartResponse.ok) throw new Error(`读取购物车失败 ${cartResponse.status()}`);
+    const cart = await cartResponse.json();
+    if (!cart.items?.some(item => Number(item.variant_id) === Number(variant.id) && item.quantity >= 1)) {
+      throw new Error('加购响应成功，但购物车未包含所选 Variant 和数量');
+    }
   });
   await page.reload({ waitUntil: 'load' });
   await page.click('#cart-icon-bubble');
