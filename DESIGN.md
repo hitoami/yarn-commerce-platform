@@ -193,7 +193,7 @@ Shopify scheme-1 至 scheme-5 分别用于默认、暖砂、深色反白、柔�
 
 这些局部字号不能升级成全站标题等级。通用商品详情另有 36 / 26px 标题，毛线详情由 `yarn-pdp.css` 覆盖为 24px；不要把通用值写成毛线页标准。
 
-`layout/theme.liquid` 的根字号是 `body_scale × 62.5%`，当前配置 `body_scale: 100`。浏览器默认字体为 16px 时 1rem = 10px；本次用户 Chrome 实测根字号为 12.5px。保留 rem / vw 原单位，不能将一次截图的像素值当成全站常量，也不能为了对齐截图修改用户字体设置。
+`layout/theme.liquid` 的根字号是 `(body_scale / 100) × 62.5%`，当前配置 `body_scale: 100`。浏览器默认字体为 16px 时 1rem = 10px，为 20px 时 1rem = 12.5px。保留 rem / vw 原单位，不能将一次截图的像素值当成全站常量，也不能为了对齐截图修改用户字体设置。
 
 ## Layout
 
