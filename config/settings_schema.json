@@ -1408,7 +1408,7 @@
   {
     "name": "团队演示作品",
     "settings": [
-      { "type": "checkbox", "id": "yarn_internal_projects", "label": "团队演示模式：显示所有有标题的作品", "default": true, "info": "演示阶段开启，让团队直接查看和修改作品草稿。正式上线前关闭，恢复已核实公开作品的完整性检查。" },
+      { "type": "checkbox", "id": "yarn_internal_projects", "label": "仅在主题编辑器展示内部作品", "default": false, "info": "仅供编辑器内检查资料。普通预览、搜索和公开页面仍执行公开资料核验。" },
       { "type": "checkbox", "id": "yarn_customization_contact_enabled", "label": "开放定制咨询发送", "default": false, "info": "确认 Shopify 联系表单接收位置，并获准内部测试后才开启。不会创建订单或收款。" }
     ]
   },

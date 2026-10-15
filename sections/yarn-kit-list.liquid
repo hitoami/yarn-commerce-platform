@@ -10,7 +10,7 @@
 {%- capture kl_cards -%}
   {%- for project in shop.metaobjects.yarn_project.values -%}
     {%- if project.cover.value != blank -%}
-      {%- capture kl_visible -%}{%- render 'yarn-project-visible', project: project -%}{%- endcapture -%}
+      {%- capture kl_visible -%}{%- render 'yarn-kit-visible', project: project -%}{%- endcapture -%}
       {%- if kl_visible == 'true' -%}{%- render 'yarn-project-pick-card', project: project -%}{%- endif -%}
     {%- endif -%}
   {%- endfor -%}

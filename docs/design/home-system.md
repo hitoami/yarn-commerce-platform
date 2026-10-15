@@ -69,3 +69,11 @@ Issue #65 删除了无模板使用的 `yarn-purpose-grid` / `yarn-seasonal-featu
 | 按材质 / 粗细（停用） | `yarn-filter-switch` | 从毛线集合商品的 `yarn.material` / `yarn.weight` 收集实际取值；没有取值的维度不渲染。链接带 `filter.p.m.<字段>` 参数，需在 Search & Discovery 为同一字段开启筛选。取值 block 决定顺序、照片与三语参考针号，没上传照片时用第一件带该取值的商品主图 |
 
 导航的 SALE 胶囊由链接目标决定：顶层菜单项指向 handle 为 `sale` 的集合时显示爪子粉底，不按文字判断。原毛线 / 编织包 / 工具精选从首页移除（毛线由品类入口与材质 / 粗细承接，编织包由新手友好编织包承接，工具由品类入口承接）；内容精选 section 保留但不在首页使用。
+
+## #131 当前手机接入（2026-10-15）
+
+当前手机构图以 [获批手机稿及来源](approved/131-mobile.source.md) 为准，替换上文 #126 的首页顺序与「手机无小猫」规则。`hitoami-hero` 的 `catalog_layout` 开关加载 `yarn-home-mobile.css`，手机采用文案在上、实物图在下；桌面新构图尚待单独确认。
+
+小猫由 `yarn-companion` snippet、CSS 与 custom element 接入 `yarn-entry-circles`，复用原 sprite，支持点击醒来/走动和减少动态效果。分类仍引用 `yarn_entry` 与 Shopify 商品字段，参考图可在 block 选择本轮原表实物图。毛线资料区 `yarn-catalog` 只渲染运营明确选择的已核实 Product，没有配置时给出整理提示。`yarn-home-guide` 以三语 block 承载新手指引和 FAQ。
+
+材料包公开条件在 `yarn-kit-visible` 集中处理：公开状态、封面、毛线 Variant/团数与教程领取链接缺一不可；当前路径不使用内部样例开关。价格与可售性继续取 Shopify，不随作品公开状态复制。商品页、卡片和材料包的零价状态显示「暂未开售」；整份材料缺项时阻止加购，可逐项购买其他可售材料。

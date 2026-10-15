@@ -70,7 +70,11 @@
         {%- capture ec_hint -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'hint' -%}{%- endcapture -%}
         <li>
           <a class="yarn-entries__card" href="{{ ec_collection.url }}?filter.p.m.{{ block.settings.field }}={{ ec_gid | url_encode }}" {{ block.shopify_attributes }}>
-            <span class="yarn-entries__photo">{%- if ec_image != blank -%}{{ ec_image | image_url: width: 400 | image_tag: widths: '200, 300, 400', sizes: '(min-width: 750px) 200px, 136px', loading: 'lazy', alt: '' }}{%- endif -%}</span>
+            <span class="yarn-entries__photo">
+              {%- if block.settings.image != blank -%}{{ block.settings.image | image_url: width: 400 | image_tag: widths: '200, 400', sizes: '85px', loading: 'lazy', alt: '' }}
+              {%- elsif block.settings.source_photo != blank -%}<img src="{{ block.settings.source_photo | asset_url }}" width="166" height="166" loading="lazy" alt="">
+              {%- elsif ec_image != blank -%}{{ ec_image | image_url: width: 400 | image_tag: widths: '200, 300, 400', sizes: '(min-width: 750px) 200px, 136px', loading: 'lazy', alt: '' }}{%- endif -%}
+            </span>
             <span class="yarn-entries__name">{{ ec_entry.name.value | escape }}</span>
             <span class="yarn-entries__hint">{% if ec_hint != blank %}{{ ec_hint | escape }}{% else %}{{ 'yarn_project.entry_count' | t: count: ec_count }}{% endif %}</span>
           </a>
@@ -102,12 +106,13 @@
     {%- if ec_group_count == 1 -%}{%- assign ec_first_total = ec_total -%}{%- endif -%}
   {%- endfor -%}
 {%- endif -%}
-{%- if ec_group_count > 0 -%}
+{%- if ec_group_count > 0 or section.settings.show_cat -%}
 <section class="yarn-entries" data-yarn-entries aria-labelledby="EntryCircles-{{ section.id }}">
   <div class="yarn-entries__inner">
     <div class="yarn-entries__head">
       {%- if ec_eyebrow != blank -%}<p class="yarn-entries__eyebrow">{{ ec_eyebrow | escape }}</p>{%- endif -%}
       <h2 class="yarn-entries__heading" id="EntryCircles-{{ section.id }}">{{ ec_heading | escape }}</h2>
+      {% if section.settings.show_cat %}{% render 'yarn-companion' %}{% endif %}
       <img class="yarn-entries__flourish" src="{{ 'impeccable-category-heading-flourish.png' | asset_url }}" alt="" width="1706" height="368" loading="lazy">
     </div>
     <div class="yarn-entries__bar">
@@ -133,7 +138,7 @@
   "name": "挑毛线（横滑方卡）",
   "tag": "div",
   "class": "section-yarn-entry-circles",
-  "settings": [
+  "settings": [{"type":"checkbox","id":"show_cat","label":"显示可互动小猫（含手机）","default":false},
     { "type": "text", "id": "eyebrow", "label": "日文 · 小标题", "default": "毛糸を選ぶ" },
     { "type": "text", "id": "eyebrow_zh", "label": "中文 · 小标题", "default": "挑毛线" },
     { "type": "text", "id": "eyebrow_en", "label": "英文 · 小标题", "default": "Pick yarn" },
@@ -156,6 +161,7 @@
       "settings": [
         { "type": "select", "id": "field", "label": "商品字段", "options": [ { "value": "yarn.texture", "label": "质感（yarn.texture）" }, { "value": "yarn.use", "label": "用途 / 季节（yarn.use）" } ], "default": "yarn.texture" },
         { "type": "text", "id": "entry", "label": "毛线入口 handle（Metaobject「毛线入口」yarn_entry）", "info": "例如 gradient；名称三语在 Translate & Adapt 的「毛线入口」里编辑" },
+        { "type": "select", "id": "source_photo", "label": "已核实的原表实物图", "options": [{"value": "", "label": "使用上传图或商品主图"}, {"value": "hitoami-source-texture-7.jpeg", "label": "印象日出"}, {"value": "hitoami-source-texture-14.jpeg", "label": "棉花糖"}, {"value": "hitoami-source-texture-23.jpeg", "label": "油画圈圈"}, {"value": "hitoami-source-texture-8.jpeg", "label": "驼颜"}, {"value": "hitoami-source-texture-5.jpeg", "label": "莫兰迪8 澳洲美利奴羊毛"}] },
         { "type": "image_picker", "id": "image", "label": "照片（空则用集合里第一件带该取值的商品主图）" },
         { "type": "text", "id": "hint", "label": "日文 · 说明（留空时显示款数）" },
         { "type": "text", "id": "hint_zh", "label": "中文 · 说明" },

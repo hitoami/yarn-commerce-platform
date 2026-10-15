@@ -13,19 +13,20 @@
 {%- capture line_cta -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'line_cta' -%}{%- endcapture -%}
 {%- if story_heading != blank or story_text != blank -%}
 <div class="hitoami-story" {% if story_heading != blank %}aria-labelledby="HitoamiStory-{{ section.id }}"{% endif %}>
-  <div class="hitoami-story__media">
+  {% if section.settings.image != blank %}<div class="hitoami-story__media">
     {%- if section.settings.image != blank -%}
       {{ section.settings.image | image_url: width: 1200 | image_tag: widths: '400, 600, 900, 1200', sizes: '(min-width: 750px) 46vw, calc(100vw - 32px)', loading: 'lazy', alt: section.settings.image.alt | escape }}
     {%- else -%}
       <div class="hitoami-story__placeholder" aria-hidden="true"></div>
     {%- endif -%}
   </div>
-  <div class="hitoami-story__body">
+  {% endif %}<div class="hitoami-story__body">
     {%- if story_eyebrow != blank -%}<p class="hitoami-story__eyebrow">{{ story_eyebrow | escape }}</p>{%- endif -%}
     {%- if story_heading != blank -%}<h2 id="HitoamiStory-{{ section.id }}">{{ story_heading | escape | newline_to_br }}</h2>{%- endif -%}
     {%- if story_text != blank -%}<div class="rte">{{ story_text }}</div>{%- endif -%}
     {%- if line_cta != blank -%}
       {%- assign line_href = section.settings.line_link | default: pages.contact.url -%}
+      {% if section.settings.line_link == blank %}{% capture line_cta %}{% render 'yarn-setting-text', settings: section.settings, key: 'line_fallback' %}{% endcapture %}{% endif %}
       <div class="hitoami-story__line">
         {%- if section.settings.line_qr != blank -%}
           <div class="hitoami-story__qr">{{ section.settings.line_qr | image_url: width: 240 | image_tag: width: 96, height: 96, loading: 'lazy', alt: '' }}</div>
@@ -46,7 +47,7 @@
   "name": "品牌介绍",
   "tag": "section",
   "class": "section hitoami-story-section",
-  "settings": [
+  "settings": [{"type":"text","id":"line_fallback","label":"未配置 LINE · 日文","default":"毛糸選びについてお問い合わせ"},{"type":"text","id":"line_fallback_zh","label":"未配置 LINE · 中文","default":"选线遇到问题？联系我们"},{"type":"text","id":"line_fallback_en","label":"未配置 LINE · 英文","default":"Need help choosing yarn? Contact us"},
     { "type": "image_picker", "id": "image", "label": "品牌图", "info": "未上传时显示浅色占位块。" },
     { "type": "text", "id": "story_eyebrow", "label": "日文 · 小标题", "default": "ブランドについて" },
     { "type": "text", "id": "story_eyebrow_zh", "label": "中文 · 小标题", "default": "关于品牌" },

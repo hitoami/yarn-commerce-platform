@@ -1,0 +1,30 @@
+{{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
+{%- capture heading -%}{% render 'yarn-setting-text', settings: section.settings, key: 'heading' %}{%- endcapture -%}
+{%- capture note -%}{% render 'yarn-setting-text', settings: section.settings, key: 'note' %}{%- endcapture -%}
+<section class="yarn-home-catalog page-width" aria-labelledby="Catalog-{{ section.id }}">
+  <h2 id="Catalog-{{ section.id }}">{{ heading | escape }}</h2>
+  <p>{{ note | escape }}</p>
+  {%- if section.settings.products != blank -%}
+    <div class="yarn-home-catalog__grid">
+      {%- for item in section.settings.products -%}
+        {%- if item.featured_image != blank -%}{% render 'yarn-pick-card', card_product: item %}{%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- else -%}
+    <p class="yarn-home-catalog__empty">{{ 'yarn_project.catalog_preparing' | t }}</p>
+  {%- endif -%}
+</section>
+{% schema %}
+{
+ "name":"毛线资料精选",
+ "settings":[
+  {"type":"product_list","id":"products","label":"已逐款核对图片和资料的毛线","limit":30,"info":"只选已核实商品；不会自动补入旧目录。售价未确认时显示暂未开售。"},
+  {"type":"text","id":"heading","label":"日文 · 标题","default":"毛糸を知る"},
+  {"type":"text","id":"heading_zh","label":"中文 · 标题","default":"认识这些毛线"},
+  {"type":"text","id":"heading_en","label":"英文 · 标题","default":"Meet our yarns"},
+  {"type":"text","id":"note","label":"日文 · 说明","default":"色、素材、手ざわりから。"},
+  {"type":"text","id":"note_zh","label":"中文 · 说明","default":"先看看颜色、成分与手感。"},
+  {"type":"text","id":"note_en","label":"英文 · 说明","default":"Start with colour, fibre and texture."}
+ ],"presets":[{"name":"毛线资料精选"}]
+}
+{% endschema %}

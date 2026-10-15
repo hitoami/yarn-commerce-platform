@@ -12,7 +12,7 @@
   {%- if pp_projects.size == 0 -%}{%- assign pp_projects = shop.metaobjects.yarn_project.values -%}{%- endif -%}
   {%- for project in pp_projects -%}
     {%- if pp_shown >= section.settings.limit -%}{%- break -%}{%- endif -%}
-    {%- capture pp_visible -%}{%- render 'yarn-project-visible', project: project -%}{%- endcapture -%}
+    {%- capture pp_visible -%}{%- render 'yarn-kit-visible', project: project -%}{%- endcapture -%}
     {%- if pp_visible == 'true' and project.cover.value != blank -%}
       {%- assign pp_shown = pp_shown | plus: 1 -%}
       {%- render 'yarn-project-pick-card', project: project -%}

@@ -37,10 +37,12 @@
   endif
 -%}
 {{ 'yarn-season-feature.css' | asset_url | stylesheet_tag }}
-<{{ sf_tag }} class="yx-season"{% if section.settings.link != blank %} href="{{ section.settings.link }}"{% endif %} aria-labelledby="Season-{{ section.id }}">
+<{{ sf_tag }} class="yx-season"{% if section.settings.link != blank %} href="{% render 'yarn-local-url', url: section.settings.link %}"{% endif %} aria-labelledby="Season-{{ section.id }}">
   <div class="yx-season__media">
     {%- if section.settings.image != blank -%}
       {{ section.settings.image | image_url: width: 1200 | image_tag: widths: '400, 600, 900, 1200', sizes: '(min-width: 750px) 38vw, calc(100vw - 64px)', loading: 'lazy', alt: '' }}
+    {%- elsif section.settings.source_image -%}
+      <img src="{{ 'hitoami-source-oil-loop.jpeg' | asset_url }}" width="790" height="885" loading="lazy" alt="">
     {%- elsif sf_collage.size > 0 -%}
       <div class="yx-season__collage yx-season__collage--{{ sf_collage.size | at_most: 3 }}">
         {%- for sf_handle in sf_collage limit: 3 -%}
@@ -68,7 +70,7 @@
   "name": "本季主推(入口卡)",
   "tag": "section",
   "class": "section yx-season-section",
-  "settings": [
+  "settings": [{"type":"checkbox","id":"source_image","label":"使用本次油画圈圈线原图","default":false},
     { "type": "image_picker", "id": "image", "label": "本季大图", "info": "未上传时用下面选品的前 3 款毛线主图拼成封面。" },
     { "type": "collection", "id": "collection", "label": "封面拼图 · 选品集合", "info": "留空时使用「毛线」集合；与专题页保持一致。" },
     { "type": "text", "id": "tag", "label": "封面拼图 · 选品标签", "default": "预订爆款" },

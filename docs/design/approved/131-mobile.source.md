@@ -1,0 +1,25 @@
+# #131 首页手机方向与素材来源
+
+用户于 2026-10-15 在本会话查看可点击手机稿与小猫截图后，回复「可以继续」，批准进入 Theme 手机实现。模式为 Persuade：帮助顾客认识毛线、选择材料。此批准不等于手机实现、桌面构图、后台资料迁移或正式发布已验收。
+
+获批构图：[手机稿](131-mobile-approved.png)。首屏使用云团实物图；品牌介绍后为圆形质感分类，小猫在分类上方醒来、走动、推线球、睡觉。随后为毛线资料区、本季专题、新手指引及常见问题；只有合格内容才展示材料包和成品。
+
+商品卡在真实实现中必须引用 Shopify Product；参考稿中的 29 款是待核对源资料，不是第二套交易目录。未接入已核实商品时不以旧样例补位。
+
+## 本轮实物图
+
+来源：用户提供《栗子毛线选品具体信息(1).xlsx》（中文原表）。直接提取嵌入图片，未通过 AI 重绘、替换图中文字或改变商品外观。Excel 行列为 1 起算，原始字节保留于 Theme assets：
+
+| 资源 | 源位置 | 用途 |
+|---|---|---|
+| `hitoami-source-cloud.jpeg` | 第 18 行第 4 列，十刻云团 | 首屏 |
+| `hitoami-source-oil-loop.jpeg` | 第 23 行第 4 列，油画圈圈 | 本季专题入口 |
+| `hitoami-source-texture-7.jpeg` | 第 7 行第 4 列，印象日出 | 段染分类 |
+| `hitoami-source-texture-14.jpeg` | 第 14 行第 4 列，棉花糖 | 毛绒分类 |
+| `hitoami-source-texture-23.jpeg` | 第 23 行第 4 列，油画圈圈 | 花式分类 |
+| `hitoami-source-texture-8.jpeg` | 第 8 行第 4 列，驼颜 | 轻柔细线分类 |
+| `hitoami-source-texture-5.jpeg` | 第 5 行第 4 列，莫兰迪8 | 纯色分类 |
+
+上传图与文案仍可通过 Section settings / blocks 修改。本轮图片批准用于当前未发布 Theme 实现；不据此声称已完成公开发布素材授权核验。
+
+小猫沿用 `assets/yarn-guide-cat.webp`，不重新生成角色。原素材来源见既有 [方案 C 来源](home-scheme-c.source.md) 与 [#110 素材](110-home-assets.md)。新动画支持键盘触发与减少动态效果。

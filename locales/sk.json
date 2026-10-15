@@ -625,7 +625,7 @@
     "kit_self_supply": "Bring your own",
     "kit_notes": "About this piece",
     "kit_tutorial": "Pattern",
-    "kit_tutorial_note": "After you buy, get the full pattern for this piece on LINE.",
+    "kit_tutorial_note": "Send your order number and project name through our official LINE. Our staff will verify your order and send the matching instructions.",
     "kit_tutorial_cta": "Get the pattern (LINE)",
     "kit_more": "You could also knit",
     "kit_view_product": "View product",
@@ -812,7 +812,10 @@
     "card_spec_finished": "See size and materials",
     "browse_heading": "Find your next make",
     "browse_search": "Search yarn, kits and finished pieces",
-    "option_default": "Option"
+    "option_default": "Option",
+    "wake_cat": "Wake the cat",
+    "catalog_preparing": "We are checking our yarn details and will share them here when ready.",
+    "kit_choose_colour": "Choose a colour of this yarn"
   },
   "yarn_discovery": {
     "search": "Search",

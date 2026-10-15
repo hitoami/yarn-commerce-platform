@@ -42,14 +42,14 @@ test('only yarn products get the new layout, and it stays on the native product 
 
 test('lower yarn blocks read Shopify data only and render nothing when it is missing', () => {
   const details = read('snippets/yarn-pdp-details.liquid');
-  for (const field of ['composition', 'material', 'ball_weight_g', 'ball_length_m', 'thickness', 'gauge', 'needle_knit', 'needle_crochet', 'needle_size', 'usage_estimates', 'related_kits', 'care']) {
+  for (const field of ['composition', 'material', 'ball_weight_g', 'ball_length_m', 'thickness', 'gauge', 'needle_knit', 'needle_crochet', 'needle_size', 'usage_estimates', 'care']) {
     assert.match(details, new RegExp(`y\\.${field}\\.value`), field);
   }
   assert.match(details, /spec_rows contains 'yp-yarn-spec__row'/);
   assert.match(details, /usage_items contains 'data-usage-result'/);
   assert.match(details, /work_cards contains 'yx-project-pick'/);
   assert.match(details, /care_lines != blank/);
-  assert.match(details, /render 'yarn-project-visible'/);
+  assert.match(details, /render 'yarn-kit-visible'/);
   const markup = details.replace(/\{%-?\s*comment\s*-?%\}[\s\S]*?\{%-?\s*endcomment\s*-?%\}/g, '');
   assert.doesNotMatch(markup, /团|玉|\d+\s*(g|m|mm|cm)\b/, 'no hard-coded demo specs or counts');
 });

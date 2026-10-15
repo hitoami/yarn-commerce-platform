@@ -1,12 +1,11 @@
 {%- comment -%}
   毛线详情页购买区之后的内容（Issue #120，视觉稿 Yarn PDP 1a）：
-  线的规格 → 要买几团？ → 用这款线能织 → 搭配的编织包 → 怎么洗。
+  线的规格 → 要买几团？ → 用这款线能织 → 怎么洗。
   每块只读 Shopify 已有数据，没有数据的块整块不渲染，不补写示例值：
   - 规格：yarn.composition（无则 material）/ ball_weight_g / ball_length_m / thickness / gauge /
           needle_knit + needle_crochet（都没有时用 needle_size）
   - 要买几团：yarn.usage_estimates → yarn_usage（name / size / balls / needle）；「按参考填入」只改数量，不加购
   - 能织：可公开且有封面、在 materials 或 components 里引用本商品的 yarn_project
-  - 编织包：yarn.related_kits；没有配对时不显示（视觉稿无数据即无此块，#122）
   - 怎么洗：yarn.care 每行一条
   参数：product、section_id
 {%- endcomment -%}
@@ -100,7 +99,7 @@
       {%- endfor -%}
     {%- endunless -%}
     {%- if uses_yarn -%}
-      {%- capture work_visible -%}{%- render 'yarn-project-visible', project: project -%}{%- endcapture -%}
+      {%- capture work_visible -%}{%- render 'yarn-kit-visible', project: project -%}{%- endcapture -%}
       {%- if work_visible == 'true' -%}
         {%- assign work_shown = work_shown | plus: 1 -%}
         {%- render 'yarn-project-pick-card', project: project -%}
@@ -109,7 +108,6 @@
   {%- endfor -%}
 {%- endcapture -%}
 
-{%- assign related_kits = y.related_kits.value -%}
 {%- assign care_lines = y.care.value -%}
 
 <div class="yp-yarn-details">
@@ -145,19 +143,6 @@
         <p>{{ 'yarn_pdp.works_note' | t }}</p>
       </div>
       <div class="yx-project-picks yp-yarn-grid">{{ work_cards }}</div>
-    </section>
-  {%- endif -%}
-
-  {%- if related_kits != blank and related_kits.count > 0 -%}
-    <section class="yp-yarn-block" aria-labelledby="YarnKits-{{ section_id }}">
-      <div class="yp-yarn-block__head">
-        <h2 class="yp-yarn-block__title yp-yarn-block__title--section" id="YarnKits-{{ section_id }}">{{ 'yarn_pdp.kits_heading' | t }}</h2>
-      </div>
-      <div class="yp-yarn-grid">
-        {%- for kit in related_kits limit: 4 -%}
-          {%- render 'yarn-pick-card', card_product: kit, beginner: true -%}
-        {%- endfor -%}
-      </div>
     </section>
   {%- endif -%}
 

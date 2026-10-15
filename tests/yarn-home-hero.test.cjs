@@ -24,11 +24,12 @@ test('hero shows three clickable intent nodes using real raster assets (Issue #5
   assert.match(heroCss, /\.yarn-hero--connected \.yarn-hero__thread/);
 });
 
-test('homepage hero shows original scenes with copy but no buttons (#131)', () => {
+test('homepage hero uses the approved source photograph with copy but no buttons (#131)', () => {
   // #131：首屏暂用原 hitoami.com 的三张场景图与标题、说明，不放按钮；活动图模式（全部留空 / 浅色占位）仍由 section 支持。
   const home = index.sections.hero;
   assert.equal(home.type, 'hitoami-hero');
-  assert.ok(home.block_order.length >= 3);
+  assert.equal(home.block_order.length, 1);
+  assert.equal(home.blocks[home.block_order[0]].settings.scene, 'cloud');
   for (const id of home.block_order) {
     const settings = home.blocks[id].settings;
     assert.notEqual(settings.scene, 'placeholder', `${id}.scene`);

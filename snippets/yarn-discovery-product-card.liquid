@@ -22,8 +22,8 @@
       {% if search_card and product_kind_label != blank %}<p class="yp-card__kind">{{ product_kind_label }}</p>{% elsif search_card and product_kind == 'finished' %}<p class="yp-card__kind">{{ 'yarn_discovery.kind_finished' | t }}</p>{% endif %}
       <p class="yp-card__summary">{{ product_summary | escape }}</p>
       <p class="yp-card__price">
-        {% if product.price_varies %}<span class="yp-card__price-from">{{ 'yarn_discovery.price_from' | t }}</span> {% endif %}
-        {{ product.price | money }}
+        {% if product.price <= 0 %}{{ 'yarn_project.kit_not_on_sale' | t }}{% else %}{% if product.price_varies %}<span class="yp-card__price-from">{{ 'yarn_discovery.price_from' | t }}</span> {% endif %}
+        {{ product.price | money }}{% endif %}
       </p>
     </div>
   </a>

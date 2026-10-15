@@ -1,0 +1,14 @@
+{%- comment -%}#131 public material guides require a verified cover, complete yarn quantities and the LINE delivery arrangement. Stock does not hide an otherwise complete guide.{%- endcomment -%}
+{%- liquid
+  assign complete = true
+  assign yarn_count = 0
+  for component in project.components.value
+    if component.component_type.value == '毛线'
+      assign yarn_count = yarn_count | plus: 1
+      if component.variant.value == blank or component.quantity.value == blank or component.quantity.value <= 0
+        assign complete = false
+      endif
+    endif
+  endfor
+-%}
+{%- if project.release_scope.value == '已核实可公开' and project.title.value != blank and project.cover.value != blank and project.tutorial_url.value != blank and yarn_count > 0 and complete -%}true{%- endif -%}

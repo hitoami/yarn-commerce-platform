@@ -41,6 +41,9 @@
   endif
 -%}
 
+{%- if target != blank and target.price <= 0 -%}
+  <div class="price {{ price_class }}"><span class="price-item">{{ 'yarn_project.kit_not_on_sale' | t }}</span></div>
+{%- else -%}
 {%- unless target == null and placeholder == null -%}
   <div
     class="
@@ -124,3 +127,5 @@
     {%- endif -%}
   </div>
 {% endunless %}
+
+{%- endif -%}

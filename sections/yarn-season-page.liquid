@@ -71,6 +71,7 @@
   </header>
 
   {%- if sp_count == 0 -%}
+    <p class="yx-season-page__empty">{{ 'yarn_project.catalog_preparing' | t }}</p>
     {%- if request.design_mode -%}<p class="yx-season-page__empty">本季主推：所选集合里没有带「{{ sp_tag | escape }}」标签的商品。</p>{%- endif -%}
   {%- else -%}
     <ol class="yx-season-page__list">

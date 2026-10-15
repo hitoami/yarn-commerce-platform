@@ -289,6 +289,12 @@ components:
 ---
 # Design System: 毛线品牌
 
+## 当前首页手机接入（#131，2026-10-15）
+
+已实现并在 390px 浏览器复核的手机版采用 [获批手机构图](docs/design/approved/131-mobile.source.md)：文字在上、云团实物图在下，圆形分类上方显示原小猫；旧「手机不显示猫」与三张场景轮播不适用于此入口。手机标题 31px，图片高 258px，左右留白 14px；正文段左右留白 24px。共享颜色与字体继续消费既有 tokens。
+
+`yarn-home-mobile.css` 将这组构图限制在启用 `catalog_layout` 的首页手机端；卡片取 Shopify Product。商品数据未接入时显示整理提示，不能把空态验收当作目录已经迁移。小猫在减少动态效果下保持静止。桌面新构图与手机实现的人工确认仍待 #131 验收，不据此把旧桌面当作新方向。
+
 ## 这份文档是什么
 
 这里只记录**当前生效的设计规范**和**我们怎么做设计**。逐个 Issue 的实现过程、评审截图和当轮边界声明不再写进本文——需要考古时查 git 历史;界面以线上实现为准。颜色的唯一来源是 `design/tokens/colors.json`：`npm run tokens` 生成 `yarn-design-tokens.css` 颜色段、Shopify 配色方案和本文前言的 `colors`，请勿手改这三处。其余前言 token 仍在本文维护，代码通过 `yarn-design-tokens.css` 消费。

@@ -1,6 +1,6 @@
-{%- comment -%}Team-demo mode exposes every titled Project. Turn it off before launch to restore the public-readiness checks below.{%- endcomment -%}
+{%- comment -%}Internal examples are confined to the theme editor. Storefront/search always use public-readiness checks.{%- endcomment -%}
 {%- if project != blank and project.title.value != blank -%}
-  {%- if settings.yarn_internal_projects -%}
+  {%- if settings.yarn_internal_projects and request.design_mode -%}
     true
   {%- elsif project.release_scope.value == '已核实可公开' and project.preparation.value != blank and project.source_credit.value != blank -%}
     {%- if project.tutorial.value != blank or project.tutorial_url.value != blank or project.video_url.value != blank -%}true{%- endif -%}

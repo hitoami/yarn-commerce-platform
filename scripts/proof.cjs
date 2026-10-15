@@ -115,16 +115,17 @@ async function openCartDrawer(page) {
   await page.evaluate(async () => {
     const root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
     const product = await (await fetch(`${location.pathname}.js`)).json();
-    const variant = product.variants.find(v => v.available) || product.variants[0];
+    const variant = product.variants.find(v => v.available && v.price > 0);
+    if (!variant) throw new Error('购买验收受阻：此商品没有已定价且可售的 Variant，未发送加购请求');
     const response = await fetch(`${root}cart/add.js`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ items: [{ id: variant.id, quantity: 1 }] }),
     });
     // Opening an empty drawer after a rejected request is not a successful cart check.
-    if (!response.ok) throw new Error(`加购失败 ${response.status()}：${root}cart/add.js`);
+    if (!response.ok) throw new Error(`加购失败 ${response.status}：${root}cart/add.js`);
     const cartResponse = await fetch(`${root}cart.js`);
-    if (!cartResponse.ok) throw new Error(`读取购物车失败 ${cartResponse.status()}`);
+    if (!cartResponse.ok) throw new Error(`读取购物车失败 ${cartResponse.status}`);
     const cart = await cartResponse.json();
     if (!cart.items?.some(item => Number(item.variant_id) === Number(variant.id) && item.quantity >= 1)) {
       throw new Error('加购响应成功，但购物车未包含所选 Variant 和数量');
@@ -157,7 +158,7 @@ async function runJob(browser, job, baseUrl) {
   });
   page.on('response', response => {
     if (response.status() >= 400 && new URL(response.url()).host === origin) {
-      result.warnings.push(`请求失败 ${response.status()}：${new URL(response.url()).pathname}`);
+      result.warnings.push(`请求失败 ${response.status}：${new URL(response.url()).pathname}`);
     }
   });
 

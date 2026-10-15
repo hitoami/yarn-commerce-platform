@@ -74,3 +74,8 @@
   .yk-list { padding-top: 48px; }
   .yx-project-picks.yk-list__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px 24px; }
 }
+
+.yk-colour { display: block; margin-top: 10px; font-size: 12px; }
+.yk-row select { width: 100%; max-width: 260px; min-height: var(--yarn-touch); margin-top: 4px; padding: 8px; color: var(--yarn-text-primary); background: var(--yarn-bg-surface); border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-card-radius); }
+.yk-row select:focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 3px; }
+.yk-detail [hidden] { display: none !important; }

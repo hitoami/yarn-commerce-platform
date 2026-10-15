@@ -145,3 +145,38 @@ test('the kit page buys yarn variants only, shows a buy box for one yarn and a l
   // 材料包页不提供定制咨询，也不出现「买成品 / 自己做」双模式。
   assert.doesNotMatch(section, /customization_enabled|purchase_modes|yarn-project-modes/);
 });
+
+test('changing the colour submits the selected variant and retains the project quantity', async () => {
+  const bodies = [];
+  const material = row(11, 3, false, 0);
+  const qty = material.input;
+  const option = { value: '33', dataset: { price: '1600', available: 'true', url: '/products/yarn?variant=33' } };
+  const priceLabel = { textContent: '' };
+  const addButton = { disabled: true };
+  const link = { href: '' };
+  material.querySelector = selector => ({ '[data-kit-colour]': { selectedOptions: [option] }, '[data-kit-qty]': qty, '[data-kit-price]': priceLabel, '[data-kit-add="row"]': addButton })[selector];
+  material.querySelectorAll = () => [link];
+  const ui = setup(async (_, options) => { bodies.push(JSON.parse(options.body)); return { ok: true, json: async () => ({}) }; }, { rows: [material] });
+  ui.element.dataset.currency = 'JPY';
+  ui.element.dataset.locale = 'ja';
+  ui.element.refreshRow(material);
+  assert.equal(addButton.disabled, false);
+  assert.equal(link.href, option.dataset.url);
+  assert.equal(priceLabel.textContent, '￥16');
+  ui.click('all');
+  await settle();
+  assert.deepEqual(bodies[0].items.map(({ id, quantity }) => [id, quantity]), [[33, 3]]);
+  option.dataset.available = 'false';
+  ui.element.refreshRow(material);
+  assert.equal(addButton.disabled, true);
+  assert.equal(ui.element.items([material]).length, 0);
+});
+
+test('an empty 404 rejection is recoverable and never treated as an uncertain accepted purchase', async () => {
+  const ui = setup(async () => ({ ok: false, status: 404, json: async () => { throw new Error('empty body'); } }));
+  const button = ui.click('all');
+  await settle();
+  assert.equal(button.disabled, false);
+  assert.match(ui.status.textContent, /Rejected/);
+  assert.equal(Boolean(ui.element.uncertain), false);
+});

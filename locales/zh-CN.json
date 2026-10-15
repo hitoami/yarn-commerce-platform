@@ -601,7 +601,7 @@
     "kit_self_supply": "需要自备",
     "kit_notes": "作品说明",
     "kit_tutorial": "教程",
-    "kit_tutorial_note": "购买后可在 LINE 获取这件作品的完整教程。",
+    "kit_tutorial_note": "请通过官方 LINE 提供订单号和作品名称，由店员核对后发送对应教程。",
     "kit_tutorial_cta": "查看教程（LINE）",
     "kit_more": "也可以织",
     "kit_view_product": "查看商品",
@@ -788,7 +788,10 @@
     "card_spec_finished": "尺寸与材质见详情",
     "browse_heading": "挑选你的下一件手作",
     "browse_search": "搜索毛线、编织包、成品",
-    "option_default": "选项"
+    "option_default": "选项",
+    "wake_cat": "唤醒小猫",
+    "catalog_preparing": "毛线资料正在整理，核实后将在这里展示。",
+    "kit_choose_colour": "选择同款颜色"
   },
   "yarn_discovery": {
     "search": "搜索",

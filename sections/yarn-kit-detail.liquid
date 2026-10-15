@@ -9,7 +9,7 @@
 {{ 'yarn-kit.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'yarn-kit.js' | asset_url }}" defer="defer"></script>
 {%- assign project = metaobject -%}
-{%- capture visible -%}{%- render 'yarn-project-visible', project: project -%}{%- endcapture -%}
+{%- capture visible -%}{%- render 'yarn-kit-visible', project: project -%}{%- endcapture -%}
 {%- liquid
   assign yarn_rows = 0
   assign yarn_balls = 0
@@ -38,8 +38,9 @@
 -%}
 <article class="yk-detail">
   {%- if visible == 'true' -%}
+  {%- assign list_url = section.settings.list_url | default: '/pages/kits' -%}
   <nav class="yk-crumb" aria-label="breadcrumb">
-    <a href="{{ section.settings.list_url | default: '/pages/kits' }}">{{ 'yarn_project.kit_all' | t }}</a>
+    <a href="{% render 'yarn-local-url', url: list_url %}">{{ 'yarn_project.kit_all' | t }}</a>
     <span aria-hidden="true">/</span>
     <span aria-current="page">{{ project.title.value | escape }}</span>
   </nav>
@@ -68,6 +69,7 @@
 
       {%- if yarn_rows > 0 -%}
       <yarn-kit-buy class="yk-buy{% if yarn_rows == 1 %} yk-buy--single{% endif %}"
+        data-all-label="{% if yarn_rows == 1 %}{{ 'yarn_project.kit_add' | t | escape }}{% else %}{{ 'yarn_project.kit_add_all' | t | escape }}{% endif %}" data-currency="{{ cart.currency.iso_code }}" data-locale="{{ request.locale.iso_code }}" data-total-label="{{ 'yarn_project.kit_total' | t: count: '[count]' | escape }}" data-not-on-sale="{{ 'yarn_project.kit_not_on_sale' | t | escape }}" data-sold-out="{{ 'yarn_project.kit_sold_out' | t | escape }}" data-add-label="{{ 'yarn_project.kit_add_one' | t | escape }}"
         data-pending="{{ 'yarn_project.kit_adding' | t | escape }}" data-success="{{ 'yarn_project.kit_added' | t | escape }}"
         data-incomplete="{{ 'yarn_project.kit_incomplete' | t | escape }}"
         data-error="{{ 'yarn_project.kit_add_error' | t | escape }}" data-uncertain="{{ 'yarn_project.kit_uncertain' | t | escape }}"
@@ -88,11 +90,29 @@
                 </a>
                 <div class="yk-row__info">
                   <a class="yk-row__name" href="{{ row_variant.url }}">{{ row_product.title | escape }}</a>
-                  {%- unless row_product.has_only_default_variant -%}<span class="yk-row__variant">{{ row_variant.title | escape }}</span>{%- endunless -%}
+                  {%- assign colour_index = -1 -%}
+                  {%- for option in row_product.options_with_values -%}
+                    {%- assign option_name = option.name | downcase -%}
+                    {%- if option_name contains '色' or option_name contains 'color' or option_name contains 'colour' or option_name contains 'カラー' -%}{%- assign colour_index = forloop.index0 -%}{%- endif -%}
+                  {%- endfor -%}
+                  {%- if colour_index >= 0 -%}
+                    <label class="yk-colour" for="Colour-{{ section.id }}-{{ forloop.index }}">{{ 'yarn_project.kit_choose_colour' | t }}</label>
+                    <select id="Colour-{{ section.id }}-{{ forloop.index }}" data-kit-colour>
+                      {%- for alternative in row_product.variants -%}
+                        {%- assign same_spec = true -%}
+                        {%- for value in alternative.options -%}
+                          {%- if forloop.index0 != colour_index and value != row_variant.options[forloop.index0] -%}{%- assign same_spec = false -%}{%- endif -%}
+                        {%- endfor -%}
+                        {%- if same_spec -%}
+                          <option value="{{ alternative.id }}" data-price="{{ alternative.price }}" data-available="{{ alternative.available }}" data-url="{{ alternative.url }}" {% if alternative.id == row_variant.id %}selected{% endif %}{% unless alternative.available and alternative.price > 0 %} disabled{% endunless %}>{{ alternative.options[colour_index] | escape }}{% if alternative.price <= 0 %} — {{ 'yarn_project.kit_not_on_sale' | t }}{% elsif alternative.available == false %} — {{ 'yarn_project.kit_sold_out' | t }}{% endif %}</option>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </select>
+                  {%- elsif row_product.has_only_default_variant == false -%}<span class="yk-row__variant">{{ row_variant.title | escape }}</span>{%- endif -%}
                   <span class="yk-row__need">{{ 'yarn_project.kit_qty_needed' | t: count: row_qty }}</span>
                 </div>
                 <div class="yk-row__buy">
-                  {%- if row_variant.price > 0 -%}<span class="yk-row__price">{{ row_variant.price | money }}</span>{%- else -%}<span class="yk-soldout">{{ 'yarn_project.kit_not_on_sale' | t }}</span>{%- endif -%}
+                  {%- if row_variant.price > 0 -%}<span class="yk-row__price" data-kit-price>{{ row_variant.price | money }}</span>{%- else -%}<span class="yk-soldout" data-kit-price>{{ 'yarn_project.kit_not_on_sale' | t }}</span>{%- endif -%}
                   {%- if yarn_rows == 1 -%}
                     <label class="yk-qty">
                       <span>{{ 'yarn_project.kit_qty_label' | t }}</span>
@@ -100,21 +120,18 @@
                     </label>
                   {%- else -%}
                     <input type="hidden" data-kit-qty value="{{ row_qty }}">
-                    {%- if row_variant.available and row_variant.price > 0 -%}
-                      <button type="button" class="yk-add-one" data-kit-add="row">{{ 'yarn_project.kit_add_one' | t }}</button>
-                    {%- elsif row_variant.price > 0 -%}
-                      <span class="yk-soldout">{{ 'yarn_project.kit_sold_out' | t }}</span>
-                    {%- endif -%}
+                    <button type="button" class="yk-add-one" data-kit-add="row" {% unless row_variant.available and row_variant.price > 0 %}disabled{% endunless %}>{{ 'yarn_project.kit_add_one' | t }}</button>
+                    <span class="yk-soldout" data-kit-stock {% if row_variant.available or row_variant.price <= 0 %}hidden{% endif %}>{{ 'yarn_project.kit_sold_out' | t }}</span>
                   {%- endif -%}
                 </div>
               </li>
             {%- endif -%}
           {%- endfor -%}
         </ul>
-        {%- if yarn_rows > 1 and prices_ready -%}
-          <div class="yk-total">
-            <span>{{ 'yarn_project.kit_total' | t: count: yarn_balls }}</span>
-            <strong>{{ yarn_total | money }}</strong>
+        {%- if yarn_rows > 1 -%}
+          <div class="yk-total" data-kit-total {% unless prices_ready %}hidden{% endunless %}>
+            <span data-kit-total-label>{{ 'yarn_project.kit_total' | t: count: yarn_balls }}</span>
+            <strong data-kit-total-price>{{ yarn_total | money }}</strong>
           </div>
         {%- endif -%}
         {%- if yarn_rows == 1 -%}
@@ -123,13 +140,13 @@
           {%- if single_variant.available and single_variant.price > 0 -%}
             <button type="button" class="yk-add-all" data-kit-add="all">{{ 'yarn_project.kit_add' | t }}</button>
           {%- else -%}
-            <button type="button" class="yk-add-all" disabled>{% if single_variant.price <= 0 %}{{ 'yarn_project.kit_not_on_sale' | t }}{% else %}{{ 'yarn_project.kit_sold_out' | t }}{% endif %}</button>
+            <button type="button" class="yk-add-all" data-kit-add="all" disabled>{% if single_variant.price <= 0 %}{{ 'yarn_project.kit_not_on_sale' | t }}{% else %}{{ 'yarn_project.kit_sold_out' | t }}{% endif %}</button>
           {%- endif -%}
         {%- else -%}
           <button type="button" class="yk-add-all" data-kit-add="all"{% unless yarn_ready %} disabled{% endunless %}>{{ 'yarn_project.kit_add_all' | t }}</button>
           <p class="yk-note">{{ 'yarn_project.kit_cart_note' | t }}</p>
         {%- endif -%}
-        {%- unless yarn_ready -%}<p class="yk-note">{{ 'yarn_project.kit_incomplete' | t }}</p>{%- endunless -%}
+        <p class="yk-note" data-kit-incomplete {% if yarn_ready %}hidden{% endif %}>{{ 'yarn_project.kit_incomplete' | t }}</p>
         <p class="yk-status" data-kit-status role="status" aria-live="polite" hidden></p>
         <a class="yk-cart-link" data-kit-cart href="{{ routes.cart_url }}" hidden>{{ 'yarn_project.kit_view_cart' | t }}</a>
       </yarn-kit-buy>
@@ -170,7 +187,7 @@
     {%- for other in shop.metaobjects.yarn_project.values -%}
       {%- if more_shown >= 4 -%}{%- break -%}{%- endif -%}
       {%- if other.system.handle != project.system.handle and other.cover.value != blank -%}
-        {%- capture other_visible -%}{%- render 'yarn-project-visible', project: other -%}{%- endcapture -%}
+        {%- capture other_visible -%}{%- render 'yarn-kit-visible', project: other -%}{%- endcapture -%}
         {%- if other_visible == 'true' -%}
           {%- assign more_shown = more_shown | plus: 1 -%}
           {%- render 'yarn-project-pick-card', project: other -%}

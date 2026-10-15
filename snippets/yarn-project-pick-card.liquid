@@ -8,9 +8,13 @@
   assign kit_yarn_count = 0
   assign kit_yarn_kinds = 0
   assign kit_total = 0
+  assign prices_ready = true
   for kit_component in project.components.value
     if kit_component.component_type.value == '毛线' and kit_component.variant.value != blank
       assign kit_variant = kit_component.variant.value
+      if kit_variant.price <= 0
+        assign prices_ready = false
+      endif
       assign kit_qty = kit_component.quantity.value | default: 1
       assign kit_yarn_kinds = kit_yarn_kinds | plus: 1
       if kit_yarn_name == blank
@@ -21,6 +25,9 @@
       assign kit_total = kit_total | plus: kit_line
     endif
   endfor
+  unless prices_ready
+    assign kit_total = 0
+  endunless
   assign kit_price = kit_total | money_without_trailing_zeros
 -%}
 <a class="yx-project-pick" href="{{ project.system.url }}">

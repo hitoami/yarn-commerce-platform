@@ -1,0 +1,49 @@
+/* #131 approved mobile composition. Desktop art direction awaits its own approval. */
+.yarn-home-catalog, .yarn-home-guide { padding-block: 36px; color: var(--yarn-text-primary); }
+.yarn-home-catalog h2, .yarn-home-guide h2 { margin: 0 0 12px; font: 400 24px/1.45 var(--yarn-display); }
+.yarn-home-catalog > p, .yarn-home-guide p { color: var(--yarn-text-muted); font-size: 13px; line-height: 1.85; }
+.yarn-home-catalog__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; }
+.yarn-home-catalog__grid .yx-product-card__media img { object-fit: contain; }
+.yarn-home-catalog__empty { padding: 24px 0; border-top: 1px solid var(--yarn-border-subtle); }
+.yarn-home-guide ol { margin: 20px 0 0; padding-left: 24px; }
+.yarn-home-guide li, .yarn-home-guide details { padding: 16px 0; border-top: 1px solid var(--yarn-border-subtle); }
+.yarn-home-guide h3 { margin: 0; font-size: 14px; }
+.yarn-home-guide p { margin: 8px 0 0; }
+.yarn-home-guide summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-size: 14px; padding-right: 22px; }
+.yarn-home-guide summary::after { content: '+'; position: absolute; right: 0; color: var(--yarn-action); }
+.yarn-home-guide details[open] summary::after { content: '−'; }
+.yarn-home-guide summary:focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 4px; }
+.yarn-home-guide--faq { background: var(--yarn-bg-band); }
+@media (max-width: 749px) {
+  body:has(.hitoami-hero--catalog) .header-wrapper { background: var(--yarn-bg-page); }
+  body:has(#MainContent > .shopify-section:first-child .hitoami-hero--catalog) .section-header { position: sticky; margin-bottom: 0; }
+  .hitoami-hero--catalog .hitoami-hero { min-height: 0; height: auto; padding: 0 14px; overflow: visible; }
+  .hitoami-hero--catalog .hitoami-slides { height: auto; min-height: 0; }
+  .hitoami-hero--catalog .hitoami-slide { position: relative; display: flex; flex-direction: column; height: auto; min-height: 0; padding: 0; background: none; }
+  .hitoami-hero--catalog .hitoami-slide[hidden] { display: none; }
+  .hitoami-hero--catalog .hitoami-slide::after, .hitoami-hero--catalog .hitoami-slide::before, .hitoami-hero--catalog .hitoami-wave { display: none; }
+  .hitoami-hero--catalog .hitoami-copy { position: static; transform: none; order: -1; padding: 26px 10px 25px; width: auto; max-width: none; margin: 0; }
+  .hitoami-hero--catalog .hitoami-heading { font: 400 31px/1.45 var(--yarn-display); letter-spacing: .035em; }
+  .hitoami-hero--catalog .hitoami-subtitle { margin-top: 12px; font-size: 12px; color: var(--yarn-text-secondary); }
+  .hitoami-hero--catalog .hitoami-scene { position: relative; display: block; inset: auto; width: 100%; height: 258px; flex: none; border-radius: 110px 110px 8px 8px; overflow: hidden; }
+  .hitoami-hero--catalog .hitoami-scene img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: center 58%; }
+  body:has(.hitoami-hero--catalog) .hitoami-story { width: auto; margin: 0; padding: 34px 24px 32px; }
+  body:has(.hitoami-hero--catalog) .hitoami-story h2 { font-weight: 400; }
+  body:has(.hitoami-hero--catalog) .hitoami-story .rte { font-size: 12px; line-height: 1.9; }
+  body:has(.hitoami-hero--catalog) .hitoami-story__line { display: block; margin-top: 10px; padding: 0; border: 0; background: none; }
+  body:has(.hitoami-hero--catalog) .hitoami-story__line-copy { display: none; }
+  body:has(.hitoami-hero--catalog) .hitoami-story__line-cta { justify-content: start; padding: 0; background: none; color: var(--yarn-action); font-size: 12px; }
+  body:has(.hitoami-hero--catalog) .yarn-entries { padding: 26px 0 22px; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__inner { width: calc(100% - 48px); }
+  body:has(.hitoami-hero--catalog) .yarn-entries__head { text-align: left; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__eyebrow { letter-spacing: .08em; text-indent: 0; color: var(--yarn-action); }
+  body:has(.hitoami-hero--catalog) .yarn-entries__heading { font-size: 21px; font-weight: 400; margin-top: 9px; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__flourish, body:has(.hitoami-hero--catalog) .yarn-entries__hint { display: none; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__track { grid-template-rows: auto; grid-auto-columns: 85px; gap: 16px; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__photo { border-radius: 50%; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__name { font-size: 12px; text-align: center; font-weight: 400; }
+  body:has(.hitoami-hero--catalog) .yarn-entries__all { background: none; font-size: 12px; min-height: 44px; margin-top: 12px; }
+  .yarn-home-catalog, .yarn-home-guide { padding-inline: 24px; }
+  body:has(.hitoami-hero--catalog) .yx-season { margin: 0; width: auto; padding: 12px 24px 36px; gap: 23px; background: none; }
+  body:has(.hitoami-hero--catalog) .yx-season__heading { font-size: 27px; font-weight: 400; }
+}

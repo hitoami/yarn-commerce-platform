@@ -2,83 +2,11 @@
   "sections": {
     "main": {
       "type": "yarn-season-page",
-      "blocks": {
-        "note-1": {
-          "type": "note",
-          "settings": {
-            "product": "mvp-yarn-26",
-            "note": "小さなループに何色もの色が混ざり、編み地は油絵の筆跡のよう。100gで約160m、帽子やマフラー、小物に。",
-            "note_zh": "一根线里混着好几种颜色的小圈圈，织出来像油画的笔触。100g 约 160m，适合帽子、围巾和小物。",
-            "note_en": "Little loops in many colours knit up like brushstrokes in an oil painting. 100 g / about 160 m — for hats, scarves and small pieces."
-          }
-        },
-        "note-2": {
-          "type": "note",
-          "settings": {
-            "product": "mvp-yarn-24",
-            "note": "ひと玉の中で色がゆっくり移り変わるロング段染めのケーキ糸。150gで約375m、マフラーやショールなど大きな作品に。",
-            "note_zh": "长段染蛋糕线，一团里慢慢过渡好几段颜色。150g 大团约 375m，适合围巾、披肩这类大面积作品。",
-            "note_en": "A long colour-change cake: colours drift slowly within one ball. 150 g / about 375 m, made for scarves, shawls and larger pieces."
-          }
-        },
-        "note-3": {
-          "type": "note",
-          "settings": {
-            "product": "mvp-yarn-18",
-            "note": "ウール入りの段染め糸。短い間隔で色が変わり、編むと自然なまだら模様に。帽子、マフラー、ショール、セーターに。",
-            "note_zh": "含羊毛的段染线，颜色一小段一小段地变化，织出来自然形成斑驳的色块。适合帽子、围巾、披肩和毛衣。",
-            "note_en": "A wool-blend, segment-dyed yarn: colours change in short sections and fall into a natural mottled pattern. For hats, scarves, shawls and sweaters."
-          }
-        },
-        "note-4": {
-          "type": "note",
-          "settings": {
-            "product": "mvp-yarn-16",
-            "note": "コットン・ウール・毛玉になりにくいアクリルの混紡。やさしいグラデーションと単色。200gで約458m、ブランケットやマフラー、ベストに。",
-            "note_zh": "棉、羊毛和抗起球腈纶混纺，有柔和的渐变色也有纯色。200g 约 458m，适合毯子、围巾和马甲。",
-            "note_en": "Cotton, wool and anti-pilling acrylic, in soft gradients and solid colours. 200 g / about 458 m — for blankets, scarves and vests."
-          }
-        },
-        "note-5": {
-          "type": "note",
-          "settings": {
-            "product": "mvp-yarn-11",
-            "note": "長い毛足がふわっと広がる、羽根のようなグラデーション糸。4玉入りで、ブランケットやショールなど大きな作品に。目安は棒針5mm／かぎ針4.5mm。",
-            "note_zh": "长绒、像羽毛一样蓬松的渐变线。每包 4 团，适合毯子、披肩等大面积作品；参考用 5mm 棒针 / 4.5mm 钩针。",
-            "note_en": "A long-pile, feather-soft gradient yarn that knits up airy and plush. Four balls per pack, for blankets and shawls. Suggested: 5 mm needles / 4.5 mm hook."
-          }
-        },
-        "note-6": {
-          "type": "note",
-          "settings": {
-            "product": "mvp-yarn-05",
-            "note": "少しふんわりとしたロング段染めのケーキ糸。朝の空のように色がにじんでいきます。100gで約330m、ショール、マフラー、帽子、カーディガンに。",
-            "note_zh": "带一点毛绒感的长段染蛋糕线，颜色像清晨的天空一样慢慢晕开。100g 约 330m，适合披肩、围巾、帽子和开衫。",
-            "note_en": "A softly fuzzy long colour-change cake, its colours spreading like an early-morning sky. 100 g / about 330 m, for shawls, scarves, hats and cardigans."
-          }
-        },
-        "note-7": {
-          "type": "note",
-          "settings": {
-            "product": "mvp-yarn-04",
-            "note": "アクリル100%の段染め糸。明るい色合いで、100gで約160m。バッグやマフラー、ブランケットに。",
-            "note_zh": "100% 亚克力的段染线，颜色明亮。100g 约 160m，适合钩包包、织围巾和毯子。",
-            "note_en": "A 100% acrylic segment-dyed yarn in bright colours. 100 g / about 160 m, for bags, scarves and blankets."
-          }
-        }
-      },
-      "block_order": [
-        "note-1",
-        "note-2",
-        "note-3",
-        "note-4",
-        "note-5",
-        "note-6",
-        "note-7"
-      ],
+      "blocks": {},
+      "block_order": [],
       "settings": {
         "collection": "yarn",
-        "tag": "预订爆款",
+        "tag": "catalog-2026-10-season",
         "products_to_show": 7,
         "text": "涼しくなると、何か編みたくなる。今季は店の毛糸から7つを選びました。段染め、グラデーション、長い毛足。ひと玉ごとに、色の物語があります。",
         "text_zh": "天气一凉，就想织点什么。这一季我们从店里挑了 7 款毛线：段染、渐变、长绒，每一团都有自己的颜色故事。",
