@@ -38,12 +38,11 @@
 | 5 | `yarn-season-feature` | 有来源的实物封面与专题链接；专题商品来自真实选择/筛选结果，不写未验证款数 |
 | 6 | `yarn-home-guide`（steps） | 新手指引；手机顺读、桌面三列卡片 |
 | 7 | 材料包内容 | 只显示满足 `yarn-kit-visible` 的 `yarn_project`；缺封面、毛线/团数、教程入口或公开状态时不充数 |
-| 8 | 成品 | 使用真实成品 Product；无合格内容则隐藏 |
-| 9 | 服务说明 | 仅使用已有事实支持的服务文案 |
-| 10 | `yarn-home-guide`（faq） | 手机折叠列表；桌面标题与问题两列 |
-| 11 | 共享页脚 | Shopify 配置的品牌、联系、语言、政策与订阅等 |
+| 8 | 成品（当前停用） | `picks-finished` 当前设置 `disabled: true`；启用时须使用真实且合格的成品 Product |
+| 9 | `yarn-home-guide`（faq） | 手机折叠列表；桌面标题与问题两列 |
+| 10 | 共享页脚 | Shopify 配置的品牌、联系、语言、政策与订阅等 |
 
-旧 `yarn-guide-strip`、优惠、旧新手 Kit 等 section 即使代码与配置仍保留，也不属于当前默认首页。不要因为模板里保留一个旧 section，就把它加入系统默认展示。
+旧 `yarn-guide-strip`、优惠、旧新手 Kit、独立帮助条 `line-support` 等 section 即使代码与配置仍保留，也不属于当前默认首页。不要因为模板里保留一个旧 section，就把它加入系统默认展示。
 
 ### Hero 与素材
 
