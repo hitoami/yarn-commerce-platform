@@ -4,9 +4,9 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 
 // #131 材料包页：逐个加购与「全部加入购物车」一次请求、带团数与来源属性；被拒不锁定，结果不确定时锁定并提示看购物车。
-function row(variant, qty, available = true) {
+function row(variant, qty, available = true, price = 1200) {
   const input = { value: String(qty) };
-  return { dataset: { variant: String(variant), available: String(available) }, querySelector: () => input, input };
+  return { dataset: { variant: String(variant), available: String(available), price: String(price) }, querySelector: () => input, input };
 }
 
 function setup(fetcher, { rows = [row(11, 2), row(22, 2)], drawer = null } = {}) {
@@ -16,7 +16,7 @@ function setup(fetcher, { rows = [row(11, 2), row(22, 2)], drawer = null } = {})
   const navigations = [];
   const buttons = [];
   class Element {
-    dataset = { pending: 'Adding', success: 'Added', error: 'Rejected', uncertain: 'Check cart', addUrl: '/zh/cart/add', kit: '流苏围巾', kitHandle: 'tassel-scarf' };
+    dataset = { pending: 'Adding', success: 'Added', error: 'Rejected', incomplete: 'Choose an available yarn for every row', uncertain: 'Check cart', addUrl: '/zh/cart/add', kit: '流苏围巾', kitHandle: 'tassel-scarf' };
     addEventListener(type, listener) { this.listener = listener; }
     querySelector(selector) { return ({ '[data-kit-status]': status, '[data-kit-cart]': cartLink })[selector]; }
     querySelectorAll(selector) { return selector === '[data-kit-row]' ? rows : buttons; }
@@ -42,10 +42,10 @@ function setup(fetcher, { rows = [row(11, 2), row(22, 2)], drawer = null } = {})
 
 const settle = () => new Promise((resolve) => setImmediate(resolve));
 
-test('add all sends every available yarn row with its quantity and kit source in one request', async () => {
+test('add all sends the complete yarn list with its quantities and kit source in one request', async () => {
   const calls = [];
   const ui = setup(async (url, options) => { calls.push({ url, body: JSON.parse(options.body) }); return { ok: true, status: 200, json: async () => ({ items: [] }) }; },
-    { rows: [row(11, 2), row(22, 3), row(33, 1, false)] });
+    { rows: [row(11, 2), row(22, 3)] });
   ui.click('all');
   await settle();
   assert.equal(calls.length, 1);
@@ -54,6 +54,41 @@ test('add all sends every available yarn row with its quantity and kit source in
   assert.deepEqual(calls[0].body.items[0].properties, { _Kit: '流苏围巾', '_Kit handle': 'tassel-scarf' });
   assert.equal(ui.status.textContent, 'Added');
   assert.equal(ui.cartLink.hidden, false);
+});
+
+
+test('add all never silently buys a partial list when one yarn is unavailable', async () => {
+  let calls = 0;
+  const ui = setup(async () => { calls++; return { ok: true, json: async () => ({}) }; },
+    { rows: [row(11, 2), row(22, 3, false)] });
+  ui.click('all');
+  await settle();
+  assert.equal(calls, 0);
+  assert.equal(ui.status.hidden, false);
+  assert.equal(ui.status.textContent, 'Choose an available yarn for every row');
+});
+
+test('unconfirmed zero or missing prices block both row and complete-list purchases', async () => {
+  for (const price of [0, '']) {
+    for (const kind of ['row', 'all']) {
+      let calls = 0;
+      const ui = setup(async () => { calls++; return { ok: true, json: async () => ({}) }; },
+        { rows: [row(11, 2, true, price), row(22, 3)] });
+      ui.click(kind);
+      await settle();
+      assert.equal(calls, 0, `${kind} price=${price}`);
+      assert.equal(ui.status.hidden, false);
+    }
+  }
+});
+
+test('an available row remains individually purchasable when another row is unavailable', async () => {
+  const bodies = [];
+  const ui = setup(async (_, options) => { bodies.push(JSON.parse(options.body)); return { ok: true, json: async () => ({}) }; },
+    { rows: [row(11, 2), row(22, 3, false)] });
+  ui.click('row');
+  await settle();
+  assert.deepEqual(bodies[0].items.map(({ id, quantity }) => [id, quantity]), [[11, 2]]);
 });
 
 test('a row button adds only that row, and an edited quantity is respected and rounded up to at least one', async () => {

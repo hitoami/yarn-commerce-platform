@@ -1,4 +1,4 @@
-/* Yarn set page (#131): add one yarn row, or every available row at once, to the Shopify cart.
+/* Yarn set page (#131): add one yarn row, or the complete list, to the Shopify cart.
  * One request per click (Cart AJAX /cart/add.js with items[]); the cart drawer refreshes from the same response.
  * 4xx means Shopify rejected the add. 5xx or a network error is ambiguous, so the buttons lock and we ask
  * the customer to check the cart instead of retrying a request that may already have been accepted. */
@@ -17,8 +17,9 @@ class YarnKitBuy extends HTMLElement {
   }
 
   items(rows) {
+    // Never silently omit a missing material or purchase an unconfirmed zero-price variant.
+    if (!rows.length || rows.some((row) => !row || row.dataset.available !== 'true' || !(Number(row.dataset.price) > 0))) return [];
     return rows
-      .filter((row) => row && row.dataset.available === 'true')
       .map((row) => ({
         id: Number(row.dataset.variant),
         quantity: Math.max(1, Math.round(Number(row.querySelector('[data-kit-qty]')?.value) || 1)),
@@ -29,7 +30,11 @@ class YarnKitBuy extends HTMLElement {
   async add(rows, button) {
     if (this.busy || this.uncertain) return;
     const items = this.items(rows);
-    if (!items.length) return;
+    if (!items.length) {
+      this.status.textContent = this.dataset.incomplete;
+      this.status.hidden = false;
+      return;
+    }
     const drawer = document.querySelector('cart-drawer');
     const label = button.textContent;
     this.busy = true;

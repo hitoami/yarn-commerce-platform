@@ -589,6 +589,8 @@
     "kit_add_one": "加购",
     "kit_add_all": "全部加入购物车",
     "kit_total": "合计 {{ count }} 团",
+    "kit_incomplete": "部分毛线暂未开售或缺货，暂时无法全部加入；可先购买清单中可售的毛线。",
+    "kit_not_on_sale": "暂未开售",
     "kit_cart_note": "购物车里是毛线商品；也可以在上面逐个加购。",
     "kit_adding": "正在加入…",
     "kit_added": "已加入购物车",

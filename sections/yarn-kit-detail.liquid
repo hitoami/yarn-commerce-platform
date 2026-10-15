@@ -15,9 +15,18 @@
   assign yarn_balls = 0
   assign yarn_total = 0
   assign self_rows = 0
+  assign yarn_ready = true
+  assign prices_ready = true
   for component in project.components.value
     if component.component_type.value == '毛线' and component.variant.value != blank
       assign yarn_rows = yarn_rows | plus: 1
+      unless component.variant.value.available
+        assign yarn_ready = false
+      endunless
+      if component.variant.value.price <= 0
+        assign yarn_ready = false
+        assign prices_ready = false
+      endif
       assign row_qty = component.quantity.value | default: 1
       assign yarn_balls = yarn_balls | plus: row_qty
       assign row_total = component.variant.value.price | times: row_qty
@@ -60,6 +69,7 @@
       {%- if yarn_rows > 0 -%}
       <yarn-kit-buy class="yk-buy{% if yarn_rows == 1 %} yk-buy--single{% endif %}"
         data-pending="{{ 'yarn_project.kit_adding' | t | escape }}" data-success="{{ 'yarn_project.kit_added' | t | escape }}"
+        data-incomplete="{{ 'yarn_project.kit_incomplete' | t | escape }}"
         data-error="{{ 'yarn_project.kit_add_error' | t | escape }}" data-uncertain="{{ 'yarn_project.kit_uncertain' | t | escape }}"
         data-add-url="{{ routes.cart_add_url }}" data-kit="{{ project.title.value | escape }}" data-kit-handle="{{ project.system.handle | escape }}">
         {%- if yarn_rows > 1 -%}<h2 class="yk-h2">{{ 'yarn_project.kit_yarn_needed' | t }}</h2>{%- endif -%}
@@ -82,7 +92,7 @@
                   <span class="yk-row__need">{{ 'yarn_project.kit_qty_needed' | t: count: row_qty }}</span>
                 </div>
                 <div class="yk-row__buy">
-                  <span class="yk-row__price">{{ row_variant.price | money }}</span>
+                  {%- if row_variant.price > 0 -%}<span class="yk-row__price">{{ row_variant.price | money }}</span>{%- else -%}<span class="yk-soldout">{{ 'yarn_project.kit_not_on_sale' | t }}</span>{%- endif -%}
                   {%- if yarn_rows == 1 -%}
                     <label class="yk-qty">
                       <span>{{ 'yarn_project.kit_qty_label' | t }}</span>
@@ -90,9 +100,9 @@
                     </label>
                   {%- else -%}
                     <input type="hidden" data-kit-qty value="{{ row_qty }}">
-                    {%- if row_variant.available -%}
+                    {%- if row_variant.available and row_variant.price > 0 -%}
                       <button type="button" class="yk-add-one" data-kit-add="row">{{ 'yarn_project.kit_add_one' | t }}</button>
-                    {%- else -%}
+                    {%- elsif row_variant.price > 0 -%}
                       <span class="yk-soldout">{{ 'yarn_project.kit_sold_out' | t }}</span>
                     {%- endif -%}
                   {%- endif -%}
@@ -101,7 +111,7 @@
             {%- endif -%}
           {%- endfor -%}
         </ul>
-        {%- if yarn_rows > 1 -%}
+        {%- if yarn_rows > 1 and prices_ready -%}
           <div class="yk-total">
             <span>{{ 'yarn_project.kit_total' | t: count: yarn_balls }}</span>
             <strong>{{ yarn_total | money }}</strong>
@@ -110,15 +120,16 @@
         {%- if yarn_rows == 1 -%}
           {%- assign single_variant = blank -%}
           {%- for component in project.components.value -%}{%- if component.component_type.value == '毛线' and component.variant.value != blank -%}{%- assign single_variant = component.variant.value -%}{%- endif -%}{%- endfor -%}
-          {%- if single_variant.available -%}
+          {%- if single_variant.available and single_variant.price > 0 -%}
             <button type="button" class="yk-add-all" data-kit-add="all">{{ 'yarn_project.kit_add' | t }}</button>
           {%- else -%}
-            <button type="button" class="yk-add-all" disabled>{{ 'yarn_project.kit_sold_out' | t }}</button>
+            <button type="button" class="yk-add-all" disabled>{% if single_variant.price <= 0 %}{{ 'yarn_project.kit_not_on_sale' | t }}{% else %}{{ 'yarn_project.kit_sold_out' | t }}{% endif %}</button>
           {%- endif -%}
         {%- else -%}
-          <button type="button" class="yk-add-all" data-kit-add="all">{{ 'yarn_project.kit_add_all' | t }}</button>
+          <button type="button" class="yk-add-all" data-kit-add="all"{% unless yarn_ready %} disabled{% endunless %}>{{ 'yarn_project.kit_add_all' | t }}</button>
           <p class="yk-note">{{ 'yarn_project.kit_cart_note' | t }}</p>
         {%- endif -%}
+        {%- unless yarn_ready -%}<p class="yk-note">{{ 'yarn_project.kit_incomplete' | t }}</p>{%- endunless -%}
         <p class="yk-status" data-kit-status role="status" aria-live="polite" hidden></p>
         <a class="yk-cart-link" data-kit-cart href="{{ routes.cart_url }}" hidden>{{ 'yarn_project.kit_view_cart' | t }}</a>
       </yarn-kit-buy>

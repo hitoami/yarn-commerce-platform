@@ -589,6 +589,8 @@
     "kit_add_one": "Add",
     "kit_add_all": "Add all to cart",
     "kit_total": "{{ count }} in total",
+    "kit_incomplete": "部分毛線尚未開售或缺貨，暫時無法全部加入；可先購買清單中可售的毛線。",
+    "kit_not_on_sale": "尚未開售",
     "kit_cart_note": "Your cart gets the yarn itself; you can also add each one above.",
     "kit_adding": "Adding…",
     "kit_added": "Added to cart",
