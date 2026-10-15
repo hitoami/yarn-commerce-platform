@@ -333,7 +333,7 @@
         "text_zh": "圈圈纹理与丰富色彩，给下一条围巾添一点新鲜感。",
         "text_en": "Looped texture and rich colours for your next scarf.",
         "collection": "yarn",
-        "tag": "预订爆款",
+        "tag": "catalog-2026-10-season",
         "link": "/pages/season?view=season",
         "link_label": "今季の特集を読む",
         "link_label_zh": "阅读本季专题",
@@ -343,7 +343,18 @@
     },
     "catalog": {
       "type": "yarn-catalog",
-      "settings": {}
+      "settings": {
+        "products": [
+          "mvp-yarn-05",
+          "mvp-yarn-12",
+          "mvp-yarn-17",
+          "mvp-yarn-26",
+          "mvp-yarn-01",
+          "mvp-yarn-07",
+          "yarn-tyndall",
+          "yarn-qinrou-gradient"
+        ]
+      }
     },
     "guide": {
       "type": "yarn-home-guide",

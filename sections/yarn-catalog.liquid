@@ -10,6 +10,9 @@
         {%- if item.featured_image != blank -%}{% render 'yarn-pick-card', card_product: item %}{%- endif -%}
       {%- endfor -%}
     </div>
+    {%- if collections['yarn'] != blank -%}
+      <a class="yx-picks__all" href="{{ collections['yarn'].url }}">{{ 'yarn_project.entries_view_all' | t }} <span aria-hidden="true">→</span></a>
+    {%- endif -%}
   {%- else -%}
     <p class="yarn-home-catalog__empty">{{ 'yarn_project.catalog_preparing' | t }}</p>
   {%- endif -%}
