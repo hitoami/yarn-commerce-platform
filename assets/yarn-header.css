@@ -25,7 +25,7 @@
   /* Frame the artwork without stretching or redrawing the approved source. */
   object-fit: contain;
   object-position: center;
-  mix-blend-mode: multiply;
+  mix-blend-mode: normal;
 }
 
 .header-wrapper .header__inline-menu {

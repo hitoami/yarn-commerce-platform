@@ -40,10 +40,10 @@
 .yarn-footer .footer__column--info { padding: 0; }
 .yarn-footer .footer__localization { justify-content: flex-start; padding: 0; gap: var(--yarn-space-4); }
 .yarn-footer .localization-form { margin: 0; padding: 0; }
-.yarn-footer .localization-form h2 { color: var(--yarn-text-muted); font-size: var(--yarn-type-meta); }
+.yarn-footer .localization-form h2 { color: var(--yarn-text-primary); font-size: var(--yarn-type-meta); }
 .yarn-footer .localization-form__select { margin-bottom: 0; }
 .yarn-footer .footer__copyright { text-align: left; margin-top: var(--yarn-space-5); }
-.yarn-footer .copyright__content { font-size: var(--yarn-type-meta); color: var(--yarn-text-muted); }
+.yarn-footer .copyright__content { font-size: var(--yarn-type-meta); color: var(--yarn-text-primary); }
 .yarn-footer :is(.copyright__content a, .list-menu__item--link) { color: var(--yarn-action); }
 .yarn-footer :is(.copyright__content a, .list-menu__item--link, .list-social__link) {
   display: inline-flex;

@@ -59,7 +59,7 @@
     {%- else -%}
       <span class="yx-product-card__spec">{% render 'yarn-card-spec', product: card_product %}</span>
     {%- endif -%}
-    <span class="yx-product-card__price">
+    <span class="yx-product-card__price{% if card_product.price <= 0 %} yx-product-card__price--pending{% endif %}">
       {% if card_product.price <= 0 %}{{ 'yarn_project.kit_not_on_sale' | t }}{% else %}
       {%- if card_product.compare_at_price > card_product.price -%}
         <s class="yx-product-card__was">{{ card_product.compare_at_price | money }}</s>
