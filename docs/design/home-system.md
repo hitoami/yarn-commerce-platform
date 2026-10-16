@@ -1,6 +1,6 @@
 # 首页设计系统接入
 
-本文说明当前首页与共享组件的代码职责。视觉规则见 [DESIGN.md](../../DESIGN.md)，产品与内容边界见 [PRODUCT.md](../../PRODUCT.md) 和 [CONTEXT.md](../../CONTEXT.md)。当前构图依据为 [#131 手机稿与用户补充决定](approved/131-mobile.source.md)；2026-10-15 用户明确要求保留线上手作小屋 Hero，并将圆形分类、独立小猫、新手卡片和 FAQ 延展到桌面。
+本文说明当前首页与共享组件的代码职责。视觉规则见 [DESIGN.md](../../DESIGN.md)，产品与内容边界见 [PRODUCT.md](../../PRODUCT.md) 和 [CONTEXT.md](../../CONTEXT.md)。结构沿用 [#131 构图](approved/131-mobile.source.md)；字体、颜色与手机阅读层级采用用户确认的 [#138 Zen 方向](approved/138-zen-mobile.source.md)，先由 Claude Design 设计、再由 Codex 接入。手机整页等待用户查看；桌面保留 #131 构图，仅随共享字体与色板更新。
 
 旧方案 C / #126 的绳索四分类、手机无猫、旧模块顺序与独立 Kit 商品模型已被替换，不再作为新页面接入模板。必要素材来源仍保留在原位置，当前实现无需引用旧稿的第二套配色。
 
@@ -21,7 +21,7 @@
 | `sections/yarn-season-feature.liquid` / `assets/yarn-season-feature.css` | 首页本季入口；专题正文使用 `yarn-season-page` 对应文件 |
 | `sections/yarn-home-guide.liquid` | 三语新手指引与 FAQ；布局在 `yarn-home-mobile.css` |
 | `snippets/yarn-kit-visible.liquid` | 材料包内容公开门槛，购买可用性另读真实 Variant |
-| `assets/yarn-product-context.css` / `assets/yarn-pdp.css` | 通用商品购买区与毛线详情覆盖；不能把通用奶油按钮覆盖到毛线灰棕变体 |
+| `assets/yarn-product-context.css` / `assets/yarn-pdp.css` | 通用商品购买区与毛线详情覆盖；共享色板改变不重做购买结构或状态逻辑 |
 
 `npm run tokens` 生成 CSS 颜色段、`config/settings_data.json` 当前配色方案和 `DESIGN.md` 前言 `colors`，不手改生成结果。保留旧组件所需的角色不代表当前首页仍使用它们。新增页面先查实际使用方，不把 `home-rope` 等旧装饰角色当全局默认。
 
@@ -32,7 +32,7 @@
 | 顺序 | 模块 | 当前构图与内容来源 |
 | --- | --- | --- |
 | 1 | `hitoami-hero` | 整幅手作小屋，文案叠图、透明页头、白胶囊圆点、奶白波浪；三张手动切换，无购买 CTA |
-| 2 | `hitoami-story` | 品牌图文和联系入口；上传图优先，默认品牌氛围图保留生成来源；手机文字入口，桌面灰棕按钮 |
+| 2 | `hitoami-story` | 品牌图文和联系入口；上传图优先，默认品牌氛围图保留生成来源；手机陶橘文字入口，桌面按钮 |
 | 3 | `yarn-entry-circles` | 五类圆形实物照片，小猫和毛球独立在上方；手机也显示猫，无挂绳；入口读 `yarn_entry` 与 `yarn.texture` / `yarn.use` |
 | 4 | `yarn-catalog` | 只读运营明确选择的已核实 Product；手机两列、桌面四列；未选择商品时显示整理提示 |
 | 5 | `yarn-season-feature` | 有来源的实物封面与专题链接；专题商品来自真实选择/筛选结果，不写未验证款数 |
@@ -56,14 +56,18 @@ Hero 和分类是独立组件，不互相控制。切换幻灯片不驱动小猫
 
 `catalog_layout` 启用时，`yarn-home-mobile.css` 通过 `.hitoami-hero--catalog` 限定品牌、分类与本季入口覆盖，同时定义 `yarn-home-catalog` 和 `yarn-home-guide` 本身。该文件包含手机和桌面规则，文件名不意味着只影响手机。
 
-手机品牌、分类与本季入口使用 24px 左右留白；商品区、新手和 FAQ 的 `.page-width` 覆盖使用共享容器，实际为 16px 左右留白、内部横向 padding 为 0，普通商品目录也用 16px。不能只读取文件前半段的 24px 声明而忽略后续覆盖。首页商品网格两列、列距 12px，桌面四列、间距 24px。分类手机每列 85px 圆图、间距 16px，桌面五列；标题 21 / 26px。商品区与指引标题 24 / 28px，字重 400；上下留白 36 / 56px。不要恢复旧的全站 32px 标题、72px 分区间距或方形分类卡。
+手机品牌、分类与本季入口左右留白 24px；商品区、新手与 FAQ 为 16px。商品区与新手仍用共享容器；FAQ 白底铺满页面、内部 padding 16px。首页商品网格两列，行距 28px、列距 12px；桌面四列、间距 24px。分类手机 88px 圆图、间距 16px，桌面五列；标题手机 2.2rem / 500，桌面 26px / 400。商品区与指引标题手机 2.4rem / 500，桌面 28px / 400；上下留白 48 / 56px。
+
+手机正文为 1.6rem / 1.75，商品规格与状态为 1.4rem；这些值随浏览器默认字号放大。标题保留完整商品名，未开售状态仅在 `card_product.price <= 0` 时获得 `yx-product-card__price--pending` 样式；有价商品显示正常价格，不根据文案匹配状态。分类浅橘面与页脚的小字使用主文字色，不能放辅助灰字。
+
+Claude 稿是视觉交接，Theme 保留原生行为：菜单沿用页头开关与焦点管理，面板在页头下方从右侧展开；订阅沿用原输入框内的箭头按钮与本地化无障碍标签，语言选择保留 Shopify 下拉。设计稿中的静态路径、暂译和订阅演示不复制进运营数据。Hero 仍用原响应式高度与原素材；圆点触控面积按仓库规则扩大为 44px。
 
 ## 下一页面的接入方式
 
 1. 先确认 Issue 和页面 brief，按 PRODUCT / CONTEXT 确认当前用户路径。当前材料包是内容加毛线组合，不新增独立库存或双模式商品。
 2. 用共享容器 `width: min(var(--yarn-content-max), calc(100% - 2 * var(--yarn-gutter)))`，商品家族用 1200px 轴；页面局部收窄须保留自己的作用域。
 3. 字体、颜色、间距和圆角引用已有 token。只有相同意图的重复组件才扩展共享样式，不全局覆盖 `.button`、`input` 或 `.page-width`。
-4. 根据实际用途选按钮变体：首页联系 / 毛线购买为灰棕，目录价格 / 部分交易动作为陶土，目录筛选 / 通用商品加购为奶油。变体与状态同组件一起复用。
+4. 手机首页主操作为陶橘白字，次按钮白底深字、姜橘边，联系入口为陶橘文字链接。其他页面复用共享色板，保持各自已接入的按钮与筛选结构；不把局部版式覆盖全站。
 5. 保留 Shopify 原生表单与错误/成功语义。新输入手机字号至少 16px，交互目标至少 44px，焦点不得被容器裁切。数量、价格、库存与购买可用性不在展示层复制。
 6. 新共享规则同时更新实现与 DESIGN；只校准文档时不能借机改视觉。新增方向按手机稿到桌面实现的既定流程确认。
 

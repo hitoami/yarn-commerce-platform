@@ -1,87 +1,71 @@
-@font-face {
-  font-family: 'Yarn Display';
-  src: url('yarn-display-400.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Yarn Display';
-  src: url('yarn-display-600.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
+/* #138 Zen direction: one clear type family per page language. */
 :root {
-  /* Fonts. Colors live in the generated block below. */
-  --yarn-display: 'Klee One', 'Noto Sans JP', sans-serif;
-  --yarn-body: 'Noto Sans JP', sans-serif;
+  --yarn-display: 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
+  --yarn-body: 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
 }
-
-/* Font preview G: Klee One headings + Noto Sans JP body; English body uses Figtree; Chinese pages use LXGW WenKai + WenKai Screen. */
 :root:lang(en) {
-  --yarn-body: 'Figtree', 'Noto Sans JP', sans-serif;
+  --yarn-display: 'Figtree', sans-serif;
+  --yarn-body: 'Figtree', sans-serif;
 }
 :root:lang(zh) {
-  --yarn-display: 'LXGW WenKai', 'Noto Sans SC', sans-serif;
-  --yarn-body: 'LXGW WenKai Screen', 'Noto Sans SC', sans-serif;
+  --yarn-display: 'Noto Sans SC', sans-serif;
+  --yarn-body: 'Noto Sans SC', sans-serif;
 }
 html[lang]:root {
   --font-body-family: var(--yarn-body);
   --font-heading-family: var(--yarn-display);
+  --font-heading-weight: 500;
 }
 
 /* BEGIN generated colors — edit design/tokens/colors.json, then run npm run tokens */
 :root {
-  --yarn-home-action: #675144; /* umber-700 · hitoami 低饱和主操作：首页按钮；毛线详情页加入、选中与价格 */
-  --yarn-home-thread: #8c8880; /* sand-600 · hitoami 小猫展开的装饰毛线 */
-  --yarn-home-rope: #b8b1a4; /* sand-400 · 首页导览条挂线的线芯（线纹用 home-thread）；不得用于文字 */
-  --yarn-bg-page: #f9f6f0; /* cream-100 · 页面底 */
-  --yarn-bg-surface: #fffefa; /* cream-50 · 卡片、导航、横幅、输入框面 */
-  --yarn-bg-sunken: #ebe5dc; /* sand-100 · 次级区块（暖砂）、页脚 */
-  --yarn-bg-warm: #ece8dc; /* sand-150 · 暖米区块（配色方案 5） */
-  --yarn-bg-band: #f5f1e8; /* sand-50 · 暖米面板：毛线详情「要买几团？」估算面板 */
-  --yarn-bg-inverse: #8f3c26; /* clay-700 · 深色反白区块 */
-  --yarn-text-primary: #2f302f; /* charcoal-900 · 正文、通用标题、Rise 原生文字 */
-  --yarn-text-heading: #13202d; /* navy-900 · 商品家族标题 */
-  --yarn-text-warm: #3d3931; /* charcoal-800 · 暖米区块文字（配色方案 5） */
-  --yarn-text-secondary: #4a4b48; /* charcoal-700 · 次级正文 */
-  --yarn-text-muted: #686762; /* charcoal-500 · 辅助说明、规格、元信息 */
-  --yarn-text-disabled: #8c8880; /* sand-600 · 不可用文字 */
-  --yarn-text-inverse: #fffefa; /* cream-50 · 深色区块上的文字 */
-  --yarn-text-on-action: #fffefa; /* cream-50 · 陶土实心按钮上的文字 */
-  --yarn-text-on-cta: #292a28; /* charcoal-950 · 奶油主按钮上的文字 */
-  --yarn-action: #a6472e; /* clay-600 · 链接、文字按钮、图标勾选、编号徽章文字 */
-  --yarn-accent: #b93b20; /* clay-550 · 价格、跨区导航与结账等实心按钮 */
-  --yarn-action-strong: #8f3c26; /* clay-700 · 按下态、深色强调面 */
-  --yarn-action-subtle-bg: #fff9e9; /* cream-150 · 浅色操作面：导航选中、帮助 */
-  --yarn-action-subtle-hover: #fff3de; /* cream-200 · 浅色操作面的悬停 */
-  --yarn-cta-bg: #f8e5a9; /* butter-200 · 奶油主按钮：加购、Hero 主按钮、选中筛选 */
-  --yarn-cta-hover: #f6dfa0; /* butter-300 · 奶油主按钮悬停 */
-  --yarn-cta-border: #efd68d; /* butter-400 · 奶油按钮与浅色胶囊边线 */
-  --yarn-border-subtle: #e4dfd7; /* sand-200 · 分组细线、区块分隔 */
-  --yarn-border-card: #dedbd5; /* sand-250 · 商品与内容卡片边线 */
-  --yarn-border-control: #686762; /* charcoal-500 · 输入框、筛选与数量控件边线 */
-  --yarn-border-disabled: #d3cfc7; /* sand-300 · 不可用控件边线 */
-  --yarn-tint-butter: #f8e5a9; /* butter-200 · 柔色面：编织包角标、信息卡 */
-  --yarn-tint-blush: #f4dfdc; /* blush-100 · 柔色面：毛线角标、信息卡 */
-  --yarn-tint-sage: #eceadb; /* sage-100 · 柔色面：成品角标、信息卡 */
-  --yarn-selected-text: #9e5554; /* blush-700 · 作品筛选选中态文字与描边 */
-  --yarn-focus: #426f82; /* indigo-600 · 键盘焦点环、输入光标（全站唯一冷色） */
-  --yarn-decor-thread: #bf5a38; /* clay-500 · 插画连线、装饰描边；不得用于文字 */
-  --yarn-decor-art-line: #e9bd51; /* butter-600 · 插画节点描边；不得用于文字 */
-  --yarn-decor-halo: rgba(248, 229, 169, 0.45); /* butter-200 @ 0.45 · 插画节点光晕 */
-  --yarn-overlay: rgba(47, 48, 47, 0.32); /* charcoal-900 @ 0.32 · 抽屉与弹窗遮罩、浮层阴影 */
-  --yarn-shadow-soft: rgba(103, 81, 68, 0.14); /* umber-700 @ 0.14 · 卡片与浮层的柔和阴影 */
-  --yarn-scrollbar-thumb: #b8b1a4; /* sand-400 · 滚动条滑块 */
-  --yarn-scrollbar-track: #f5f1e8; /* sand-50 · 滚动条轨道 */
-  --yarn-shadow-page: #d8d4cc; /* shade-100 · 配色方案 1 阴影色 */
-  --yarn-shadow-sunken: #d9d1c4; /* shade-150 · 配色方案 2 阴影色 */
-  --yarn-shadow-inverse: #6d2c1b; /* clay-900 · 配色方案 3 阴影色 */
-  --yarn-shadow-cream: #eadfc4; /* butter-100 · 配色方案 4 阴影色 */
-  --yarn-shadow-warm: #d8d1bd; /* shade-200 · 配色方案 5 阴影色 */
+  --yarn-home-action: #a64b2d; /* brand · 陶橘主操作：首页主按钮与毛线详情操作；与固定 Logo 协调 */
+  --yarn-home-thread: #d39a58; /* ginger · 小猫展开的姜橘装饰毛线，不作小字 */
+  --yarn-home-rope: #d39a58; /* ginger · 旧挂线组件的姜橘装饰线；非当前首页默认 */
+  --yarn-bg-page: #fcfbf7; /* paper · 柔白页面底 */
+  --yarn-bg-surface: #ffffff; /* white · 白色卡片、输入框与 FAQ 面 */
+  --yarn-bg-sunken: #f5e6d2; /* apricot · 浅橘次级区块与页脚 */
+  --yarn-bg-warm: #f5e6d2; /* apricot · 浅橘区块（兼容配色方案 5） */
+  --yarn-bg-band: #fcfbf7; /* paper · 柔白辅助面板，可承载辅助文字 */
+  --yarn-bg-inverse: #8a3d24; /* brand-deep · 深色反白区块 */
+  --yarn-text-primary: #433a31; /* ink · 暖深灰正文与标题 */
+  --yarn-text-heading: #433a31; /* ink · 商品标题，复用主文字色 */
+  --yarn-text-warm: #433a31; /* ink · 浅橘面上的暖深灰文字 */
+  --yarn-text-secondary: #433a31; /* ink · 次级正文；浅橘面仍用深色保证对比度 */
+  --yarn-text-muted: #756b60; /* muted · 辅助说明与规格，仅用于白色或柔白底 */
+  --yarn-text-disabled: #8c8378; /* disabled · 不可用文字 */
+  --yarn-text-inverse: #ffffff; /* white · 深色区块上的文字 */
+  --yarn-text-on-action: #ffffff; /* white · 陶土实心按钮上的文字 */
+  --yarn-text-on-cta: #433a31; /* ink · 浅橘次级按钮上的深色文字 */
+  --yarn-action: #a64b2d; /* brand · 陶橘链接与操作 */
+  --yarn-accent: #a64b2d; /* brand · 陶橘价格与交易操作，复用主操作色 */
+  --yarn-action-strong: #8a3d24; /* brand-deep · 陶橘操作悬停与按下态 */
+  --yarn-action-subtle-bg: #fcfbf7; /* paper · 浅色操作面：导航选中、帮助 */
+  --yarn-action-subtle-hover: #f5e6d2; /* apricot · 浅色操作面的悬停 */
+  --yarn-cta-bg: #f5e6d2; /* apricot · 兼容现有浅色次级按钮与筛选的浅橘面 */
+  --yarn-cta-hover: #f5e6d2; /* apricot · 浅橘次级按钮悬停面 */
+  --yarn-cta-border: #d39a58; /* ginger · 姜橘装饰边线，不单独承载控件识别 */
+  --yarn-border-subtle: #e6ded2; /* line · 分组细线、区块分隔 */
+  --yarn-border-card: #e6ded2; /* line · 商品与内容卡片边线 */
+  --yarn-border-control: #756b60; /* muted · 输入框、筛选与数量控件边线 */
+  --yarn-border-disabled: #e6ded2; /* line · 不可用控件边线 */
+  --yarn-tint-butter: #f5e6d2; /* apricot · 浅橘信息角标；保留组件语义别名 */
+  --yarn-tint-blush: #f5e6d2; /* apricot · 浅橘信息角标；保留组件语义别名 */
+  --yarn-tint-sage: #f5e6d2; /* apricot · 浅橘信息角标；保留组件语义别名 */
+  --yarn-selected-text: #a64b2d; /* brand · 陶橘选中态文字与描边 */
+  --yarn-focus: #426f82; /* focus-blue · 键盘焦点环、输入光标（全站唯一冷色） */
+  --yarn-decor-thread: #d39a58; /* ginger · 插画连线、装饰描边；不得用于文字 */
+  --yarn-decor-art-line: #d39a58; /* ginger · 插画节点描边；不得用于文字 */
+  --yarn-decor-halo: rgba(211, 154, 88, 0.45); /* ginger @ 0.45 · 插画节点光晕 */
+  --yarn-overlay: rgba(67, 58, 49, 0.32); /* ink @ 0.32 · 抽屉与弹窗遮罩、浮层阴影 */
+  --yarn-shadow-soft: rgba(67, 58, 49, 0.14); /* ink @ 0.14 · 卡片与浮层的柔和阴影 */
+  --yarn-scrollbar-thumb: #756b60; /* muted · 滚动条滑块 */
+  --yarn-scrollbar-track: #fcfbf7; /* paper · 滚动条轨道 */
+  --yarn-shadow-page: #e6ded2; /* line · 配色方案 1 阴影色 */
+  --yarn-shadow-sunken: #e6ded2; /* line · 配色方案 2 阴影色 */
+  --yarn-shadow-inverse: #8a3d24; /* brand-deep · 配色方案 3 阴影色 */
+  --yarn-shadow-cream: #e6ded2; /* line · 配色方案 4 阴影色 */
+  --yarn-shadow-warm: #e6ded2; /* line · 配色方案 5 阴影色 */
 }
 /* END generated colors */
 
