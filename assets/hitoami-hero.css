@@ -28,7 +28,7 @@ hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus)
 .hitoami-controls { position: absolute; left: 0; right: 0; bottom: 30px; z-index: 2; display: flex; justify-content: center; pointer-events: none; }
 .hitoami-dots { display: flex; padding: 0 6px; border-radius: var(--yarn-radius-pill); background: color-mix(in srgb, var(--yarn-bg-surface) 90%, transparent); pointer-events: auto; }
 .hitoami-dots button { border: 0; background: transparent; width: 32px; height: 32px; padding: 0; display: grid; place-items: center; cursor: pointer; }
-.hitoami-dots span { width: 6px; height: 6px; border-radius: var(--yarn-radius-pill); background: var(--yarn-home-action); opacity: .35; transition: opacity .25s ease; }
+.hitoami-dots span { width: 6px; height: 6px; border-radius: var(--yarn-radius-pill); background: var(--yarn-home-action); opacity: .35; transition: opacity .25s ease, background-color .25s ease; }
 .hitoami-dots [aria-current] span { width: 18px; opacity: 1; }
 /* The ordinary Shopify header keeps its menu/search/cart behavior over the room. */
 @media (min-width: 750px) {
@@ -44,7 +44,12 @@ hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus)
   .hitoami-subtitle { margin-bottom: 28px; font-size: 1.8rem; line-height: 1.7; }
   .hitoami-cta { min-height: 52px; padding: 12px 28px; gap: 24px; font-size: 1.7rem; }
   .hitoami-controls { bottom: 44px; }
-  .hitoami-dots button { width: 36px; height: 36px; }
+  /* #140: bare bar dots on the scene (no capsule); each keeps a 24 × 36 target. */
+  .hitoami-dots { padding: 0; background: none; }
+  .hitoami-dots button { width: 24px; height: 36px; }
+  /* A soft paper ring keeps the inactive bars legible over busy photos. */
+  .hitoami-dots span { opacity: 1; background: color-mix(in srgb, var(--yarn-home-action) 40%, var(--yarn-bg-surface)); box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--yarn-bg-surface) 70%, transparent); }
+  .hitoami-dots [aria-current] span { background: var(--yarn-home-action); }
   .hitoami-wave { height: 44px; }
 }
 
