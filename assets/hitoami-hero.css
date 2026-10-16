@@ -61,12 +61,16 @@ body:has(#MainContent > .shopify-section:first-child hitoami-hero) .shopify-sect
 body:has(#MainContent > .shopify-section:first-child hitoami-hero) .header__icon--favorites { display: none; }
 body:has(#MainContent > .shopify-section:first-child hitoami-hero) #YarnHeader { background: transparent; min-height: 72px; padding: 10px 18px; grid-template-areas: 'heading icons left-icons'; grid-template-columns: minmax(0, 1fr) 88px 44px; }
 body:has(#MainContent > .shopify-section:first-child hitoami-hero) .header__heading-link { justify-self: start; }
-body:has(#MainContent > .shopify-section:first-child hitoami-hero) .header__heading-link > .yarn-wordmark { width: 130px; }
+body:has(#MainContent > .shopify-section:first-child hitoami-hero) .header__heading-link > .yarn-wordmark { width: 140px; }
+@media (max-width: 749px) {
+  /* The wider cat logo sits on the left edge so it keeps clear of the search icon. */
+  body:has(#MainContent > .shopify-section:first-child hitoami-hero) .header__heading { justify-self: start; }
+}
 body:has(#MainContent > .shopify-section:first-child hitoami-hero) .header-wrapper { color: var(--yarn-home-action); }
 body:has(#MainContent > .shopify-section:first-child hitoami-hero) .announcement-bar-section { display: none; }
 @media (min-width: 1340px) {
   body:has(#MainContent > .shopify-section:first-child hitoami-hero) .section-header { margin-bottom: -86px; }
   body:has(#MainContent > .shopify-section:first-child hitoami-hero) #YarnHeader { grid-template-areas: 'heading navigation icons'; grid-template-columns: 190px 1fr auto; max-width: none; padding-inline: max(24px, calc((100% - var(--yarn-content-max)) / 2 + 24px)); background: linear-gradient(color-mix(in srgb, var(--yarn-scrollbar-track) 85%, transparent), transparent); }
   body:has(#MainContent > .shopify-section:first-child hitoami-hero) .header__heading-link { padding-inline: 0; margin-inline: 0; }
-  body:has(#MainContent > .shopify-section:first-child hitoami-hero) .header__heading-link > .yarn-wordmark { width: 150px; }
+  body:has(#MainContent > .shopify-section:first-child hitoami-hero) .header__heading-link > .yarn-wordmark { width: 190px; }
 }

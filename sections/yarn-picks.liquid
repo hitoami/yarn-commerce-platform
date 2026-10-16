@@ -4,6 +4,7 @@
   模式:collection 按集合顺序;sale 只取有真实划线价的商品、按折扣力度从大到小,没有折扣商品时整块不渲染;
   beginner 在卡片上显示「新手友好」及商品 metafield yarn.beginner_reason 里的理由,没有理由的商品不显示标签。
   handmade(#131 手工成品):库存由 Shopify 跟踪且 10 件及以下时显示「仅剩 N 件」,卖完显示「售罄」(不隐藏)。
+  占位(#140,用户 2026-10-16 决定):集合没有商品且「占位卡数」大于 0 时，显示标题、「准备中」标记和不含商品资料的占位卡；有商品后自动换成商品卡。
   三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
 {% endcomment %}
 {%- liquid
@@ -47,7 +48,23 @@
     render 'yarn-setting-text', settings: section.settings, key: 'exit_note'
   endcapture
 -%}
-{%- if picks_count == 0 -%}
+{%- if picks_count == 0 and section.settings.placeholder_count > 0 -%}
+  {%- capture placeholder_label -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'placeholder_label' -%}{%- endcapture -%}
+  {%- capture placeholder_photo -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'placeholder_photo' -%}{%- endcapture -%}
+<section class="yx-picks yarn-shell-block color-{{ section.settings.color_scheme }}" aria-labelledby="Picks-{{ section.id }}">
+  <div class="yx-picks__inner page-width">
+    <div class="yx-picks__head">
+      <div class="yx-picks__titles"><h2 id="Picks-{{ section.id }}">{{ picks_heading | escape }}</h2></div>
+      {%- if placeholder_label != blank -%}<span class="yx-picks__status">{{ placeholder_label | escape }}</span>{%- endif -%}
+    </div>
+    <ul class="yx-picks__placeholders" role="list" aria-hidden="true">
+      {%- for i in (1..section.settings.placeholder_count) -%}
+        <li class="yx-placeholder-card"><span class="yx-placeholder-card__media">{{ placeholder_photo | escape }}</span><span class="yx-placeholder-card__line"></span><span class="yx-placeholder-card__line yx-placeholder-card__line--short"></span></li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+{%- elsif picks_count == 0 -%}
   {%- if request.design_mode -%}<p class="yx-picks__note page-width">{{ picks_heading | escape }}：{% if picks_mode == 'sale' %}所选集合里暂无带划线价的商品，本区块不在店面显示。{% else %}请在右侧选择一个有商品的集合，未选择时本区块不在店面显示。{% endif %}</p>{%- endif -%}
 {%- else -%}
 <section class="yx-picks yarn-shell-block{% if section.settings.columns_desktop == 2 %} yx-picks--duo{% endif %} color-{{ section.settings.color_scheme }}" style="--yx-cols: {{ section.settings.columns_desktop }};" aria-labelledby="Picks-{{ section.id }}">
@@ -139,6 +156,14 @@
     { "type": "text", "id": "exit_note", "label": "日文 · 出口卡脚注(如配对示意说明)" },
     { "type": "text", "id": "exit_note_zh", "label": "中文 · 出口卡脚注" },
     { "type": "text", "id": "exit_note_en", "label": "英文 · 出口卡脚注" },
+    { "type": "header", "content": "集合为空时的占位(可选)" },
+    { "type": "range", "id": "placeholder_count", "min": 0, "max": 6, "step": 1, "default": 0, "label": "占位卡数", "info": "0 表示集合为空时整块不显示；占位卡不含商品名、价格或库存" },
+    { "type": "text", "id": "placeholder_label", "label": "日文 · 占位标记", "default": "準備中" },
+    { "type": "text", "id": "placeholder_label_zh", "label": "中文 · 占位标记", "default": "准备中" },
+    { "type": "text", "id": "placeholder_label_en", "label": "英文 · 占位标记", "default": "Coming soon" },
+    { "type": "text", "id": "placeholder_photo", "label": "日文 · 占位图文字", "default": "完成品の写真" },
+    { "type": "text", "id": "placeholder_photo_zh", "label": "中文 · 占位图文字", "default": "成品照片" },
+    { "type": "text", "id": "placeholder_photo_en", "label": "英文 · 占位图文字", "default": "Photo coming soon" },
     { "type": "select", "id": "color_scheme", "label": "配色", "options": [ { "value": "scheme-1", "label": "默认" } ], "default": "scheme-1" }
   ],
   "presets": [ { "name": "精选区块(卡片家族)" } ]

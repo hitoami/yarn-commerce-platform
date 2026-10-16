@@ -35,7 +35,7 @@ test('homepage follows the #131 IA: yarn first, then season feature, yarn sets a
   // #131（2026-10-10 锦晨确认）：活动图 → 品牌介绍（附 LINE）→ 挑毛线 → 本季主推（编辑专题）→ 用我们的毛线可以织（材料包）→ 手工成品精选。
   // 导览条、新手友好编织包、底部 LINE 帮助条停用而不删除，编辑器里可重新打开。
   const live = index.order.filter(id => !index.sections[id].disabled);
-  assert.deepEqual(live, ['hero', 'story', 'yarn-entries', 'catalog', 'season', 'guide', 'project-picks', 'faq']);
+  assert.deepEqual(live, ['hero', 'story', 'yarn-entries', 'catalog', 'season', 'guide', 'project-picks', 'picks-finished', 'faq']);
   for (const retired of ['guide-strip', 'beginner-kits', 'line-support', 'sale-picks', 'filter-switch', 'yarn-hero']) assert.equal(index.sections[retired].disabled, true, retired);
   assert.equal(index.sections.hero.type, 'hitoami-hero');
   assert.equal(index.sections.story.type, 'hitoami-story');
@@ -56,7 +56,11 @@ test('homepage follows the #131 IA: yarn first, then season feature, yarn sets a
   const seasonCard = fs.readFileSync('sections/yarn-season-feature.liquid', 'utf8');
   const kitCard = fs.readFileSync('snippets/yarn-project-pick-card.liquid', 'utf8');
   assert.match(picks, /sale_product\.compare_at_price > sale_product\.price/);
-  assert.match(picks, /\{%- if picks_count == 0 -%\}/);
+  // #140（用户 2026-10-16）：集合为空时只有开启占位才显示「准备中」占位卡，占位里不得出现商品资料。
+  assert.match(picks, /\{%- if picks_count == 0 and section\.settings\.placeholder_count > 0 -%\}/);
+  assert.match(picks, /\{%- elsif picks_count == 0 -%\}/);
+  const placeholder = picks.slice(picks.indexOf('placeholder_count > 0 -%}'), picks.indexOf('{%- elsif picks_count == 0 -%}'));
+  assert.doesNotMatch(placeholder, /price|card_product|yarn-pick-card|inventory/);
   assert.match(pickCard, /metafields\.yarn\.beginner_reason/);
   assert.match(pickCard, /\{%- if card_reason != blank -%\}/);
   assert.match(pickCard, /card_variant\.inventory_management == 'shopify'/);

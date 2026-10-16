@@ -82,4 +82,4 @@ Issue #65 删除了无模板使用的 `yarn-purpose-grid` / `yarn-seasonal-featu
 
 ## #140 首页桌面（2026-10-16）
 
-桌面按 [首页 v2 来源](approved/140-home-v2.source.md) 实现，规格见 `DESIGN.md`「当前首页桌面」。样式仍在各 section 自己的样式文件与 `yarn-home-mobile.css`（随 `catalog_layout` 加载）里：≥750px 改字号与配色，≥990px 改分栏，手机规则不动。`yarn-catalog` 的「查看全部 →」移到标题行，说明留空时不渲染；`yarn-home-guide` 新增三语小标题、说明，常见问题模式另有 LINE 求助卡（未填链接时指向联系页）、首条默认展开与「查看全部问题」链接。
+桌面按 [首页 v2 来源](approved/140-home-v2.source.md) 实现，规格见 `DESIGN.md`「当前首页桌面」。样式仍在各 section 自己的样式文件与 `yarn-home-mobile.css`（随 `catalog_layout` 加载）里：≥750px 改字号与配色，≥990px 改分栏，手机规则不动。`yarn-catalog` 的「查看全部 →」移到标题行，说明留空时不渲染；`yarn-home-guide` 新增三语小标题、说明，常见问题模式另有 LINE 求助卡（未填链接时指向联系页）、首条默认展开与「查看全部问题」链接。`yarn-picks` 新增「占位卡数」：集合为空且大于 0 时显示「准备中」占位卡，首页成品区设为 5。
