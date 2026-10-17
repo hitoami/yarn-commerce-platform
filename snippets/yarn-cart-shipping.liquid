@@ -1,6 +1,7 @@
 {%- comment -%}
   购物车免运费进度（#177 R3）。门槛来自主题设置「免运费门槛」（日元，含税），只做提示；
   实际运费以 Shopify 结账页为准。按购物车 total_price 计算，随数量修改与购物车页 js-contents / 抽屉一起刷新。0 或空时不渲染。
+  placement：'summary' 时为购物车页桌面结算卡里的一份（#183），只在 ≥990px 显示；其余位置在桌面购物车页隐藏。
 {%- endcomment -%}
 {%- assign threshold = settings.yarn_free_shipping_threshold -%}
 {%- if threshold != blank and threshold > 0 -%}
@@ -14,7 +15,7 @@
     assign ship_left_money = ship_left | money
     assign ship_goal_money = ship_goal | money
   -%}
-  <div class="yarn-cart-ship{% if ship_left <= 0 %} yarn-cart-ship--done{% endif %}">
+  <div class="yarn-cart-ship{% if ship_left <= 0 %} yarn-cart-ship--done{% endif %}{% if placement == 'summary' %} yarn-cart-ship--summary{% endif %}">
     <p class="yarn-cart-ship__title">
       <span class="svg-wrapper" aria-hidden="true">{{ 'icon-truck.svg' | inline_asset_content }}</span>
       {%- if ship_left > 0 -%}{{ 'yarn_cart.free_remaining' | t: amount: ship_left_money }}{%- else -%}{{ 'yarn_cart.free_reached' | t }}{%- endif -%}

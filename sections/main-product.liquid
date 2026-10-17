@@ -194,7 +194,11 @@
                     {%- capture yarn_intro -%}{%- render 'yarn-product-description', product: product -%}{%- endcapture -%}
                     {%- assign yarn_intro_text = yarn_intro | strip_html | strip -%}
                     {%- if yarn_intro_text != blank -%}
-                      <div class="product__description rte yp-yarn-intro">{{ yarn_intro }}</div>
+                      {%- comment -%}#183 桌面：介绍超过约 4 行时折叠，「展开商品介绍」切换（yarn-pdp.js）；手机照旧全文。{%- endcomment -%}
+                      <yarn-intro class="yp-yarn-intro-wrap" data-more="{{ 'yarn_pdp.intro_more' | t | escape }}" data-less="{{ 'yarn_pdp.intro_less' | t | escape }}">
+                        <div class="product__description rte yp-yarn-intro" id="YarnIntro-{{ section.id }}" data-yarn-intro>{{ yarn_intro }}</div>
+                        <button type="button" class="yp-yarn-intro__toggle" data-yarn-intro-toggle aria-controls="YarnIntro-{{ section.id }}" aria-expanded="false" hidden>{{ 'yarn_pdp.intro_more' | t }}</button>
+                      </yarn-intro>
                     {%- endif -%}
                   {%- endif -%}
                   {%- if yarn_pdp -%}{%- render 'yarn-pdp-status', product: product -%}{%- endif -%}
