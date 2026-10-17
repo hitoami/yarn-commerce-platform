@@ -2,16 +2,132 @@
   "sections": {
     "main": {
       "type": "yarn-season-page",
-      "blocks": {},
-      "block_order": [],
+      "blocks": {
+        "yarn-01": {
+          "type": "note",
+          "settings": {
+            "product": "mvp-yarn-26",
+            "assets": "season-2026aw-01-a.jpg,season-2026aw-01-b.jpg,season-2026aw-01-c.jpg",
+            "lead": "ひと目ずつ、キャンバスに色をのせるように。",
+            "lead_zh": "一针一针，像在画布上涂色。",
+            "lead_en": "Stitch by stitch, like painting on a canvas.",
+            "note": "小さなループに、いくつもの色の糸が混ざり合います。編み地は凹凸のある立体的な表情になり、帽子にもマフラーにも、ほかにない質感が生まれます。",
+            "note_zh": "细小的圈圈里混合着多种颜色的线。编出来的布面凹凸立体，无论帽子还是围巾，都呈现出独一无二的质感。",
+            "note_en": "Many colours of thread mingle in tiny loops. The fabric knits up textured and dimensional, giving hats and scarves a feel all their own."
+          }
+        },
+        "yarn-02": {
+          "type": "note",
+          "settings": {
+            "product": "mvp-yarn-24",
+            "assets": "season-2026aw-02-a.jpg,season-2026aw-02-b.jpg,season-2026aw-02-c.jpg",
+            "lead": "ひと玉の中に、夕暮れから星空まで。",
+            "lead_zh": "一团线里，从黄昏到星空。",
+            "lead_en": "From dusk to a starry sky, in a single ball.",
+            "note": "色がゆっくり移り変わる、ロングピッチの段染め糸。編み進めるほど景色が変わっていくようで、ショールやマフラーに大きなグラデーションが自然に現れます。",
+            "note_zh": "颜色缓缓过渡的长段染线。越织越有风景变幻之感，披肩和围巾上自然呈现出大幅渐变。",
+            "note_en": "A long-pitch space-dyed yarn with slowly shifting colours. The view changes as you knit, and shawls and scarves take on broad, natural gradients."
+          }
+        },
+        "yarn-03": {
+          "type": "note",
+          "settings": {
+            "product": "mvp-yarn-18",
+            "assets": "season-2026aw-03-a.jpg,season-2026aw-03-b.jpg,season-2026aw-03-c.jpg",
+            "lead": "落ち葉を踏みしめた、あの色。",
+            "lead_zh": "踩过落叶，那正是这个颜色。",
+            "lead_en": "The colour of fallen leaves underfoot.",
+            "note": "ウールを含む、短い間隔で色が変わる段染め糸。編むだけで自然なまだら模様になり、秋冬の小物にぴったりです。",
+            "note_zh": "含羊毛成分，间隔短、颜色变化频繁的段染线。织起来自然呈现花斑效果，非常适合秋冬小物。",
+            "note_en": "A wool-blend yarn dyed in short colour runs. It knits up into a natural speckle, just right for autumn and winter accessories."
+          }
+        },
+        "yarn-04": {
+          "type": "note",
+          "settings": {
+            "product": "mvp-yarn-16",
+            "assets": "season-2026aw-04-a.jpg,season-2026aw-04-b.jpg,season-2026aw-04-c.jpg",
+            "lead": "毎日そばに置きたい、やわらかな色。",
+            "lead_zh": "每天都想放在身边的柔和颜色。",
+            "lead_en": "Soft colours to keep close every day.",
+            "note": "コットンとウールの混紡。淡いグラデーションと単色から選べて、帽子やブランケットにおすすめです。",
+            "note_zh": "棉毛混纺，淡雅渐变与纯色可选，适合编织帽子和毛毯。",
+            "note_en": "A cotton and wool blend in soft gradients or solid shades, lovely for hats and blankets."
+          }
+        },
+        "yarn-05": {
+          "type": "note",
+          "settings": {
+            "product": "mvp-yarn-11",
+            "assets": "season-2026aw-05-a.jpg,season-2026aw-05-b.jpg,season-2026aw-05-c.jpg",
+            "lead": "ふわりと巻けば、冬のやさしさ。",
+            "lead_zh": "轻轻一裹，就是冬天的温柔。",
+            "lead_en": "Wrap it around you: winter, softened.",
+            "note": "長くふんわりした毛足の、羽根のような糸。太めの針で手早く編めて、ショールもブランケットもすぐに仕上がります。",
+            "note_zh": "毛足长而蓬松，像羽毛一样的线。用粗针快速编织，披肩和毛毯都能很快完成。",
+            "note_en": "A feather-like yarn with a long, airy pile. It works up quickly on large needles, so shawls and blankets come together fast."
+          }
+        },
+        "yarn-06": {
+          "type": "note",
+          "settings": {
+            "product": "mvp-yarn-05",
+            "assets": "season-2026aw-06-a.jpg,season-2026aw-06-b.jpg,season-2026aw-06-c.jpg",
+            "lead": "夜明けの空が、ゆっくりとにじんでいく。",
+            "lead_zh": "黎明的天空，缓缓晕染开来。",
+            "lead_en": "The dawn sky, slowly blooming.",
+            "note": "ふんわりとした質感のケーキ糸。霧のような青から朝焼けのオレンジへ、色がやさしく移り変わります。",
+            "note_zh": "质感微微蓬松的蛋糕线。从薄雾般的蓝到朝霞的橙，颜色温柔过渡。",
+            "note_en": "A softly lofty cake yarn that drifts gently from misty blue to sunrise orange."
+          }
+        },
+        "yarn-07": {
+          "type": "note",
+          "settings": {
+            "product": "mvp-yarn-04",
+            "assets": "season-2026aw-07-a.jpg,season-2026aw-07-b.jpg,season-2026aw-07-c.jpg",
+            "lead": "出かけたくなる、元気いっぱいの色。",
+            "lead_zh": "带着出门的心情，活力满满的颜色。",
+            "lead_en": "Cheerful colours that make you want to head out.",
+            "note": "明るいレインボーカラーの段染め糸。アクリル100%で丈夫なので、バッグやコースター、子ども向けの小物も気軽に編めます。",
+            "note_zh": "明亮彩虹色的段染线。100% 腈纶材质，结实耐用，包包、杯垫和儿童小物都可以轻松编织。",
+            "note_en": "A bright rainbow space-dyed yarn. Sturdy 100% acrylic makes bags, coasters and children’s pieces easy to knit."
+          }
+        }
+      },
+      "block_order": [
+        "yarn-01",
+        "yarn-02",
+        "yarn-03",
+        "yarn-04",
+        "yarn-05",
+        "yarn-06",
+        "yarn-07"
+      ],
       "settings": {
+        "products": [
+          "mvp-yarn-26",
+          "mvp-yarn-24",
+          "mvp-yarn-18",
+          "mvp-yarn-16",
+          "mvp-yarn-11",
+          "mvp-yarn-05",
+          "mvp-yarn-04"
+        ],
         "collection": "yarn",
         "tag": "catalog-2026-10-season",
         "products_to_show": 7,
-        "text": "色の重なりと糸の表情。お気に入りの一色を探してみませんか。",
-        "text_zh": "看看色彩的层次与线材的质感，寻找想织进生活的颜色。",
-        "text_en": "Explore layers of colour and texture, and find a shade to bring into everyday life.",
-        "source_image": true
+        "cover_asset": "season-2026aw-cover.jpg",
+        "source_image": false,
+        "eyebrow": "2026 秋冬 · 今季の特集",
+        "eyebrow_zh": "2026 秋冬 · 本季特辑",
+        "eyebrow_en": "Autumn/Winter 2026 · Seasonal feature",
+        "heading": "この季節、\n編みたい色。",
+        "heading_zh": "这个季节，\n想编织的颜色。",
+        "heading_en": "This season,\nthe colours we want to knit.",
+        "text": "肌寒くなると、何か編みたくなる。今季はお店の毛糸から7種を選びました。段染め、グラデーション、長い毛足。ひと玉ごとに、色の物語があります。",
+        "text_zh": "天气转凉，就想编点什么。本季从店里的毛线中精选了7款。段染、渐变、长毛足。每一团，都藏着一个颜色的故事。",
+        "text_en": "When the air turns cool, we want to knit. This season we picked seven yarns from the shop: space-dyed, gradient and long-pile. Each ball holds its own colour story."
       }
     }
   },

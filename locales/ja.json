@@ -792,6 +792,9 @@
     "option_default": "オプション",
     "wake_cat": "猫を起こす",
     "catalog_preparing": "毛糸の情報を確認中です。準備ができ次第、ご紹介します。",
+    "collection_preparing_title": "ただいま準備中です",
+    "collection_preparing_text": "一点ずつ準備しています。並ぶまで、毛糸をご覧ください。",
+    "collection_preparing_link": "毛糸を見る",
     "kit_choose_colour": "同じ毛糸の色を選ぶ"
   },
   "yarn_discovery": {

@@ -11,6 +11,11 @@
   不进下拉,而是平铺成一排常驻标签,与首页圆图同名同链接;单选,「全部」清除这些筛选。
 {% endcomment %}
 {%- liquid
+  # 集合还没有任何商品（如手工成品上架前）时只保留搜索与品类 tab，不显示价格带、排序和「0/0 件」计数；说明由商品网格的「准备中」负责（#131）。
+  assign tb_preparing = false
+  if collection.all_products_count == 0
+    assign tb_preparing = true
+  endif
   assign cat_params = section.settings.category_filters | remove: ' ' | split: ','
   assign cat_order = section.settings.category_order | remove: ' ' | split: ','
   assign cat_active = false
@@ -72,6 +77,7 @@
       {{ cat_chips }}
     </nav>
   {%- endif -%}
+  {%- unless tb_preparing -%}
   <div class="yx-toolbar__chips">
     <a class="yx-chip" data-yx-chip data-yx-param="" href="{{ collection.url }}">{{ 'yarn_project.browse_price_any' | t }}</a>
     {%- for block in section.blocks -%}
@@ -116,6 +122,7 @@
     <noscript><button class="yx-toolbar__submit" type="submit">{{ 'products.facets.apply' | t }}</button></noscript>
   </form>
   <p class="yx-toolbar__count" role="status">{{ 'products.facets.product_count' | t: product_count: collection.products_count, count: collection.all_products_count }}</p>
+  {%- endunless -%}
 </div>
 {% schema %}
 {
