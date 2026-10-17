@@ -193,3 +193,22 @@ product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit[dis
   .yp-yarn-spec { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--yarn-space-5); }
   .yp-yarn-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 }
+/* #183 桌面稿 v1：介绍折叠；「线的规格」与「要买几团？」左右并排，其余区块沿 1104 轴单列。 */
+.yp-yarn-intro-wrap { display: block; }
+.yp-yarn-intro__toggle { display: inline-block; margin-top: 6px; padding: 0; border: 0; background: none; color: var(--yarn-action); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.yp-yarn-intro__toggle:hover { text-decoration: underline; text-underline-offset: 3px; }
+.yp-yarn-intro__toggle:focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: var(--yarn-focus-offset); }
+@media (min-width: 990px) {
+  product-info.yarn-product-page--yarn .yp-yarn-intro[data-collapsed] { max-height: calc(1.75em * 4); overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, var(--yarn-text-primary) 60%, transparent); mask-image: linear-gradient(to bottom, var(--yarn-text-primary) 60%, transparent); }
+  .yp-yarn-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--yarn-space-7); align-items: start; }
+  .yp-yarn-details > * { grid-column: 1 / -1; }
+  .yp-yarn-details > .yp-yarn-block:first-child:has(.yp-yarn-spec) { grid-column: 1; }
+  .yp-yarn-details > .yp-yarn-block:first-child:has(.yp-yarn-spec) + .yp-usage { grid-column: 2; margin-top: 0; }
+  .yp-yarn-details > .yp-yarn-block:first-child:has(.yp-yarn-spec):not(:has(+ .yp-usage)) { grid-column: 1 / -1; }
+  .yp-yarn-block:first-child .yp-yarn-spec { grid-template-columns: minmax(0, 1fr); }
+  .yp-yarn-block:first-child:not(:has(+ .yp-usage)) .yp-yarn-spec { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .yp-yarn-block:first-child .yp-yarn-spec__row { flex-direction: row; gap: var(--yarn-space-4); }
+  .yp-yarn-block:first-child .yp-yarn-spec dt { flex: 0 0 120px; font-size: 14px; line-height: 1.5; }
+  .yp-yarn-block:first-child:not(:has(+ .yp-usage)) .yp-yarn-spec__row { flex-direction: column; gap: 2px; }
+  .yp-yarn-block:first-child:not(:has(+ .yp-usage)) .yp-yarn-spec dt { flex: none; font-size: 12px; }
+}
