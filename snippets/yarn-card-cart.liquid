@@ -2,9 +2,12 @@
   商品卡的加入购物车按钮(#153,#161 推广到所有商品卡)。行为由 assets/yarn-card-actions.js 负责。
   只有一个款式时直接加入 Shopify Cart;多款式链接到详情页选择,不替用户挑颜色;售罄时禁用;未定价不显示。
   按钮必须放在商品链接之外(z-index 高于整卡链接),不能嵌套在 <a> 里。
+  #169(用户 2026-10-17 决定):只在手工成品卡上显示。毛线常需多团同色、购买信息在详情页，毛线等其他卡只留收藏爱心。
+  成品判断沿用 yarn-discovery-product-kind,与搜索分组一致。
   cart_product:Product 对象。
 {% endcomment %}
-{%- if cart_product.price > 0 -%}
+{%- capture cart_kind -%}{%- render 'yarn-discovery-product-kind', product: cart_product -%}{%- endcapture -%}
+{%- if cart_product.price > 0 and cart_kind contains 'finished' -%}
   {%- capture cart_icon -%}<svg class="yx-card-cart__bag" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.5 8.5h13l-1.1 10.2a1.5 1.5 0 0 1-1.5 1.3H8.1a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M9 10.5V7a3 3 0 0 1 6 0v3.5"/></svg><svg class="yx-card-cart__check" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 12.5 4 4 8-9"/></svg>{%- endcapture -%}
   {%- if cart_product.available == false -%}
     <button class="yx-card-cart" type="button" disabled aria-label="{{ 'yarn_project.card_sold_out' | t }}">{{ cart_icon }}</button>
