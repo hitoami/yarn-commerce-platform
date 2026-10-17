@@ -44,6 +44,8 @@ hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus)
   .hitoami-copy { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; box-sizing: border-box; width: min(var(--yarn-commerce-max), calc(100% - 64px)); max-width: none; height: 100%; margin: 0 auto; padding: 0 0 40px; }
   .hitoami-copy > * { max-width: 640px; }
   .hitoami-heading { margin-bottom: 16px; font-size: clamp(3.6rem, 3.6vw, 5.2rem); line-height: 1.3; }
+  /* #167: the v4 scenes start near the middle, so long subtitles wrap before reaching the yarn at 990–1440px. */
+  .hitoami-copy > .hitoami-subtitle { max-width: min(30em, 46vw); }
   .hitoami-subtitle { margin-bottom: 28px; font-size: 1.8rem; line-height: 1.7; }
   .hitoami-cta { font-size: 1.7rem; }
   .hitoami-controls { bottom: 44px; }
