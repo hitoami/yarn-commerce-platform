@@ -1,4 +1,7 @@
-/* Home brand story (#131): brand image + tagline + story, with an attached LINE card. Mobile stacks; desktop image left, copy right. */
+/* Home brand story (#131): brand image + tagline + story, with an attached LINE card. Mobile stacks; desktop image left, copy right.
+   #140: sits on the warm band shared with the categories below; desktop sizes follow Claude Design「首页 v2」. */
+.hitoami-story-section { background: var(--yarn-bg-band); }
+.hitoami-hero-section + .hitoami-story-section { margin-top: 0; }
 .hitoami-story { display: grid; gap: var(--yarn-space-5); width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter))); margin: 0 auto; padding: 40px 0; color: var(--yarn-text-primary); }
 .hitoami-story__media { overflow: hidden; border-radius: var(--yarn-radius-media); aspect-ratio: 358 / 220; background: var(--yarn-bg-sunken); }
 .hitoami-story__media img, .hitoami-story__placeholder { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -16,12 +19,22 @@
 .hitoami-story__line-cta:hover { background: var(--yarn-text-warm); }
 
 @media (min-width: 750px) {
-  .hitoami-story { grid-template-columns: minmax(0, 46fr) minmax(0, 54fr); align-items: center; gap: 72px; padding: 72px 0; }
-  .hitoami-story__media { aspect-ratio: 600 / 460; border-radius: var(--yarn-radius-panel); }
-  .hitoami-story h2 { font-size: 3.4rem; line-height: 1.4; }
-  .hitoami-story .rte { font-size: 1.6rem; line-height: 1.95; }
-  .hitoami-story__line { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--yarn-space-5); padding: var(--yarn-space-5); }
+  .hitoami-story { grid-template-columns: minmax(0, 46fr) minmax(0, 54fr); align-items: center; gap: 56px; padding: 56px 0; }
+  .hitoami-story__media { aspect-ratio: 460 / 300; border-radius: var(--yarn-radius-panel); }
+  .hitoami-story__body { display: flex; flex-direction: column; gap: var(--yarn-space-4); }
+  .hitoami-story__body > *, .hitoami-story .rte p:last-child { margin: 0; }
+  .hitoami-story__eyebrow { font-size: 13px; font-weight: 700; line-height: 1.2; letter-spacing: 0; }
+  .hitoami-story h2 { font-size: 28px; line-height: 1.5; }
+  .hitoami-story .rte { font-size: 15px; line-height: 1.9; }
+  .hitoami-story__line { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--yarn-space-4); padding: var(--yarn-space-4) 20px; border-color: var(--yarn-border-subtle); border-radius: var(--yarn-radius-media); }
   .hitoami-story__line:not(:has(.hitoami-story__qr)) { grid-template-columns: minmax(0, 1fr) auto; }
   .hitoami-story__qr { display: block; width: 84px; height: 84px; }
   .hitoami-story__qr img { display: block; width: 100%; height: 100%; }
+  .hitoami-story__line-title { margin-bottom: 6px; font-size: 15px; line-height: 1.3; }
+  .hitoami-story__line-text { line-height: 1.5; }
+  .hitoami-story__line-cta { min-height: var(--yarn-touch); padding: 0 24px; background: var(--yarn-action); color: var(--yarn-text-on-action); font-size: 14px; font-weight: 700; white-space: nowrap; transition: background-color 0.2s ease; }
+  .hitoami-story__line-cta:hover { background: var(--yarn-text-warm); color: var(--yarn-text-on-action); }
+}
+@media (min-width: 990px) {
+  .hitoami-story { grid-template-columns: minmax(280px, 460px) minmax(0, 1fr); }
 }

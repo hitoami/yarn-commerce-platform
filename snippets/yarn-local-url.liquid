@@ -1,6 +1,12 @@
 {%- comment -%}Preserve locale on root-relative editorial links. External and already-prefixed links pass through.{%- endcomment -%}
 {%- liquid
-  assign root = routes.root_url | remove_last: '/'
+  comment
+    routes.root_url is '/' for the default language and '/ja' / '/en' otherwise; keep the leading slash.
+  endcomment
+  assign root = routes.root_url
+  if root == '/'
+    assign root = ''
+  endif
   assign page_prefix = url | slice: 0, 7
   if root != blank and page_prefix == '/pages/'
     echo root

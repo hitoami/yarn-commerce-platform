@@ -18,7 +18,7 @@
 }
 .yarn-footer__brand { display: block; width: fit-content; min-height: var(--yarn-touch); }
 .yarn-footer__brand > :is(img, .yarn-wordmark) { display: block; width: 252px; max-width: 100%; }
-.yarn-footer__brand > .yarn-wordmark { aspect-ratio: 2.602; overflow: hidden; }
+.yarn-footer__brand > .yarn-wordmark { aspect-ratio: 3.797; overflow: hidden; }
 .yarn-footer__brand > img { height: auto; }
 .yarn-footer .footer__blocks-wrapper { grid-column: 1 / -1; order: 3; margin-top: 0; }
 .yarn-footer .footer-block--newsletter { display: flex; flex-wrap: wrap; margin: 0; gap: var(--yarn-space-5); align-items: center; }
