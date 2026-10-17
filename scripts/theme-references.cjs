@@ -15,6 +15,9 @@ const KEEP = {
   'sections/yarn-project-discovery.liquid': '作品发现，用户 2026-09-23 决定保留（#65）',
   'sections/yarn-starter-project.liquid': '新手作品，用户 2026-09-23 决定保留（#65）',
   'sections/yarn-project-detail.liquid': '旧作品双模式详情；#131 材料包页改用 yarn-kit-detail，待清理 PR⑤ 删除',
+  'sections/main-collection-banner.liquid': '旧集合页头；#85 改用 yarn-collection-browse。PR #146 仍在改旧集合页，合并后再删',
+  'sections/main-collection-product-grid.liquid': '旧集合商品网格（Rise 筛选）；#85 改用 yarn-collection-browse。PR #146 仍在改，合并后再删',
+  'sections/yarn-browse-toolbar.liquid': '旧集合工具栏；#85 改用 yarn-collection-browse。PR #146 仍在改，合并后再删',
 };
 
 const list = dir => (fs.existsSync(dir) ? fs.readdirSync(dir, { recursive: true }) : [])

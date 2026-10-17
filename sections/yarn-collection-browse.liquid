@@ -1,0 +1,275 @@
+{{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
+{{ 'yarn-collection-browse.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'yarn-collection-browse.js' | asset_url }}" defer="defer"></script>
+{%- comment -%}
+  #85 毛线目录（手机稿「06 毛线集合页 · 390」，用户 2026-10-17 确认）：目录头 → 一排分类胶囊 → 筛选 / 排序 → 商品卡 → 显示更多。
+  分类胶囊与首页圆图、搜索页分类是同一个 Search & Discovery 筛选（filter.p.m.yarn.texture 等），只显示有商品的分类。
+  「筛选」抽屉只列出后台真实开启的其他筛选（目前是供货情况）与价格带 block；没有的字段不显示。
+  商品卡与首页同一张 yarn-pick-card；集合还没有商品（手工成品上架前）时显示「准备中」占位，不含商品名、价格或库存。
+{%- endcomment -%}
+{%- liquid
+  assign cb_cat_params = section.settings.category_filters | remove: ' ' | split: ','
+  assign cb_cat_order = section.settings.category_order | remove: ' ' | split: ','
+  assign cb_handmade_handles = section.settings.handmade_collections | remove: ' ' | split: ','
+  assign cb_handmade = false
+  if cb_handmade_handles contains collection.handle
+    assign cb_handmade = true
+  endif
+  assign cb_preparing = false
+  if collection.all_products_count == 0
+    assign cb_preparing = true
+  endif
+  assign cb_cat_active = false
+  assign cb_other_active = 0
+  for filter in collection.filters
+    if cb_cat_params contains filter.param_name
+      for value in filter.values
+        if value.active
+          assign cb_cat_active = true
+        endif
+      endfor
+    elsif filter.type == 'price_range'
+      if filter.min_value.value or filter.max_value.value
+        assign cb_other_active = cb_other_active | plus: 1
+      endif
+    else
+      assign cb_other_active = cb_other_active | plus: filter.active_values.size
+    endif
+  endfor
+  assign cb_sort = collection.sort_by | default: collection.default_sort_by
+  assign cb_sort_keys = 'manual,best-selling,price-ascending,price-descending,created-descending' | split: ','
+-%}
+{%- capture cb_chips -%}
+  {%- for param in cb_cat_params -%}
+    {%- for filter in collection.filters -%}
+      {%- if filter.param_name != param -%}{%- continue -%}{%- endif -%}
+      {%- comment -%} 按设置里的「毛线入口」handle 排序，与首页圆图一致；Search & Discovery 的自动排序会随语言变化。{%- endcomment -%}
+      {%- for entry_handle in cb_cat_order -%}
+        {%- assign cb_entry = metaobjects.yarn_entry[entry_handle] -%}
+        {%- if cb_entry == blank -%}{%- continue -%}{%- endif -%}
+        {%- assign cb_gid = 'gid://shopify/Metaobject/' | append: cb_entry.system.id -%}
+        {%- for value in filter.values -%}
+          {%- if value.value != cb_gid -%}{%- continue -%}{%- endif -%}
+          {%- if value.count == 0 and value.active == false -%}{%- continue -%}{%- endif -%}
+          {%- liquid
+            assign cb_image = blank
+            assign cb_field_parts = param | remove: 'filter.p.m.' | split: '.'
+            for cb_product in collection.products limit: 50
+              assign cb_field = cb_product.metafields[cb_field_parts[0]][cb_field_parts[1]]
+              if cb_field == blank
+                continue
+              endif
+              assign cb_match = false
+              if cb_field.type contains 'list'
+                for cb_ref in cb_field.value
+                  if cb_ref.system.id == cb_entry.system.id
+                    assign cb_match = true
+                  endif
+                endfor
+              elsif cb_field.value.system.id == cb_entry.system.id
+                assign cb_match = true
+              endif
+              if cb_match
+                assign cb_image = cb_product.metafields.yarn.card_image.value | default: cb_product.featured_image
+                break
+              endif
+            endfor
+          -%}
+          <li>
+            <a class="ycb-chip{% if value.active %} ycb-chip--active{% endif %}"{% if value.active %} aria-current="true"{% endif %} href="{{ collection.url }}?{{ value.param_name }}={{ value.value | url_encode }}">
+              <span class="ycb-chip__photo">{%- if cb_image != blank -%}{{ cb_image | image_url: width: 120 | image_tag: widths: '80, 120', sizes: '40px', loading: 'lazy', alt: '' }}{%- endif -%}</span>
+              <span class="ycb-chip__name">{{ value.label | escape }}</span>
+              {%- unless cb_cat_active -%}<span class="ycb-chip__count">{{ value.count }}</span>{%- endunless -%}
+            </a>
+          </li>
+        {%- endfor -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endfor -%}
+{%- endcapture -%}
+<section class="ycb" data-ycb data-section-id="{{ section.id }}">
+  <nav class="ycb-crumbs" aria-label="{{ 'yarn_collection.breadcrumb' | t }}">
+    <a href="{{ routes.root_url }}">{{ 'yarn_collection.home' | t }}</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">{{ collection.title | escape }}</span>
+  </nav>
+  <header class="ycb-head">
+    <p class="ycb-head__eyebrow">
+      {%- if cb_preparing -%}
+        <span class="ycb-badge">{{ 'yarn_collection.preparing_badge' | t }}</span>
+      {%- else -%}
+        {{ 'yarn_collection.count_all' | t: n: collection.all_products_count }} · {{ 'yarn_collection.tax_included' | t }}
+      {%- endif -%}
+    </p>
+    <h1 class="ycb-head__title">{{ collection.title | escape }}</h1>
+    {%- if collection.description != blank -%}<div class="ycb-head__intro">{{ collection.description }}</div>{%- endif -%}
+  </header>
+
+  {%- if cb_preparing -%}
+    <div class="ycb-preparing">
+      <p class="ycb-preparing__text">{{ 'yarn_collection.preparing_text' | t }}</p>
+      <ul class="ycb-grid ycb-grid--placeholder" role="list" aria-hidden="true">
+        {%- for i in (1..4) -%}
+          <li class="ycb-placeholder">
+            <span class="ycb-placeholder__image">{{ 'yarn_collection.placeholder_photo' | t }}</span>
+            <span class="ycb-placeholder__row"><span class="ycb-placeholder__bar"></span><span>{{ 'yarn_collection.preparing_badge' | t }}</span></span>
+            <span class="ycb-placeholder__bar ycb-placeholder__bar--short"></span>
+          </li>
+        {%- endfor -%}
+      </ul>
+      <div class="ycb-exits">
+        {%- if collections['yarn'] != blank and collection.handle != 'yarn' -%}
+          <a class="ycb-exit" href="{{ collections['yarn'].url }}">{{ 'yarn_collection.exit_yarn' | t }} <span aria-hidden="true">→</span></a>
+        {%- endif -%}
+        {%- if section.settings.kits_url != blank -%}
+          <a class="ycb-exit" href="{{ section.settings.kits_url }}">{{ 'yarn_collection.exit_kits' | t }} <span aria-hidden="true">→</span></a>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- else -%}
+    {%- if cb_chips != blank -%}
+      <nav class="ycb-chips" aria-label="{{ 'yarn_project.browse_yarn_types' | t }}">
+        <ul role="list">
+          <li>
+            <a class="ycb-chip{% unless cb_cat_active %} ycb-chip--active{% endunless %}"{% unless cb_cat_active %} aria-current="true"{% endunless %} href="{{ collection.url }}">
+              <span class="ycb-chip__photo">
+                {%- assign cb_all_image = section.settings.all_image | default: collection.image -%}
+                {%- if cb_all_image == blank -%}{%- assign cb_all_image = collection.products.first.featured_image -%}{%- endif -%}
+                {%- if cb_all_image != blank -%}{{ cb_all_image | image_url: width: 120 | image_tag: widths: '80, 120', sizes: '40px', loading: 'lazy', alt: '' }}{%- endif -%}
+              </span>
+              <span class="ycb-chip__name">{{ 'yarn_collection.chip_all' | t }}</span>
+              <span class="ycb-chip__count">{{ collection.all_products_count }}</span>
+            </a>
+          </li>
+          {{ cb_chips }}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    <div class="ycb-toolbar">
+      <div class="ycb-toolbar__actions">
+        <button class="ycb-pill" type="button" data-ycb-open aria-haspopup="dialog" aria-controls="CollectionFilters-{{ section.id }}">
+          {{- 'icon-filter.svg' | inline_asset_content -}}
+          <span>{{ 'yarn_collection.filter' | t }}{% if cb_other_active > 0 %} · {{ cb_other_active }}{% endif %}</span>
+        </button>
+        <form class="ycb-sort" action="{{ collection.url }}" method="get" data-ycb-sort-form>
+          {%- for filter in collection.filters -%}
+            {%- for value in filter.active_values -%}<input type="hidden" name="{{ value.param_name }}" value="{{ value.value | escape }}">{%- endfor -%}
+            {%- if filter.type == 'price_range' -%}
+              {%- if filter.min_value.value -%}<input type="hidden" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value | divided_by: 100.0 }}">{%- endif -%}
+              {%- if filter.max_value.value -%}<input type="hidden" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value | divided_by: 100.0 }}">{%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+          <label class="visually-hidden" for="CollectionSort-{{ section.id }}">{{ 'yarn_collection.sort' | t }}</label>
+          <select class="ycb-pill ycb-sort__select" id="CollectionSort-{{ section.id }}" name="sort_by" data-ycb-sort>
+            {%- for key in cb_sort_keys -%}
+              {%- assign cb_option_key = 'yarn_collection.sort_' | append: key | replace: '-', '_' -%}
+              <option value="{{ key }}"{% if key == cb_sort %} selected{% endif %}>{{ 'yarn_collection.sort' | t }}：{{ cb_option_key | t }}</option>
+            {%- endfor -%}
+          </select>
+          <noscript><button class="ycb-pill" type="submit">{{ 'products.facets.apply' | t }}</button></noscript>
+        </form>
+      </div>
+      <p class="ycb-toolbar__count" role="status">{{ 'yarn_collection.count' | t: n: collection.products_count }}</p>
+    </div>
+
+    {%- paginate collection.products by section.settings.products_per_page -%}
+      {%- if collection.products.size == 0 -%}
+        <div class="ycb-empty">
+          <h2>{{ 'yarn_collection.empty_title' | t }}</h2>
+          <p>{{ 'yarn_collection.empty_text' | t }}</p>
+          <a class="ycb-exit" href="{{ collection.url }}">{{ 'yarn_collection.clear_all' | t }}</a>
+        </div>
+      {%- else -%}
+        <ul class="ycb-grid" role="list" data-ycb-grid>
+          {%- for product in collection.products -%}
+            <li class="ycb-grid__item">
+              {%- if cb_handmade -%}
+                {%- render 'yarn-pick-card', card_product: product, handmade: true -%}
+              {%- else -%}
+                {%- render 'yarn-pick-card', card_product: product -%}
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+        {%- assign cb_shown = paginate.current_offset | plus: collection.products.size -%}
+        <div class="ycb-more" data-ycb-more>
+          <p class="ycb-more__status" data-ycb-status>{{ 'yarn_collection.shown' | t: shown: cb_shown, total: paginate.items }}</p>
+          {%- if paginate.next -%}
+            <a class="ycb-more__button" href="{{ paginate.next.url }}" data-ycb-next>{{ 'yarn_collection.show_more' | t }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endpaginate -%}
+
+    <dialog class="ycb-drawer" id="CollectionFilters-{{ section.id }}" aria-labelledby="CollectionFiltersTitle-{{ section.id }}" data-ycb-drawer>
+      <form action="{{ collection.url }}" method="get" data-ycb-filter-form>
+        <header class="ycb-drawer__head">
+          <h2 id="CollectionFiltersTitle-{{ section.id }}">{{ 'yarn_collection.filter' | t }}</h2>
+          <button class="ycb-drawer__close" type="button" data-ycb-close aria-label="{{ 'accessibility.close' | t }}">{{ 'icon-close.svg' | inline_asset_content }}</button>
+        </header>
+        <div class="ycb-drawer__body">
+          <input type="hidden" name="sort_by" value="{{ cb_sort | escape }}">
+          {%- for filter in collection.filters -%}
+            {%- if cb_cat_params contains filter.param_name -%}
+              {%- for value in filter.active_values -%}<input type="hidden" name="{{ value.param_name }}" value="{{ value.value | escape }}">{%- endfor -%}
+            {%- elsif filter.type == 'price_range' -%}
+              {%- assign cb_has_bands = false -%}
+              {%- for block in section.blocks -%}{%- if block.type == 'price_band' -%}{%- assign cb_has_bands = true -%}{%- endif -%}{%- endfor -%}
+              {%- if cb_has_bands -%}
+                <fieldset class="ycb-drawer__group">
+                  <legend>{{ 'yarn_collection.price' | t }}</legend>
+                  <div class="ycb-drawer__options">
+                    <label class="ycb-option"><input type="radio" name="ycb_price" value="" data-ycb-band{% unless filter.min_value.value or filter.max_value.value %} checked{% endunless %}><span>{{ 'yarn_project.browse_price_any' | t }}</span></label>
+                    {%- for block in section.blocks -%}
+                      {%- if block.type != 'price_band' -%}{%- continue -%}{%- endif -%}
+                      {%- capture cb_band_label -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'label' -%}{%- endcapture -%}
+                      <label class="ycb-option" {{ block.shopify_attributes }}><input type="radio" name="ycb_price" value="{{ block.settings.param | escape }}" data-ycb-band><span>{{ cb_band_label | escape }}</span></label>
+                    {%- endfor -%}
+                  </div>
+                  {%- if filter.min_value.value -%}<input type="hidden" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value | divided_by: 100.0 }}" data-ycb-price>{%- endif -%}
+                  {%- if filter.max_value.value -%}<input type="hidden" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value | divided_by: 100.0 }}" data-ycb-price>{%- endif -%}
+                </fieldset>
+              {%- endif -%}
+            {%- else -%}
+              <fieldset class="ycb-drawer__group">
+                <legend>{{ filter.label | escape }}</legend>
+                <div class="ycb-drawer__options">
+                  {%- for value in filter.values -%}
+                    <label class="ycb-option"><input type="checkbox" name="{{ value.param_name }}" value="{{ value.value | escape }}"{% if value.active %} checked{% elsif value.count == 0 %} disabled{% endif %}><span>{{ value.label | escape }} <small>{{ value.count }}</small></span></label>
+                  {%- endfor -%}
+                </div>
+              </fieldset>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <footer class="ycb-drawer__foot">
+          <a class="ycb-drawer__reset" href="{{ collection.url }}">{{ 'yarn_collection.clear_all' | t }}</a>
+          <button class="ycb-drawer__apply" type="submit">{{ 'yarn_collection.show_results' | t }}</button>
+        </footer>
+      </form>
+    </dialog>
+  {%- endif -%}
+</section>
+{% schema %}
+{
+  "name": "毛线目录（分类 + 筛选 + 商品）",
+  "settings": [
+    { "type": "text", "id": "category_filters", "label": "平铺为分类胶囊的筛选参数", "default": "filter.p.m.yarn.texture,filter.p.m.yarn.use", "info": "逗号分隔；与首页圆图、搜索页分类同一组商品字段" },
+    { "type": "text", "id": "category_order", "label": "分类胶囊顺序（毛线入口 handle）", "default": "gradient,fluffy,loop-fancy,fine-airy,basic-solid,amigurumi,bags-home,spring-summer-cotton", "info": "逗号分隔；未列出的入口不显示" },
+    { "type": "image_picker", "id": "all_image", "label": "「全部」胶囊小图", "info": "留空时用集合图片或第一件商品图" },
+    { "type": "range", "id": "products_per_page", "label": "每次显示商品数", "min": 8, "max": 24, "step": 4, "default": 12 },
+    { "type": "text", "id": "handmade_collections", "label": "按手工成品显示的集合 handle", "default": "finished-goods", "info": "逗号分隔；这些集合的卡片显示「手工制作」与余量" },
+    { "type": "url", "id": "kits_url", "label": "「看材料包」链接（集合为空时显示）" }
+  ],
+  "blocks": [
+    { "type": "price_band", "name": "价格带", "settings": [
+      { "type": "text", "id": "label", "label": "日文 · 标签", "default": "¥500未満" },
+      { "type": "text", "id": "label_zh", "label": "中文 · 标签" },
+      { "type": "text", "id": "label_en", "label": "英文 · 标签" },
+      { "type": "text", "id": "param", "label": "筛选参数", "default": "filter.v.price.lte=499", "info": "如 filter.v.price.gte=500&filter.v.price.lte=1499" }
+    ] }
+  ],
+  "presets": [ { "name": "毛线目录（分类 + 筛选 + 商品）" } ]
+}
+{% endschema %}

@@ -19,7 +19,12 @@ module.exports = {
       { selector: '.hitoami-story__media img', minimum: 1, label: '品牌介绍图片' },
       { selector: '.yarn-home-catalog__grid .yx-product-card', minimum: 4, label: '首页真实毛线商品卡' },
     ] },
-    { key: 'yarn-collection', path: '/collections/yarn' },
+    { key: 'yarn-collection', path: '/collections/yarn', requiredContent: [
+      { selector: '.ycb-chip', minimum: 2, label: '毛线分类胶囊' },
+      { selector: '.ycb-grid .yx-product-card', minimum: 4, label: '目录真实毛线商品卡' },
+    ] },
+    // #85：手工成品上架前，同一模板显示「准备中」占位。
+    { key: 'finished-collection', path: '/collections/finished-goods' },
     // #131：演示商品已删除，编织包不再销售；成品详情等真实成品上架后再加回。
     { key: 'yarn-pdp', path: '/products/mvp-yarn-18' },
     // 本季主推专题页：后台页面已建（handle season）；page.season 上线正式主题、后台改选该模板前，用 ?view 预览。
