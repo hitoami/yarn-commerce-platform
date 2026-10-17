@@ -16,7 +16,7 @@
   background: var(--yarn-bg-surface); color: var(--yarn-text-heading); overflow: hidden; text-decoration: none;
 }
 /* Home picks: borderless cards, the square photo is the card and the text sits on the page (#93). */
-.yx-product-card { display: flex; flex-direction: column; height: 100%; color: var(--yarn-text-heading); text-decoration: none; }
+.yx-product-card { position: relative; display: flex; flex-direction: column; height: 100%; color: var(--yarn-text-heading); text-decoration: none; }
 .yx-product-card__media { position: relative; aspect-ratio: 1; border-radius: var(--yarn-card-radius); background: var(--yarn-bg-surface); overflow: hidden; }
 .yx-product-card__media img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .yx-product-card__body { display: flex; flex: 1; flex-direction: column; gap: 4px; padding: 12px 2px 4px; }
@@ -32,7 +32,9 @@
 .yx-product-card__price, .yx-catalog-card .price {
   color: var(--yarn-accent); font-size: var(--yarn-card-price); font-weight: 600; line-height: 1.3; letter-spacing: 0;
 }
-.yx-product-card__price { margin-top: auto; padding-top: 3px; }
+.yx-product-card__price { padding-top: 3px; }
+.yx-product-card__body { container-type: inline-size; }
+.yx-product-card__buy { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; }
 .yx-product-card__action { display: flex; align-items: center; justify-content: flex-start; gap: 10px; min-height: 36px; color: var(--yarn-accent); font-size: 14px; font-weight: 500; }
 .yx-product-card__action svg { width: 17px; height: 17px; }
 .yx-product-card__was { margin-right: 6px; color: var(--yarn-text-muted); font-size: 0.72em; font-weight: 400; }
@@ -68,7 +70,8 @@
   .yx-product-card--row .yx-product-card__media { width: 140px; }
 }
 .yx-product-card:hover .yx-product-card__title { text-decoration: underline; text-underline-offset: 3px; }
-.yx-product-card:focus-visible, .yx-content-card:focus-visible, .yx-chip:focus-visible, .yx-exit a:focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: var(--yarn-focus-offset); }
+.yx-product-card:has(.yx-product-card__link:focus-visible) { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: var(--yarn-focus-offset); border-radius: var(--yarn-card-radius); }
+.yx-content-card:focus-visible, .yx-chip:focus-visible, .yx-exit a:focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: var(--yarn-focus-offset); }
 /* Adapt the native Shopify card to the same visual contract without replacing its form. */
 .product-grid > .grid__item > product-component { display: block; height: 100%; width: 100%; }
 .yx-catalog-card { height: 100%; }
@@ -177,4 +180,97 @@
   .yx-content-card__body { padding: 14px; }
   .yx-content-card__title { font-size: 19px; }
   .yx-content-card__text, .yx-content-card__link { font-size: 14px; }
+}
+
+/* #153 Card actions: the title link covers the whole card; favorite and add-to-cart sit above it.
+   One authored moment per action: the heart pops and fills, the cart button turns into a 「已加入」 pill
+   while a yarn dot drops into the header cart. */
+.yx-product-card__link { color: inherit; text-decoration: none; }
+.yx-product-card__link::after { content: ''; position: absolute; inset: 0; z-index: 1; }
+.yx-product-card__link:focus-visible { outline: none; }
+.yx-product-card__media img { transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1); }
+.yx-product-card__off, .yx-product-card__stock, .yx-product-card__media .yx-badge { pointer-events: none; }
+
+.yarn-favorite.yx-card-fav {
+  top: 8px; right: 8px; z-index: 2;
+  width: var(--yarn-touch); height: var(--yarn-touch); padding: 0;
+  background: var(--yarn-bg-surface); color: var(--yarn-text-primary);
+  box-shadow: 0 2px 8px var(--yarn-shadow-soft);
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 260ms ease, color 200ms ease;
+}
+.yarn-favorite.yx-card-fav svg { width: 22px; height: 22px; overflow: visible; fill: transparent; stroke: currentColor; stroke-width: 1.7; stroke-linejoin: round; transition: fill 220ms ease, stroke 220ms ease; }
+.yarn-favorite.yx-card-fav::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  border: 2px solid var(--yarn-accent); opacity: 0; transform: scale(0.6); pointer-events: none;
+}
+.yarn-favorite.yx-card-fav[aria-pressed='true'] { color: var(--yarn-accent); background: var(--yarn-bg-surface); }
+.yarn-favorite.yx-card-fav[aria-pressed='true'] svg { fill: var(--yarn-accent); }
+.yarn-favorite.yx-card-fav:active { transform: scale(0.9); }
+.yarn-favorite.yx-card-fav.is-popping svg { animation: yx-heart-pop 520ms cubic-bezier(0.16, 1, 0.3, 1); }
+.yarn-favorite.yx-card-fav.is-popping::after { animation: yx-ring 560ms cubic-bezier(0.16, 1, 0.3, 1); }
+
+.yx-card-cart {
+  position: relative; z-index: 2; flex: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-width: var(--yarn-touch); height: var(--yarn-touch); padding: 0 11px;
+  border: 1px solid var(--yarn-cta-border); border-radius: var(--yarn-radius-pill);
+  background: var(--yarn-cta-bg); color: var(--yarn-text-on-cta);
+  font: inherit; font-size: 14px; font-weight: 600; line-height: 1; text-decoration: none; white-space: nowrap; cursor: pointer;
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), background-color 220ms ease, border-color 220ms ease, color 220ms ease, box-shadow 260ms ease;
+}
+.yx-card-cart svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.yx-card-cart__check { display: none; }
+.yx-card-cart__text { display: none; }
+.yx-card-cart:active:not(:disabled) { transform: scale(0.92); }
+.yx-card-cart:focus-visible, .yarn-favorite.yx-card-fav:focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: 2px; }
+.yx-card-cart:disabled { border-color: var(--yarn-border-subtle); background: var(--yarn-bg-surface); color: var(--yarn-text-muted); cursor: not-allowed; }
+.yx-card-cart[data-state='loading'] { cursor: progress; }
+.yx-card-cart[data-state='loading'] .yx-card-cart__bag { animation: yx-bag-bob 700ms ease-in-out infinite; }
+.yx-card-cart[data-state='added'] { border-color: var(--yarn-accent); background: var(--yarn-accent); color: var(--yarn-text-on-action); padding-inline: 12px 14px; }
+.yx-card-cart[data-state='added'] .yx-card-cart__bag { display: none; }
+.yx-card-cart[data-state='added'] .yx-card-cart__check { display: block; stroke-width: 2.2; stroke-dasharray: 20; animation: yx-check-draw 420ms 80ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.yx-card-cart[data-state='added'] .yx-card-cart__text { display: inline; animation: yx-fade-in 300ms 60ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.yx-card-cart[data-state='error'] { animation: yx-shake 380ms ease; }
+
+.yx-cart-dot {
+  position: fixed; z-index: 1000; top: 0; left: 0; width: 16px; height: 16px; margin: -8px 0 0 -8px;
+  border-radius: 50%; background: var(--yarn-accent); box-shadow: 0 2px 6px var(--yarn-shadow-soft); pointer-events: none;
+}
+#cart-icon-bubble.is-bumping .svg-wrapper, #cart-icon-bubble.is-bumping .cart-count-bubble { animation: yx-bump 520ms cubic-bezier(0.16, 1, 0.3, 1); }
+
+@media (hover: hover) {
+  .yx-product-card:hover .yx-product-card__media img { transform: scale(1.035); }
+  .yarn-favorite.yx-card-fav:hover { color: var(--yarn-accent); transform: scale(1.08); box-shadow: 0 4px 14px var(--yarn-shadow-soft); }
+  .yx-card-cart:not(:disabled):not([data-state='added']):hover { background: var(--yarn-cta-hover); transform: translateY(-2px); box-shadow: 0 4px 12px var(--yarn-shadow-soft); }
+  .yx-card-cart:not(:disabled):not([data-state='added']):hover .yx-card-cart__bag { animation: yx-bag-tilt 480ms cubic-bezier(0.16, 1, 0.3, 1); }
+}
+/* Row cards (season feature) have a 112–140px photo: a smaller heart keeps the photo readable, the hit area stays 44px. */
+.yx-product-card--row .yarn-favorite.yx-card-fav { top: 4px; right: 4px; width: 32px; height: 32px; }
+.yx-product-card--row .yarn-favorite.yx-card-fav::before { content: ''; position: absolute; inset: -6px; }
+.yx-product-card--row .yarn-favorite.yx-card-fav svg { width: 17px; height: 17px; }
+/* Narrow cards (two-up phones) keep the price whole: the added state shows the check alone. */
+@container (max-width: 200px) {
+  .yx-card-cart[data-state='added'] { padding-inline: 9px; }
+  .yx-card-cart[data-state='added'] .yx-card-cart__text { display: none; }
+}
+@keyframes yx-heart-pop { 0% { transform: scale(1); } 25% { transform: scale(0.72); } 60% { transform: scale(1.28); } 100% { transform: scale(1); } }
+@keyframes yx-ring { 0% { opacity: 0.55; transform: scale(0.7); } 100% { opacity: 0; transform: scale(1.55); } }
+@keyframes yx-bag-tilt { 0%, 100% { transform: rotate(0); } 35% { transform: rotate(-12deg); } 70% { transform: rotate(6deg); } }
+@keyframes yx-bag-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes yx-check-draw { from { stroke-dashoffset: 20; } to { stroke-dashoffset: 0; } }
+@keyframes yx-fade-in { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: none; } }
+@keyframes yx-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-2px); } }
+@keyframes yx-bump { 0% { transform: scale(1); } 35% { transform: scale(1.3); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .yx-product-card__media img, .yarn-favorite.yx-card-fav, .yx-card-cart { transition: none; }
+  .yx-product-card:hover .yx-product-card__media img { transform: none; }
+  .yarn-favorite.yx-card-fav.is-popping svg, .yarn-favorite.yx-card-fav.is-popping::after,
+  .yx-card-cart *, .yx-card-cart[data-state='error'], #cart-icon-bubble.is-bumping * { animation: none !important; }
+}
+@media (max-width: 749px) {
+  .yarn-favorite.yx-card-fav { top: 6px; right: 6px; width: 38px; height: 38px; }
+  .yarn-favorite.yx-card-fav::before { content: ''; position: absolute; inset: -3px; }
+  .yarn-favorite.yx-card-fav svg { width: 19px; height: 19px; }
+  .yx-card-cart { min-width: 40px; height: 40px; padding-inline: 9px; font-size: 13px; }
+  .yx-card-cart::before { content: ''; position: absolute; inset: -2px; }
 }

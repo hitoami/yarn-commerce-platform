@@ -1,5 +1,8 @@
+{% comment %}
+  modifier:附加样式类。商品卡传 'yx-card-fav'(#153),换成可填充的爱心图标,收藏后整颗变实心。
+{% endcomment %}
 <button
-  class="yarn-favorite"
+  class="yarn-favorite{% if modifier != blank %} {{ modifier }}{% endif %}"
   type="button"
   data-favorite-button
   data-favorite-type="{{ entity_type }}"
@@ -9,5 +12,9 @@
   data-label-add="{{ 'yarn_discovery.favorite_add' | t: title: entity_title | escape }}"
   data-label-remove="{{ 'yarn_discovery.favorite_remove' | t: title: entity_title | escape }}"
 >
-  {{ 'icon-heart.svg' | inline_asset_content }}
+  {%- if modifier == 'yx-card-fav' -%}
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20.2s-7.6-4.5-9.3-9.3C1.5 7.5 3.7 4.3 7.1 4.3c2.1 0 3.7 1.2 4.9 3 1.2-1.8 2.8-3 4.9-3 3.4 0 5.6 3.2 4.4 6.6-1.7 4.8-9.3 9.3-9.3 9.3z"/></svg>
+  {%- else -%}
+    {{ 'icon-heart.svg' | inline_asset_content }}
+  {%- endif -%}
 </button>
