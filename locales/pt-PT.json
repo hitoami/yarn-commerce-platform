@@ -804,6 +804,9 @@
     "option_default": "Option",
     "wake_cat": "Wake the cat",
     "catalog_preparing": "We are checking our yarn details and will share them here when ready.",
+    "collection_preparing_title": "Coming soon",
+    "collection_preparing_text": "We're preparing these one piece at a time. In the meantime, have a look at our yarn.",
+    "collection_preparing_link": "Browse yarn",
     "kit_choose_colour": "Choose a colour of this yarn"
   },
   "yarn_discovery": {

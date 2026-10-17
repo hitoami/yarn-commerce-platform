@@ -43,8 +43,13 @@
 >
   <div class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}">
     {%- paginate collection.products by section.settings.products_per_page -%}
+      {%- comment -%} 集合本身还没有任何商品（如手工成品上架前）：不显示排序、筛选和「0/0 件」计数，改为「准备中」说明（#131）。{%- endcomment -%}
+      {%- assign collection_preparing = false -%}
+      {%- if collection.all_products_count == 0 or collection.all_products_count == blank and collection.products_count == 0 -%}
+        {%- assign collection_preparing = true -%}
+      {%- endif -%}
       {% comment %} Sort is the first tabbable element when filter type is vertical {% endcomment %}
-      {%- if section.settings.enable_sorting and section.settings.filter_type == 'vertical' -%}
+      {%- if section.settings.enable_sorting and section.settings.filter_type == 'vertical' and collection_preparing == false -%}
         <facet-filters-form class="facets facets-vertical-sort page-width small-hide">
           <form class="facets-vertical-form" id="FacetSortForm">
             <div class="facet-filters sorting caption">
@@ -105,7 +110,7 @@
       <div class="{% if section.settings.filter_type == 'vertical' %} facets-vertical page-width{% endif %}">
         {{ 'component-facets.css' | asset_url | stylesheet_tag }}
         <script src="{{ 'facets.js' | asset_url }}" defer="defer"></script>
-        {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
+        {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}{%- unless collection_preparing -%}
           <aside
             aria-labelledby="verticalTitle"
             class="facets-wrapper{% unless section.settings.enable_filtering %} facets-wrapper--no-filters{% endunless %}{% if section.settings.filter_type != 'vertical' %} page-width{% endif %}"
@@ -120,7 +125,7 @@
               paginate: paginate
             %}
           </aside>
-        {%- endif -%}
+        {%- endunless -%}{%- endif -%}
 
         <div
           class="product-grid-container{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
@@ -129,7 +134,15 @@
             data-cascade
           {% endif %}
         >
-          {%- if collection.products.size == 0 -%}
+          {%- if collection_preparing -%}
+            <div class="collection collection--empty yx-collection-preparing page-width" id="product-grid" data-id="{{ section.id }}">
+              <h2 class="yx-collection-preparing__title">{{ 'yarn_project.collection_preparing_title' | t }}</h2>
+              <p class="yx-collection-preparing__text">{{ 'yarn_project.collection_preparing_text' | t }}</p>
+              {%- if collection.handle != 'yarn' and collections['yarn'] != blank -%}
+                <a class="yx-collection-preparing__link" href="{{ collections['yarn'].url }}">{{ 'yarn_project.collection_preparing_link' | t }} <span aria-hidden="true">→</span></a>
+              {%- endif -%}
+            </div>
+          {%- elsif collection.products.size == 0 -%}
             <div class="collection collection--empty page-width" id="product-grid" data-id="{{ section.id }}">
               <div class="loading-overlay gradient"></div>
               <div class="title-wrapper center">
