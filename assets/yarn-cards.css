@@ -248,6 +248,17 @@
 .yx-product-card--row .yarn-favorite.yx-card-fav { top: 4px; right: 4px; width: 32px; height: 32px; }
 .yx-product-card--row .yarn-favorite.yx-card-fav::before { content: ''; position: absolute; inset: -6px; }
 .yx-product-card--row .yarn-favorite.yx-card-fav svg { width: 17px; height: 17px; }
+/* #161 The same actions on every product card: Rise's native card (related products, collection grid,
+   complementary products) puts the cart beside the price; the discovery card floats it at the bottom right,
+   outside its card-wide link. */
+.yx-catalog-card__buy { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
+.yx-catalog-card__buy .price { min-width: 0; }
+.yx-catalog-card .card__information { container-type: inline-size; }
+.card--horizontal ~ .yarn-favorite.yx-card-fav { top: 4px; right: 4px; width: 32px; height: 32px; }
+.card--horizontal ~ .yarn-favorite.yx-card-fav::before { content: ''; position: absolute; inset: -6px; }
+.card--horizontal ~ .yarn-favorite.yx-card-fav svg { width: 17px; height: 17px; }
+.yp-product-card .yx-card-cart { position: absolute; right: 0; bottom: 0; }
+.yp-product-card .yp-card__price { padding-right: calc(var(--yarn-touch) + 8px); }
 /* Narrow cards (two-up phones) keep the price whole: the added state shows the check alone. */
 @container (max-width: 200px) {
   .yx-card-cart[data-state='added'] { padding-inline: 9px; }

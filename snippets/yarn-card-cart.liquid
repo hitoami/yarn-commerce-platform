@@ -1,0 +1,24 @@
+{% comment %}
+  商品卡的加入购物车按钮(#153,#161 推广到所有商品卡)。行为由 assets/yarn-card-actions.js 负责。
+  只有一个款式时直接加入 Shopify Cart;多款式链接到详情页选择,不替用户挑颜色;售罄时禁用;未定价不显示。
+  按钮必须放在商品链接之外(z-index 高于整卡链接),不能嵌套在 <a> 里。
+  cart_product:Product 对象。
+{% endcomment %}
+{%- if cart_product.price > 0 -%}
+  {%- capture cart_icon -%}<svg class="yx-card-cart__bag" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.5 8.5h13l-1.1 10.2a1.5 1.5 0 0 1-1.5 1.3H8.1a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M9 10.5V7a3 3 0 0 1 6 0v3.5"/></svg><svg class="yx-card-cart__check" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 12.5 4 4 8-9"/></svg>{%- endcapture -%}
+  {%- if cart_product.available == false -%}
+    <button class="yx-card-cart" type="button" disabled aria-label="{{ 'yarn_project.card_sold_out' | t }}">{{ cart_icon }}</button>
+  {%- elsif cart_product.variants.size == 1 -%}
+    <button
+      class="yx-card-cart"
+      type="button"
+      data-card-add="{{ cart_product.selected_or_first_available_variant.id }}"
+      data-state="idle"
+      aria-label="{{ 'yarn_project.card_add_to_cart' | t: title: cart_product.title | escape }}"
+      data-added="{{ 'yarn_project.card_added_announce' | t: title: cart_product.title | escape }}"
+      data-error="{{ 'yarn_project.card_cart_error' | t | escape }}"
+    >{{ cart_icon }}<span class="yx-card-cart__text" aria-hidden="true">{{ 'yarn_project.card_added' | t }}</span></button>
+  {%- else -%}
+    <a class="yx-card-cart" href="{{ cart_product.url }}" aria-label="{{ 'yarn_project.card_choose_options' | t: title: cart_product.title | escape }}">{{ cart_icon }}</a>
+  {%- endif -%}
+{%- endif -%}
