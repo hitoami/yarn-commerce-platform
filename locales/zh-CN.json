@@ -559,6 +559,8 @@
     "restock_ask_line": "在 LINE 询问到货",
     "restock_ask_contact": "联系店员询问到货",
     "see_similar": "看同类的其他毛线",
+    "intro_more": "展开商品介绍",
+    "intro_less": "收起",
     "spec_heading": "线的规格",
     "spec_material": "成分",
     "spec_weight_length": "重量 / 长度",

@@ -170,6 +170,35 @@
     }
   }
 
+  // #183 桌面（≥990px）：商品介绍超过折叠高度时收起，按钮切换展开 / 收起；手机与内容较短时不折叠。
+  class YarnIntro extends HTMLElement {
+    connectedCallback() {
+      this.body = this.querySelector('[data-yarn-intro]');
+      this.toggle = this.querySelector('[data-yarn-intro-toggle]');
+      if (!this.body || !this.toggle) return;
+      this.media = window.matchMedia('(min-width: 990px)');
+      this.toggle.addEventListener('click', () => this.set(!this.open));
+      this.media.addEventListener?.('change', () => this.measure());
+      this.measure();
+    }
+
+    measure() {
+      this.body.dataset.collapsed = 'true';
+      const clamps = this.media.matches && this.body.scrollHeight > this.body.clientHeight + 4;
+      this.toggle.hidden = !clamps;
+      this.set(!clamps);
+    }
+
+    set(open) {
+      this.open = open;
+      if (open) delete this.body.dataset.collapsed;
+      else this.body.dataset.collapsed = 'true';
+      this.toggle.setAttribute('aria-expanded', String(open));
+      this.toggle.textContent = open ? this.dataset.less : this.dataset.more;
+    }
+  }
+
+  if (!customElements.get('yarn-intro')) customElements.define('yarn-intro', YarnIntro);
   if (!customElements.get('yarn-usage-estimate')) customElements.define('yarn-usage-estimate', YarnUsageEstimate);
   if (!customElements.get('yarn-sticky-buy')) customElements.define('yarn-sticky-buy', YarnStickyBuy);
 })();

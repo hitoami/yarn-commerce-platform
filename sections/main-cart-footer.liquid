@@ -2,6 +2,7 @@
 {{ 'component-totals.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 {{ 'component-discounts.css' | asset_url | stylesheet_tag }}
+{{ 'yarn-cart.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
   .section-{{ section.id }}-padding {
@@ -58,6 +59,8 @@
                   {%- endif -%}
                 </div>
 
+                {%- comment -%}#183 桌面：免运费进度放进右侧结算卡；手机仍在商品上方（main-cart-items），两处按断点只显示一处。{%- endcomment -%}
+                {%- render 'yarn-cart-shipping', placement: 'summary' -%}
                 <div class="totals">
                   <h2 class="totals__total">{{ 'sections.cart.estimated_total' | t }}</h2>
                   <p class="totals__total-value">{{ cart.total_price | money }}</p>

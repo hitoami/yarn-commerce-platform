@@ -583,6 +583,8 @@
     "restock_ask_line": "Ask about restock on LINE",
     "restock_ask_contact": "Contact us about restock",
     "see_similar": "See similar yarns",
+    "intro_more": "Read full description",
+    "intro_less": "Show less",
     "spec_heading": "Yarn specs",
     "spec_material": "Fiber",
     "spec_weight_length": "Weight / length",
