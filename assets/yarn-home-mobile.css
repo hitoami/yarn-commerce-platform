@@ -8,7 +8,6 @@
 .yarn-home-catalog__head .yx-picks__all { gap: 0.3em; }
 .yarn-home-catalog__note { margin: 0 0 12px; }
 .yarn-home-catalog__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; }
-.yarn-home-catalog__grid .yx-product-card__media img { object-fit: contain; }
 .yarn-home-catalog__empty { padding: 24px 0; border-top: 1px solid var(--yarn-border-subtle); }
 .yarn-home-guide__intro > * { margin-top: 0; }
 .yarn-home-guide .yarn-home-guide__eyebrow { margin: 0 0 6px; color: var(--yarn-action); font-size: 13px; font-weight: 700; line-height: 1.2; }
@@ -88,11 +87,6 @@ body:has(.hitoami-hero--catalog) .yarn-entries__head yarn-companion { height: 68
   .yarn-home-catalog__head .yx-picks__all { font-size: 15px; font-weight: 700; }
   .yarn-home-catalog__note { margin: -16px 0 24px; font-size: 15px; }
   .yarn-home-catalog__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
-  .yarn-home-catalog__grid .yx-product-card__media { background: var(--yarn-bg-sunken); }
-  .yarn-home-catalog__grid .yx-product-card__media img { object-fit: cover; }
-  .yarn-home-catalog__grid .yx-card-meta { display: none; }
-  .yarn-home-catalog__grid .yx-product-card__body { gap: 8px; padding: 8px 0 0; }
-  .yarn-home-catalog__grid .yx-product-card__price { padding-top: 0; }
   .yarn-home-guide__intro { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
   .yarn-home-guide__intro > *, .yarn-home-guide .yarn-home-guide__intro > p { margin: 0; }
   .yarn-home-guide .yarn-home-guide__note { color: var(--yarn-text-muted); font-size: 15px; line-height: 1.5; }
