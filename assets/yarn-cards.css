@@ -219,6 +219,8 @@
   transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), background-color 220ms ease, border-color 220ms ease, color 220ms ease, box-shadow 260ms ease;
 }
 .yx-card-cart svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.yx-card-cart__bag { display: inline-flex; }
+.yx-card-cart__bag svg { width: 22px; height: 22px; }
 .yx-card-cart__check { display: none; }
 .yx-card-cart__text { display: none; }
 .yx-card-cart:active:not(:disabled) { transform: scale(0.92); }
@@ -236,7 +238,10 @@
   position: fixed; z-index: 1000; top: 0; left: 0; width: 16px; height: 16px; margin: -8px 0 0 -8px;
   border-radius: 50%; background: var(--yarn-accent); box-shadow: 0 2px 6px var(--yarn-shadow-soft); pointer-events: none;
 }
-#cart-icon-bubble.is-bumping .svg-wrapper, #cart-icon-bubble.is-bumping .cart-count-bubble { animation: yx-bump 520ms cubic-bezier(0.16, 1, 0.3, 1); }
+#cart-icon-bubble.is-bumping .svg-wrapper, #cart-icon-bubble.is-bumping .cart-count-bubble,
+[data-favorites-header].is-bumping .svg-wrapper, [data-favorites-header].is-bumping .cart-count-bubble { animation: yx-bump 520ms cubic-bezier(0.16, 1, 0.3, 1); }
+.yx-cart-dot--heart { width: 20px; height: 20px; margin: -10px 0 0 -10px; background: none; box-shadow: none; color: var(--yarn-accent); }
+.yx-cart-dot--heart svg { display: block; width: 100%; height: 100%; fill: currentColor; }
 
 @media (hover: hover) {
   .yx-product-card:hover .yx-product-card__media img { transform: scale(1.035); }
@@ -259,6 +264,24 @@
 .card--horizontal ~ .yarn-favorite.yx-card-fav svg { width: 17px; height: 17px; }
 .yp-product-card .yx-card-cart { position: absolute; right: 0; bottom: 0; }
 .yp-product-card .yp-card__price { padding-right: calc(var(--yarn-touch) + 8px); }
+/* #175 Favorites page: a quantity stepper and a labelled add button replace the round cart button. */
+.yx-card-buy { display: none; }
+.yd-search.is-favorites .yx-card-buy { position: relative; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+.yd-search.is-favorites .yx-product-card__buy .yx-card-cart { display: none; }
+.yx-card-buy__qty { display: inline-flex; align-items: center; height: var(--yarn-touch); border: 1px solid var(--yarn-border-subtle); border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); }
+.yx-card-buy__qty button { display: grid; place-items: center; width: 36px; height: 100%; padding: 0; border: 0; background: none; color: var(--yarn-text-primary); cursor: pointer; }
+.yx-card-buy__qty button:disabled { color: var(--yarn-text-muted); cursor: default; opacity: 0.5; }
+.yx-card-buy__qty button svg { width: 12px; height: 12px; }
+.yx-card-buy__qty label { display: contents; }
+.yx-card-buy__qty input { width: 32px; height: 100%; padding: 0; border: 0; background: none; color: var(--yarn-text-heading); font: inherit; font-size: 15px; font-weight: 600; text-align: center; -moz-appearance: textfield; }
+.yx-card-buy__qty input::-webkit-inner-spin-button, .yx-card-buy__qty input::-webkit-outer-spin-button { margin: 0; -webkit-appearance: none; }
+.yx-card-buy__qty button:focus-visible, .yx-card-buy__qty input:focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: -2px; border-radius: var(--yarn-radius-pill); }
+.yx-card-cart--wide { flex: 1 1 auto; padding-inline: 14px 16px; }
+.yx-card-cart--wide[data-state='added'] .yx-card-cart__label { display: none; }
+@media (max-width: 749px) {
+  .yx-card-buy__qty { width: 100%; justify-content: space-between; }
+  .yx-card-cart--wide { width: 100%; height: 40px; }
+}
 /* Narrow cards (two-up phones) keep the price whole: the added state shows the check alone. */
 @container (max-width: 200px) {
   .yx-card-cart[data-state='added'] { padding-inline: 9px; }
@@ -276,7 +299,7 @@
   .yx-product-card__media img, .yarn-favorite.yx-card-fav, .yx-card-cart { transition: none; }
   .yx-product-card:hover .yx-product-card__media img { transform: none; }
   .yarn-favorite.yx-card-fav.is-popping svg, .yarn-favorite.yx-card-fav.is-popping::after,
-  .yx-card-cart *, .yx-card-cart[data-state='error'], #cart-icon-bubble.is-bumping * { animation: none !important; }
+  .yx-card-cart *, .yx-card-cart[data-state='error'], #cart-icon-bubble.is-bumping *, [data-favorites-header].is-bumping * { animation: none !important; }
 }
 @media (max-width: 749px) {
   .yarn-favorite.yx-card-fav { top: 6px; right: 6px; width: 38px; height: 38px; }

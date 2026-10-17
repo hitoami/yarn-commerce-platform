@@ -45,10 +45,12 @@
     setTimeout(() => bubble.classList.remove('is-bumping'), 600);
   }
 
-  // A yarn-coloured dot drops from the card button into the header cart icon.
-  function fly(from, to) {
+  const HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.2s-7.6-4.5-9.3-9.3C1.5 7.5 3.7 4.3 7.1 4.3c2.1 0 3.7 1.2 4.9 3 1.2-1.8 2.8-3 4.9-3 3.4 0 5.6 3.2 4.4 6.6-1.7 4.8-9.3 9.3-9.3 9.3z"/></svg>';
+
+  // A yarn-coloured dot drops from the card button into the header cart icon (#175: a heart for favorites).
+  function fly(from, to, kind = 'cart') {
     const target = to?.querySelector('.svg-wrapper') || to;
-    if (reduceMotion() || !target || !target.getClientRects().length) return Promise.resolve();
+    if (reduceMotion() || !from || !target || !target.getClientRects().length) return Promise.resolve();
     const a = from.getBoundingClientRect();
     const b = target.getBoundingClientRect();
     if (b.bottom < 0 || b.top > window.innerHeight) return Promise.resolve();
@@ -56,7 +58,8 @@
     const x1 = b.left + b.width / 2; const y1 = b.top + b.height / 2;
     const peak = Math.min(y0, y1) - 80;
     const dot = document.createElement('span');
-    dot.className = 'yx-cart-dot';
+    dot.className = kind === 'heart' ? 'yx-cart-dot yx-cart-dot--heart' : 'yx-cart-dot';
+    if (kind === 'heart') dot.innerHTML = HEART;
     document.body.appendChild(dot);
     const animation = dot.animate([
       { transform: `translate(${x0}px, ${y0}px) scale(1)`, opacity: 1 },
@@ -64,6 +67,28 @@
       { transform: `translate(${x1}px, ${y1}px) scale(0.4)`, opacity: 0.6 },
     ], { duration: 720, easing: 'cubic-bezier(0.5, 0, 0.3, 1)' });
     return animation.finished.catch(() => {}).finally(() => dot.remove());
+  }
+
+  // #175: the favorites page pairs the add button with a quantity stepper.
+  function quantityFor(button) {
+    const input = button.closest('[data-card-buy]')?.querySelector('[data-card-qty]');
+    const value = Math.floor(Number(input?.value));
+    return Number.isFinite(value) && value >= 1 ? Math.min(value, 99) : 1;
+  }
+
+  function step(control) {
+    const input = control.closest('[data-card-buy]')?.querySelector('[data-card-qty]');
+    if (!input) return;
+    const next = Math.min(99, Math.max(1, (Math.floor(Number(input.value)) || 1) + Number(control.dataset.qtyStep)));
+    input.value = String(next);
+    syncSteppers(input);
+  }
+
+  function syncSteppers(input) {
+    const value = Math.floor(Number(input.value)) || 1;
+    input.closest('[data-card-buy]')?.querySelectorAll('[data-qty-step]').forEach((control) => {
+      control.disabled = Number(control.dataset.qtyStep) < 0 ? value <= 1 : value >= 99;
+    });
   }
 
   async function add(button) {
@@ -77,7 +102,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          items: [{ id: Number(button.dataset.cardAdd), quantity: 1 }],
+          items: [{ id: Number(button.dataset.cardAdd), quantity: quantityFor(button) }],
           sections: 'cart-drawer,cart-icon-bubble',
           sections_url: window.location.pathname,
         }),
@@ -102,6 +127,8 @@
   }
 
   document.addEventListener('click', (event) => {
+    const stepper = event.target.closest?.('[data-qty-step]');
+    if (stepper) { event.preventDefault(); step(stepper); return; }
     const addButton = event.target.closest?.('[data-card-add]');
     if (addButton) { event.preventDefault(); add(addButton); return; }
     const heart = event.target.closest?.('.yx-card-fav');
@@ -111,5 +138,20 @@
       heart.classList.add('is-popping');
       setTimeout(() => heart.classList.remove('is-popping'), 600);
     }
+  });
+
+  document.addEventListener('change', (event) => {
+    const input = event.target.closest?.('[data-card-qty]');
+    if (!input) return;
+    input.value = String(Math.min(99, Math.max(1, Math.floor(Number(input.value)) || 1)));
+    syncSteppers(input);
+  });
+
+  // #175: a saved favorite flies into the header heart; any change makes the header heart bump.
+  document.addEventListener('yarn:favorite-toggled', (event) => {
+    const header = Array.from(document.querySelectorAll('[data-favorites-header]')).find((link) => link.getClientRects().length);
+    if (!header) return;
+    const landing = event.detail?.saved ? fly(event.detail.button, header, 'heart') : Promise.resolve();
+    landing.then(() => bump(header));
   });
 })();

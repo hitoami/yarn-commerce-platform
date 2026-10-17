@@ -1,6 +1,10 @@
 /* Shared discovery cards and account actions. */
 .yp-card { position: relative; }
-.header-wrapper .header__icon--favorites svg { fill: currentColor; }
+.header-wrapper .header__icon--favorites { position: relative; }
+.header-wrapper .header__icon--favorites .yarn-header-heart { fill: transparent; stroke: currentColor; stroke-width: 1.4; stroke-linejoin: round; transition: fill 220ms ease, stroke 220ms ease; }
+.header-wrapper .header__icon--favorites.has-favorites .yarn-header-heart { fill: var(--yarn-action); stroke: var(--yarn-action); }
+.header-wrapper .header__icon--favorites .yarn-favorites-count[hidden] { display: none; }
+.header-wrapper .header__icon--favorites .yarn-favorites-count { box-shadow: 0 0 0 2px var(--yarn-bg-surface); }
 .yarn-favorite {
   position: absolute; top: var(--yarn-space-2); right: var(--yarn-space-2); z-index: 1;
   display: grid; place-items: center; width: var(--yarn-touch); height: var(--yarn-touch);

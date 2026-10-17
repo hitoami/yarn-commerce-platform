@@ -57,6 +57,7 @@
         if (!button) return;
         event.preventDefault();
         const entity = { type: button.dataset.favoriteType, id: button.dataset.favoriteId };
+        this.lastButton = button;
         if (!validEntity(entity)) return;
         if (!this.enabled) { this.announce(this.dataset.unavailable); return; }
         if (this.local) { this.toggleLocal(entity); return; }
@@ -116,6 +117,7 @@
       }
       this.acceptLocal();
       this.announce(next.saved ? this.dataset.savedLocal : this.dataset.removed);
+      this.signal(entity, next.saved);
     }
 
     async load({ refresh = false } = {}) {
@@ -169,6 +171,7 @@
           if (!this.authenticated) { this.showLogin(entity); return; }
           if (this.saved.has(key) !== shouldSave) throw new Error('Favorite was not persisted');
           this.announce(shouldSave ? this.dataset.saved : this.dataset.removed);
+          this.signal(entity, shouldSave);
         } catch (error) {
           if (error.name !== 'AbortError') this.announce(this.dataset.error);
         } finally {
@@ -178,7 +181,21 @@
       return this.queue;
     }
 
+    // #175: tell the page a save / removal finished so the header heart can animate (yarn-card-actions.js).
+    signal(entity, saved) {
+      const button = this.lastButton?.dataset.favoriteId === String(entity.id) ? this.lastButton : null;
+      document.dispatchEvent(new CustomEvent('yarn:favorite-toggled', { detail: { entity, saved, button } }));
+    }
+
     render() {
+      // #175: the header heart fills and shows the count once favorites are known.
+      const count = this.loaded ? this.saved.size : 0;
+      document.querySelectorAll('[data-favorites-header]').forEach((link) => {
+        link.classList.toggle('has-favorites', count > 0);
+        link.setAttribute('aria-label', count > 0 ? link.dataset.labelCount.replace('__N__', count) : link.dataset.label);
+        const bubble = link.querySelector('[data-favorites-count]');
+        if (bubble) { bubble.textContent = count > 99 ? '99+' : String(count); bubble.hidden = count === 0; }
+      });
       document.querySelectorAll('[data-favorite-button]').forEach((button) => {
         const key = `${button.dataset.favoriteType}:${button.dataset.favoriteId}`;
         const active = this.saved.has(key);

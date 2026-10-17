@@ -807,6 +807,7 @@
     "search_scope": "毛糸 · 材料セット · ハンドメイド作品",
     "back": "ホームに戻る",
     "favorites": "お気に入り",
+    "favorites_count": "お気に入り（{{ number }}件）",
     "favorite_add": "「{{ title }}」をお気に入りに追加",
     "favorite_remove": "「{{ title }}」をお気に入りから削除",
     "saved": "お気に入りに保存しました",

@@ -1,0 +1,33 @@
+{% comment %}
+  收藏页的购买行(#175):「− 数量 +」与「加入购物车」。只在搜索页切到收藏(.yd-search.is-favorites)时显示，其他页面仍按 #169 只在成品卡显示圆形按钮。
+  单款式直接加入 Shopify Cart(数量 1–99,由 assets/yarn-card-actions.js 处理);多款式链接到详情页;售罄禁用;未定价不显示。
+  buy_product:Product 对象。
+{% endcomment %}
+{%- if buy_product.price > 0 -%}
+  <div class="yx-card-buy" data-card-buy>
+    {%- if buy_product.available == false -%}
+      <button class="yx-card-cart yx-card-cart--wide" type="button" disabled>{{ 'products.product.sold_out' | t }}</button>
+    {%- elsif buy_product.variants.size == 1 -%}
+      <div class="yx-card-buy__qty">
+        <button type="button" data-qty-step="-1" disabled aria-label="{{ 'products.product.quantity.decrease' | t: product: buy_product.title | escape }}">{{ 'icon-minus.svg' | inline_asset_content }}</button>
+        <label><span class="visually-hidden">{{ 'products.product.quantity.input_label' | t: product: buy_product.title | escape }}</span><input type="number" inputmode="numeric" min="1" max="99" value="1" data-card-qty></label>
+        <button type="button" data-qty-step="1" aria-label="{{ 'products.product.quantity.increase' | t: product: buy_product.title | escape }}">{{ 'icon-plus.svg' | inline_asset_content }}</button>
+      </div>
+      <button
+        class="yx-card-cart yx-card-cart--wide"
+        type="button"
+        data-card-add="{{ buy_product.selected_or_first_available_variant.id }}"
+        data-state="idle"
+        data-added="{{ 'yarn_project.card_added_announce' | t: title: buy_product.title | escape }}"
+        data-error="{{ 'yarn_project.card_cart_error' | t | escape }}"
+      >
+        <span class="yx-card-cart__bag" aria-hidden="true">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
+        <svg class="yx-card-cart__check" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 12.5 4 4 8-9"/></svg>
+        <span class="yx-card-cart__label">{{ 'products.product.add_to_cart' | t }}</span>
+        <span class="yx-card-cart__text" aria-hidden="true">{{ 'yarn_project.card_added' | t }}</span>
+      </button>
+    {%- else -%}
+      <a class="yx-card-cart yx-card-cart--wide" href="{{ buy_product.url }}">{{ 'products.product.choose_options' | t }}</a>
+    {%- endif -%}
+  </div>
+{%- endif -%}

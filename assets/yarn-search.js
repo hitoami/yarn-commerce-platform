@@ -216,6 +216,7 @@
       this.input.value = this.state.q;
       this.clearButton.hidden = !this.state.q;
       this.heading.textContent = isFavorites ? this.heading.dataset.favoritesTitle : this.heading.dataset.title;
+      this.classList.toggle('is-favorites', isFavorites);
       this.querySelector('[data-favorites-link]').hidden = isFavorites;
       this.tabs.forEach((tab) => tab.setAttribute('aria-pressed', String(tab.dataset.searchTab === this.state.group)));
       this.hideStates();
