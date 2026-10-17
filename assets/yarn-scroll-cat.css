@@ -5,7 +5,7 @@
   .yarn-scroll-cat {
     --ysc-cat-w: 72px;
     --ysc-cat-h: 50px;
-    --ysc-ball: 22px;
+    --ysc-ball: 24px;
     --ysc-floor: 6px; /* the thread and the cat's feet rest this far above the screen edge */
     position: fixed;
     left: 0;
@@ -31,11 +31,8 @@
     clip-path: inset(-10px calc(100% - var(--ysc-reach, 0px)) -10px -10px);
   }
 
-  .yarn-scroll-cat__thread path { fill: none; stroke-width: 3.2; stroke-linecap: round; }
-  .yarn-scroll-cat__ply-core { stroke: var(--yarn-home-rope); }
-  /* Short dashes across the core read as the twist of plied yarn (same as the guide strip). */
-  .yarn-scroll-cat__ply-ridge { stroke: var(--yarn-home-thread); stroke-dasharray: 1 2.2; stroke-linecap: butt; }
-  .yarn-scroll-cat__knot { fill: var(--yarn-scrollbar-track); stroke: var(--yarn-home-thread); stroke-width: 1.4; }
+  /* A plain solid strand in the logo's colour, like the loose end in the logo. */
+  .yarn-scroll-cat__thread path { fill: none; stroke: var(--yarn-home-logo); stroke-width: 2.4; stroke-linecap: round; }
 
   .yarn-scroll-cat__cat {
     position: absolute;
@@ -59,7 +56,6 @@
     transform: translateX(var(--ysc-ball-x, 0px)) rotate(var(--ysc-spin, 0deg));
   }
 
-  .yarn-scroll-cat__ball-body { fill: var(--yarn-tint-butter); }
-  .yarn-scroll-cat__ball path { fill: none; stroke: var(--yarn-home-thread); stroke-width: 0.8; stroke-linecap: round; }
-  .yarn-scroll-cat__ball-rim { fill: none; stroke: var(--yarn-home-thread); stroke-width: 1.3; }
+  .yarn-scroll-cat__ball circle { fill: var(--yarn-home-logo); }
+  .yarn-scroll-cat__ball path { fill: none; stroke: var(--yarn-bg-page); stroke-width: 0.75; stroke-linecap: round; }
 }

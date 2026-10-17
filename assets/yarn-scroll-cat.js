@@ -1,10 +1,10 @@
-// Homepage desktop scroll progress. The ball's position is the page's scroll progress; the thread runs from a knot at the
-// left edge to the ball, and the cat walks behind it, nudging it along. When scrolling stops the cat stands, lies down,
+// Homepage desktop scroll progress. The ball's position is the page's scroll progress; the thread runs from a loose end at
+// the left edge to the ball, and the cat walks behind it, nudging it along. When scrolling stops the cat stands, lies down,
 // then sleeps; scrolling back turns it round to draw the ball back. With reduced motion it simply stands at the progress point.
 (() => {
-  const EDGE = 20; // knot and right-hand stop sit this far from the screen edges
+  const EDGE = 20; // the thread's loose end and the right-hand stop sit this far from the screen edges
   const CAT_W = 72;
-  const BALL = 22;
+  const BALL = 24;
   const NOSE = 6; // the ball overlaps the cat's nose by this much
   const THREAD_Y = 14; // thread height inside the 20px-tall svg, measured from its top
   // Frames: 0 sleep, 1 lying awake, 2 stand, 3-7 walk cycle, 8 stand.
@@ -50,10 +50,7 @@
         d += ` Q${x + 23} ${THREAD_Y + (up ? -1.6 : 1.6)} ${x + 46} ${THREAD_Y}`;
       }
       this.thread.setAttribute('viewBox', `0 0 ${width} 20`);
-      this.thread.querySelectorAll('path').forEach((path) => path.setAttribute('d', d));
-      const knot = this.thread.querySelector('circle');
-      knot.setAttribute('cx', EDGE);
-      knot.setAttribute('cy', THREAD_Y);
+      this.thread.querySelector('path').setAttribute('d', d);
       this.kick();
     }
 
