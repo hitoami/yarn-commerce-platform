@@ -82,6 +82,25 @@
     return Object.entries(values).reduce((text, [key, value]) => text.split(`[${key}]`).join(String(value)), template || '');
   }
 
+  // Splits a locale template into text parts; `key` marks parts that echo shopper or Shopify content (the keyword, a category name).
+  function templateParts(template, values) {
+    return String(template || '').split(/(\[\w+\])/).filter(Boolean).map((part) => {
+      const key = part.match(/^\[(\w+)\]$/)?.[1];
+      return key && key in values ? { text: String(values[key]), key } : { text: part };
+    });
+  }
+
+  // Shopper input is never parsed as HTML; content parts are tagged so language checks do not treat them as theme copy.
+  function renderTemplate(element, template, values, contentKeys) {
+    element.replaceChildren(...templateParts(template, values).map((part) => {
+      if (!part.key || !contentKeys.includes(part.key)) return document.createTextNode(part.text);
+      const span = document.createElement('span');
+      span.dataset.proofContent = '';
+      span.textContent = part.text;
+      return span;
+    }));
+  }
+
   const ElementBase = typeof HTMLElement === 'undefined' ? class {} : HTMLElement;
   class YarnDiscoverySearch extends ElementBase {
     connectedCallback() {
@@ -272,7 +291,7 @@
         this.categoryLink.hidden = !category;
         if (category) {
           this.categoryLink.href = category.href;
-          this.categoryLink.textContent = fill(this.categoryLink.dataset.template, { name: category.name });
+          renderTemplate(this.categoryLink, this.categoryLink.dataset.template, { name: category.name }, ['name']);
         }
       }
       if (this.finishedNote) this.finishedNote.hidden = noResults || this.state.browse === 'favorites';
@@ -281,16 +300,16 @@
       this.favoritesEmpty.hidden = !noResults || !noFavorites;
       this.browsePanel.hidden = !noResults || noFavorites || this.state.browse === 'favorites';
       if (noResults && !noFavorites && this.emptyTitle) {
-        this.emptyTitle.textContent = this.state.q
-          ? fill(this.emptyTitle.dataset.queryTemplate, { query: this.state.q })
-          : this.emptyTitle.dataset.title;
+        if (this.state.q) renderTemplate(this.emptyTitle, this.emptyTitle.dataset.queryTemplate, { query: this.state.q }, ['query']);
+        else this.emptyTitle.textContent = this.emptyTitle.dataset.title;
       }
       this.count.hidden = noResults;
-      this.count.textContent = this.state.q ? fill(this.count.dataset.template, { count: total, query: this.state.q }) : '';
+      if (this.state.q) renderTemplate(this.count, this.count.dataset.template, { count: total, query: this.state.q }, ['query']);
+      else this.count.textContent = '';
       window.YarnFavorites?.render();
     }
   }
 
   if (typeof customElements !== 'undefined' && !customElements.get('yarn-discovery-search')) customElements.define('yarn-discovery-search', YarnDiscoverySearch);
-  if (typeof module !== 'undefined' && module.exports) module.exports = { GROUPS, YARN_PREVIEW, normalizeText, stateFromSearch, queryState, urlWithState, entityKey, matchesEntity, categoryForQuery, paginationUrl, fill, YarnDiscoverySearch };
+  if (typeof module !== 'undefined' && module.exports) module.exports = { GROUPS, YARN_PREVIEW, normalizeText, stateFromSearch, queryState, urlWithState, entityKey, matchesEntity, categoryForQuery, paginationUrl, fill, templateParts, YarnDiscoverySearch };
 })();

@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { stateFromSearch, queryState, urlWithState, matchesEntity, categoryForQuery, paginationUrl, fill } = require('../assets/yarn-search.js');
+const { stateFromSearch, queryState, urlWithState, matchesEntity, categoryForQuery, paginationUrl, fill, templateParts } = require('../assets/yarn-search.js');
 const { endpointUrl } = require('../assets/yarn-favorites.js');
 
 const sunrise = { type: 'product', id: '1', group: 'yarn', title: '印象·日出', summary: '长段染 段染渐变 100g', tags: '毛糸' };
@@ -47,6 +47,8 @@ test('only keywords naming a yarn category link to the catalogue', () => {
 test('templates fill every placeholder', () => {
   assert.equal(fill('找到 [count] 个和「[query]」有关的结果', { count: 6, query: '段染' }), '找到 6 个和「段染」有关的结果');
   assert.equal(fill('[name]分类 →', { name: '段染渐变' }), '段染渐变分类 →');
+  assert.deepEqual(templateParts('[count] results for “[query]”', { count: 2, query: '<b>段染</b>' }),
+    [{ text: '2', key: 'count' }, { text: ' results for “' }, { text: '<b>段染</b>', key: 'query' }, { text: '”' }]);
 });
 
 test('favorites filter keys keep projects and products with identical IDs distinct', () => {
