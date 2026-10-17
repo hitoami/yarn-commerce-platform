@@ -101,14 +101,14 @@
         "collapsible-row-0": {
           "type": "collapsible_row",
           "settings": {
-            "heading": "商品について",
+            "heading": "色とロットについて",
             "icon": "leaf",
-            "row_content": "<p>素材・重さ・推奨針・キット内容は各商品説明をご確認ください。色や生産ロットにより、実物と写真が多少異なる場合があります。</p>",
+            "row_content": "<p>同じ毛糸でも生産ロットによって色がわずかに異なる場合があり、画面でも色味が変わって見えます。同じ色を複数玉お使いの場合は、まとめてお求めください。</p>",
             "page": "",
-            "heading_zh": "关于商品",
-            "heading_en": "About the item",
-            "row_content_zh": "<p>材质、重量、推荐针号与套件内容请以商品说明为准。因颜色与批次差异,实物与照片可能略有不同。</p>",
-            "row_content_en": "<p>Materials, weight, recommended hooks and kit contents are listed in each product description. Actual colours may differ slightly from the photos.</p>"
+            "heading_zh": "关于颜色与批次",
+            "heading_en": "About color and dye lots",
+            "row_content_zh": "<p>同一款毛线不同批次的颜色可能略有差异，屏幕显示也会有色差；需要同色多团时请一次买齐。</p>",
+            "row_content_en": "<p>Colors can vary slightly between dye lots and on different screens. If you need several balls of the same color, buy them together.</p>"
           }
         },
         "collapsible-row-1": {

@@ -1,23 +1,22 @@
+{%- comment -%}#177 R3（用户 2026-10-17 批准）：三张彩色保障卡改为两行细线列表——配送、选线支持；去掉内容空泛的第三项。{%- endcomment -%}
 <section class="yarn-cart-assurance color-{{ section.settings.color_scheme }} gradient">
-  <div class="page-width yarn-cart-assurance__grid">
-    <div><span aria-hidden="true">01</span><strong>{{ 'yarn_cart_assurance.title_1' | t }}</strong><p>{{ 'yarn_cart_assurance.text_1' | t }}</p></div>
-    <div><span aria-hidden="true">02</span><strong>{{ 'yarn_cart_assurance.title_2' | t }}</strong><p>{{ 'yarn_cart_assurance.text_2' | t }}</p></div>
-    <div><span aria-hidden="true">03</span><strong>{{ 'yarn_cart_assurance.title_3' | t }}</strong><p>{{ 'yarn_cart_assurance.text_3' | t }}</p></div>
-  </div>
+  <ul class="page-width yarn-cart-assurance__list" role="list">
+    <li><span class="svg-wrapper" aria-hidden="true">{{ 'icon-truck.svg' | inline_asset_content }}</span><span><strong>{{ 'yarn_cart_assurance.title_1' | t }}</strong><span>{{ 'yarn_cart_assurance.text_1' | t }}</span></span></li>
+    <li><span class="svg-wrapper" aria-hidden="true">{{ 'icon-chat-bubble.svg' | inline_asset_content }}</span><span><strong>{{ 'yarn_cart_assurance.title_2' | t }}</strong><span>{{ 'yarn_cart_assurance.text_2' | t }}</span></span></li>
+  </ul>
 </section>
 
 {% stylesheet %}
   .yarn-cart-assurance { padding: 0 0 3rem; }
-  .yarn-cart-assurance__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; }
-  .yarn-cart-assurance__grid > div { min-height: 12rem; padding: 2.2rem; border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-card-radius); background: var(--yarn-action-subtle-bg); }
-  .yarn-cart-assurance__grid > div:nth-child(2) { background: var(--yarn-tint-blush); }
-  .yarn-cart-assurance__grid > div:nth-child(3) { background: var(--yarn-tint-sage); }
-  .yarn-cart-assurance span { color: var(--yarn-accent); font-size: 1.1rem; letter-spacing: 0.1em; }
-  .yarn-cart-assurance strong { display: block; margin-top: 1.4rem; font-size: 1.5rem; font-weight: 600; }
-  .yarn-cart-assurance p { margin: 0.6rem 0 0; font-size: 1.3rem; line-height: 1.6; opacity: 0.72; }
-  @media screen and (max-width: 749px) {
-    .yarn-cart-assurance__grid { grid-template-columns: 1fr; gap: 0.8rem; }
-    .yarn-cart-assurance__grid > div { min-height: 0; }
+  .yarn-cart-assurance__list { display: grid; gap: 0; margin: 0 auto; padding-top: 0; padding-bottom: 0; list-style: none; }
+  .yarn-cart-assurance__list li { display: flex; align-items: center; gap: 1.2rem; padding: 1.2rem 0; border-top: 1px solid var(--yarn-border-subtle); }
+  .yarn-cart-assurance__list li:last-child { border-bottom: 1px solid var(--yarn-border-subtle); }
+  .yarn-cart-assurance .svg-wrapper { flex: none; width: 2rem; height: 2rem; color: var(--yarn-action); }
+  .yarn-cart-assurance strong { display: block; font-size: 1.4rem; font-weight: 600; }
+  .yarn-cart-assurance li > span:last-child > span { display: block; margin-top: 0.2rem; color: var(--yarn-text-muted); font-size: 1.3rem; line-height: 1.5; }
+  @media screen and (min-width: 750px) {
+    .yarn-cart-assurance__list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 3.2rem; }
+    .yarn-cart-assurance__list li:last-child { border-bottom: 0; }
   }
 {% endstylesheet %}
 

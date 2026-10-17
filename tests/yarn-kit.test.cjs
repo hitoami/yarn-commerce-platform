@@ -3,7 +3,8 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 
-// #131 材料包页：逐个加购与「全部加入购物车」一次请求、带团数与来源属性；被拒不锁定，结果不确定时锁定并提示看购物车。
+// #131 材料包页：「全部加入购物车」一次请求、带团数与来源属性；被拒不锁定，结果不确定时锁定并提示看购物车。
+// #177：部分缺货时主按钮改为「只加入可买的」，只买可售行、不替换；团数由步进器修改。
 function row(variant, qty, available = true, price = 1200) {
   const input = { value: String(qty) };
   return { dataset: { variant: String(variant), available: String(available), price: String(price) }, querySelector: () => input, input };
@@ -32,7 +33,7 @@ function setup(fetcher, { rows = [row(11, 2), row(22, 2)], drawer = null } = {})
   const element = new (registry.get('yarn-kit-buy'))();
   element.connectedCallback();
   const click = (kind, target = rows[0]) => {
-    const button = { dataset: { kitAdd: kind }, disabled: false, textContent: 'Add all', closest: (selector) => (selector === '[data-kit-add]' ? button : target) };
+    const button = { dataset: { kitAdd: kind }, disabled: false, textContent: 'Add all', closest: (selector) => (selector === '[data-kit-add]' ? button : selector === '[data-kit-step]' ? null : target) };
     buttons.push(button);
     element.listener({ target: button });
     return button;
@@ -91,6 +92,25 @@ test('an available row remains individually purchasable when another row is unav
   assert.deepEqual(bodies[0].items.map(({ id, quantity }) => [id, quantity]), [[11, 2]]);
 });
 
+test('add available buys only the rows in stock, with their quantities, and never substitutes', async () => {
+  const bodies = [];
+  const ui = setup(async (_, options) => { bodies.push(JSON.parse(options.body)); return { ok: true, json: async () => ({}) }; },
+    { rows: [row(11, 2), row(22, 3, false), row(44, 1, true, 0)] });
+  ui.click('available');
+  await settle();
+  assert.equal(bodies.length, 1);
+  assert.deepEqual(bodies[0].items.map(({ id, quantity }) => [id, quantity]), [[11, 2]]);
+});
+
+test('add available with nothing in stock sends nothing', async () => {
+  let calls = 0;
+  const ui = setup(async () => { calls++; return { ok: true, json: async () => ({}) }; }, { rows: [row(22, 3, false)] });
+  ui.click('available');
+  await settle();
+  assert.equal(calls, 0);
+  assert.equal(ui.status.hidden, false);
+});
+
 test('a row button adds only that row, and an edited quantity is respected and rounded up to at least one', async () => {
   const bodies = [];
   const ui = setup(async (_, options) => { bodies.push(JSON.parse(options.body)); return { ok: true, status: 200, json: async () => ({}) }; });
@@ -133,14 +153,17 @@ test('a server error or dropped connection never retries and locks every add but
   assert.equal(calls, 1);
 });
 
-test('the kit page buys yarn variants only, shows a buy box for one yarn and a list with add-all for more', () => {
+test('the kit page buys yarn variants only, with one main button: add all, add only the available yarn, or a no-dead-end panel', () => {
   const section = fs.readFileSync('sections/yarn-kit-detail.liquid', 'utf8');
   const template = JSON.parse(fs.readFileSync('templates/metaobject/yarn_project.json', 'utf8'));
   assert.equal(template.sections.main.type, 'yarn-kit-detail');
   assert.match(section, /component\.component_type\.value == '毛线' and component\.variant\.value != blank/);
-  assert.match(section, /\{%- if yarn_rows == 1 -%\}/);
+  assert.match(section, /yarn_rows == 1/);
   assert.match(section, /data-kit-add="all"/);
-  assert.match(section, /data-kit-add="row"/);
+  assert.match(section, /data-kit-add="available"/);
+  assert.match(section, /data-kit-step="-1"/);
+  assert.match(section, /class="yk-blocked"/);
+  assert.doesNotMatch(section, /data-kit-add="all"[^>]*disabled/);
   assert.match(section, /project\.tutorial_url\.value/);
   // 材料包页不提供定制咨询，也不出现「买成品 / 自己做」双模式。
   assert.doesNotMatch(section, /customization_enabled|purchase_modes|yarn-project-modes/);
@@ -152,15 +175,16 @@ test('changing the colour submits the selected variant and retains the project q
   const qty = material.input;
   const option = { value: '33', dataset: { price: '1600', available: 'true', url: '/products/yarn?variant=33' } };
   const priceLabel = { textContent: '' };
-  const addButton = { disabled: true };
   const link = { href: '' };
-  material.querySelector = selector => ({ '[data-kit-colour]': { selectedOptions: [option] }, '[data-kit-qty]': qty, '[data-kit-price]': priceLabel, '[data-kit-add="row"]': addButton })[selector];
+  const stepper = { hidden: true };
+  material.classList = { toggle() {} };
+  material.querySelector = selector => ({ '[data-kit-colour]': { selectedOptions: [option] }, '[data-kit-qty]': qty, '[data-kit-price]': priceLabel, '[data-kit-stepper]': stepper })[selector];
   material.querySelectorAll = () => [link];
   const ui = setup(async (_, options) => { bodies.push(JSON.parse(options.body)); return { ok: true, json: async () => ({}) }; }, { rows: [material] });
   ui.element.dataset.currency = 'JPY';
   ui.element.dataset.locale = 'ja';
   ui.element.refreshRow(material);
-  assert.equal(addButton.disabled, false);
+  assert.equal(stepper.hidden, false);
   assert.equal(link.href, option.dataset.url);
   assert.equal(priceLabel.textContent, '￥16');
   ui.click('all');
@@ -168,7 +192,7 @@ test('changing the colour submits the selected variant and retains the project q
   assert.deepEqual(bodies[0].items.map(({ id, quantity }) => [id, quantity]), [[33, 3]]);
   option.dataset.available = 'false';
   ui.element.refreshRow(material);
-  assert.equal(addButton.disabled, true);
+  assert.equal(stepper.hidden, true);
   assert.equal(ui.element.items([material]).length, 0);
 });
 

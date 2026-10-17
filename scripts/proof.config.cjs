@@ -31,6 +31,19 @@ module.exports = {
       { selector: '.ycb-preparing__text', minimum: 1, label: '手工成品准备中说明' },
     ] },
     { key: 'yarn-pdp', path: '/products/mvp-yarn-18' },
+    // #177：缺货毛线（询问到货 + 同类毛线出口）与材料包的可购买 / 暂不可买两种购买区。
+    { key: 'yarn-pdp-sold-out', path: '/products/yarn-tyndall', requiredContent: [
+      { selector: '.yp-status--sold-out', minimum: 1, label: '缺货出口' },
+    ] },
+    { key: 'kits', path: '/pages/kits', requiredContent: [
+      { selector: '.yx-project-pick', minimum: 1, label: '材料包卡' },
+    ] },
+    { key: 'kit-buyable', path: '/pages/projects/kit-xuebao-fringe-scarf', requiredContent: [
+      { selector: '.yk-add-all[data-kit-add]', minimum: 1, label: '材料包主按钮' },
+    ] },
+    { key: 'kit-blocked', path: '/pages/projects/kit-tyndall-kids-scarf', requiredContent: [
+      { selector: '.yk-blocked', minimum: 1, label: '材料包不可买说明' },
+    ] },
     // 本季主推专题页：后台页面已建（handle season）；page.season 上线正式主题、后台改选该模板前，用 ?view 预览。
     { key: 'season', path: '/pages/season?view=season', requiredContent: [
       { selector: '.yx-season-page__art img', minimum: 1, label: '本季专题封面' },

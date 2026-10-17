@@ -214,7 +214,7 @@
               {%- endif -%}
 
               <div class="yx-catalog-card__buy">
-                {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+                {% render 'price', product: card_product, price_class: '', show_compare_at_price: true, hide_currency_code: true %}
                 {%- render 'yarn-card-cart', cart_product: card_product -%}
               </div>
               {%- if card_product.quantity_price_breaks_configured? -%}
@@ -524,7 +524,7 @@
                           <a href="{{ card_product.url }}" class="full-unstyled-link">
                             <h3>{{ localized_product_title | escape }}</h3>
                           </a>
-                          {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+                          {% render 'price', product: card_product, price_class: '', show_compare_at_price: true, hide_currency_code: true %}
                           {%- if card_product.quantity_price_breaks_configured? -%}
                             <div class="card__information-volume-pricing-note">
                               <span class="caption">{{ 'products.product.volume_pricing.note' | t }}</span>
@@ -539,7 +539,7 @@
                               {{ localized_product_title | escape }}
                             </h3>
                           </a>
-                          {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+                          {% render 'price', product: card_product, price_class: '', show_compare_at_price: true, hide_currency_code: true %}
                           {%- if card_product.quantity_price_breaks_configured? -%}
                             <div class="card__information-volume-pricing-note">
                               <span class="caption">{{ 'products.product.volume_pricing.note' | t }}</span>

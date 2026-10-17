@@ -7,6 +7,7 @@
   beginner:读 metafield yarn.beginner_reason;有理由才显示「新手友好」标签,理由代替规格行;没有理由不显示标签。
   layout: 'row'(#131 本季专题，用户 2026-10-16 选定 Figma 候选 E):同一张卡改为横排，图片在左，文字在右，并在价格下加「查看商品 →」;样式与数据不变。
   handmade(#131):手工成品。规格行换成「手工制作」说明;库存由 Shopify 跟踪且 10 件及以下时左上角显示「仅剩 N 件」,卖完显示「售罄」。
+  其他商品(#177 R4):已定价但不可售时左上角显示「缺货」,价格降为灰色;未定价沿用「暂未开售」。没有标签 = 能买。
 {% endcomment %}
 {%- liquid
   assign card_image = card_product.metafields.yarn.card_image.value | default: card_product.featured_image
@@ -41,6 +42,8 @@
         assign card_stock = 'yarn_project.card_stock_left' | t: count: card_left
       endif
     endif
+  elsif card_product.available == false and card_product.price > 0
+    assign card_stock = 'yarn_project.kit_sold_out' | t
   endif
 -%}
 <div class="yx-product-card{% if layout == 'row' %} yx-product-card--row{% endif %}">
@@ -67,7 +70,7 @@
       <span class="yx-product-card__spec">{% render 'yarn-card-spec', product: card_product %}</span>
     {%- endif -%}
     <div class="yx-product-card__buy">
-      <span class="yx-product-card__price">
+      <span class="yx-product-card__price{% if card_product.available == false or card_product.price <= 0 %} yx-product-card__price--muted{% endif %}">
         {% if card_product.price <= 0 %}{{ 'yarn_project.kit_not_on_sale' | t }}{% else %}
         {%- if card_product.compare_at_price > card_product.price -%}
           <s class="yx-product-card__was">{{ card_product.compare_at_price | money }}</s>

@@ -39,7 +39,8 @@
 .yx-product-card__action svg { width: 17px; height: 17px; }
 .yx-product-card__was { margin-right: 6px; color: var(--yarn-text-muted); font-size: 0.72em; font-weight: 400; }
 .yx-product-card__stock { position: absolute; left: 8px; top: 8px; z-index: 2; padding: 3px 10px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: 13px; font-weight: 600; line-height: 1.4; }
-.yx-product-card__stock--out { background: var(--yarn-bg-surface); color: var(--yarn-text-muted); }
+.yx-product-card__stock--out { border: 1px solid var(--yarn-border-control); background: var(--yarn-bg-surface); color: var(--yarn-text-secondary); }
+.yx-product-card__price--muted { color: var(--yarn-text-muted); }
 .yx-product-card__off { position: absolute; left: 8px; top: 8px; z-index: 2; padding: 3px 10px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-blush); color: var(--yarn-text-primary); font-size: 13px; font-weight: 600; line-height: 1.4; }
 .yx-product-card__meta-row { display: flex; align-items: center; gap: 8px; }
 .yx-product-card__meta-row .yx-card-meta { flex: 1; min-width: 0; }
@@ -51,6 +52,9 @@
 .yx-project-pick__badge { position: absolute; left: 8px; top: 8px; padding: 3px 10px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-butter); color: var(--yarn-text-primary); font-size: 12px; font-weight: 600; line-height: 1.4; }
 .yx-project-pick__yarn { color: var(--yarn-text-muted); font-size: 13px; line-height: 1.5; }
 .yx-project-pick__meta { color: var(--yarn-action); font-size: 13px; font-weight: 600; line-height: 1.5; }
+.yx-project-pick__meta--muted { color: var(--yarn-text-muted); }
+.yx-project-pick__stock { position: absolute; left: 8px; bottom: 8px; padding: 3px 10px; border: 1px solid var(--yarn-border-control); border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); color: var(--yarn-text-secondary); font-size: 12px; font-weight: 600; line-height: 1.4; }
+.yx-project-pick__stock--partial { border-color: var(--yarn-cta-border); background: var(--yarn-action-subtle-bg); color: var(--yarn-action); }
 .yx-project-pick__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .yx-project-pick__title { font-size: var(--yarn-card-title); font-weight: 600; line-height: 1.4; }
 .yx-project-pick__tags { display: flex; flex-wrap: wrap; gap: 6px; }

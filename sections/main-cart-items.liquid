@@ -4,6 +4,7 @@
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 {{ 'component-discounts.css' | asset_url | stylesheet_tag }}
 {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
+{{ 'yarn-cart.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
   .section-{{ section.id }}-padding {
@@ -55,6 +56,7 @@
       <div class="cart__items" id="main-cart-items" data-id="{{ section.id }}">
         <div class="js-contents">
           {%- if cart != empty -%}
+            {%- render 'yarn-cart-shipping' -%}
             <table class="cart-items">
               <caption class="visually-hidden">
                 {{ 'sections.cart.title' | t }}
@@ -452,6 +454,7 @@
                 {%- endfor -%}
               </tbody>
             </table>
+            {%- render 'yarn-cart-kit-note' -%}
           {%- endif -%}
         </div>
       </div>

@@ -2,6 +2,8 @@
   材料包卡(#131;原作品卡):首页「用我们的毛线可以织」与毛线详情页「用这款线能织」共用。
   封面 + 「材料包」角标 + 标题 + 所需毛线(配件里类型为「毛线」且关联了 Variant 的条目:商品名 × 团数)+ 参考价(各 Variant 价格 × 团数之和)+ 教程在 LINE。
   内容卡,不能直接加购;没有关联毛线的作品只显示封面与标题。调用方负责只传入可公开且有封面的 project。
+  #177 R4:按所需毛线的真实可售状态显示一行状态——全部可买时照旧显示参考价;部分缺货、全部缺货在封面左下角加中性标签,
+  状态行写清能做什么;有未定价的线时写「暂未开售」。状态只读 Shopify Variant,不另存库存。
 {%- endcomment -%}
 {%- liquid
   assign kit_yarn_name = blank
@@ -9,11 +11,14 @@
   assign kit_yarn_kinds = 0
   assign kit_total = 0
   assign prices_ready = true
+  assign kit_available_rows = 0
   for kit_component in project.components.value
     if kit_component.component_type.value == '毛线' and kit_component.variant.value != blank
       assign kit_variant = kit_component.variant.value
       if kit_variant.price <= 0
         assign prices_ready = false
+      elsif kit_variant.available
+        assign kit_available_rows = kit_available_rows | plus: 1
       endif
       assign kit_qty = kit_component.quantity.value | default: 1
       assign kit_yarn_kinds = kit_yarn_kinds | plus: 1
@@ -25,6 +30,16 @@
       assign kit_total = kit_total | plus: kit_line
     endif
   endfor
+  assign kit_state = 'ready'
+  if kit_yarn_kinds > 0
+    if prices_ready == false
+      assign kit_state = 'pending'
+    elsif kit_available_rows == 0
+      assign kit_state = 'blocked'
+    elsif kit_available_rows < kit_yarn_kinds
+      assign kit_state = 'partial'
+    endif
+  endif
   unless prices_ready
     assign kit_total = 0
   endunless
@@ -34,6 +49,7 @@
   <span class="yx-project-pick__media">
     {{ project.cover.value | image_url: width: 800 | image_tag: widths: '300, 450, 600, 800', sizes: '(min-width: 750px) 300px, 45vw', loading: 'lazy', alt: '' }}
     <span class="yx-project-pick__badge">{{ 'yarn_project.kit_badge' | t }}</span>
+    {%- if kit_state == 'blocked' -%}<span class="yx-project-pick__stock">{{ 'yarn_project.kit_sold_out' | t }}</span>{%- elsif kit_state == 'partial' -%}<span class="yx-project-pick__stock yx-project-pick__stock--partial">{{ 'yarn_project.kit_partial_tag' | t }}</span>{%- endif -%}
   </span>
   <span class="yx-project-pick__title">{{ project.title.value | escape }}</span>
   {%- if kit_yarn_name != blank -%}
@@ -42,7 +58,13 @@
       {%- if kit_yarn_kinds > 1 %} · {{ 'yarn_project.kit_yarn_more' | t: count: kit_yarn_kinds }}{% endif -%}
     </span>
   {%- endif -%}
-  {%- if kit_total > 0 or project.tutorial_url.value != blank -%}
+  {%- if kit_state == 'blocked' -%}
+    <span class="yx-project-pick__meta yx-project-pick__meta--muted">{{ 'yarn_project.kit_card_blocked' | t }}</span>
+  {%- elsif kit_state == 'pending' -%}
+    <span class="yx-project-pick__meta yx-project-pick__meta--muted">{{ 'yarn_project.kit_card_pending' | t }}</span>
+  {%- elsif kit_state == 'partial' -%}
+    <span class="yx-project-pick__meta">{{ 'yarn_project.kit_card_partial' | t }}</span>
+  {%- elsif kit_total > 0 or project.tutorial_url.value != blank -%}
     <span class="yx-project-pick__meta">
       {%- if kit_total > 0 -%}{{ 'yarn_project.kit_price_about' | t: price: kit_price }}{%- endif -%}
       {%- if kit_total > 0 and project.tutorial_url.value != blank %} · {% endif -%}

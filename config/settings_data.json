@@ -147,7 +147,7 @@
           "background": "#f9f6f0",
           "background_gradient": "",
           "text": "#2f302f",
-          "button": "#b93b20",
+          "button": "#ab5631",
           "button_label": "#fffefa",
           "secondary_button_label": "#a6472e",
           "shadow": "#d8d4cc"
@@ -158,7 +158,7 @@
           "background": "#ebe5dc",
           "background_gradient": "",
           "text": "#2f302f",
-          "button": "#b93b20",
+          "button": "#ab5631",
           "button_label": "#fffefa",
           "secondary_button_label": "#a6472e",
           "shadow": "#d9d1c4"
@@ -180,7 +180,7 @@
           "background": "#fff9e9",
           "background_gradient": "",
           "text": "#2f302f",
-          "button": "#b93b20",
+          "button": "#ab5631",
           "button_label": "#fffefa",
           "secondary_button_label": "#a6472e",
           "shadow": "#eadfc4"
@@ -191,7 +191,7 @@
           "background": "#ece8dc",
           "background_gradient": "",
           "text": "#3d3931",
-          "button": "#b93b20",
+          "button": "#ab5631",
           "button_label": "#fffefa",
           "secondary_button_label": "#a6472e",
           "shadow": "#d8d1bd"
