@@ -5,7 +5,7 @@
 .yd-search ::selection { background: var(--yarn-tint-blush); color: var(--yarn-text-primary); }
 .yd-search button, .yd-search input { font: inherit; }
 .yd-search a { color: inherit; }
-.yd-search h2 { margin: 0; font-family: var(--yarn-display); font-weight: 600; line-height: 1.4; color: var(--yarn-text-heading); }
+.yd-search h2 { margin: 0; font-family: var(--yarn-display); font-weight: 500; line-height: 1.4; color: var(--yarn-text-heading); }
 
 /* 页头：手机为返回 / 搜索 / 收藏，桌面为左侧大标题与右侧收藏。 */
 .yd-search__bar { display: grid; grid-template-columns: var(--yarn-touch) 1fr var(--yarn-touch); align-items: center; margin-bottom: var(--yarn-space-3); }

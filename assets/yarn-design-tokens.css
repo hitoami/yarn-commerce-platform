@@ -16,21 +16,28 @@
 
 :root {
   /* Fonts. Colors live in the generated block below. */
-  --yarn-display: 'Klee One', 'Noto Sans JP', sans-serif;
+  --yarn-display: 'Noto Serif JP', 'Noto Sans JP', serif;
   --yarn-body: 'Noto Sans JP', sans-serif;
 }
 
-/* Font preview G: Klee One headings + Noto Sans JP body; English body uses Figtree; Chinese pages use LXGW WenKai + WenKai Screen. */
+/* #168: serif headings (weight 500) + sans body and controls in all three languages, per the Figma prototype. */
 :root:lang(en) {
+  --yarn-display: 'Source Serif 4', serif;
   --yarn-body: 'Figtree', 'Noto Sans JP', sans-serif;
 }
 :root:lang(zh) {
-  --yarn-display: 'LXGW WenKai', 'Noto Sans SC', sans-serif;
-  --yarn-body: 'LXGW WenKai Screen', 'Noto Sans SC', sans-serif;
+  --yarn-display: 'Noto Serif SC', 'Noto Sans SC', serif;
+  --yarn-body: 'Noto Sans SC', sans-serif;
+}
+/* Japanese: proportional kana and punctuation. Set on every element because the `font` shorthand resets it. */
+:root:lang(ja),
+:root:lang(ja) * {
+  font-feature-settings: "palt";
 }
 html[lang]:root {
   --font-body-family: var(--yarn-body);
   --font-heading-family: var(--yarn-display);
+  --font-heading-weight: 500;
 }
 
 /* BEGIN generated colors — edit design/tokens/colors.json, then run npm run tokens */

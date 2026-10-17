@@ -6,7 +6,7 @@
 .hitoami-story__media { overflow: hidden; border-radius: var(--yarn-radius-media); aspect-ratio: 358 / 220; background: var(--yarn-bg-sunken); }
 .hitoami-story__media img, .hitoami-story__placeholder { display: block; width: 100%; height: 100%; object-fit: cover; }
 .hitoami-story__eyebrow { margin: 0 0 var(--yarn-space-2); color: var(--yarn-action); font-size: 1.3rem; font-weight: 600; letter-spacing: .08em; }
-.hitoami-story h2 { margin: 0 0 var(--yarn-space-4); color: var(--yarn-text-heading); font: 600 2.4rem/1.45 var(--yarn-display); }
+.hitoami-story h2 { margin: 0 0 var(--yarn-space-4); color: var(--yarn-text-heading); font: 500 2.4rem/1.45 var(--yarn-display); }
 .hitoami-story .rte { color: var(--yarn-text-secondary); font-size: 1.5rem; line-height: 1.85; }
 .hitoami-story .rte p { margin: 0 0 var(--yarn-space-2); }
 .hitoami-story a:focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 4px; }

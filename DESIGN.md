@@ -96,14 +96,14 @@ typography:
   commerce-hero-max:
     fontSize: "56px"
   shared-section:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
+    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
     fontSize: "clamp(2.5rem, 2.5vw, 3.2rem)"
-    fontWeight: 600
+    fontWeight: 500
     lineHeight: 1.4
   discovery-card-title:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
+    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
     fontSize: "1.8rem"
-    fontWeight: 600
+    fontWeight: 500
     lineHeight: 1.5
   discovery-card-title-mobile:
     fontSize: "1.5rem"
@@ -120,51 +120,51 @@ typography:
   shell-input:
     fontSize: "16px"
   display:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
+    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
     fontSize: "clamp(3.4rem, 4.75vw, 5.4rem)"
-    fontWeight: 600
+    fontWeight: 500
     lineHeight: 1.32
     letterSpacing: "0"
   display-mobile:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
+    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
     fontSize: "2.6rem"
-    fontWeight: 600
+    fontWeight: 500
     lineHeight: 1.35
     letterSpacing: "0"
   headline-discovery:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
+    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
     fontSize: "clamp(2.4rem, 3.7vw, 3.2rem)"
     fontWeight: 500
     lineHeight: 1.3
     letterSpacing: "-0.01em"
   title-work:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
+    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
     fontSize: "1.65rem"
     fontWeight: 500
     lineHeight: 1.45
     letterSpacing: "-0.01em"
   title-project-mobile:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
+    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
     fontSize: "1.9rem"
-    fontWeight: 600
+    fontWeight: 500
     lineHeight: 1.3
     letterSpacing: "0"
   project-yarn-title:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
+    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
     fontSize: "2.1rem"
-    fontWeight: 600
+    fontWeight: 500
     lineHeight: 1.35
   project-yarn-title-mobile:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
+    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
     fontSize: "1.75rem"
-    fontWeight: 600
+    fontWeight: 500
     lineHeight: 1.35
   project-supporting-heading:
     fontSize: "1.7rem"
   project-supporting-item-title:
     fontSize: "1.55rem"
   body-zh:
-    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif"
+    fontFamily: "'Noto Sans SC', sans-serif"
     fontSize: "1.5rem"
     fontWeight: 400
     lineHeight: 1.8
@@ -175,7 +175,7 @@ typography:
     lineHeight: 1.65
     letterSpacing: "0"
   label-flow:
-    fontFamily: "'Klee One', 'Noto Sans JP', sans-serif"
+    fontFamily: "'Noto Sans JP', sans-serif"
     fontSize: "1.6rem"
     fontWeight: 400
     lineHeight: 1.45
@@ -358,7 +358,7 @@ components:
 
 ## Typography
 
-- **字体（方案 G，2026-09-23 用户选定并发布）**：日文与英文标题、导航、按钮用 Klee One；正文日文 Noto Sans JP、英文 Figtree（日文回退 Noto Sans JP）。中文页标题用霞鹜文楷、正文用霞鹜文楷屏幕版。`--yarn-display` / `--yarn-body` 按 `:lang()` 切换，并覆盖 Rise 的 `--font-heading-family` / `--font-body-family`。字体暂由 Google Fonts 与 jsDelivr 按语言加载，正式托管方式待定；手机日文 Hero 断行待调整。
+- **字体（#168，2026-10-17 用户按 Figma 三语对比板确认，取代方案 G）**：标题统一用宋体 / 明朝 / 衬线，字重 500——中文 Noto Serif SC、日文 Noto Serif JP、英文 Source Serif 4。正文、导航、按钮、标签与小序号用无衬线——中文 Noto Sans SC、日文 Noto Sans JP、英文 Figtree（日文回退 Noto Sans JP）。日文页整页开启 `palt`（假名与标点紧排）。`--yarn-display` / `--yarn-body` 按 `:lang()` 切换，并覆盖 Rise 的 `--font-heading-family` / `--font-body-family` / `--font-heading-weight`；控件直接用 `--yarn-body`，不再用 `--yarn-display`。字体暂由 Google Fonts 按语言加载（衬线只载 500），正式托管方式待定。
 - 商品家族采用显式 px 尺寸，避免旧根字号放大构图：卡片标题 16px、规格 14px、价格 21px、角标 12px；目录标题桌面 40px / 手机 28px，商品标题 36px / 26px，阅读正文 16px。Hero 按容器流式，日英手机扩展画布保留按钮净空。前言 `commerce-*` 为该家族已实现的局部字号，不用于覆盖其他页面。
 - 说明页（#86）的阅读标题桌面 36px、手机 28–36px；字段和值桌面 16px、手机 15px。它们是该页面已实现的局部字号，不扩成全站令牌；构图与内容来源见 [说明页 brief](docs/design/approved/86-policy-support.md)。
 - 新增文案必须检查三语断行与字体回退;菜单、集合描述等运营文案的原文与译文只维护在 Shopify(Navigation / Translate & Adapt),不在 Liquid 写死。
@@ -379,7 +379,7 @@ components:
 ## Components(现行规则)
 
 - **导航**(#131,2026-10-16 手机与桌面稿确认):暖白底细线;菜单项来自 Shopify Navigation(本季主推 / 毛线 / 材料包 / 手工成品)。桌面(≥1340px)当前页或展开项文字下方显示陶土色毛线波浪线,不用胶囊,悬停只把文字变成陶土色;Logo 图上方是猫耳,整体上移(桌面 20%、手机 14% 图高)让字母与菜单文字对齐;「毛线」点开为 3×2 大图面板(5 个 `yarn_entry` 分类 + 全部毛线,浅色底轮换 blush / butter / sage / sunken / band / action-subtle,下方页面加 `--yarn-overlay` 遮罩)。手机页头左菜单+搜索、中 Logo、右账户+购物车;抽屉依次为本季带图横条、默认展开的两列毛线图块(可收起)、带右箭头的入口行、收藏/账户、语言。没有商品的集合入口旁标「准备中」浅黄胶囊。所有页面 Logo 统一 190px 宽(手机按宽度收窄),页头高度一致;首页页头叠在首屏上时用 80% 暖白磨砂底保证可读。桌面滚过页头后页头从顶部弹性落下并吸顶,收紧为 64px 磨砂条(不加滚动进度装饰,2026-10-17 用户决定);回到顶部还原;遵守减少动态效果设置。44px 触控、24px 图标。
-- **首页**(Claude Design 1a,#126;信息架构沿用方案 C #93):首屏手作小屋整幅轮播(页头透明叠图、底边波浪)→ 导览条(晾衣绳式挂线两端钉在首屏底边、以页面中线对称,四个品类挂饰;小猫沿绳走到悬停的入口,保持不变)→ 品牌介绍 → 挑毛线 → 按作品图选 → 新手友好编织包 → 店铺精选成品 → 帮助条。优惠区块停用(1a 不含)。每块是独立 section,没有真实数据的模块整块不渲染。区块节奏(#131 统一):页面底为暖纸色 `bg-page`,商品 / 材料包 / 成品区不另铺底色,只有「挑毛线」`bg-band` 色带与本季主推奶油卡作分区;区块上下间距桌面 72px、手机 40px;区块标题 Klee One / 霞鹜文楷 600,桌面 32px、手机 24px,「查看全部 →」为 `action` 色 15px 粗体文字链(悬停下划线)。内容轴 1200px。
+- **首页**(Claude Design 1a,#126;信息架构沿用方案 C #93):首屏手作小屋整幅轮播(页头透明叠图、底边波浪)→ 导览条(晾衣绳式挂线两端钉在首屏底边、以页面中线对称,四个品类挂饰;小猫沿绳走到悬停的入口,保持不变)→ 品牌介绍 → 挑毛线 → 按作品图选 → 新手友好编织包 → 店铺精选成品 → 帮助条。优惠区块停用(1a 不含)。每块是独立 section,没有真实数据的模块整块不渲染。区块节奏(#131 统一):页面底为暖纸色 `bg-page`,商品 / 材料包 / 成品区不另铺底色,只有「挑毛线」`bg-band` 色带与本季主推奶油卡作分区;区块上下间距桌面 72px、手机 40px;区块标题用标题衬线字体 500,桌面 32px、手机 24px,「查看全部 →」为 `action` 色 15px 粗体文字链(悬停下划线)。内容轴 1200px。
   - **挑毛线**:`bg-band` 色带;居中小标题(12px、宽字距)+ 标题(手机 24 / 桌面 30px)+ 花饰图;按商品字段分段的胶囊切换(白底,选中 `home-action`);方卡 1:1、10px 圆角,名称 16 / 18px 中粗、说明 12 / 14px(未填说明时显示款数);一段超过 4 个(手机)/ 6 个(桌面)排两行,横向滑动,手机露出下一列并在下方写「共 N 类 · 左右滑动查看更多」,桌面左侧「共 N 类」、右侧圆形翻页箭头;底部 `bg-sunken` 次级按钮「查看全部毛线」。
   - **商品与作品卡**:标题左上、说明紧贴标题下方、「查看全部」在右侧;手机 2 列 12px 间距,桌面 4 列 24px 间距;成品手机只显示前 2 件。首页商品卡无边框、方形照片即卡片;折扣角标为图片左上 `tint-blush` 胶囊,只在有划线价时出现;「新手友好」为 `tint-sage` 小标签,必须带商品字段里的理由;作品卡标签只写有成品 / 有编织包 / 可买材料。
   - **帮助条**:`action-subtle-bg` 浅黄面、`cta-border` 细线、16px 圆角,不放图标;手机为标题 + 文字链接,桌面为标题 + 说明 + `home-action` 实心按钮。

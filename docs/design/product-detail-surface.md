@@ -7,7 +7,7 @@
 - 手机版：用户已确认完整商品信息的实际呈现，批准依据为 [PR #98](https://github.com/hitoami/yarn-commerce-platform/pull/98) 与 [Issue #73 的合并说明](https://github.com/hitoami/yarn-commerce-platform/issues/73#issuecomment-5850722892)。构图与来源记录见 [手机方向](approved/73-pdp-mobile.source.md)。
 - 桌面版：本会话确认「可以，按这张实现」，来源与提示词见 [桌面方向](approved/73-pdp-desktop.source.md)。购买区为左右双栏，详情沿 1200px 内容轴展开；关于正文左、附图右，内容物图左、双栏明细右，三步横排、两张规格卡、单列折叠问答。
 - 编织包先呈现图库、标题、价格、数量与购买，再顺读关于、内容物、步骤、尺寸、适合谁和 FAQ。手机内容物明细在内容物图片之前；正文不能被图片或简化标签替代。
-- 字体沿用现有 `yarn-design-tokens.css`：中文文楷、日文 Klee One / Noto Sans JP、英文现有字体。价格、按钮和边线继续消费已有颜色角色。
+- 字体沿用 `yarn-design-tokens.css`（#168）：标题衬线（Noto Serif SC / Noto Serif JP / Source Serif 4），正文与按钮无衬线（Noto Sans SC / Noto Sans JP / Figtree）。价格、按钮和边线继续消费已有颜色角色。
 - 毛线与成品共用购买结构，保留各自的规格正文；本轮不添加差异化内容与后台字段。
 
 ## 毛线详情手机版（Issue #120）
