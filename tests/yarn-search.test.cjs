@@ -1,42 +1,60 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { stateFromSearch, queryState, urlWithState, matchesEntity, paginationUrl, YarnDiscoverySearch } = require('../assets/yarn-search.js');
+const fs = require('node:fs');
+const path = require('node:path');
+const { stateFromSearch, queryState, urlWithState, matchesEntity, categoryForQuery, paginationUrl, fill, templateParts } = require('../assets/yarn-search.js');
 const { endpointUrl } = require('../assets/yarn-favorites.js');
-const project = { type: 'project', id: '1', title: '交叉针收纳篮', summary: '桌面上的篮子', category: '家居', purchase: 'finished,materials' };
-const yarn = { type: 'product', id: '2', title: '雪尼尔线', summary: '适合编织收纳篮子', category: '', purchase: 'materials' };
-const hook = { type: 'product', id: '3', title: '4mm 钩针', summary: '竹制钩针', category: '', purchase: 'materials', associatedProject: project };
 
-test('basket results match each entity own copy and do not inherit a related project match', () => {
-  const state = queryState('篮子');
-  assert.equal(matchesEntity(project, state), true);
-  assert.equal(matchesEntity(yarn, state), true);
-  assert.equal(matchesEntity(hook, state), false);
-  assert.equal(matchesEntity(yarn, { ...state, category: 'home', purchase: 'materials' }), true);
-  assert.equal(matchesEntity(yarn, { ...state, purchase: 'finished' }), false);
-  assert.equal(matchesEntity({ ...yarn, category: 'bag' }, { ...state, category: 'home' }), false);
+const sunrise = { type: 'product', id: '1', group: 'yarn', title: '印象·日出', summary: '长段染 段染渐变 100g', tags: '毛糸' };
+const scarf = { type: 'project', id: '2', group: 'kit', title: '雪宝段染｜流苏围巾', summary: '秋冬的流苏长围巾', tags: '' };
+const bag = { type: 'project', id: '3', group: 'kit', title: '小怪兽斜挎包', summary: '彩色段染', tags: '' };
+const categories = [
+  { name: '段染渐变', aliases: ['グラデーション', 'gradient'], href: '/collections/yarn?filter=g' },
+  { name: '毛绒绒', aliases: [], href: '/collections/yarn?filter=f' },
+];
+
+test('a keyword matches each entity own copy across yarn, kit and finished groups', () => {
+  assert.equal(matchesEntity(sunrise, queryState('段染')), true);
+  assert.equal(matchesEntity(bag, queryState('段染')), true);
+  assert.equal(matchesEntity(scarf, queryState('围巾')), true);
+  assert.equal(matchesEntity(sunrise, queryState('围巾')), false);
+  assert.equal(matchesEntity(sunrise, queryState('段染 100G')), true);
 });
 
-test('product tags are searchable without changing category inference', () => {
-  const tagged = { ...yarn, tags: 'issue-88 样品-2026-09-25' };
-  assert.equal(matchesEntity(tagged, queryState('issue-88')), true);
-  assert.equal(matchesEntity(tagged, queryState('样品-2026-09-25')), true);
-  assert.equal(matchesEntity(tagged, { ...queryState('issue-88'), category: 'bag' }), false);
+test('group tabs narrow results without dropping the keyword', () => {
+  const state = { ...queryState('段染'), group: 'kit' };
+  assert.equal(matchesEntity(sunrise, state), false);
+  assert.equal(matchesEntity(bag, state), true);
+  assert.deepEqual(stateFromSearch(urlWithState('https://example.com/zh/search?q=段染', state).search), state);
 });
 
-test('new keyword clears browse restrictions while URL round trips preserve filters and preview', () => {
-  const href = 'https://example.com/zh/search?browse=projects&category=home&purchase=finished&project_q=old&page_a=2&section_id=s&preview_theme_id=42';
+test('legacy purchase and category filters are dropped from the URL and ignored on load', () => {
+  const href = 'https://example.com/zh/search?q=x&category=home&purchase=finished&project_q=old&page_a=2&section_id=s&preview_theme_id=42';
   const next = urlWithState(href, queryState('cotton'));
   assert.equal(next.searchParams.get('preview_theme_id'), '42');
-  for (const key of ['browse', 'category', 'purchase', 'project_q', 'page_a', 'section_id']) assert.equal(next.searchParams.has(key), false);
-  const filtered = { ...queryState('篮子'), category: 'home', purchase: 'materials' };
-  assert.deepEqual(stateFromSearch(urlWithState(next.href, filtered).search), filtered);
-  assert.deepEqual(stateFromSearch('?category=invalid&purchase=invalid&browse=invalid'), queryState(''));
+  for (const key of ['category', 'purchase', 'project_q', 'page_a', 'section_id', 'group']) assert.equal(next.searchParams.has(key), false);
+  assert.deepEqual(stateFromSearch('?group=bag&browse=projects&purchase=finished'), queryState(''));
+});
+
+test('only keywords naming a yarn category link to the catalogue', () => {
+  assert.equal(categoryForQuery('段染', categories)?.name, '段染渐变');
+  assert.equal(categoryForQuery('段染渐变', categories)?.name, '段染渐变');
+  assert.equal(categoryForQuery('Gradient', categories)?.name, '段染渐变');
+  assert.equal(categoryForQuery('毛绒绒的围巾', categories)?.name, '毛绒绒');
+  for (const query of ['蓝色', '马海毛', '段', '', '围巾']) assert.equal(categoryForQuery(query, categories), null);
+});
+
+test('templates fill every placeholder', () => {
+  assert.equal(fill('找到 [count] 个和「[query]」有关的结果', { count: 6, query: '段染' }), '找到 6 个和「段染」有关的结果');
+  assert.equal(fill('[name]分类 →', { name: '段染渐变' }), '段染渐变分类 →');
+  assert.deepEqual(templateParts('[count] results for “[query]”', { count: 2, query: '<b>段染</b>' }),
+    [{ text: '2', key: 'count' }, { text: ' results for “' }, { text: '<b>段染</b>', key: 'query' }, { text: '”' }]);
 });
 
 test('favorites filter keys keep projects and products with identical IDs distinct', () => {
   const state = { ...queryState(''), browse: 'favorites' };
-  assert.equal(matchesEntity(project, state, new Set(['product:1'])), false);
-  assert.equal(matchesEntity(project, state, new Set(['project:1'])), true);
+  assert.equal(matchesEntity({ ...scarf, id: '1' }, state, new Set(['product:1'])), false);
+  assert.equal(matchesEntity(sunrise, state, new Set(['product:1'])), true);
 });
 
 test('pagination cannot leave the localized route or section and retains draft preview', () => {
@@ -51,15 +69,12 @@ test('favorites endpoint must stay on the shop proxy path without credential-bea
   for (const value of ['', 'https://evil.example/apps/favorites', '/admin', '/apps/favorites?token=secret']) assert.throws(() => endpointUrl(value, href));
 });
 
-test('desktop and dialog purchase changes share query, category and browse semantics', () => {
-  const view = { state: { ...queryState('篮子'), category: 'home', browse: 'products' }, setState(next) { this.state = next; } };
-  YarnDiscoverySearch.prototype.setPurchase.call(view, 'finished');
-  assert.deepEqual(view.state, { q: '篮子', category: 'home', purchase: 'finished', browse: 'products' });
-  YarnDiscoverySearch.prototype.setPurchase.call(view, 'inspiration');
-  assert.equal(view.state.browse, 'all');
-  assert.equal(matchesEntity({ ...project, purchase: 'inspiration' }, view.state), true);
-  assert.equal(matchesEntity(yarn, view.state), false);
-  YarnDiscoverySearch.prototype.setPurchase.call(view, '');
-  assert.equal(view.state.q, '篮子');
-  assert.equal(view.state.category, 'home');
+test('search section renders the three groups and no longer ships the old filters', () => {
+  const liquid = fs.readFileSync(path.join(__dirname, '../sections/yarn-search.liquid'), 'utf8');
+  for (const group of ['yarn', 'kit', 'finished']) {
+    assert.match(liquid, new RegExp(`data-search-group="${group}"`));
+    assert.match(liquid, new RegExp(`data-search-tab="${group}"`));
+  }
+  assert.match(liquid, /render 'yarn-kit-visible'/);
+  assert.doesNotMatch(liquid, /inline_purchase|data-search-filter|'all,bag,scarf,home,toy'/);
 });

@@ -1,14 +1,9 @@
 (function () {
-  const CATEGORIES = ['bag', 'scarf', 'home', 'toy'];
-  const PURCHASES = ['finished', 'materials', 'inspiration'];
-  const BROWSE_MODES = ['all', 'projects', 'products', 'favorites'];
-  const PROJECT_CATEGORIES = { bag: ['配饰'], scarf: ['服装'], home: ['家居', '花片'], toy: ['玩偶'] };
-  const USE_WORDS = {
-    bag: ['包袋', '手提包', '束口袋', '小袋', 'バッグ', '巾着', 'ポーチ', 'bag', 'pouch', 'tote'],
-    scarf: ['围巾', '披肩', 'ショール', 'マフラー', 'スカーフ', 'scarf', 'shawl'],
-    home: ['家居', '收纳', '篮', '靠垫', '毯', '花片', '杯垫', '収納', 'バスケット', 'クッション', 'ブランケット', '花束', 'basket', 'cushion', 'blanket', 'coaster', 'bouquet'],
-    toy: ['玩偶', '娃娃', 'あみぐるみ', 'ぬいぐるみ', 'toy', 'doll', 'amigurumi'],
-  };
+  // #149: results are grouped as yarn / kit / finished; tabs only change which group shows and keep the keyword.
+  const GROUPS = ['yarn', 'kit', 'finished'];
+  const BROWSE_MODES = ['favorites'];
+  // In the「全部」view the yarn group previews this many cards; the rest stay one tap away on the「毛线」tab.
+  const YARN_PREVIEW = 8;
 
   function normalizeText(value) {
     return String(value || '').normalize('NFKD').replace(/(\p{Script=Latin})\p{Mark}+/gu, '$1')
@@ -19,22 +14,22 @@
     const params = new URLSearchParams(search || '');
     return {
       q: String(params.get('q') || '').trim(),
-      category: CATEGORIES.includes(params.get('category')) ? params.get('category') : '',
-      purchase: PURCHASES.includes(params.get('purchase')) ? params.get('purchase') : '',
+      group: GROUPS.includes(params.get('group')) ? params.get('group') : '',
       browse: BROWSE_MODES.includes(params.get('browse')) ? params.get('browse') : '',
     };
   }
 
   function queryState(query) {
-    return { q: String(query || '').trim(), category: '', purchase: '', browse: '' };
+    return { q: String(query || '').trim(), group: '', browse: '' };
   }
 
   function urlWithState(href, state) {
     const url = new URL(href);
     for (const key of [...url.searchParams.keys()]) {
-      if (key.startsWith('project_') || key === 'page' || key.startsWith('page_') || key === 'section_id' || key === 'type') url.searchParams.delete(key);
+      if (key.startsWith('project_') || key === 'page' || key.startsWith('page_') || key === 'section_id' || key === 'type'
+        || key === 'category' || key === 'purchase') url.searchParams.delete(key);
     }
-    for (const key of ['q', 'category', 'purchase', 'browse']) {
+    for (const key of ['q', 'group', 'browse']) {
       if (state[key]) url.searchParams.set(key, state[key]);
       else url.searchParams.delete(key);
     }
@@ -44,38 +39,32 @@
 
   function entityKey(entity) { return `${entity.type}:${entity.id}`; }
 
-  function categoryMatches(entity, category) {
-    if (!category) return true;
-    const declared = String(entity.category || '').split(',').map((value) => value.trim()).filter(Boolean);
-    if (declared.includes(category)) return true;
-    if (entity.type === 'project') return declared.some((value) => PROJECT_CATEGORIES[category]?.includes(value));
-    // An explicitly maintained category wins. Text fallback only inspects this Product's own copy.
-    if (declared.length) return false;
-    const ownCopy = normalizeText(`${entity.title || ''} ${entity.summary || ''}`);
-    return (USE_WORDS[category] || []).some((word) => ownCopy.includes(word));
-  }
-
   function matchesEntity(entity, state, favorites = new Set()) {
-    if (state.browse === 'projects' && entity.type !== 'project') return false;
-    if (state.browse === 'products' && entity.type !== 'product') return false;
+    if (state.group && entity.group !== state.group) return false;
     if (state.browse === 'favorites' && !favorites.has(entityKey(entity))) return false;
-    if (!categoryMatches(entity, state.category)) return false;
-    const capabilities = String(entity.purchase || '').split(',');
-    if (state.purchase && !capabilities.includes(state.purchase)) return false;
     const ownCopy = normalizeText(`${entity.title || ''} ${entity.summary || ''} ${entity.tags || ''}`);
     const terms = normalizeText(state.q).split(' ').filter(Boolean);
-    return terms.every((term) => ownCopy.includes(term) || (term === '篮子' && ownCopy.includes('篮')));
+    return terms.every((term) => ownCopy.includes(term));
+  }
+
+  // A keyword links to a yarn category only when it names that category (name or maintained alias),
+  // e.g.「段染」→「段染渐变」. Colours, fibres or projects stay inside search.
+  function categoryForQuery(query, categories) {
+    const q = normalizeText(query);
+    if (!q) return null;
+    return categories.find((category) => [category.name, ...(category.aliases || [])]
+      .map(normalizeText).filter(Boolean)
+      .some((label) => label === q || (q.length >= 2 && label.includes(q)) || (label.length >= 2 && q.includes(label)))) || null;
   }
 
   function entityFromCard(card) {
     return {
       type: card.dataset.entityType,
       id: card.dataset.entityId,
+      group: card.dataset.group || '',
       title: card.dataset.title || '',
       summary: card.dataset.summary || '',
       tags: card.dataset.tags || '',
-      category: card.dataset.category || '',
-      purchase: card.dataset.purchase || '',
     };
   }
 
@@ -89,6 +78,29 @@
     return url;
   }
 
+  function fill(template, values) {
+    return Object.entries(values).reduce((text, [key, value]) => text.split(`[${key}]`).join(String(value)), template || '');
+  }
+
+  // Splits a locale template into text parts; `key` marks parts that echo shopper or Shopify content (the keyword, a category name).
+  function templateParts(template, values) {
+    return String(template || '').split(/(\[\w+\])/).filter(Boolean).map((part) => {
+      const key = part.match(/^\[(\w+)\]$/)?.[1];
+      return key && key in values ? { text: String(values[key]), key } : { text: part };
+    });
+  }
+
+  // Shopper input is never parsed as HTML; content parts are tagged so language checks do not treat them as theme copy.
+  function renderTemplate(element, template, values, contentKeys) {
+    element.replaceChildren(...templateParts(template, values).map((part) => {
+      if (!part.key || !contentKeys.includes(part.key)) return document.createTextNode(part.text);
+      const span = document.createElement('span');
+      span.dataset.proofContent = '';
+      span.textContent = part.text;
+      return span;
+    }));
+  }
+
   const ElementBase = typeof HTMLElement === 'undefined' ? class {} : HTMLElement;
   class YarnDiscoverySearch extends ElementBase {
     connectedCallback() {
@@ -98,66 +110,47 @@
       this.form = this.querySelector('[data-search-form]');
       this.input = this.form?.querySelector('[name="q"]');
       this.results = this.querySelector('[data-search-results]');
-      this.defaultState = this.querySelector('[data-search-default]');
+      this.browsePanel = this.querySelector('[data-search-browse]');
       this.empty = this.querySelector('[data-search-empty]');
+      this.emptyTitle = this.querySelector('[data-search-empty-title]');
       this.favoritesEmpty = this.querySelector('[data-favorites-empty]');
       this.loginState = this.querySelector('[data-favorites-login]');
       this.unavailableState = this.querySelector('[data-favorites-unavailable]');
       this.error = this.querySelector('[data-search-error]');
       this.loading = this.querySelector('[data-search-loading]');
       this.clearButton = this.querySelector('[data-search-clear]');
-      this.filterButton = this.querySelector('[data-search-filter]');
-      this.dialog = this.querySelector('dialog');
+      this.tabs = Array.from(this.querySelectorAll('[data-search-tab]'));
       this.count = this.querySelector('[data-search-count]');
       this.heading = this.querySelector('[data-search-title]');
-      if (!this.input || !this.results || !this.dialog) return;
+      this.categoryLink = this.querySelector('[data-search-category-link]');
+      this.showAll = this.querySelector('[data-search-show-all]');
+      this.finishedNote = this.querySelector('[data-search-finished-note]');
+      if (!this.input || !this.results) return;
+      this.categories = Array.from(this.querySelectorAll('[data-search-category]'), (link) => ({
+        name: link.dataset.categoryName || '',
+        aliases: String(link.dataset.categoryAliases || '').split(/[,，、]/).map((value) => value.trim()).filter(Boolean),
+        href: link.href,
+      }));
       this.state = stateFromSearch(window.location.search);
-      this.catalogs = Object.fromEntries(['project', 'product'].map((type) => [type, {
-        element: this.querySelector(`[data-search-catalog="${type}"]`),
-        next: this.querySelector(`[data-search-next="${type}"]`)?.href || '',
+      this.catalogs = Object.fromEntries(GROUPS.map((group) => [group, {
+        element: this.querySelector(`[data-search-catalog="${group}"]`),
+        next: this.querySelector(`[data-search-next="${group}"]`)?.href || '',
         visited: new Set(),
-      }]));
+      }]).filter(([, source]) => source.element));
       this.readCards();
       const listen = (target, event, handler) => target?.addEventListener(event, handler, { signal });
       listen(this.form, 'submit', (event) => { event.preventDefault(); this.setState(queryState(this.input.value)); });
       listen(this.input, 'input', () => { this.clearButton.hidden = !this.input.value; });
       listen(this.clearButton, 'click', () => { this.setState(queryState('')); this.input.focus(); });
-      listen(this.querySelector('[data-search-reset]'), 'click', () => { this.setState(queryState('')); this.input.focus(); });
       listen(this.querySelector('[data-search-retry]'), 'click', () => this.present());
       this.querySelectorAll('[data-search-suggestion]').forEach((link) => listen(link, 'click', (event) => {
         event.preventDefault(); this.setState(queryState(link.dataset.searchSuggestion));
       }));
-      this.querySelectorAll('[data-search-category]').forEach((button) => listen(button, 'click', () => {
-        this.setState({ ...this.state, category: button.dataset.searchCategory, browse: this.state.browse || (this.state.q ? '' : 'all') });
+      this.tabs.forEach((tab) => listen(tab, 'click', () => {
+        if (tab.disabled) return;
+        this.setState({ ...this.state, group: tab.dataset.searchTab, browse: this.state.browse });
       }));
-      listen(this.filterButton, 'click', () => {
-        this.dialog.querySelectorAll('[name="purchase"]').forEach((radio) => { radio.checked = radio.value === this.state.purchase; });
-        this.dialog.showModal();
-      });
-      listen(this.querySelector('[data-filter-close]'), 'click', () => this.dialog.close());
-      listen(this.querySelector('[data-filter-reset]'), 'click', () => {
-        this.dialog.querySelectorAll('[name="purchase"]').forEach((radio) => { radio.checked = !radio.value; });
-      });
-      listen(this.querySelector('[data-filter-form]'), 'submit', (event) => {
-        event.preventDefault();
-        const purchase = this.dialog.querySelector('[name="purchase"]:checked')?.value || '';
-        this.dialog.close();
-        this.setPurchase(purchase);
-      });
-      this.querySelectorAll('[data-inline-purchase]').forEach((radio) => listen(radio, 'change', () => {
-        if (radio.checked) this.setPurchase(radio.value);
-      }));
-      listen(window.matchMedia('(min-width: 990px)'), 'change', (event) => {
-        if (event.matches && this.dialog.open) {
-          this.dialog.close();
-          this.querySelector('[data-inline-purchase]:checked')?.focus();
-        }
-      });
-      listen(this.dialog, 'click', (event) => {
-        if (event.target !== this.dialog) return;
-        const box = this.dialog.getBoundingClientRect();
-        if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) this.dialog.close();
-      });
+      listen(this.showAll, 'click', () => this.setState({ ...this.state, group: 'yarn' }));
       listen(this.querySelector('[data-favorites-login-button]'), 'click', () => window.YarnFavorites?.showLogin());
       listen(window, 'popstate', () => { this.state = stateFromSearch(window.location.search); this.present(); });
       listen(document, 'yarn:favorites-changed', () => { if (this.state.browse === 'favorites' && this.presentationReady) this.render(); });
@@ -178,15 +171,10 @@
       this.present();
     }
 
-    setPurchase(purchase) {
-      const browse = purchase === 'inspiration' && this.state.browse === 'products' ? 'all' : this.state.browse;
-      this.setState({ ...this.state, purchase, browse: browse || (this.state.q ? '' : 'all') });
-    }
-
     async loadCatalogs() {
       if (this.loadPromise) return this.loadPromise;
       const controller = this.controller;
-      const task = Promise.all(Object.entries(this.catalogs).map(async ([type, source]) => {
+      const task = Promise.all(Object.entries(this.catalogs).map(async ([group, source]) => {
         const known = new Set(Array.from(source.element.querySelectorAll('[data-discovery-card]'), (card) => card.dataset.entityId));
         while (source.next) {
           const url = paginationUrl(source.next, window.location.href, this.dataset.sectionId);
@@ -196,7 +184,7 @@
           const html = await response.text();
           if (this.controller !== controller) return;
           const doc = new DOMParser().parseFromString(html, 'text/html');
-          const page = doc.querySelector(`[data-search-catalog="${type}"]`);
+          const page = doc.querySelector(`[data-search-catalog="${group}"]`);
           if (!page) throw new Error('Discovery catalog is missing');
           for (const card of page.querySelectorAll('[data-discovery-card]')) {
             if (known.has(card.dataset.entityId)) continue;
@@ -204,12 +192,18 @@
             source.element.append(document.importNode(card, true));
           }
           source.visited.add(url.href);
-          source.next = doc.querySelector(`[data-search-next="${type}"]`)?.getAttribute('href') || '';
+          source.next = doc.querySelector(`[data-search-next="${group}"]`)?.getAttribute('href') || '';
         }
       }));
       this.loadPromise = task;
       try { await task; if (this.controller === controller) this.readCards(); }
       finally { if (this.controller === controller && this.loadPromise === task) this.loadPromise = null; }
+    }
+
+    hideStates() {
+      for (const element of [this.empty, this.favoritesEmpty, this.loginState, this.unavailableState, this.error, this.results]) {
+        if (element) element.hidden = true;
+      }
     }
 
     async present() {
@@ -222,23 +216,13 @@
       this.clearButton.hidden = !this.state.q;
       this.heading.textContent = isFavorites ? this.heading.dataset.favoritesTitle : this.heading.dataset.title;
       this.querySelector('[data-favorites-link]').hidden = isFavorites;
-      this.querySelectorAll('[data-search-category]').forEach((button) => {
-        button.setAttribute('aria-pressed', String(active && button.dataset.searchCategory === this.state.category));
-      });
-      this.filterButton.dataset.active = String(Boolean(this.state.purchase));
-      this.querySelectorAll('[data-inline-purchase], [data-filter-form] [name="purchase"]').forEach((radio) => {
-        radio.checked = radio.value === this.state.purchase;
-      });
-      this.defaultState.hidden = active;
-      this.empty.hidden = true;
-      this.favoritesEmpty.hidden = true;
-      this.loginState.hidden = true;
-      this.unavailableState.hidden = true;
-      this.error.hidden = true;
-      this.results.hidden = true;
+      this.tabs.forEach((tab) => tab.setAttribute('aria-pressed', String(tab.dataset.searchTab === this.state.group)));
+      this.hideStates();
+      this.browsePanel.hidden = active;
       this.count.textContent = '';
+      this.count.hidden = true;
       this.loading.hidden = !active;
-      if (!active) return;
+      if (!active) { this.updateTabCounts(null); return; }
       try {
         if (isFavorites) {
           if (!window.YarnFavorites) throw new Error('Favorites runtime unavailable');
@@ -258,41 +242,74 @@
       }
     }
 
+    updateTabCounts(counts) {
+      this.tabs.forEach((tab) => {
+        const output = tab.querySelector('[data-search-tab-count]');
+        if (!output || tab.disabled) return;
+        const group = tab.dataset.searchTab;
+        output.textContent = counts ? String(group ? counts[group] : counts.yarn + counts.kit + counts.finished) : '';
+      });
+    }
+
     render() {
       if (this.state.browse === 'favorites' && !window.YarnFavorites?.enabled) {
-        this.results.hidden = true; this.empty.hidden = true; this.favoritesEmpty.hidden = true; this.loginState.hidden = true; this.unavailableState.hidden = false;
+        this.hideStates(); this.unavailableState.hidden = false;
         return;
       }
       if (this.state.browse === 'favorites' && !window.YarnFavorites?.authenticated) {
-        this.results.hidden = true; this.empty.hidden = true; this.favoritesEmpty.hidden = true; this.loginState.hidden = false;
+        this.hideStates(); this.loginState.hidden = false;
         return;
       }
       const favorites = window.YarnFavorites?.keys() || new Set();
-      const counts = { project: 0, product: 0 };
+      const matches = { yarn: 0, kit: 0, finished: 0 };
+      const counts = { yarn: 0, kit: 0, finished: 0 };
+      const groupState = { ...this.state, group: '' };
       for (const card of this.cards) {
         const entity = this.entities.get(card);
-        const matches = matchesEntity(entity, this.state, favorites);
-        card.hidden = !matches;
-        if (matches) counts[entity.type] += 1;
-        if (entity.type === 'project') {
-          const link = card.querySelector('.yp-card__link');
-          const url = new URL(link.href, window.location.href);
-          if (this.state.purchase === 'finished' || this.state.purchase === 'materials') url.searchParams.set('project_mode', this.state.purchase);
-          else url.searchParams.delete('project_mode');
-          link.href = url.href;
+        const matched = matchesEntity(entity, groupState, favorites);
+        if (matched && entity.group in counts) counts[entity.group] += 1;
+        const inView = matched && (!this.state.group || entity.group === this.state.group);
+        const previewed = !(entity.group === 'yarn' && !this.state.group && counts.yarn > YARN_PREVIEW);
+        card.hidden = !(inView && previewed);
+        if (inView && entity.group in matches) matches[entity.group] += 1;
+      }
+      for (const group of GROUPS) {
+        const section = this.querySelector(`[data-search-group="${group}"]`);
+        if (section) section.hidden = matches[group] === 0;
+      }
+      this.updateTabCounts(counts);
+      const total = matches.yarn + matches.kit + matches.finished;
+      const noResults = total === 0;
+      this.results.hidden = noResults;
+      const showsYarn = !this.state.group || this.state.group === 'yarn';
+      if (this.showAll) {
+        this.showAll.hidden = !(showsYarn && !this.state.group && counts.yarn > YARN_PREVIEW);
+        this.showAll.textContent = fill(this.showAll.dataset.template, { count: counts.yarn });
+      }
+      const category = showsYarn && this.state.browse !== 'favorites' ? categoryForQuery(this.state.q, this.categories) : null;
+      if (this.categoryLink) {
+        this.categoryLink.hidden = !category;
+        if (category) {
+          this.categoryLink.href = category.href;
+          renderTemplate(this.categoryLink, this.categoryLink.dataset.template, { name: category.name }, ['name']);
         }
       }
-      for (const type of ['project', 'product']) this.querySelector(`[data-search-group="${type}"]`).hidden = counts[type] === 0;
-      const noResults = counts.project + counts.product === 0;
-      this.results.hidden = noResults;
+      if (this.finishedNote) this.finishedNote.hidden = noResults || this.state.browse === 'favorites';
       const noFavorites = this.state.browse === 'favorites' && favorites.size === 0;
       this.empty.hidden = !noResults || noFavorites;
       this.favoritesEmpty.hidden = !noResults || !noFavorites;
-      this.count.textContent = this.count.dataset.countTemplate.replace('[projects]', counts.project).replace('[products]', counts.product);
+      this.browsePanel.hidden = !noResults || noFavorites || this.state.browse === 'favorites';
+      if (noResults && !noFavorites && this.emptyTitle) {
+        if (this.state.q) renderTemplate(this.emptyTitle, this.emptyTitle.dataset.queryTemplate, { query: this.state.q }, ['query']);
+        else this.emptyTitle.textContent = this.emptyTitle.dataset.title;
+      }
+      this.count.hidden = noResults;
+      if (this.state.q) renderTemplate(this.count, this.count.dataset.template, { count: total, query: this.state.q }, ['query']);
+      else this.count.textContent = '';
       window.YarnFavorites?.render();
     }
   }
 
   if (typeof customElements !== 'undefined' && !customElements.get('yarn-discovery-search')) customElements.define('yarn-discovery-search', YarnDiscoverySearch);
-  if (typeof module !== 'undefined' && module.exports) module.exports = { normalizeText, stateFromSearch, queryState, urlWithState, entityKey, categoryMatches, matchesEntity, paginationUrl, YarnDiscoverySearch };
+  if (typeof module !== 'undefined' && module.exports) module.exports = { GROUPS, YARN_PREVIEW, normalizeText, stateFromSearch, queryState, urlWithState, entityKey, matchesEntity, categoryForQuery, paginationUrl, fill, templateParts, YarnDiscoverySearch };
 })();
