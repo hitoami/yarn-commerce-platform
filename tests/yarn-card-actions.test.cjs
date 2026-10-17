@@ -24,3 +24,9 @@ test('#161 the cart button covers single-variant add, multi-variant link and sol
   assert.match(cart, /cart_product\.variants\.size == 1 -%}\s*<button[\s\S]*data-card-add=/);
   assert.match(cart, /{%- else -%}\s*<a class="yx-card-cart" href="{{ cart_product\.url }}"/);
 });
+
+test('#169 the cart button only renders for finished goods, judged like search grouping', () => {
+  const cart = read('snippets/yarn-card-cart.liquid');
+  assert.match(cart, /render 'yarn-discovery-product-kind', product: cart_product/);
+  assert.match(cart, /{%- if cart_product\.price > 0 and cart_kind contains 'finished' -%}/);
+});
