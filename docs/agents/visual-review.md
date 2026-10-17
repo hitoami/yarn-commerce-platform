@@ -18,6 +18,7 @@ UI / UX 工作读取本文件。范围、数据归属与生产授权以根目录
 
 - 自查用 `npm run proof`：先在另一个终端运行 `npx shopify theme dev --store tutaka-54.myshopify.com --live-reload off`，再跑 `npm run proof`。它检查日文 `/ja`、简体中文 `/`、英文 `/en` 的关键页面（路径以当前店铺与 `scripts/proof.config.cjs` 为准）的主题侧语言泄漏、横向溢出、图片加载与脚本异常，并生成 390×844 / 1440×900 首屏截图和清单 `.proof/report.md`（被忽略，不提交）。页面与选择器在 `scripts/proof.config.cjs` 维护。
 - 只改了少数页面时可以缩小范围：`npm run proof -- --pages yarn-pdp --viewports mobile`；PR 前跑一次完整的。
+- 发布后查线上：`PROOF_BASE_URL=https://hitoami.com npm run proof -- --live`。`--live` 改用线上语言路径（日文 `/`、中文 `/zh`、英文 `/en`）；浏览器语言按页面语言设置，不会被店铺的语言重定向带走。
 - 只打开与本次改动相关的截图；不看整页长图（读取时会被缩到一两百像素宽）。对照视觉稿时同视口并排看；上下文压缩后先重新打开视觉稿与 Issue。
 - 「内容层混语言」来自 Shopify 后台内容（商品名、描述、菜单等），归 #60 / #68，不阻塞主题改动；新写的主题文案若被列进这一节，说明选择器写宽了，改 `scripts/proof.config.cjs`。
 - `npm run proof` 不覆盖的仍需手动看：手机展开菜单、页脚与当前页语言一致，不把缺失译文的英文回退当通过；交互流程（筛选、规格、加减购物车）按改动范围实点。
