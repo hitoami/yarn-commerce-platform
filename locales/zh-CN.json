@@ -554,6 +554,9 @@
     "kit_text": "下单后，把订单号和作品名发到官方 LINE，店员核对后发送教程。"
   },
   "yarn_pdp": {
+    "trust_line_note": "配色与用量都能问",
+    "trust_return": "7 日内联系",
+    "trust_return_note": "瑕疵或错发可退换",
     "about_heading": "关于这款线",
     "check_weight": "{{ weight }} g / 团",
     "check_kits": "可以织：{{ names }}",
@@ -618,6 +621,12 @@
     "sticky_selected": "已选：{{ value }}"
   },
   "yarn_project": {
+    "kit_step1_title": "下单买线",
+    "kit_step1_note": "照这页一次买齐",
+    "kit_step2_title": "LINE 发订单号",
+    "kit_step2_note": "附上作品名「{{ name }}」",
+    "kit_step3_title": "收到教程",
+    "kit_step3_note": "店员核对后发送",
     "kit_check_balls": "团数已算好：{{ list }}",
     "kit_check_tutorial": "教程：下单后在官方 LINE 领取",
     "kit_check_no_tools": "只含毛线，不含工具",

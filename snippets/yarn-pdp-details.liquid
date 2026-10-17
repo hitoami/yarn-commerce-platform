@@ -7,7 +7,7 @@
   - 要买几团：yarn.usage_estimates → yarn_usage（name / size / balls / needle）；「按参考填入」只改数量，不加购
   - 能织：可公开且有封面、在 materials 或 components 里引用本商品的 yarn_project
   - 怎么洗：yarn.care 每行一条
-  参数：product、section_id
+  参数：product、section_id、tabs（main-product 收集的购买须知折叠行 HTML，#182 桌面稿起并入本列表末尾）
 {%- endcomment -%}
 {%- liquid
   assign y = product.metafields.yarn
@@ -127,15 +127,16 @@
   {%- endif -%}
 
   <div class="yp-acc">
-  {%- comment -%}手机：商品介绍从首屏移到这里（桌面仍在价格下方，见 main-product）。{%- endcomment -%}
+  {%- comment -%}商品介绍从首屏移到这里，默认展开（#182：手机 v2 + 桌面稿 D1）。{%- endcomment -%}
   {%- if product.description != blank -%}
     {%- capture about_html -%}{%- render 'yarn-product-description', product: product -%}{%- endcapture -%}
     {%- assign about_text = about_html | strip_html | strip -%}
     {%- if about_text != blank -%}
-      <details class="yp-acc__item yp-acc__item--mobile">
+      <details class="yp-acc__item" open>
         <summary class="yp-acc__summary">{% render 'yarn-spot-icon', name: 'yarn-ball', size: 44, base: 'cream' %}<h2 class="yp-acc__title">{{ 'yarn_pdp.about_heading' | t }}</h2><span class="svg-wrapper yp-acc__caret" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span></summary>
         <div class="yp-acc__text rte">{{ about_html }}</div>
       </details>
+      {%- assign acc_open = false -%}
     {%- endif -%}
   {%- endif -%}
   {%- if spec_rows contains 'yp-yarn-spec__row' -%}
@@ -197,5 +198,6 @@
       </ul>
     </details>
   {%- endif -%}
+  {{- tabs -}}
   </div>
 </div>

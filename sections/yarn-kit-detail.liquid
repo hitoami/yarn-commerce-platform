@@ -84,7 +84,7 @@
     <div class="yk-main">
       <header class="yk-head">
         {%- if project.release_scope.value == '仅内部原型' -%}<p class="yk-demo">{{ 'yarn_project.demo_content' | t }}</p>{%- endif -%}
-        <span class="yk-pill">{{ 'yarn_project.kit_no_tools' | t }}</span>
+        <span class="yk-pill">{{ 'yarn_project.kit_badge' | t }} · {{ 'yarn_project.kit_check_no_tools_short' | t }}</span>
         <h1 class="yk-title">{{ project.title.value | escape }}</h1>
         {%- if project.summary.value != blank -%}<p class="yk-summary">{{ project.summary.value | escape | newline_to_br }}</p>{%- endif -%}
         {%- if project.difficulty.value != blank or project.made_for.value != blank or project.holiday.value != blank -%}
@@ -264,20 +264,23 @@
         </section>
       {%- endif -%}
 
-      {%- if project.tutorial_url.value != blank -%}
-        <section class="yk-tutorial">
-          <svg class="yk-tutorial__wave" viewBox="0 0 390 28" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 28 C 65 0 130 0 195 14 S 325 28 390 4 L390 28 Z" fill="currentColor"/></svg>
-          <h2 class="yk-h2">{{ 'yarn_project.kit_tutorial_how' | t }}</h2>
-          <ol class="yk-steps">
-            <li>{% render 'yarn-spot-icon', name: 'tote-bag', size: 60 %}<span>{{ 'yarn_project.kit_tutorial_step_1' | t }}</span></li>
-            <li>{% render 'yarn-spot-icon', name: 'chat', size: 60 %}<span>{{ 'yarn_project.kit_tutorial_step_2' | t }}</span></li>
-            <li>{% render 'yarn-spot-icon', name: 'pattern-book', size: 60 %}<span>{{ 'yarn_project.kit_tutorial_step_3' | t }}</span></li>
-          </ol>
-          <a class="yk-tutorial__link" href="{{ project.tutorial_url.value | escape }}" target="_blank" rel="noopener noreferrer">{{ 'yarn_project.kit_tutorial_link' | t }} <span aria-hidden="true">→</span></a>
-        </section>
-      {%- endif -%}
     </div>
   </div>
+
+  {%- if project.tutorial_url.value != blank -%}
+    {%- comment -%}#182 桌面稿 D2：教程三步为通栏波浪色带（手机仍在内容之后，顺序不变）。{%- endcomment -%}
+    {%- assign tut_name = project.title.value | split: '｜' | last | strip -%}
+    <section class="yk-tutorial">
+      <svg class="yk-tutorial__wave" viewBox="0 0 390 28" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 28 C 65 0 130 0 195 14 S 325 28 390 4 L390 28 Z" fill="currentColor"/></svg>
+      <h2 class="yk-h2">{{ 'yarn_project.kit_tutorial_how' | t }}</h2>
+      <ol class="yk-steps">
+        <li>{% render 'yarn-spot-icon', name: 'tote-bag', size: 60 %}<span class="yk-steps__title">{{ 'yarn_project.kit_step1_title' | t }}</span><span class="yk-steps__note">{{ 'yarn_project.kit_step1_note' | t }}</span></li>
+        <li>{% render 'yarn-spot-icon', name: 'chat', size: 60 %}<span class="yk-steps__title">{{ 'yarn_project.kit_step2_title' | t }}</span><span class="yk-steps__note" data-proof-content>{{ 'yarn_project.kit_step2_note' | t: name: tut_name | escape }}</span></li>
+        <li>{% render 'yarn-spot-icon', name: 'pattern-book', size: 60 %}<span class="yk-steps__title">{{ 'yarn_project.kit_step3_title' | t }}</span><span class="yk-steps__note">{{ 'yarn_project.kit_step3_note' | t }}</span></li>
+      </ol>
+      <a class="yk-tutorial__link" href="{{ project.tutorial_url.value | escape }}" target="_blank" rel="noopener noreferrer">{{ 'yarn_project.kit_tutorial_link' | t }} <span aria-hidden="true">→</span></a>
+    </section>
+  {%- endif -%}
 
   {%- capture more_cards -%}
     {%- assign more_shown = 0 -%}

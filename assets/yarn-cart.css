@@ -63,4 +63,12 @@
 .cart-drawer .cart__checkout-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 .yarn-cart-lock { display: inline-flex; width: 14px; height: 18px; }
 .yarn-cart-lock svg { width: 14px; height: 18px; }
-.yarn-cart-trust { margin: 8px 0 0; color: var(--yarn-text-muted); font-size: 1.2rem; text-align: center; }
+.cart-drawer .cart__ctas:has(.yarn-cart-trust) { flex-wrap: wrap; }
+.yarn-cart-trust { flex: 1 0 100%; margin: 8px 0 0; color: var(--yarn-text-muted); font-size: 1.2rem; text-align: center; }
+
+/* Issue 182 桌面稿 D3：凑单竖排三行，「+」在行尾。 */
+@media (min-width: 750px) {
+  .yarn-cart-addons__list { flex-direction: column; margin-right: 0; padding-right: 0; overflow: visible; }
+  .yarn-cart-addon { width: 100%; }
+  .yarn-cart-addon__text { flex: 1 1 auto; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 12px; }
+}

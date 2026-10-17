@@ -99,12 +99,31 @@
   <ul class="yp-check" role="list">{{ ck_rows }}</ul>
 {%- endif -%}
 
+{%- comment -%}
+  保障条：手机为一行线描图标（免运费 / 选线咨询 / 全国配送）；桌面（#182 D1，用户 2026-10-17 确认）为三格插画：
+  免运费 + 全国配送 / 选线咨询 / 退换（7 日内联系，与退换货说明一致）。
+{%- endcomment -%}
 {%- assign ck_threshold = settings.yarn_free_shipping_threshold -%}
 <ul class="yp-trust" role="list">
   {%- if ck_threshold != blank and ck_threshold > 0 -%}
     {%- assign ck_goal = ck_threshold | times: 100 | money_without_trailing_zeros -%}
-    <li><span class="svg-wrapper" aria-hidden="true">{{ 'icon-truck.svg' | inline_asset_content }}</span>{{ 'yarn_pdp.trust_free' | t: amount: ck_goal }}</li>
+    <li>
+      <span class="svg-wrapper yp-trust__line" aria-hidden="true">{{ 'icon-truck.svg' | inline_asset_content }}</span>
+      {% render 'yarn-spot-icon', name: 'delivery', size: 44 %}
+      <span class="yp-trust__text"><strong>{{ 'yarn_pdp.trust_free' | t: amount: ck_goal }}</strong><small>{{ 'yarn_pdp.trust_ship' | t }}</small></span>
+    </li>
   {%- endif -%}
-  <li><span class="svg-wrapper" aria-hidden="true">{{ 'icon-chat-bubble.svg' | inline_asset_content }}</span><a href="{{ ck_line }}"{% if settings.yarn_line_url != blank %} target="_blank" rel="noopener noreferrer"{% endif %}>{% if settings.yarn_line_url != blank %}{{ 'yarn_pdp.trust_line' | t }}{% else %}{{ 'yarn_pdp.trust_staff' | t }}{% endif %}</a></li>
-  <li><span class="svg-wrapper" aria-hidden="true">{{ 'icon-checkmark.svg' | inline_asset_content }}</span>{{ 'yarn_pdp.trust_ship' | t }}</li>
+  <li>
+    <span class="svg-wrapper yp-trust__line" aria-hidden="true">{{ 'icon-chat-bubble.svg' | inline_asset_content }}</span>
+    {% render 'yarn-spot-icon', name: 'chat', size: 44 %}
+    <span class="yp-trust__text"><a href="{{ ck_line }}"{% if settings.yarn_line_url != blank %} target="_blank" rel="noopener noreferrer"{% endif %}><strong>{% if settings.yarn_line_url != blank %}{{ 'yarn_pdp.trust_line' | t }}{% else %}{{ 'yarn_pdp.trust_staff' | t }}{% endif %}</strong></a><small>{{ 'yarn_pdp.trust_line_note' | t }}</small></span>
+  </li>
+  <li class="yp-trust__mobile">
+    <span class="svg-wrapper yp-trust__line" aria-hidden="true">{{ 'icon-checkmark.svg' | inline_asset_content }}</span>
+    <span class="yp-trust__text"><strong>{{ 'yarn_pdp.trust_ship' | t }}</strong></span>
+  </li>
+  <li class="yp-trust__desktop">
+    {% render 'yarn-spot-icon', name: 'return', size: 44 %}
+    <span class="yp-trust__text"><a href="{% render 'yarn-local-url', url: '/pages/returns-exchanges' %}"><strong>{{ 'yarn_pdp.trust_return' | t }}</strong></a><small>{{ 'yarn_pdp.trust_return_note' | t }}</small></span>
+  </li>
 </ul>

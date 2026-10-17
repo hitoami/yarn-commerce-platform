@@ -66,6 +66,45 @@
             "inventory_threshold": 10,
             "show_inventory_quantity": true
           }
+        },
+        "purchase-collapsible-row-0": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "色とロットについて",
+            "heading_zh": "关于颜色与批次",
+            "heading_en": "About color and dye lots",
+            "icon": "leaf",
+            "content": "<p>同じ毛糸でも生産ロットによって色がわずかに異なる場合があり、画面でも色味が変わって見えます。同じ色を複数玉お使いの場合は、まとめてお求めください。</p>",
+            "content_zh": "<p>同一款毛线不同批次的颜色可能略有差异，屏幕显示也会有色差；需要同色多团时请一次买齐。</p>",
+            "content_en": "<p>Colors can vary slightly between dye lots and on different screens. If you need several balls of the same color, buy them together.</p>",
+            "page": ""
+          }
+        },
+        "purchase-collapsible-row-1": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "配送・送料",
+            "heading_zh": "配送与运费",
+            "heading_en": "Shipping",
+            "icon": "truck",
+            "content": "<p>日本全国へ配送します。税込9,900円以上のご注文は送料無料です。発送時期は商品と在庫状況により異なります。</p>",
+            "content_zh": "<p>日本全国配送;订单含税满 9,900 日元免运费。发货时间因商品与库存情况而异。</p>",
+            "content_en": "<p>We ship across Japan. Orders over ¥9,900 (tax included) ship free. Dispatch times vary by item and stock.</p>",
+            "page": ""
+          }
+        },
+        "purchase-collapsible-row-2": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "返品・交換",
+            "heading_zh": "退换货",
+            "heading_en": "Returns",
+            "icon": "return",
+            "content": "<p>不良品やお届け間違いは、商品到着後7日以内にご連絡ください。お客様都合による返品条件は正式公開までに確定します。</p>",
+            "content_zh": "<p>如遇商品瑕疵或错发,请在收到商品后 7 日内联系我们。因个人原因的退货条件将在正式公开前确定。</p>",
+            "content_en": "<p>If an item arrives damaged or incorrect, please contact us within 7 days of delivery. Return conditions for other cases will be finalised before public launch.</p>",
+            "page": ""
+          }
         }
       },
       "block_order": [
@@ -77,7 +116,10 @@
         "quantity-selector",
         "buy_buttons",
         "product-inventory",
-        "description"
+        "description",
+        "purchase-collapsible-row-0",
+        "purchase-collapsible-row-1",
+        "purchase-collapsible-row-2"
       ],
       "settings": {
         "enable_sticky_info": true,
@@ -93,73 +135,6 @@
         "enable_video_looping": false,
         "padding_top": 36,
         "padding_bottom": 36
-      }
-    },
-    "collapsible-content": {
-      "type": "collapsible-content",
-      "blocks": {
-        "collapsible-row-0": {
-          "type": "collapsible_row",
-          "settings": {
-            "heading": "色とロットについて",
-            "icon": "leaf",
-            "row_content": "<p>同じ毛糸でも生産ロットによって色がわずかに異なる場合があり、画面でも色味が変わって見えます。同じ色を複数玉お使いの場合は、まとめてお求めください。</p>",
-            "page": "",
-            "heading_zh": "关于颜色与批次",
-            "heading_en": "About color and dye lots",
-            "row_content_zh": "<p>同一款毛线不同批次的颜色可能略有差异，屏幕显示也会有色差；需要同色多团时请一次买齐。</p>",
-            "row_content_en": "<p>Colors can vary slightly between dye lots and on different screens. If you need several balls of the same color, buy them together.</p>"
-          }
-        },
-        "collapsible-row-1": {
-          "type": "collapsible_row",
-          "settings": {
-            "heading": "配送・送料",
-            "icon": "truck",
-            "row_content": "<p>日本全国へ配送します。税込9,900円以上のご注文は送料無料です。発送時期は商品と在庫状況により異なります。</p>",
-            "page": "",
-            "heading_zh": "配送与运费",
-            "heading_en": "Shipping",
-            "row_content_zh": "<p>日本全国配送;订单含税满 9,900 日元免运费。发货时间因商品与库存情况而异。</p>",
-            "row_content_en": "<p>We ship across Japan. Orders over ¥9,900 (tax included) ship free. Dispatch times vary by item and stock.</p>"
-          }
-        },
-        "collapsible-row-2": {
-          "type": "collapsible_row",
-          "settings": {
-            "heading": "返品・交換",
-            "icon": "return",
-            "row_content": "<p>不良品やお届け間違いは、商品到着後7日以内にご連絡ください。お客様都合による返品条件は正式公開までに確定します。</p>",
-            "page": "",
-            "heading_zh": "退换货",
-            "heading_en": "Returns",
-            "row_content_zh": "<p>如遇商品瑕疵或错发,请在收到商品后 7 日内联系我们。因个人原因的退货条件将在正式公开前确定。</p>",
-            "row_content_en": "<p>If an item arrives damaged or incorrect, please contact us within 7 days of delivery. Return conditions for other cases will be finalised before public launch.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "collapsible-row-0",
-        "collapsible-row-1",
-        "collapsible-row-2"
-      ],
-      "settings": {
-        "caption": "ご購入前に",
-        "caption_zh": "下单前",
-        "caption_en": "Before you order",
-        "heading": "お買い物ガイド",
-        "heading_size": "h2",
-        "heading_alignment": "center",
-        "layout": "section",
-        "color_scheme": "scheme-1",
-        "container_color_scheme": "scheme-1",
-        "open_first_collapsible_row": true,
-        "image_ratio": "adapt",
-        "desktop_layout": "image_second",
-        "padding_top": 28,
-        "padding_bottom": 12,
-        "heading_zh": "购买须知",
-        "heading_en": "Shopping guide"
       }
     },
     "related-products": {
@@ -193,7 +168,6 @@
   "order": [
     "main",
     "disclosures",
-    "collapsible-content",
     "related-products"
   ]
 }

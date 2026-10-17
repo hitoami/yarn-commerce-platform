@@ -554,6 +554,9 @@
     "kit_text": "ご注文後、注文番号と作品名を公式 LINE に送ってください。スタッフが確認して作り方をお送りします。"
   },
   "yarn_pdp": {
+    "trust_line_note": "配色や必要量の相談も",
+    "trust_return": "到着後7日以内にご連絡",
+    "trust_return_note": "不良品・誤配送は返品交換",
     "about_heading": "この毛糸について",
     "check_weight": "1玉 {{ weight }} g",
     "check_kits": "編めるもの：{{ names }}",
@@ -618,6 +621,12 @@
     "sticky_selected": "選択中：{{ value }}"
   },
   "yarn_project": {
+    "kit_step1_title": "毛糸を注文",
+    "kit_step1_note": "このページでまとめて",
+    "kit_step2_title": "LINEで注文番号を送る",
+    "kit_step2_note": "作品名「{{ name }}」を添えて",
+    "kit_step3_title": "作り方が届く",
+    "kit_step3_note": "スタッフが確認してお送りします",
     "kit_check_balls": "玉数は計算済み：{{ list }}",
     "kit_check_tutorial": "作り方：ご注文後に公式 LINE でお渡し",
     "kit_check_no_tools": "毛糸のみ・道具は含みません",
