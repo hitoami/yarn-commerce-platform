@@ -1,13 +1,78 @@
-{{ 'yarn-project.css' | asset_url | stylesheet_tag }}
+{{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
 {{ 'yarn-discovery.css' | asset_url | stylesheet_tag }}
+{{ 'yarn-search.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'yarn-search.js' | asset_url }}" defer="defer"></script>
+{%- comment -%}
+  #149 搜索结果按「毛线 / 材料包 / 手工成品」分组（2026-10-16 用户决定，取代「有成品 / 可买材料 / 仅灵感」与包袋等分类）。
+  毛线 = 毛线集合（默认 yarn）的商品，卡片与首页 / 目录同一张 yarn-pick-card；材料包 = 通过 yarn-kit-visible 的 yarn_project；
+  手工成品 = 成品集合（默认 finished-goods）。成品集合为空时标签显示「准备中」并禁用。
+  「毛线分类」block 把关键词连到毛线目录的同一筛选（filter.p.m.<字段>=<Metaobject GID>），只在关键词正好对应分类名称或别名时显示。
+{%- endcomment -%}
+{%- liquid
+  assign yarn_collection = collections[section.settings.yarn_collection]
+  assign finished_collection = collections[section.settings.finished_collection]
+  assign finished_coming_soon = true
+  if finished_collection != blank and finished_collection.products_count > 0
+    assign finished_coming_soon = false
+  endif
+  assign kits_url = section.settings.kits_url | default: routes.all_products_collection_url
+-%}
+{%- capture search_categories -%}
+  {%- if yarn_collection != blank -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type != 'category' -%}{%- continue -%}{%- endif -%}
+      {%- liquid
+        assign category_entry = metaobjects.yarn_entry[block.settings.entry]
+        if category_entry == blank
+          continue
+        endif
+        assign category_id = category_entry.system.id
+        assign category_parts = block.settings.field | split: '.'
+        assign category_count = 0
+        assign category_image = block.settings.image
+        for category_product in yarn_collection.products limit: 50
+          assign category_field = category_product.metafields[category_parts[0]][category_parts[1]]
+          if category_field == blank
+            continue
+          endif
+          assign category_found = false
+          if category_field.type contains 'list'
+            for category_ref in category_field.value
+              if category_ref.system.id == category_id
+                assign category_found = true
+              endif
+            endfor
+          elsif category_field.value.system.id == category_id
+            assign category_found = true
+          endif
+          if category_found
+            assign category_count = category_count | plus: 1
+            if category_image == blank
+              assign category_image = category_product.featured_image
+            endif
+          endif
+        endfor
+        if category_count == 0
+          continue
+        endif
+        assign category_gid = 'gid://shopify/Metaobject/' | append: category_id
+      -%}
+      <li>
+        <a class="yd-search__chip" href="{{ yarn_collection.url }}?filter.p.m.{{ block.settings.field }}={{ category_gid | url_encode }}" data-search-category data-category-name="{{ category_entry.name.value | escape }}" data-category-aliases="{{ block.settings.aliases | escape }}" {{ block.shopify_attributes }}>
+          <span class="yd-search__chip-photo">{%- if category_image != blank -%}{{ category_image | image_url: width: 120 | image_tag: widths: '80, 120', sizes: '40px', loading: 'lazy', alt: '' }}{%- endif -%}</span>
+          <span class="yd-search__chip-name">{{ category_entry.name.value | escape }}</span>
+          <span class="yd-search__chip-count">{{ category_count }}</span>
+        </a>
+      </li>
+    {%- endfor -%}
+  {%- endif -%}
+{%- endcapture -%}
 <yarn-discovery-search class="yd-search" data-search-url="{{ routes.search_url }}" data-section-id="{{ section.id }}">
   <header class="yd-search__bar">
-    <a class="yd-search__back" href="{{ routes.root_url }}#shop-by-project" data-search-back aria-label="{{ 'yarn_discovery.back' | t }}">{{ 'icon-arrow.svg' | inline_asset_content }}</a>
+    <a class="yd-search__back" href="{{ routes.root_url }}" data-search-back aria-label="{{ 'yarn_discovery.back' | t }}">{{ 'icon-arrow.svg' | inline_asset_content }}</a>
     <h1 data-search-title data-title="{{ 'yarn_discovery.search' | t }}" data-favorites-title="{{ 'yarn_discovery.favorites' | t }}">{{ 'yarn_discovery.search' | t }}</h1>
     <a class="yd-search__favorites" href="{{ routes.search_url }}?browse=favorites" data-favorites-link>{{ 'yarn_discovery.favorites' | t }}</a>
   </header>
-  <div class="yd-search__toolbar">
   <form class="yd-search__form" action="{{ routes.search_url }}" method="get" role="search" data-search-form>
     <div class="yd-search__field">
       <button class="yd-search__icon" type="submit" aria-label="{{ 'yarn_discovery.search' | t }}">{{ 'icon-search.svg' | inline_asset_content }}</button>
@@ -16,74 +81,30 @@
         <input id="DiscoveryQuery-{{ section.id }}" name="q" type="search" value="{{ search.terms | escape }}" placeholder="{{ 'yarn_discovery.search_placeholder' | t }}" autocomplete="off">
         <p>{{ 'yarn_discovery.search_scope' | t }}</p>
       </div>
-      <button class="yd-search__icon" type="button" data-search-clear aria-label="{{ 'yarn_discovery.clear_search' | t }}" {% if search.terms == blank %}hidden{% endif %}>{{ 'icon-close.svg' | inline_asset_content }}</button>
+      <button class="yd-search__icon yd-search__clear" type="button" data-search-clear aria-label="{{ 'yarn_discovery.clear_search' | t }}" {% if search.terms == blank %}hidden{% endif %}><span>{{ 'icon-close.svg' | inline_asset_content }}</span></button>
     </div>
-    <button class="yd-search__icon yd-search__filter" type="button" data-search-filter aria-label="{{ 'yarn_discovery.filters' | t }}" aria-haspopup="dialog" aria-controls="DiscoveryFilters-{{ section.id }}">{{ 'icon-filter.svg' | inline_asset_content }}</button>
   </form>
-  <fieldset class="yd-search__purchase">
-    <legend class="visually-hidden">{{ 'yarn_project.purchase_filter' | t }}</legend>
-    <span class="yd-search__purchase-label" aria-hidden="true">{{ 'yarn_project.purchase_filter' | t }}</span>
-    <label><input class="visually-hidden" type="radio" name="inline_purchase" value="" data-inline-purchase checked><span>{{ 'yarn_project.all' | t }}</span></label>
-    {% assign inline_purchase_filters = 'finished,materials,inspiration' | split: ',' %}
-    {% for purchase_filter in inline_purchase_filters %}
-      <label><input class="visually-hidden" type="radio" name="inline_purchase" value="{{ purchase_filter }}" data-inline-purchase><span>{{ purchase_filter | prepend: 'yarn_project.tag_' | t }}</span></label>
-    {% endfor %}
-  </fieldset>
-  </div>
-  <nav class="yd-search__categories" aria-label="{{ 'yarn_project.category' | t }}">
-    {% assign category_keys = 'all,bag,scarf,home,toy' | split: ',' %}
-    {% for key in category_keys %}
-      {% liquid
-        assign category_asset = 'yarn-category-' | append: key | append: '-approved.png'
-        assign category_label_key = 'yarn_project.category_' | append: key
-        if key == 'all'
-          assign category_asset = 'mewool-hero-yarn-node.png'
-          assign category_label_key = 'yarn_project.all'
-        elsif key == 'home'
-          assign category_label_key = 'yarn_project.category_living'
-        endif
-      %}
-      <button class="yd-search__category" type="button" data-search-category="{% unless key == 'all' %}{{ key }}{% endunless %}" aria-pressed="false">
-        <img src="{{ category_asset | asset_url }}" alt="" width="112" height="112" loading="eager">
-        <span>{{ category_label_key | t }}</span>
-      </button>
-    {% endfor %}
+  <nav class="yd-search__tabs" aria-label="{{ 'yarn_discovery.groups_label' | t }}">
+    <button class="yd-search__tab" type="button" data-search-tab="" aria-pressed="true">{{ 'yarn_discovery.group_all' | t }} <span data-search-tab-count></span></button>
+    <button class="yd-search__tab" type="button" data-search-tab="yarn" aria-pressed="false">{{ 'yarn_discovery.group_yarn' | t }} <span data-search-tab-count></span></button>
+    <button class="yd-search__tab" type="button" data-search-tab="kit" aria-pressed="false">{{ 'yarn_discovery.group_kit' | t }} <span data-search-tab-count></span></button>
+    <button class="yd-search__tab" type="button" data-search-tab="finished" aria-pressed="false"{% if finished_coming_soon %} disabled{% endif %}>{{ 'yarn_discovery.group_finished' | t }} {% if finished_coming_soon %}<span class="yd-search__soon">{{ 'yarn_discovery.coming_soon' | t }}</span>{% else %}<span data-search-tab-count></span>{% endif %}</button>
   </nav>
-  <section class="yd-search__default" data-search-default>
-    <h2>{{ 'yarn_discovery.try_searching' | t }}</h2>
-    <div class="yd-search__examples">
-      {% assign example_count = 0 %}
-      {% for block in section.blocks %}
-        {% if block.type == 'suggestion' and block.settings.query != blank %}
-          <a href="{{ routes.search_url }}?q={{ block.settings.query | url_encode }}" data-search-suggestion="{{ block.settings.query | escape }}" {{ block.shopify_attributes }}>{{ block.settings.query | escape }}</a>
-          {% assign example_count = example_count | plus: 1 %}
-        {% endif %}
-      {% endfor %}
-      {% if example_count == 0 %}
-        {% for index in (1..3) %}
-          {% assign example_key = 'yarn_discovery.example_' | append: index %}
-          {% assign example_query = example_key | t %}
-          <a href="{{ routes.search_url }}?q={{ example_query | url_encode }}" data-search-suggestion="{{ example_query | escape }}">{{ example_query }}</a>
-        {% endfor %}
-      {% endif %}
-    </div>
-  </section>
   <p class="yd-search__status" data-search-loading role="status" hidden>{{ 'yarn_project.loading' | t }}</p>
-  <p class="visually-hidden" data-search-count aria-live="polite" data-count-template="{{ 'yarn_discovery.result_count' | t: projects: '[projects]', products: '[products]' | escape }}"></p>
+  <p class="yd-search__count" data-search-count aria-live="polite" data-template="{{ 'yarn_discovery.result_line' | t: count: '[count]', query: '[query]' | escape }}" hidden></p>
   <section class="yd-search__error" data-search-error hidden role="alert">
     <h2>{{ 'yarn_discovery.load_error' | t }}</h2>
     <p>{{ 'yarn_discovery.load_error_hint' | t }}</p>
     <button class="yd-search__action" type="button" data-search-retry>{{ 'yarn_project.retry' | t }}</button>
   </section>
   <section class="yd-search__empty" data-search-empty hidden>
-    <h2>{{ 'yarn_discovery.empty' | t }}</h2>
+    <h2 data-search-empty-title data-title="{{ 'yarn_discovery.empty' | t }}" data-query-template="{{ 'yarn_discovery.empty_query' | t: query: '[query]' | escape }}">{{ 'yarn_discovery.empty' | t }}</h2>
     <p>{{ 'yarn_discovery.empty_hint' | t }}</p>
-    <button class="yd-search__action" type="button" data-search-reset>{{ 'yarn_discovery.start_over' | t }}</button>
   </section>
   <section class="yd-search__empty" data-favorites-empty hidden>
     <h2>{{ 'yarn_discovery.favorites_empty' | t }}</h2>
     <p>{{ 'yarn_discovery.favorites_empty_hint' | t }}</p>
-    <a class="yd-search__action" href="{{ routes.root_url }}#shop-by-project">{{ 'yarn_discovery.discover_projects' | t }}</a>
+    <a class="yd-search__action" href="{{ yarn_collection.url | default: routes.all_products_collection_url }}">{{ 'yarn_discovery.browse_yarn' | t }}</a>
   </section>
   <section class="yd-search__empty" data-favorites-login hidden>
     <h2>{{ 'yarn_discovery.login_title' | t }}</h2>
@@ -93,62 +114,117 @@
   <section class="yd-search__empty" data-favorites-unavailable hidden>
     <h2>{{ 'yarn_discovery.favorites' | t }}</h2>
     <p>{{ 'yarn_discovery.favorites_unavailable' | t }}</p>
-    <a class="yd-search__action" href="{{ routes.root_url }}#shop-by-project">{{ 'yarn_discovery.discover_projects' | t }}</a>
+    <a class="yd-search__action" href="{{ yarn_collection.url | default: routes.all_products_collection_url }}">{{ 'yarn_discovery.browse_yarn' | t }}</a>
   </section>
-  <div data-search-results hidden>
-    <section class="yd-search__group" data-search-group="project" aria-labelledby="DiscoveryProjects-{{ section.id }}">
-      <h2 id="DiscoveryProjects-{{ section.id }}">{{ 'yarn_discovery.related_projects' | t }}</h2>
-      {% paginate shop.metaobjects.yarn_project.values by 250 %}
-        <div class="yd-search__projects" data-search-catalog="project">
-          {% for project in shop.metaobjects.yarn_project.values %}
-            {% render 'yarn-project-card', project: project, compact: true, search_card: true %}
-          {% endfor %}
-        </div>
-        {% if paginate.next %}<a data-search-next="project" href="{{ paginate.next.url | escape }}&amp;section_id={{ section.id | url_encode }}" hidden>{{ 'yarn_project.more' | t }}</a>{% endif %}
-      {% endpaginate %}
-    </section>
-    <section class="yd-search__group" data-search-group="product" aria-labelledby="DiscoveryProducts-{{ section.id }}">
-      <h2 id="DiscoveryProducts-{{ section.id }}">{{ 'yarn_discovery.related_products' | t }}</h2>
-      {% paginate collections.all.products by 250 %}
-        <div class="yd-search__products" data-search-catalog="product">
-          {% for discovery_product in collections.all.products %}
-            {% render 'yarn-discovery-product-card', product: discovery_product, search_card: true %}
-          {% endfor %}
-        </div>
-        {% if paginate.next %}<a data-search-next="product" href="{{ paginate.next.url | escape }}&amp;section_id={{ section.id | url_encode }}" hidden>{{ 'yarn_project.more' | t }}</a>{% endif %}
-      {% endpaginate %}
-    </section>
-  </div>
-  <dialog id="DiscoveryFilters-{{ section.id }}" class="yd-search__dialog" aria-labelledby="DiscoveryFiltersTitle-{{ section.id }}">
-    <form method="dialog" data-filter-form>
-      <header>
-        <h2 id="DiscoveryFiltersTitle-{{ section.id }}">{{ 'yarn_discovery.filters' | t }}</h2>
-        <button class="yd-search__icon" type="button" data-filter-close aria-label="{{ 'accessibility.close' | t }}">{{ 'icon-close.svg' | inline_asset_content }}</button>
-      </header>
-      <fieldset class="yd-search__options">
-        <legend class="visually-hidden">{{ 'yarn_project.purchase_filter' | t }}</legend>
-        <label class="yd-search__option"><input type="radio" name="purchase" value="" checked> {{ 'yarn_project.all' | t }}</label>
-        {% assign purchase_filters = 'finished,materials,inspiration' | split: ',' %}
-        {% for purchase_filter in purchase_filters %}
-          <label class="yd-search__option"><input type="radio" name="purchase" value="{{ purchase_filter }}"> {{ purchase_filter | prepend: 'yarn_project.tag_' | t }}</label>
+  <div class="yd-search__browse" data-search-browse>
+    <section class="yd-search__examples-block">
+      <h2>{{ 'yarn_discovery.try_searching' | t }}</h2>
+      <div class="yd-search__examples">
+        {% assign example_count = 0 %}
+        {% for block in section.blocks %}
+          {% if block.type == 'suggestion' and block.settings.query != blank %}
+            <a href="{{ routes.search_url }}?q={{ block.settings.query | url_encode }}" data-search-suggestion="{{ block.settings.query | escape }}" {{ block.shopify_attributes }}>{{ block.settings.query | escape }}</a>
+            {% assign example_count = example_count | plus: 1 %}
+          {% endif %}
         {% endfor %}
-      </fieldset>
-      <footer>
-        <button class="yd-search__reset" type="button" data-filter-reset>{{ 'yarn_discovery.reset_filters' | t }}</button>
-        <button class="yd-search__action" type="submit">{{ 'yarn_discovery.show_results' | t }}</button>
-      </footer>
-    </form>
-  </dialog>
-  <noscript><p>{{ 'yarn_discovery.javascript_required' | t }} <a href="{{ routes.all_products_collection_url }}">{{ 'yarn_discovery.browse_products' | t }}</a></p></noscript>
+        {% if example_count == 0 %}
+          {% for index in (1..4) %}
+            {% assign example_key = 'yarn_discovery.example_' | append: index %}
+            {% assign example_query = example_key | t %}
+            <a href="{{ routes.search_url }}?q={{ example_query | url_encode }}" data-search-suggestion="{{ example_query | escape }}">{{ example_query }}</a>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </section>
+    {%- if search_categories != blank -%}
+      <section class="yd-search__categories">
+        <h2>{{ 'yarn_discovery.browse_by_feel' | t }}</h2>
+        <ul class="yd-search__chips" role="list">{{ search_categories }}</ul>
+      </section>
+    {%- endif -%}
+  </div>
+  <div data-search-results hidden>
+    <section class="yd-search__group" data-search-group="yarn" aria-labelledby="SearchYarn-{{ section.id }}">
+      <div class="yd-search__group-head">
+        <h2 id="SearchYarn-{{ section.id }}">{{ 'yarn_discovery.group_yarn' | t }}</h2>
+        <a class="yd-search__group-link" href="{{ yarn_collection.url }}" data-search-category-link data-template="{{ 'yarn_discovery.category_link' | t: name: '[name]' | escape }}" hidden></a>
+      </div>
+      {%- if yarn_collection != blank -%}
+        {% paginate yarn_collection.products by 250 %}
+          <div class="yd-search__grid" data-search-catalog="yarn">
+            {%- for search_product in yarn_collection.products -%}
+              {%- render 'yarn-search-product', search_product: search_product, group: 'yarn' -%}
+            {%- endfor -%}
+          </div>
+          {% if paginate.next %}<a data-search-next="yarn" href="{{ paginate.next.url | escape }}&amp;section_id={{ section.id | url_encode }}" hidden>{{ 'yarn_project.more' | t }}</a>{% endif %}
+        {% endpaginate %}
+      {%- endif -%}
+      <button class="yd-search__more" type="button" data-search-show-all data-template="{{ 'yarn_discovery.show_all_yarn' | t: count: '[count]' | escape }}" hidden></button>
+    </section>
+    <section class="yd-search__group" data-search-group="kit" aria-labelledby="SearchKits-{{ section.id }}">
+      <div class="yd-search__group-head">
+        <h2 id="SearchKits-{{ section.id }}">{{ 'yarn_discovery.group_kit' | t }}</h2>
+        <a class="yd-search__group-link" href="{{ kits_url }}">{{ 'yarn_discovery.all_kits' | t }}</a>
+      </div>
+      {% paginate shop.metaobjects.yarn_project.values by 250 %}
+        <div class="yd-search__kits" data-search-catalog="kit">
+          {%- for project in shop.metaobjects.yarn_project.values -%}
+            {%- capture kit_visible -%}{%- render 'yarn-kit-visible', project: project -%}{%- endcapture -%}
+            {%- if kit_visible != 'true' -%}{%- continue -%}{%- endif -%}
+            <div class="yd-search__item" data-discovery-card data-entity-type="project" data-entity-id="{{ project.system.id }}" data-group="kit"
+              data-title="{{ project.title.value | escape }}" data-summary="{{ project.summary.value | escape }}" data-tags="">
+              {%- render 'yarn-project-pick-card', project: project -%}
+              {%- render 'yarn-favorite-button', entity_type: 'project', entity_id: project.system.id, entity_title: project.title.value -%}
+            </div>
+          {%- endfor -%}
+        </div>
+        {% if paginate.next %}<a data-search-next="kit" href="{{ paginate.next.url | escape }}&amp;section_id={{ section.id | url_encode }}" hidden>{{ 'yarn_project.more' | t }}</a>{% endif %}
+      {% endpaginate %}
+    </section>
+    {%- unless finished_coming_soon -%}
+      <section class="yd-search__group" data-search-group="finished" aria-labelledby="SearchFinished-{{ section.id }}">
+        <div class="yd-search__group-head">
+          <h2 id="SearchFinished-{{ section.id }}">{{ 'yarn_discovery.group_finished' | t }}</h2>
+          <a class="yd-search__group-link" href="{{ finished_collection.url }}">{{ 'yarn_discovery.all_finished' | t }}</a>
+        </div>
+        {% paginate finished_collection.products by 250 %}
+          <div class="yd-search__grid" data-search-catalog="finished">
+            {%- for search_product in finished_collection.products -%}
+              {%- render 'yarn-search-product', search_product: search_product, group: 'finished' -%}
+            {%- endfor -%}
+          </div>
+          {% if paginate.next %}<a data-search-next="finished" href="{{ paginate.next.url | escape }}&amp;section_id={{ section.id | url_encode }}" hidden>{{ 'yarn_project.more' | t }}</a>{% endif %}
+        {% endpaginate %}
+      </section>
+    {%- endunless -%}
+    {%- if finished_coming_soon -%}
+      <p class="yd-search__note" data-search-finished-note hidden>{{ 'yarn_discovery.finished_coming_soon' | t }}</p>
+    {%- endif -%}
+  </div>
+  <noscript><p>{{ 'yarn_discovery.javascript_required' | t }} <a href="{{ yarn_collection.url | default: routes.all_products_collection_url }}">{{ 'yarn_discovery.browse_yarn' | t }}</a></p></noscript>
 </yarn-discovery-search>
 {% schema %}
 {
-  "name": "作品与商品搜索",
+  "name": "搜索：毛线 / 材料包 / 成品",
   "settings": [
-    { "type": "paragraph", "content": "搜索读取作品自己的名称、简介，以及商品自己的名称、描述和用途。示例关键词是编辑推荐，不显示为热门搜索或个人历史。" }
+    { "type": "paragraph", "content": "搜索读取毛线和成品自己的名称、描述、标签与分类名，以及材料包的名称和简介。示例关键词是编辑推荐，不显示为热门搜索或个人历史。" },
+    { "type": "collection", "id": "yarn_collection", "label": "毛线集合" },
+    { "type": "collection", "id": "finished_collection", "label": "手工成品集合", "info": "集合为空时，「手工成品」标签显示「准备中」。" },
+    { "type": "url", "id": "kits_url", "label": "「全部材料包」链接" }
   ],
   "blocks": [
-    { "type": "suggestion", "name": "示例关键词", "limit": 5, "settings": [ { "type": "text", "id": "query", "label": "关键词" } ] }
+    { "type": "suggestion", "name": "示例关键词", "limit": 6, "settings": [ { "type": "text", "id": "query", "label": "关键词" } ] },
+    {
+      "type": "category",
+      "name": "毛线分类",
+      "limit": 8,
+      "settings": [
+        { "type": "select", "id": "field", "label": "商品字段", "options": [ { "value": "yarn.texture", "label": "质感 yarn.texture" }, { "value": "yarn.use", "label": "用途 yarn.use" } ], "default": "yarn.texture" },
+        { "type": "text", "id": "entry", "label": "毛线入口 handle（Metaobject「毛线入口」yarn_entry）", "info": "与首页「挑毛线」同一个 handle；名称三语在 Translate & Adapt 编辑" },
+        { "type": "text", "id": "aliases", "label": "搜索别名", "info": "用逗号分隔，三语都可以写，例如：段染,渐变,グラデーション,gradient。关键词对上名称或别名时，毛线结果旁显示「××分类 →」。" },
+        { "type": "image_picker", "id": "image", "label": "胶囊小图", "info": "留空时用集合里第一件属于该分类的商品主图" }
+      ]
+    }
   ]
 }
 {% endschema %}

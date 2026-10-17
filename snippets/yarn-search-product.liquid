@@ -1,0 +1,31 @@
+{%- comment -%}
+  #149 搜索结果里的毛线 / 成品卡：与首页和目录同一张 yarn-pick-card，外层只加搜索与收藏需要的数据。
+  可搜文字：本商品自己的名称、描述、标签、规格行，以及所属毛线分类（yarn.texture / yarn.use 引用的 yarn_entry）名称。
+{%- endcomment -%}
+{%- liquid
+  assign search_entries = ''
+  assign search_field_keys = 'texture,use' | split: ','
+  for search_field_key in search_field_keys
+    assign search_field = search_product.metafields.yarn[search_field_key]
+    if search_field == blank
+      continue
+    endif
+    if search_field.type contains 'list'
+      for search_entry in search_field.value
+        assign search_entries = search_entries | append: ' ' | append: search_entry.name.value
+      endfor
+    else
+      assign search_entries = search_entries | append: ' ' | append: search_field.value.name.value
+    endif
+  endfor
+  assign search_text = search_product.description | strip_html | strip_newlines | append: ' ' | append: search_product.metafields.yarn.spec_line.value | append: search_entries
+-%}
+<div class="yd-search__item" data-discovery-card data-entity-type="product" data-entity-id="{{ search_product.id }}" data-group="{{ group }}"
+  data-title="{{ search_product.title | escape }}" data-summary="{{ search_text | escape }}" data-tags="{{ search_product.tags | join: ' ' | escape }}">
+  {%- if group == 'finished' -%}
+    {%- render 'yarn-pick-card', card_product: search_product, handmade: true -%}
+  {%- else -%}
+    {%- render 'yarn-pick-card', card_product: search_product -%}
+  {%- endif -%}
+  {%- render 'yarn-favorite-button', entity_type: 'product', entity_id: search_product.id, entity_title: search_product.title -%}
+</div>
