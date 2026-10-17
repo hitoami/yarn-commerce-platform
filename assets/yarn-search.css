@@ -61,6 +61,7 @@
 .yd-search__note { margin: 0; padding: var(--yarn-space-3) 14px; border-radius: var(--yarn-card-radius); background: var(--yarn-bg-warm); color: var(--yarn-text-secondary); font-size: 13px; line-height: 1.6; }
 
 /* 首次进入与无结果：示例关键词 + 按手感逛毛线（进入毛线目录的同一筛选）。 */
+.yd-search__local-note { margin: 0 0 var(--yarn-space-4); color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.7; }
 .yd-search__empty, .yd-search__error { margin: var(--yarn-space-2) 0 var(--yarn-space-5); }
 .yd-search__empty h2, .yd-search__error h2 { font-size: 20px; }
 .yd-search__empty p, .yd-search__error p { margin: var(--yarn-space-2) 0 0; color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.7; }

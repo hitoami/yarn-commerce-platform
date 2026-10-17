@@ -114,6 +114,7 @@
       this.empty = this.querySelector('[data-search-empty]');
       this.emptyTitle = this.querySelector('[data-search-empty-title]');
       this.favoritesEmpty = this.querySelector('[data-favorites-empty]');
+      this.localNote = this.querySelector('[data-favorites-local-note]');
       this.loginState = this.querySelector('[data-favorites-login]');
       this.unavailableState = this.querySelector('[data-favorites-unavailable]');
       this.error = this.querySelector('[data-search-error]');
@@ -218,6 +219,7 @@
       this.querySelector('[data-favorites-link]').hidden = isFavorites;
       this.tabs.forEach((tab) => tab.setAttribute('aria-pressed', String(tab.dataset.searchTab === this.state.group)));
       this.hideStates();
+      if (this.localNote) this.localNote.hidden = true;
       this.browsePanel.hidden = active;
       this.count.textContent = '';
       this.count.hidden = true;
@@ -252,6 +254,7 @@
     }
 
     render() {
+      if (this.localNote) this.localNote.hidden = !(this.state.browse === 'favorites' && window.YarnFavorites?.local && window.YarnFavorites?.enabled);
       if (this.state.browse === 'favorites' && !window.YarnFavorites?.enabled) {
         this.hideStates(); this.unavailableState.hidden = false;
         return;
