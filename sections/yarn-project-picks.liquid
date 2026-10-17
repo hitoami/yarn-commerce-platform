@@ -27,7 +27,7 @@
         <h2 id="ProjectPicks-{{ section.id }}">{{ pp_heading | escape }}</h2>
         {%- if pp_note != blank -%}<p class="yx-picks__note">{{ pp_note | escape }}</p>{%- endif -%}
       </div>
-      {%- if section.settings.all_link != blank -%}<a class="yx-picks__all" href="{{ section.settings.all_link }}">{{ 'yarn_project.card_view_all' | t }} →</a>{%- endif -%}
+      {%- if section.settings.all_link != blank -%}<a class="yx-picks__all" href="{% render 'yarn-local-url', url: section.settings.all_link %}">{{ 'yarn_project.card_view_all' | t }} →</a>{%- endif -%}
     </div>
     <div class="yx-project-picks">{{ pp_cards }}</div>
   </div>

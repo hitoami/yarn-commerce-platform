@@ -28,6 +28,10 @@ _Avoid_: Project, Tutorial
 某个 Project 的默认毛线购买方案，团队与消费者称「材料包」。当前由 yarn_material 引用 Variant × 团数，不是独立 Product，没有独立库存或包内折扣；顾客可选同款可售颜色，购物车中仍是各毛线 Variant。此前整包采购、独立库存模式不适用于 #131。
 _Avoid_: Project, Tutorial
 
+**Season Feature（本季主推）**:
+按季节编辑的毛线专题内容页（`/pages/season`），只介绍目录内毛线并链接到毛线详情，本身不可购买，也不是 Collection 的替代。
+_Avoid_: Season Collection, Kit
+
 **Finished Piece（成品）**:
 可直接购买的手工实物，是 Product 的一种。当前独立购买，不与材料包互链；按实际库存展示余量，售罄保留。
 _Avoid_: Member Work, Project
@@ -106,7 +110,8 @@ _Avoid_: Project, Product
 
 ## Relationships
 
-- 一个 **Product** 有一个或多个 **Variants**；价格、可售性、库存和购物车真值只在 Shopify。
+- 一个 **Product** 有一个或多个 **Variants**；价格、可售性、库存和购物车真值只在 Shopify。当前 Product 只有毛线与 **Finished Piece** 两类。
+- **Project Kit** 与 **Season Feature** 都是内容，最终导向毛线（或成品）的 **Variant** 购买，不形成新的可售对象。
 - **Project** 用真实照片、所需毛线/团数与教程安排形成可公开方案。资料未齐是 **Draft Project**，不因演示开关出现在当前材料包路径。
 - **Material Requirement** 描述制作要求；**Product Recommendation** 关联适用商品。当前 **Project Kit** 用 **Kit Components** 表达可购买的默认毛线与团数，不成为新的 Product。
 - 默认原作色号与团数可由顾客改为同款、相同其他规格的可售颜色；最终加入购物车的是选定 **Variant** 与数量。
