@@ -893,6 +893,7 @@
     "shown": "Showing {{ shown }} of {{ total }}",
     "show_more": "Show more",
     "price": "Price",
-    "show_results": "Show results"
+    "show_results": "Show results",
+    "sort_option": "Sort: {{ name }}"
   }
 }

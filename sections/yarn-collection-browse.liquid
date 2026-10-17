@@ -164,7 +164,8 @@
           <select class="ycb-pill ycb-sort__select" id="CollectionSort-{{ section.id }}" name="sort_by" data-ycb-sort>
             {%- for key in cb_sort_keys -%}
               {%- assign cb_option_key = 'yarn_collection.sort_' | append: key | replace: '-', '_' -%}
-              <option value="{{ key }}"{% if key == cb_sort %} selected{% endif %}>{{ 'yarn_collection.sort' | t }}：{{ cb_option_key | t }}</option>
+              {%- assign cb_option_name = cb_option_key | t -%}
+              <option value="{{ key }}"{% if key == cb_sort %} selected{% endif %}>{{ 'yarn_collection.sort_option' | t: name: cb_option_name }}</option>
             {%- endfor -%}
           </select>
           <noscript><button class="ycb-pill" type="submit">{{ 'products.facets.apply' | t }}</button></noscript>

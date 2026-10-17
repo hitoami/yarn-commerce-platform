@@ -893,6 +893,7 @@
     "shown": "{{ total }} 点中 {{ shown }} 点を表示",
     "show_more": "もっと見る",
     "price": "価格",
-    "show_results": "結果を見る"
+    "show_results": "結果を見る",
+    "sort_option": "並び替え：{{ name }}"
   }
 }

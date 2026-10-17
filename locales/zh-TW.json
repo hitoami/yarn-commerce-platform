@@ -893,6 +893,7 @@
     "shown": "已顯示 {{ shown }} / {{ total }} 款",
     "show_more": "顯示更多",
     "price": "價格",
-    "show_results": "查看結果"
+    "show_results": "查看結果",
+    "sort_option": "排序：{{ name }}"
   }
 }
