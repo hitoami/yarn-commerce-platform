@@ -2,7 +2,8 @@
 // npm run proof：对本地预览（shopify theme dev）生成证据包，写到被忽略的 .proof/。
 // 语言泄漏 + 首屏截图清单 + 横向溢出 / 图片 / 脚本错误断言。PR 只引用 .proof/report.md 的结论。
 //
-// 用法：npm run proof -- [--base <url>] [--pages home,yarn-pdp] [--locales zh,en] [--viewports mobile]
+// 用法：npm run proof -- [--base <url>] [--live] [--pages home,yarn-pdp] [--locales zh,en] [--viewports mobile]
+// --live（或 PROOF_LIVE=1）：按线上语言路径（日文 /、中文 /zh、英文 /en）检查 PROOF_BASE_URL / --base 指向的线上店铺。
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -15,6 +16,7 @@ const OUT = '.proof';
 function parseArgs(argv) {
   const args = {};
   for (let i = 0; i < argv.length; i += 1) {
+    if (argv[i] === '--live') { args.live = true; continue; }
     const match = argv[i].match(/^--(base|pages|locales|viewports|concurrency)$/);
     if (!match || argv[i + 1] === undefined) throw new Error(`未知参数：${argv[i]}`);
     args[match[1]] = argv[++i];
@@ -145,6 +147,7 @@ async function runJob(browser, job, baseUrl) {
     deviceScaleFactor: viewport.deviceScaleFactor,
     isMobile: Boolean(viewport.isMobile),
     hasTouch: Boolean(viewport.hasTouch),
+    locale: locale.browserLocale,
   });
   const page = await context.newPage();
   const url = `${baseUrl}${locale.prefix}${target.path === '/' && locale.prefix ? '' : target.path}`;
@@ -249,13 +252,15 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   const baseUrl = (args.base || process.env.PROOF_BASE_URL || config.baseUrl).replace(/\/$/, '');
   const pages = pick(config.pages, args.pages, '页面');
-  const locales = pick(config.locales, args.locales, '语言');
+  const live = Boolean(args.live || process.env.PROOF_LIVE);
+  const locales = pick(config.locales, args.locales, '语言').map(locale => (live ? { ...locale, prefix: locale.livePrefix } : locale));
   const viewports = pick(config.viewports, args.viewports, '视口');
 
   try {
     await fetch(baseUrl, { signal: AbortSignal.timeout(20000) });
   } catch {
-    console.error(`无法打开 ${baseUrl}。先在另一个终端运行：npx shopify theme dev --store tutaka-54.myshopify.com --live-reload off`);
+    if (live) console.error(`无法打开 ${baseUrl}。`);
+    else console.error(`无法打开 ${baseUrl}。先在另一个终端运行：npx shopify theme dev --store tutaka-54.myshopify.com --live-reload off`);
     process.exit(2);
   }
 
@@ -284,7 +289,7 @@ async function main() {
   const meta = {
     time: new Date().toISOString(),
     git: `${git[0]}${Number(git[1]) ? `（另有 ${git[1].trim()} 个未提交改动）` : ''}`,
-    baseUrl,
+    baseUrl: live ? `${baseUrl}（线上语言路径）` : baseUrl,
     pages, locales, viewports,
     seconds: Math.round((Date.now() - started) / 1000),
   };
