@@ -1,6 +1,6 @@
 {%- comment -%}
   毛线详情页购买区之后的内容（Issue #120，视觉稿 Yarn PDP 1a）：
-  线的规格 → 要买几团？ → 用这款线能织 → 怎么洗。
+  #182 v2：用这款线能织（提前）→ 折叠行：线的规格 / 要买几团？ / 新手能用吗？ / 怎么洗。
   每块只读 Shopify 已有数据，没有数据的块整块不渲染，不补写示例值：
   - 规格：yarn.composition（无则 material）/ ball_weight_g / ball_length_m / thickness / gauge /
           needle_knit + needle_crochet（都没有时用 needle_size）
@@ -110,34 +110,14 @@
 
 {%- assign care_lines = y.care.value -%}
 
+{%- liquid
+  # #182 v2：手机把规格、参考用量、新手提示、洗涤收成带插画图标的折叠行；第一行默认展开。
+  assign acc_open = true
+  assign beginner_reason = y.beginner_reason.value
+-%}
 <div class="yp-yarn-details">
-  {%- if spec_rows contains 'yp-yarn-spec__row' -%}
-    <section class="yp-yarn-block" aria-labelledby="YarnSpec-{{ section_id }}">
-      <h2 class="yp-yarn-block__title" id="YarnSpec-{{ section_id }}">{{ 'yarn_pdp.spec_heading' | t }}</h2>
-      <dl class="yp-yarn-spec">{{ spec_rows }}</dl>
-    </section>
-  {%- endif -%}
-
-  {%- if usage_items contains 'data-usage-result' -%}
-    <yarn-usage-estimate
-      class="yp-usage"
-      data-quantity-input="Quantity-{{ section_id }}"
-      data-filled="{{ 'yarn_pdp.usage_filled' | t: quantity: '[quantity]' | escape }}"
-    >
-      <section aria-labelledby="YarnUsage-{{ section_id }}">
-        <div class="yp-usage__head">
-          <h2 class="yp-yarn-block__title" id="YarnUsage-{{ section_id }}">{{ 'yarn_pdp.usage_heading' | t }}</h2>
-          <p>{{ 'yarn_pdp.usage_intro' | t }}</p>
-        </div>
-        <div class="yp-usage__options" role="group" aria-label="{{ 'yarn_pdp.usage_options' | t }}" data-usage-options hidden>{{ usage_options }}</div>
-        {{ usage_items }}
-        <p class="visually-hidden" role="status" data-usage-status></p>
-      </section>
-    </yarn-usage-estimate>
-  {%- endif -%}
-
   {%- if work_cards contains 'yx-project-pick' -%}
-    <section class="yp-yarn-block" aria-labelledby="YarnWorks-{{ section_id }}">
+    <section class="yp-yarn-block yp-yarn-works" aria-labelledby="YarnWorks-{{ section_id }}">
       <div class="yp-yarn-block__head">
         <h2 class="yp-yarn-block__title yp-yarn-block__title--section" id="YarnWorks-{{ section_id }}">{{ 'yarn_pdp.works_heading' | t }}</h2>
         <p>{{ 'yarn_pdp.works_note' | t }}</p>
@@ -146,9 +126,56 @@
     </section>
   {%- endif -%}
 
+  <div class="yp-acc">
+  {%- comment -%}手机：商品介绍从首屏移到这里（桌面仍在价格下方，见 main-product）。{%- endcomment -%}
+  {%- if product.description != blank -%}
+    {%- capture about_html -%}{%- render 'yarn-product-description', product: product -%}{%- endcapture -%}
+    {%- assign about_text = about_html | strip_html | strip -%}
+    {%- if about_text != blank -%}
+      <details class="yp-acc__item yp-acc__item--mobile">
+        <summary class="yp-acc__summary">{% render 'yarn-spot-icon', name: 'yarn-ball', size: 44, base: 'cream' %}<h2 class="yp-acc__title">{{ 'yarn_pdp.about_heading' | t }}</h2><span class="svg-wrapper yp-acc__caret" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span></summary>
+        <div class="yp-acc__text rte">{{ about_html }}</div>
+      </details>
+    {%- endif -%}
+  {%- endif -%}
+  {%- if spec_rows contains 'yp-yarn-spec__row' -%}
+    <details class="yp-acc__item"{% if acc_open %} open{% endif %}>
+      <summary class="yp-acc__summary">{% render 'yarn-spot-icon', name: 'hook-needles', size: 44, base: 'cream' %}<h2 class="yp-acc__title" id="YarnSpec-{{ section_id }}">{{ 'yarn_pdp.spec_heading' | t }}</h2><span class="svg-wrapper yp-acc__caret" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span></summary>
+      <dl class="yp-yarn-spec">{{ spec_rows }}</dl>
+    </details>
+    {%- assign acc_open = false -%}
+  {%- endif -%}
+
+  {%- if usage_items contains 'data-usage-result' -%}
+    <details class="yp-acc__item"{% if acc_open %} open{% endif %}>
+      <summary class="yp-acc__summary">{% render 'yarn-spot-icon', name: 'yarn-count', size: 44, base: 'cream' %}<h2 class="yp-acc__title" id="YarnUsage-{{ section_id }}">{{ 'yarn_pdp.usage_heading' | t }}</h2><span class="svg-wrapper yp-acc__caret" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span></summary>
+      <yarn-usage-estimate
+        class="yp-usage"
+        data-quantity-input="Quantity-{{ section_id }}"
+        data-filled="{{ 'yarn_pdp.usage_filled' | t: quantity: '[quantity]' | escape }}"
+      >
+        <section aria-labelledby="YarnUsage-{{ section_id }}">
+          <div class="yp-usage__head"><p>{{ 'yarn_pdp.usage_intro' | t }}</p></div>
+          <div class="yp-usage__options" role="group" aria-label="{{ 'yarn_pdp.usage_options' | t }}" data-usage-options hidden>{{ usage_options }}</div>
+          {{ usage_items }}
+          <p class="visually-hidden" role="status" data-usage-status></p>
+        </section>
+      </yarn-usage-estimate>
+    </details>
+    {%- assign acc_open = false -%}
+  {%- endif -%}
+
+  {%- if beginner_reason != blank -%}
+    <details class="yp-acc__item"{% if acc_open %} open{% endif %}>
+      <summary class="yp-acc__summary">{% render 'yarn-spot-icon', name: 'bulb', size: 44, base: 'cream' %}<h2 class="yp-acc__title">{{ 'yarn_pdp.beginner_heading' | t }}</h2><span class="svg-wrapper yp-acc__caret" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span></summary>
+      <p class="yp-acc__text" data-proof-content>{{ beginner_reason | escape }}</p>
+    </details>
+    {%- assign acc_open = false -%}
+  {%- endif -%}
+
   {%- if care_lines != blank and care_lines.size > 0 -%}
-    <section class="yp-yarn-block" aria-labelledby="YarnCare-{{ section_id }}">
-      <h2 class="yp-yarn-block__title" id="YarnCare-{{ section_id }}">{{ 'yarn_pdp.care_heading' | t }}</h2>
+    <details class="yp-acc__item"{% if acc_open %} open{% endif %}>
+      <summary class="yp-acc__summary">{% render 'yarn-spot-icon', name: 'hand-wash', size: 44, base: 'cream' %}<h2 class="yp-acc__title" id="YarnCare-{{ section_id }}">{{ 'yarn_pdp.care_heading' | t }}</h2><span class="svg-wrapper yp-acc__caret" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span></summary>
       <ul class="yp-yarn-care">
         {%- for line in care_lines -%}
           {%- if line != blank -%}
@@ -168,6 +195,7 @@
           {%- endif -%}
         {%- endfor -%}
       </ul>
-    </section>
+    </details>
   {%- endif -%}
+  </div>
 </div>

@@ -539,6 +539,14 @@
     }
   },
   "yarn_cart": {
+    "spare_title": "{{ name }}をもう1玉",
+    "spare_note": "同じロットでまとめて買うと色がそろいます。後から買い足すと色が少し違うことがあります。",
+    "spare_add": "+1玉",
+    "spare_add_label": "{{ name }}を1玉追加",
+    "addons_title": "送料無料まで、こちらもどうぞ",
+    "addon_add_label": "{{ name }}をカートに追加",
+    "quick_error": "カートに追加できませんでした。",
+    "footer_trust": "日本全国配送 · LINEで毛糸相談 · Shopify の安全な決済",
     "free_remaining": "あと {{ amount }} で送料無料",
     "free_reached": "送料無料の対象です",
     "free_rule": "税込 {{ amount }} 以上で日本全国送料無料（決済画面で確定します）",
@@ -546,6 +554,18 @@
     "kit_text": "ご注文後、注文番号と作品名を公式 LINE に送ってください。スタッフが確認して作り方をお送りします。"
   },
   "yarn_pdp": {
+    "about_heading": "この毛糸について",
+    "check_weight": "1玉 {{ weight }} g",
+    "check_kits": "編めるもの：{{ names }}",
+    "check_usage": {
+      "one": "{{ work }}は約 {{ count }} 玉",
+      "other": "{{ work }}は約 {{ count }} 玉"
+    },
+    "trust_free": "{{ amount }}以上で送料無料",
+    "trust_line": "LINEで毛糸相談",
+    "trust_staff": "スタッフに毛糸相談",
+    "trust_ship": "日本全国へ配送",
+    "beginner_heading": "初心者でも使える？",
     "per_ball": "/ 玉",
     "per_ball_tax_included": "/ 玉（税込）",
     "option_selected_html": "<span class=\"yp-option-name\">{{ name }}：</span>{{ value }}",
@@ -598,6 +618,19 @@
     "sticky_selected": "選択中：{{ value }}"
   },
   "yarn_project": {
+    "kit_check_balls": "玉数は計算済み：{{ list }}",
+    "kit_check_tutorial": "作り方：ご注文後に公式 LINE でお渡し",
+    "kit_check_no_tools": "毛糸のみ・道具は含みません",
+    "kit_check_no_tools_short": "毛糸のみ",
+    "kit_quick_hint": "玉数の変更や1種類ずつの購入は、下の「使う毛糸」で",
+    "kit_get_heading": "このセットで届くもの",
+    "kit_get_in": "お届けする毛糸",
+    "kit_get_balls": {
+      "one": "× {{ count }} 玉",
+      "other": "× {{ count }} 玉"
+    },
+    "kit_get_bring_default": "道具は作り方に合わせてご用意ください",
+    "kit_sticky_add": "まとめてカートへ",
     "kit_partial_tag": "一部在庫切れ",
     "kit_card_partial": "一部の毛糸が在庫切れ・ほかの毛糸は購入できます",
     "kit_card_blocked": "必要な毛糸が在庫切れ・現在購入できません",

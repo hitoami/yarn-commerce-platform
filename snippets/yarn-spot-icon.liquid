@@ -1,0 +1,17 @@
+{%- comment -%}
+  手绘插画图标（#182，Figma 02 页「设计系统 · 插画图标」）。只用于 36px 及以上的说明性位置；
+  ✓、箭头、关闭、加减等功能图标仍用线描 SVG。图片与提示词来源见 assets/hitoami-spot-icons.source.json。
+  参数：
+    name  yarn-ball / hook-needles / scissors / sewing-needle / chat / pattern-book / delivery /
+          swatches / bulb / yarn-count / tote-bag / hand-wash / return
+    size  显示尺寸（px），默认 44
+    base  'cream' 带奶油圆底（cta-bg）；省略为无底
+  装饰性图片，alt 为空，文字由旁边的标题承担。
+{%- endcomment -%}
+{%- liquid
+  assign spot_size = size | default: 44
+  assign spot_file = 'hitoami-spot-' | append: name | append: '.png'
+-%}
+<span class="yarn-spot{% if base == 'cream' %} yarn-spot--cream{% endif %}" style="--spot-size: {{ spot_size }}px;" aria-hidden="true">
+  <img src="{{ spot_file | asset_url }}" width="160" height="160" alt="" loading="lazy" decoding="async">
+</span>

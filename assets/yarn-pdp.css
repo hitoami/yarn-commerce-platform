@@ -212,3 +212,81 @@ product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit[dis
   .yp-yarn-block:first-child:not(:has(+ .yp-usage)) .yp-yarn-spec__row { flex-direction: column; gap: 2px; }
   .yp-yarn-block:first-child:not(:has(+ .yp-usage)) .yp-yarn-spec dt { flex: none; font-size: 12px; }
 }
+
+/* Issue 182 v2（Figma 03 页，借鉴 Woobles）：首屏 ✓ 清单、保障条、折叠行、横向作品卡、吸底栏缩略图。 */
+.yp-check { display: grid; gap: 7px; margin: 14px 0 0; padding: 0; list-style: none; }
+.yp-check__row { display: flex; align-items: flex-start; gap: 8px; color: var(--yarn-text-primary); font-size: 14px; line-height: 1.5; }
+.yp-check__row .svg-wrapper { flex: none; width: 18px; height: 18px; margin-top: 1px; color: var(--yarn-action); }
+.yp-check__row .svg-wrapper svg { width: 18px; height: 18px; }
+.yp-check__row--info { color: var(--yarn-text-muted); }
+.yp-check__row--info .svg-wrapper { color: var(--yarn-text-muted); }
+.yp-check__row a { color: var(--yarn-action); font-weight: 600; text-decoration: none; }
+.yp-check__row a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.yp-trust { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 10px; margin: 16px 0 0; padding: 10px 12px; list-style: none; border: 1px solid var(--yarn-cta-border); border-radius: 12px; background: var(--yarn-action-subtle-bg); }
+.yp-trust li { display: inline-flex; align-items: center; gap: 5px; color: var(--yarn-text-primary); font-size: 12px; font-weight: 600; line-height: 1.4; }
+.yp-trust .svg-wrapper { flex: none; width: 16px; height: 16px; color: var(--yarn-action); }
+.yp-trust .svg-wrapper svg { width: 16px; height: 16px; }
+.yp-trust a { color: inherit; text-decoration: none; }
+.yp-trust a:hover { color: var(--yarn-action); }
+.yp-check a:focus-visible, .yp-trust a:focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: 2px; }
+
+.yp-acc { border-top: 1px solid var(--yarn-border-subtle); }
+.yp-acc:empty { display: none; }
+.yp-acc__item { border-bottom: 1px solid var(--yarn-border-subtle); }
+.yp-acc__summary { display: flex; align-items: center; gap: var(--yarn-space-3); min-height: 64px; padding: 10px 0; cursor: pointer; list-style: none; }
+.yp-acc__summary::-webkit-details-marker { display: none; }
+.yp-acc__summary:focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: 2px; }
+.yp-acc__title { flex: 1 1 auto; margin: 0; color: var(--yarn-text-primary); font-family: var(--yarn-body); font-size: 16px; font-weight: 600; line-height: 1.4; }
+.yp-acc__caret { flex: none; width: 14px; height: 14px; color: var(--yarn-text-secondary); transition: transform 160ms ease-out; }
+.yp-acc__item[open] .yp-acc__caret { transform: rotate(180deg); }
+/* Rise 把 summary 里的 .icon-caret 绝对定位到右侧；这里跟随行内排版。 */
+.yp-acc__summary .yp-acc__caret .icon-caret { position: static; width: 14px; height: 14px; transform: none; }
+.yp-acc__item > :not(summary) { margin: 0 0 18px calc(44px + var(--yarn-space-3)); }
+.yp-acc__text { color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.7; }
+.yp-acc .yp-usage { margin-top: 0; padding: 16px; border-radius: 14px; }
+.yp-acc .yp-yarn-spec { grid-template-columns: minmax(0, 1fr); border-top: 0; }
+.yp-acc .yp-yarn-spec__row { flex-direction: row; gap: 10px; padding: 6px 0; border-bottom: 0; }
+.yp-acc .yp-yarn-spec dt { flex: 0 0 84px; font-size: 13px; }
+.yp-acc .yp-yarn-spec dd { font-size: 13px; }
+.yp-acc .yp-yarn-care { border-top: 0; }
+@media (prefers-reduced-motion: reduce) { .yp-acc__caret { transition: none; } }
+
+@media (min-width: 750px) { .yp-acc__item--mobile { display: none; } }
+.yp-acc__text p { margin: 0 0 8px; }
+.yp-sticky__thumb { flex: none; width: 52px; height: 52px; overflow: hidden; border-radius: 10px; background: var(--yarn-bg-sunken); }
+.yp-sticky__thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+@media (max-width: 749px) {
+  /* 标题左、价格右（借鉴 Woobles 首屏）：价格块占第二列、跨标签与标题两行，其余照常整行。 */
+  product-info.yarn-product-page--yarn .product__info-container { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--yarn-space-3); align-items: end; }
+  product-info.yarn-product-page--yarn .product__info-container > * { grid-column: 1 / -1; }
+  product-info.yarn-product-page--yarn .product__info-container > .yp-yarn-badges { grid-column: 1; grid-row: 1; margin: 0; }
+  product-info.yarn-product-page--yarn .product__info-container > .product__title { grid-column: 1; grid-row: 2; margin: 4px 0 0; }
+  product-info.yarn-product-page--yarn .product__info-container > .yp-yarn-price { grid-column: 2; grid-row: 1 / span 2; flex-direction: column; align-items: flex-end; margin: 0; text-align: right; }
+  product-info.yarn-product-page--yarn .yp-yarn-price .product__tax { display: none; }
+  /* 空的分期付款表单与隐藏的库存行在网格里仍占高度，手机上不渲染。 */
+  /* 分期付款（Shop Pay Installments）在日本不提供，手机毛线页不占位。 */
+  product-info.yarn-product-page.yarn-product-page--yarn .product__info-container > .product__inventory,
+  product-info.yarn-product-page.yarn-product-page--yarn .product__info-container > .product__description:empty,
+  product-info.yarn-product-page.yarn-product-page--yarn .product__info-container > div:has(> form.installment) { display: none; }
+  /* 原生购买表单只由常驻栏驱动（#122），保留在 DOM 中但不占高度。 */
+  product-info.yarn-product-page.yarn-product-page--yarn .product__info-container > div:has(> product-form) { height: 0; margin: 0; overflow: hidden; }
+  /* 完整商品介绍收进下方「关于这款线」折叠行，首屏只留 ✓ 清单。 */
+  product-info.yarn-product-page--yarn .product__info-container > .yp-yarn-intro { display: none; }
+  product-info.yarn-product-page.yarn-product-page--yarn .yp-yarn-price .price { font-size: 24px; }
+  /* 图库：去掉缩略图行，主图横滑并露出下一张。 */
+  product-info.yarn-product-page--yarn .thumbnail-slider { display: none; }
+  product-info.yarn-product-page--yarn .product__media-list.slider { gap: 10px; scroll-padding-left: 0; }
+  product-info.yarn-product-page--yarn .product__media-list.slider .product__media-item { width: calc(100% - 44px); }
+  product-info.yarn-product-page--yarn .product__media-list.slider .product__media-item:only-child { width: 100%; }
+  product-info.yarn-product-page--yarn .product__media { border-radius: 16px; }
+  /* 作品卡提前并横排：图左文右。 */
+  .yp-yarn-works .yp-yarn-grid { grid-template-columns: minmax(0, 1fr); }
+  .yp-yarn-works .yx-project-pick { display: grid; grid-template-columns: 96px minmax(0, 1fr); column-gap: 12px; row-gap: 2px; align-items: start; padding: 12px; border: 1px solid var(--yarn-border-card); border-radius: 14px; background: var(--yarn-bg-surface); }
+  .yp-yarn-works .yx-project-pick > :not(.yx-project-pick__media) { grid-column: 2; }
+  .yp-yarn-works .yx-project-pick__media { grid-column: 1; grid-row: 1 / span 4; aspect-ratio: 1; }
+  .yp-yarn-works .yx-project-pick__media img { width: 100%; height: 100%; object-fit: cover; }
+  .yp-yarn-details { gap: var(--yarn-space-5); }
+}
+/* 桌面保留原购物说明行，不重复显示保障条（桌面稿待出）。 */
+@media (min-width: 750px) { .yp-trust { display: none; } }

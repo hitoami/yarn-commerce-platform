@@ -152,6 +152,8 @@ class YarnKitBuy extends HTMLElement {
         confirmed = true;
         this.status.textContent = this.dataset.success;
         if (drawer && drawer.getSectionsToRender().every((section) => result.sections?.[section.id])) {
+          // Like Rise's product form: the drawer keeps is-empty from page load, which hides the new items.
+          drawer.classList?.remove('is-empty');
           drawer.renderContents(result);
         } else if (drawer) {
           window.location.assign(this.cartLink.href);
@@ -178,3 +180,52 @@ class YarnKitBuy extends HTMLElement {
 }
 
 if (!customElements.get('yarn-kit-buy')) customElements.define('yarn-kit-buy', YarnKitBuy);
+
+/* #182 v2: the quick button under the title and the phone sticky bar only forward clicks to the buy box's
+ * single main button, and mirror its label, disabled state and total. Cart logic stays in YarnKitBuy. */
+class YarnKitProxy extends HTMLElement {
+  connectedCallback() {
+    this.buy = document.querySelector('yarn-kit-buy');
+    this.target = this.buy?.querySelector('[data-kit-add="all"], [data-kit-add="available"]');
+    if (!this.target) return;
+    this.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-kit-proxy]');
+      if (!button || button.disabled || this.target.disabled) return;
+      this.target.click();
+    });
+    this.sync = () => {
+      const totalPrice = this.buy.querySelector('[data-kit-total-price]')?.textContent?.trim();
+      const totalLabel = this.buy.querySelector('[data-kit-total-label]')?.textContent?.trim();
+      this.querySelectorAll('[data-kit-proxy]').forEach((button) => {
+        button.disabled = this.target.disabled;
+        if (!('kitProxyShort' in button.dataset)) {
+          button.textContent = totalPrice && !this.target.disabled ? `${this.target.textContent.trim()} · ${totalPrice}` : this.target.textContent.trim();
+        }
+      });
+      const count = this.querySelector('[data-kit-proxy-count]');
+      const total = this.querySelector('[data-kit-proxy-total]');
+      if (count && totalLabel) count.textContent = totalLabel;
+      if (total && totalPrice) total.textContent = totalPrice;
+    };
+    this.observer = new MutationObserver(this.sync);
+    this.observer.observe(this.buy, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['disabled'] });
+    if ('kitSticky' in this.dataset && 'IntersectionObserver' in window) {
+      const watched = [this.target, document.querySelector('.yk-quick')].filter(Boolean);
+      const visible = new Set();
+      this.io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => (entry.isIntersecting ? visible.add(entry.target) : visible.delete(entry.target)));
+        const show = visible.size === 0;
+        this.dataset.visible = String(show);
+        this.inert = !show;
+      });
+      watched.forEach((node) => this.io.observe(node));
+    }
+  }
+
+  disconnectedCallback() {
+    this.observer?.disconnect();
+    this.io?.disconnect();
+  }
+}
+
+if (!customElements.get('yarn-kit-proxy')) customElements.define('yarn-kit-proxy', YarnKitProxy);
