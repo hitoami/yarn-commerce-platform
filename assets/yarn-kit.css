@@ -10,7 +10,7 @@
 .yk-head { display: grid; gap: 10px; justify-items: start; }
 .yk-demo { margin: 0; color: var(--yarn-text-muted); font-size: 1.2rem; }
 .yk-pill { padding: 3px 10px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-butter); color: var(--yarn-text-primary); font-size: 1.2rem; font-weight: 600; }
-.yk-title { margin: 0; color: var(--yarn-text-heading); font: 600 2.4rem/1.35 var(--yarn-display); }
+.yk-title { margin: 0; color: var(--yarn-text-heading); font: 500 2.4rem/1.35 var(--yarn-display); }
 .yk-summary { margin: 0; color: var(--yarn-text-secondary); font-size: 1.4rem; line-height: 1.75; }
 .yk-facts { display: flex; flex-wrap: wrap; gap: var(--yarn-space-2); margin: 0; padding: 0; list-style: none; }
 .yk-facts li { padding: 3px 10px; border: 1px solid var(--yarn-border-subtle); border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); font-size: 1.2rem; }

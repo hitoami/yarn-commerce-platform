@@ -183,7 +183,7 @@
   border: 1px solid var(--yarn-border-subtle);
   border-radius: var(--yarn-radius-pill);
   color: var(--yarn-text-primary);
-  font-family: var(--yarn-display);
+  font-family: var(--yarn-body);
   font-size: var(--yarn-type-control);
   line-height: 1.2;
   letter-spacing: 0;
@@ -277,8 +277,9 @@
   padding-inline: var(--yarn-gutter);
 }
 .yarn-main-menu .header__menu-item,
-.header-wrapper .menu-drawer__menu-item {
-  font-family: var(--yarn-display);
+.header-wrapper .menu-drawer__menu-item,
+.announcement-bar__message {
+  font-family: var(--yarn-body);
   letter-spacing: 0;
 }
 .yarn-main-menu .header__menu-item { font-size: var(--yarn-type-control); }

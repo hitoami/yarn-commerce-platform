@@ -28,7 +28,7 @@
   color: var(--yarn-text-primary);
   font-family: var(--yarn-display);
   font-size: 2.2rem;
-  font-weight: 600;
+  font-weight: 500;
   line-height: var(--yarn-leading);
   overflow-wrap: anywhere;
 }

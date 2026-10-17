@@ -18,7 +18,7 @@
 }
 .yp-library--rows .yp-card__title {
   margin: var(--yarn-space-3) 0 0; font-family: var(--yarn-display);
-  font-size: 1.8rem; font-weight: 600; line-height: var(--yarn-leading);
+  font-size: 1.8rem; font-weight: 500; line-height: var(--yarn-leading);
   overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
 }
 .yp-library--rows .yp-card__price {
@@ -65,7 +65,7 @@
 .yarn-search-page { background: var(--yarn-bg-surface); }
 .yarn-favorites-notice { position: fixed; z-index: 20; bottom: var(--yarn-space-5); left: 50%; transform: translateX(-50%); max-width: min(540px, calc(100% - 32px)); padding: var(--yarn-space-3) var(--yarn-space-5); border: 1px solid var(--yarn-border-subtle); border-radius: var(--yarn-radius-panel); background: var(--yarn-bg-surface); color: var(--yarn-text-primary); font-size: 1.5rem; }
 .yarn-favorites-dialog { width: min(440px, calc(100% - 32px)); padding: var(--yarn-space-5); border: 0; border-radius: var(--yarn-radius-panel); background: var(--yarn-bg-surface); color: var(--yarn-text-primary); }
-.yarn-favorites-dialog h2 { font: 600 2.2rem/1.5 var(--yarn-display); margin: 0; }
+.yarn-favorites-dialog h2 { font: 500 2.2rem/1.5 var(--yarn-display); margin: 0; }
 .yarn-favorites-dialog p { color: var(--yarn-text-muted); font-size: 1.5rem; }
 .yarn-favorites-dialog footer { display: flex; align-items: center; justify-content: space-between; gap: var(--yarn-space-3); }
 

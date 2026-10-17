@@ -17,7 +17,7 @@ hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus)
 .hitoami-slide__link { position: absolute; inset: 0; display: block; }
 .hitoami-scene--placeholder { background: var(--yarn-bg-sunken); }
 .hitoami-copy { position: relative; z-index: 1; padding: 106px 24px 0; max-width: 600px; }
-.hitoami-heading { color: var(--yarn-text-warm); font-family: var(--yarn-display); font-size: clamp(2.8rem, 7.8vw, 3.4rem); font-weight: 600; line-height: 1.35; letter-spacing: 0; margin: 0 0 12px; }
+.hitoami-heading { color: var(--yarn-text-warm); font-family: var(--yarn-display); font-size: clamp(2.8rem, 7.8vw, 3.4rem); font-weight: 500; line-height: 1.35; letter-spacing: 0; margin: 0 0 12px; }
 .hitoami-subtitle { color: var(--yarn-text-warm); font-size: 1.5rem; line-height: 1.65; margin: 0 0 20px; max-width: 32ch; }
 .hitoami-cta { display: inline-flex; align-items: center; justify-content: center; gap: 20px; min-height: 46px; padding: 10px 24px; border-radius: var(--yarn-radius-pill); background: var(--yarn-home-action); color: var(--yarn-text-inverse); font-size: 1.6rem; text-decoration: none; }
 .hitoami-cta:hover { background: var(--yarn-text-warm); }

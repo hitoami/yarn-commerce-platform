@@ -11,7 +11,7 @@ a.yx-season:hover .yx-season__media img { transform: scale(1.03); }
 .yx-season__collage--1 img:first-child { grid-column: 1 / -1; }
 .yx-season__collage--2 img:last-child { grid-row: 1 / -1; }
 .yx-season__body { display: grid; gap: var(--yarn-space-4); justify-items: start; }
-.yx-season__heading { margin: 0; color: var(--yarn-text-heading); font: 700 3.2rem/1.2 var(--yarn-display); text-wrap: balance; }
+.yx-season__heading { margin: 0; color: var(--yarn-text-heading); font: 500 3.2rem/1.2 var(--yarn-display); text-wrap: balance; }
 .yx-season__text { max-width: 26em; margin: 0; color: var(--yarn-text-secondary); font-size: 1.5rem; line-height: 1.8; }
 .yx-season__label { padding: 5px 14px; border: 1px solid var(--yarn-cta-border); border-radius: var(--yarn-radius-pill); color: var(--yarn-text-warm); font-size: 1.3rem; font-weight: 600; }
 .yx-season__link { display: inline-flex; align-items: center; gap: 8px; min-height: var(--yarn-touch); margin-top: var(--yarn-space-2); padding: 0 24px; box-sizing: border-box; border: 1px solid var(--yarn-text-heading); border-radius: var(--yarn-radius-pill); color: var(--yarn-text-heading); font-size: 1.5rem; font-weight: 600; transition: background-color 0.2s ease, color 0.2s ease; }

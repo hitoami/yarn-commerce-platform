@@ -3,7 +3,7 @@ body:has(.yx-toolbar) { background: var(--yarn-bg-surface); }
 body:has(.yx-toolbar) .announcement-bar-section { display: none; }
 .collection-hero { padding: 28px 0 8px; background: var(--yarn-bg-surface); border: 0; }
 .collection-hero .page-width, .yx-toolbar.page-width, collection-component .page-width { width: 100%; max-width: calc(var(--yarn-commerce-max) + 64px); margin-inline: auto; padding-inline: 32px; }
-.collection-hero__title { color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 40px; font-weight: 600; line-height: 1.3; }
+.collection-hero__title { color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 40px; font-weight: 500; line-height: 1.3; }
 .collection-hero__description { margin-top: 12px; max-width: 54em; color: var(--yarn-text-muted); font-size: 16px; line-height: 1.6; }
 .collection-hero__description p { margin: 0 0 8px; }
 .yx-toolbar { display: grid; gap: 12px; padding-top: 12px; padding-bottom: 12px; }
@@ -63,7 +63,7 @@ collection-component #product-grid { margin-top: 0; }
 }
 /* #131: a collection with no products yet (e.g. handmade pieces before launch) shows a calm "coming soon" note instead of "0 of 0". */
 .yx-collection-preparing { display: grid; justify-items: center; gap: 12px; padding-block: 48px 72px; text-align: center; }
-.yx-collection-preparing__title { margin: 0; color: var(--yarn-text-heading); font: 600 2.4rem/1.3 var(--yarn-display); }
+.yx-collection-preparing__title { margin: 0; color: var(--yarn-text-heading); font: 500 2.4rem/1.3 var(--yarn-display); }
 .yx-collection-preparing__text { max-width: 30em; margin: 0; color: var(--yarn-text-secondary); font-size: 1.5rem; line-height: 1.8; }
 .yx-collection-preparing__link { display: inline-flex; align-items: center; gap: 6px; min-height: var(--yarn-touch); padding: 0 var(--yarn-space-5); border: 1px solid var(--yarn-text-heading); border-radius: var(--yarn-radius-pill); color: var(--yarn-text-heading); font-size: 1.4rem; font-weight: 600; text-decoration: none; }
 .yx-collection-preparing__link:hover { background: var(--yarn-text-heading); color: var(--yarn-text-inverse); }
