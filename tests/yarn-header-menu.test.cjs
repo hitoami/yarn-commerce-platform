@@ -116,3 +116,11 @@ test('desktop header docks with a drop-in and compact bar, honouring reduced mot
   assert.doesNotMatch(hero, /header__icon--favorites \{ display: none/, 'homepage keeps the same header icons');
   assert.match(headerCss, /width: 190px;/);
 });
+
+test('desktop wave marks only the current page or open menu; Rise underline is suppressed (#131)', () => {
+  const wave = headerCss.match(/\.yarn-main-menu :is\(([^)]*)\) > span:first-child::after \{ opacity: 1; \}/);
+  assert.ok(wave, 'wave visibility rule present');
+  assert.doesNotMatch(wave[1], /:hover/, 'hover must not show the wave');
+  assert.match(headerCss, /\.yarn-main-menu details\[open\]:hover > \.header__menu-item,[\s\S]*?\{ text-decoration: none; \}/);
+  assert.match(headerCss, /transform: translateY\(-14%\);/, 'logo lifted so letters align with the menu');
+});

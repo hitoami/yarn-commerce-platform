@@ -16,6 +16,9 @@
   width: 190px;
   max-width: 100%;
   aspect-ratio: 3.797;
+  /* The cat ears fill the top of the artwork, so the letters sit below the image centre;
+     lift it so the letters line up with the menu text (Issue 131). */
+  transform: translateY(-14%);
   overflow: hidden;
 }
 
@@ -249,7 +252,7 @@
   }
 
   .header-wrapper .header__heading-link > .yarn-wordmark {
-    transform: none;
+    transform: translateY(-14%);
   }
 
   .header-wrapper .menu-drawer__localization .localization-form {
@@ -462,7 +465,14 @@
     opacity: 0;
     transition: opacity 0.15s ease;
   }
-  .yarn-main-menu :is(.header__active-menu-item, [aria-current='page'], details[open] > .header__menu-item, .header__menu-item:hover) > span:first-child::after { opacity: 1; }
+  /* The wave marks only the current page and the open menu; hover just tints the text, so two items never both look selected. */
+  .yarn-main-menu :is(.header__active-menu-item, [aria-current='page'], details[open] > .header__menu-item) > span:first-child::after { opacity: 1; }
+  .yarn-main-menu .header__menu-item:hover,
+  .yarn-main-menu details[open] > .header__menu-item { color: var(--yarn-action); }
+  /* Rise underlines an open summary (thicker on hover); the wave replaces it. */
+  .yarn-main-menu details[open] > .header__menu-item,
+  .yarn-main-menu details[open]:hover > .header__menu-item,
+  .yarn-main-menu .header__menu-item:hover span { text-decoration: none; }
   .yarn-main-menu summary.header__menu-item { display: inline-flex; align-items: center; }
   .yarn-main-menu summary.header__menu-item .icon-caret { position: static; flex: 0 0 10px; width: 10px; height: 6px; transition: transform 0.2s ease; }
   .yarn-main-menu details[open] > .header__menu-item .icon-caret { transform: rotate(180deg); }
@@ -504,7 +514,7 @@
     transition: background-color 0.45s ease, box-shadow 0.45s ease, min-height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
       padding 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .section-header .header__heading-link > .yarn-wordmark { transform-origin: left center; }
+  .section-header .header__heading-link > .yarn-wordmark { transform-origin: left center; transform: translateY(-20%); }
 
   .section-header.yarn-header-docked { position: sticky; top: 0; }
   .section-header.yarn-header-docked .header-wrapper {
@@ -516,7 +526,7 @@
     animation: yarn-header-drop 0.62s cubic-bezier(0.18, 1.25, 0.4, 1) both;
   }
   .section-header.yarn-header-docked #YarnHeader { min-height: 64px; padding-block: 4px; }
-  .section-header.yarn-header-docked .header__heading-link > .yarn-wordmark { transform: scale(0.8); }
+  .section-header.yarn-header-docked .header__heading-link > .yarn-wordmark { transform: translateY(-20%) scale(0.8); }
 
 }
 
