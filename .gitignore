@@ -35,3 +35,12 @@
 
 # npm run proof 证据包（本地生成，不提交）
 /.proof/
+
+# Claude Design 同步：脚本、构建产物与本机状态只留本地；.design-sync/ 下其余文件（config、NOTES、previews）提交。
+/.ds-sync/
+/ds-bundle/
+/.design-sync/.cache/
+/.design-sync/learnings/
+/.design-sync/node_modules
+/design/system/node_modules/
+/design/system/dist/

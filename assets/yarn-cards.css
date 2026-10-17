@@ -10,18 +10,17 @@
 .yx-badge--finished { background: var(--yarn-tint-sage); }
 .yx-badge--content { background: var(--yarn-action-subtle-bg); color: var(--yarn-accent); }
 .yx-badge--on-media, .yx-product-card__media .yx-badge { position: absolute; left: 8px; top: 8px; z-index: 2; }
+/* #143: one product card everywhere - open card, 1:1 sunken tile with the whole photo (contain), then title / spec / price.
+   The catalog adds only the quick-add row; category badges and the kind/colour meta row are gone from both. */
 .yx-catalog-card .card {
   display: flex; flex-direction: column; height: 100%;
-  border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-card-radius);
-  background: var(--yarn-bg-surface); color: var(--yarn-text-heading); overflow: hidden; text-decoration: none;
+  border: 0; border-radius: 0; background: transparent; color: var(--yarn-text-heading); text-decoration: none;
 }
 /* Home picks: borderless cards, the square photo is the card and the text sits on the page (#93). */
 .yx-product-card { display: flex; flex-direction: column; height: 100%; color: var(--yarn-text-heading); text-decoration: none; }
-.yx-product-card__media { position: relative; aspect-ratio: 1; border-radius: var(--yarn-card-radius); background: var(--yarn-bg-surface); overflow: hidden; }
+.yx-product-card__media { position: relative; aspect-ratio: 1; border-radius: var(--yarn-card-radius); background: var(--yarn-bg-sunken); overflow: hidden; }
 .yx-product-card__media img { display: block; width: 100%; height: 100%; object-fit: contain; }
-.yx-product-card__body { display: flex; flex: 1; flex-direction: column; gap: 4px; padding: 12px 2px 4px; }
-.yx-card-meta { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; color: var(--yarn-text-muted); font-size: 12px; line-height: 1.4; letter-spacing: 0.04em; }
-.yx-card-meta__colors { margin-left: auto; white-space: nowrap; }
+.yx-product-card__body { display: flex; flex: 1; flex-direction: column; gap: 4px; padding: 10px 0 0; }
 .yx-product-card__title, .yx-catalog-card .card__heading {
   color: var(--yarn-text-heading); font-family: var(--yarn-display);
   font-size: var(--yarn-card-title); font-weight: 600; line-height: 1.4;
@@ -39,9 +38,7 @@
 .yx-product-card__stock { position: absolute; left: 8px; top: 8px; z-index: 2; padding: 3px 10px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: 13px; font-weight: 600; line-height: 1.4; }
 .yx-product-card__stock--out { background: var(--yarn-bg-surface); color: var(--yarn-text-muted); }
 .yx-product-card__off { position: absolute; left: 8px; top: 8px; z-index: 2; padding: 3px 10px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-blush); color: var(--yarn-text-primary); font-size: 13px; font-weight: 600; line-height: 1.4; }
-.yx-product-card__meta-row { display: flex; align-items: center; gap: 8px; }
-.yx-product-card__meta-row .yx-card-meta { flex: 1; min-width: 0; }
-.yx-product-card__badge { flex: none; margin-left: auto; padding: 2px 9px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: 12px; font-weight: 600; line-height: 1.4; }
+.yx-product-card__badge { align-self: flex-start; padding: 2px 9px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: 12px; font-weight: 600; line-height: 1.4; }
 .yx-product-card__reason { display: block; font-size: var(--yarn-card-meta); line-height: 1.45; color: var(--yarn-text-secondary); }
 .yx-project-picks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
 .yx-project-pick { display: flex; flex-direction: column; gap: 8px; color: var(--yarn-text-heading); text-decoration: none; }
@@ -62,22 +59,22 @@
 /* Adapt the native Shopify card to the same visual contract without replacing its form. */
 .product-grid > .grid__item > product-component { display: block; height: 100%; width: 100%; }
 .yx-catalog-card { height: 100%; }
-.yx-catalog-card .card__inner { --ratio-percent: 64.52% !important; width: 100%; background: var(--yarn-bg-page); }
+.yx-catalog-card .card__inner { --ratio-percent: 100% !important; width: 100%; border-radius: var(--yarn-card-radius); background: var(--yarn-bg-sunken); overflow: hidden; }
 .yx-catalog-card .card__media { inset: 0; border-radius: 0; }
 .yx-catalog-card .card__media .media img { object-fit: contain; }
 .yx-catalog-card .card > .card__content { flex: 1; padding: 0; grid-template-rows: 1fr auto auto; }
-.yx-catalog-card .card > .card__content .card__information { padding: 10px 12px 0; }
+.yx-catalog-card .card > .card__content .card__information { padding: 10px 0 0; }
 .yx-catalog-card .card-information { display: flex; flex-direction: column; gap: 4px; }
 .yx-catalog-card .card-information > .price { margin-top: 4px; }
 .yx-catalog-card .card-information > .caption-large:empty { display: none; }
 .yx-catalog-card .quick-add { margin: 0; }
 .yx-catalog-card .quick-add .button {
   display: flex; justify-content: flex-start; gap: 8px; min-height: var(--yarn-touch);
-  padding: 6px 12px; border: 0; border-radius: 0; background: transparent;
+  padding: 6px 0; border: 0; border-radius: 0; background: transparent;
   color: var(--yarn-accent); font-size: 14px; box-shadow: none;
 }
 .yx-catalog-card .quick-add .button::before, .yx-catalog-card .quick-add .button::after { box-shadow: none; }
-.yx-catalog-card .quick-add .button:hover { background: var(--yarn-action-subtle-bg); }
+.yx-catalog-card .quick-add .button:hover { background: transparent; text-decoration: underline; text-underline-offset: 4px; }
 .yx-catalog-card .quick-add .button[disabled] { color: var(--yarn-text-muted); }
 .yx-catalog-card .quick-add__arrow { display: inline-flex; width: 16px; flex-shrink: 0; }
 /* Editorial card has an image-led silhouette, with no product price. */
@@ -154,8 +151,6 @@
   .yx-picks--duo:not(:has(.yx-picks__exit)) .yx-product-card { flex-direction: column; }
   .yx-picks--duo:not(:has(.yx-picks__exit)) .yx-product-card__media { width: 100%; }
   .yx-picks--duo:not(:has(.yx-picks__exit)) .yx-product-card__body { justify-content: flex-start; padding: 12px 2px 4px; }
-  .yx-product-card__body { padding-inline: 2px; }
-  .yx-catalog-card .card > .card__content .card__information { padding-inline: 10px; }
   .yx-exit { gap: 12px; padding: 16px; }
   .yx-exit__title { font-size: 20px; }
   .yx-exit__text { font-size: 14px; }

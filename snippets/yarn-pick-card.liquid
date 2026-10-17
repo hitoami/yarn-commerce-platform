@@ -1,6 +1,6 @@
 {% comment %}
-  商品卡(卡片家族):无框卡片,照片即卡片。图片优先读 metafield yarn.card_image(运营上传的场景图),无则用主图;
-  信息行显示品类与真实颜色数;规格行读 metafield yarn.spec_line(可选,无则省略);
+  商品卡(卡片家族,#143 与目录卡统一):无框卡片,1:1 浅米底方图完整显示。图片优先读 metafield yarn.card_image(运营上传的场景图),无则用主图;
+  文字只有标题 / 规格 / 价格(不显示品类行);规格行读 metafield yarn.spec_line(可选,无则省略);
   原价只在 compare_at_price 真实存在时划线显示。整卡一个链接目标。
   show_discount:在图片左上角显示真实折扣比例(只在有划线价时)。
   beginner:读 metafield yarn.beginner_reason;有理由才显示「新手友好」标签,理由代替规格行;没有理由不显示标签。
@@ -46,11 +46,7 @@
     {%- if card_stock != blank -%}<span class="yx-product-card__stock{% if card_product.available == false %} yx-product-card__stock--out{% endif %}">{{ card_stock }}</span>{%- endif -%}
   </div>
   <div class="yx-product-card__body">
-    {%- if card_reason != blank -%}
-      <span class="yx-product-card__meta-row">{%- render 'yarn-card-meta', meta_product: card_product -%}<span class="yx-product-card__badge">{{ 'yarn_project.card_badge_beginner' | t }}</span></span>
-    {%- else -%}
-      {%- render 'yarn-card-meta', meta_product: card_product -%}
-    {%- endif -%}
+    {%- if card_reason != blank -%}<span class="yx-product-card__badge">{{ 'yarn_project.card_badge_beginner' | t }}</span>{%- endif -%}
     <span class="yx-product-card__title">{{ card_product.title | escape }}</span>
     {%- if card_reason != blank -%}
       <span class="yx-product-card__reason">{{ card_reason | escape }}</span>
