@@ -1,15 +1,4 @@
 {%- comment -%}Mobile and drawer navigation. Menu labels and URLs come from Shopify Navigation.{%- endcomment -%}
-{%- liquid
-  assign drawer_collection = section.settings.drawer_yarn_collection
-  capture drawer_tiles
-    for block in section.blocks
-      if block.type == 'yarn_entry'
-        render 'yarn-drawer-entry', block: block, collection: drawer_collection
-      endif
-    endfor
-  endcapture
-  assign drawer_tiles = drawer_tiles | strip
--%}
 <header-drawer data-breakpoint="desktop">
   <details id="Details-menu-drawer-container" class="menu-drawer-container">
     <summary class="header__icon header__icon--menu header__icon--summary link focus-inset" aria-label="{{ 'sections.header.menu' | t }}">
@@ -107,8 +96,8 @@
                       </span>
                       <span class="svg-wrapper" aria-hidden="true">{{- 'icon-arrow.svg' | inline_asset_content -}}</span>
                     </a>
-                  {%- elsif link.type == 'collection_link' and link.object.handle == section.settings.drawer_yarn_collection.handle and drawer_tiles != blank -%}
-                    {%- comment -%}毛线：默认展开为分类图块，标题行可收起；图块来自本区块的「毛线入口」block。{%- endcomment -%}
+                  {%- elsif link.type == 'collection_link' and link.object.handle == section.settings.drawer_yarn_collection.handle and nav_tiles != blank -%}
+                    {%- comment -%}毛线：默认展开为分类图块，标题行可收起；图块由页头统一计算（yarn-nav-tiles）。{%- endcomment -%}
                     <div class="yarn-drawer-yarn" data-drawer-group>
                       <button
                         type="button"
@@ -122,27 +111,7 @@
                         <span class="svg-wrapper yarn-drawer-chevron" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
                       </button>
                       <ul class="yarn-drawer-tiles list-unstyled" id="YarnDrawerTiles" role="list">
-                        {{ drawer_tiles }}
-                        <li>
-                          <a class="yarn-drawer-tile yarn-drawer-tile--all" href="{{ link.url | escape }}"{% if link.current %} aria-current="page"{% endif %}>
-                            {%- if section.settings.drawer_all_image != blank -%}
-                              <span class="yarn-drawer-tile__photo">
-                                {{ section.settings.drawer_all_image | image_url: width: 400 | image_tag: widths: '200, 400', sizes: '160px', loading: 'lazy', alt: '' }}
-                              </span>
-                            {%- else -%}
-                              {%- comment -%}未设图片时拼四件商品主图，避免与分类图块重复。{%- endcomment -%}
-                              <span class="yarn-drawer-tile__photo yarn-drawer-tile__photo--mosaic">
-                                {%- for drawer_product in link.object.products limit: 4 -%}
-                                  {%- if drawer_product.featured_image != blank -%}
-                                    {{ drawer_product.featured_image | image_url: width: 200 | image_tag: widths: '100, 200', sizes: '80px', loading: 'lazy', alt: '' }}
-                                  {%- endif -%}
-                                {%- endfor -%}
-                              </span>
-                            {%- endif -%}
-                            <span class="yarn-drawer-tile__name">{{ 'yarn_project.entries_view_all' | t }}</span>
-                            <span class="yarn-drawer-tile__count">{{ 'yarn_project.entry_count' | t: count: link.object.all_products_count }}</span>
-                          </a>
-                        </li>
+                        {{ nav_tiles }}
                       </ul>
                     </div>
                   {%- else -%}
@@ -154,7 +123,7 @@
                     >
                       <span>{{ link.title | escape }}</span>
                       {%- if link.type == 'collection_link' and link.object.all_products_count == 0 -%}
-                        <span class="yarn-drawer-badge">{{ 'sections.header.coming_soon' | t }}</span>
+                        <span class="yarn-nav-badge">{{ 'sections.header.coming_soon' | t }}</span>
                       {%- endif -%}
                       <span class="svg-wrapper yarn-drawer-row__arrow" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
                     </a>
@@ -223,7 +192,7 @@
     </div>
   </details>
 </header-drawer>
-{%- if drawer_tiles != blank -%}
+{%- if nav_tiles != blank -%}
   <script>
     {%- comment -%}毛线标题行收起 / 展开分类图块。不用 details，避免触发 Rise 抽屉的子菜单滑动。{%- endcomment -%}
     document.addEventListener('click', (event) => {

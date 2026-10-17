@@ -57,6 +57,33 @@
               </ul>
             </details>
           </header-menu>
+        {%- elsif link.type == 'collection_link' and link.object.handle == section.settings.drawer_yarn_collection.handle and nav_tiles != blank -%}
+          {%- comment -%}毛线：点击展开 6 格大图面板（#131 桌面稿），沿用 Rise 的 header-menu / mega-menu 开关与键盘行为。{%- endcomment -%}
+          {%- capture mega_eyebrow -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'nav_yarn_eyebrow' -%}{%- endcapture -%}
+          {%- capture mega_title -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'nav_yarn_title' -%}{%- endcapture -%}
+          <header-menu>
+            <details id="Details-YarnHeaderMenu-{{ forloop.index }}" class="mega-menu yarn-mega">
+              <summary
+                id="YarnHeaderMenu-{{ link.handle }}"
+                class="header__menu-item list-menu__item link focus-inset{% if link.current or link.child_active %} header__active-menu-item{% endif %}"
+              >
+                <span>{{ link.title | escape }}</span>
+                {{- 'icon-caret.svg' | inline_asset_content -}}
+              </summary>
+              <div id="YarnMegaMenu-{{ forloop.index }}" class="mega-menu__content yarn-mega__content motion-reduce global-settings-popup" tabindex="-1">
+                <div class="yarn-mega__inner">
+                  <div class="yarn-mega__head">
+                    <div>
+                      {%- if mega_eyebrow != blank -%}<p class="yarn-mega__eyebrow">{{ mega_eyebrow | escape }}</p>{%- endif -%}
+                      {%- if mega_title != blank -%}<p class="yarn-mega__title">{{ mega_title | escape }}</p>{%- endif -%}
+                    </div>
+                    <a class="yarn-mega__all" href="{{ link.url | escape }}">{{ 'yarn_project.entries_view_all' | t }}<span aria-hidden="true"> →</span></a>
+                  </div>
+                  <ul class="yarn-mega__tiles list-unstyled" role="list">{{ nav_tiles }}</ul>
+                </div>
+              </div>
+            </details>
+          </header-menu>
         {%- else -%}
           <a
             id="YarnHeaderMenu-{{ link.handle }}"
@@ -65,6 +92,9 @@
             {% if link.current %}aria-current="page"{% endif %}
           >
             <span>{{ link.title | escape }}</span>
+            {%- if link.type == 'collection_link' and link.object.all_products_count == 0 -%}
+              <span class="yarn-nav-badge">{{ 'sections.header.coming_soon' | t }}</span>
+            {%- endif -%}
           </a>
         {%- endif -%}
       </li>

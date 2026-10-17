@@ -75,7 +75,8 @@ async function inspectPage({ contentSelectors, ignoreSelectors }) {
     const style = getComputedStyle(element);
     return box.width > 0 && box.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
   };
-  const images = () => [...document.images].filter(img => img.currentSrc && shown(img));
+  // 收起的 <details> 里的图片（如导航毛线面板）不渲染、也不会懒加载，不算未加载；文字仍照常检查语言。
+  const images = () => [...document.images].filter(img => img.currentSrc && shown(img) && !img.closest('details:not([open]) > :not(summary)'));
   for (let waited = 0; waited < 8000 && images().some(img => !img.complete); waited += 250) {
     await new Promise(resolve => setTimeout(resolve, 250));
   }
