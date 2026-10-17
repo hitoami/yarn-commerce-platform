@@ -19,12 +19,15 @@ hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus)
 .hitoami-copy { position: relative; z-index: 1; padding: 106px 24px 0; max-width: 600px; }
 .hitoami-heading { color: var(--yarn-text-warm); font-family: var(--yarn-display); font-size: clamp(2.8rem, 7.8vw, 3.4rem); font-weight: 600; line-height: 1.35; letter-spacing: 0; margin: 0 0 12px; }
 .hitoami-subtitle { color: var(--yarn-text-warm); font-size: 1.5rem; line-height: 1.65; margin: 0 0 20px; max-width: 32ch; }
-.hitoami-cta { display: inline-flex; align-items: center; justify-content: center; gap: 20px; min-height: 46px; padding: 10px 24px; border-radius: var(--yarn-radius-pill); background: var(--yarn-home-action); color: var(--yarn-text-inverse); font-size: 1.6rem; text-decoration: none; }
-.hitoami-cta:hover { background: var(--yarn-text-warm); }
-.hitoami-cta span, .hitoami-cta svg { display: block; width: 20px; height: 20px; }
+/* #167: a browsing text link, not a purchase button; the 44px row keeps the touch target. */
+.hitoami-cta { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--yarn-home-action); font-size: 1.5rem; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.hitoami-cta:hover { color: var(--yarn-text-warm); }
+.hitoami-cta span, .hitoami-cta svg { display: block; width: 16px; height: 16px; }
+/* Japanese wraps at phrase boundaries so katakana words such as ループヤーン stay whole (#167). */
+.hitoami-copy:lang(ja) :is(.hitoami-heading, .hitoami-subtitle) { word-break: auto-phrase; }
 .hitoami-slide--light .hitoami-heading, .hitoami-slide--light .hitoami-subtitle { color: var(--yarn-text-inverse); }
 .hitoami-slide--light .hitoami-copy { text-shadow: 0 1px 5px var(--yarn-overlay); }
-.hitoami-slide--light .hitoami-cta { background: var(--yarn-bg-surface); color: var(--yarn-text-warm); }
+.hitoami-slide--light .hitoami-cta { color: var(--yarn-text-inverse); }
 .hitoami-controls { position: absolute; left: 0; right: 0; bottom: 30px; z-index: 2; display: flex; justify-content: center; pointer-events: none; }
 .hitoami-dots { display: flex; padding: 0 6px; border-radius: var(--yarn-radius-pill); background: color-mix(in srgb, var(--yarn-bg-surface) 90%, transparent); pointer-events: auto; }
 .hitoami-dots button { border: 0; background: transparent; width: 32px; height: 32px; padding: 0; display: grid; place-items: center; cursor: pointer; }
@@ -42,7 +45,7 @@ hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus)
   .hitoami-copy > * { max-width: 640px; }
   .hitoami-heading { margin-bottom: 16px; font-size: clamp(3.6rem, 3.6vw, 5.2rem); line-height: 1.3; }
   .hitoami-subtitle { margin-bottom: 28px; font-size: 1.8rem; line-height: 1.7; }
-  .hitoami-cta { min-height: 52px; padding: 12px 28px; gap: 24px; font-size: 1.7rem; }
+  .hitoami-cta { font-size: 1.7rem; }
   .hitoami-controls { bottom: 44px; }
   /* #140: bare bar dots on the scene (no capsule); each keeps a 24 × 36 target. */
   .hitoami-dots { padding: 0; background: none; }

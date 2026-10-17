@@ -13,15 +13,15 @@
             "scene": "yarn",
             "focus": 50,
             "tone": "dark",
-            "heading": "ここで、\n毎日を少しゆっくりと。",
-            "heading_zh": "来这里，\n把日子过慢一点。",
-            "heading_en": "Come in.\nTake life a stitch slower.",
-            "text": "色と手ざわりから、お気に入りを探そう。",
-            "text_zh": "从颜色与手感开始，找到自己的节奏。",
-            "text_en": "Explore colour and texture at your own pace.",
-            "cta": "",
-            "cta_zh": "",
-            "cta_en": ""
+            "heading": "ひと玉ずつ、\n選ぶ楽しみ。",
+            "heading_zh": "一团一团，\n慢慢挑。",
+            "heading_en": "Choose yarn,\none ball at a time.",
+            "text": "グラデーションや段染め、モヘヤ、ループヤーンなど。hitoamiは毛糸の専門店です。",
+            "text_zh": "渐变、段染、马海毛、圈圈纱……这里是毛线专门店 hitoami。",
+            "text_en": "Gradient and variegated yarns, mohair, bouclé and more. Welcome to hitoami, a specialist yarn shop.",
+            "cta": "毛糸を見る",
+            "cta_zh": "浏览毛线",
+            "cta_en": "Browse yarn"
           }
         },
         "slide-kit": {
@@ -30,39 +30,39 @@
             "scene": "kit",
             "focus": 50,
             "tone": "dark",
-            "heading": "材料セットをひらいて、\nひと目めからゆっくりと。",
-            "heading_zh": "打开材料包，\n从第一针慢慢开始。",
-            "heading_en": "Open a yarn set.\nBegin with one slow stitch.",
-            "text": "毛糸と作り方を、いっしょに選べます。",
-            "text_zh": "毛线和作品，可以一起挑选。",
-            "text_en": "Choose your yarn and project together.",
-            "cta": "",
-            "cta_zh": "",
-            "cta_en": ""
+            "heading": "編みたいものから、\n糸を選ぶ。",
+            "heading_zh": "从想织的作品，\n找到想用的线。",
+            "heading_en": "Start with\nwhat you want to make.",
+            "text": "作品ごとに、使う毛糸と玉数を紹介しています。",
+            "text_zh": "每个作品都写明用哪款毛线、用几团。",
+            "text_en": "Each project lists the yarn used and how many balls it needs.",
+            "cta": "作品と使う毛糸を見る",
+            "cta_zh": "看作品与用线",
+            "cta_en": "Explore projects and yarn"
           }
         },
-        "slide-finished": {
+        "slide-season": {
           "type": "slide",
           "settings": {
-            "scene": "finished",
+            "scene": "season",
             "focus": 50,
             "tone": "dark",
-            "heading": "手づくりのやさしさを、\n毎日のそばに。",
-            "heading_zh": "让手作的温柔，\n陪在每天身边。",
-            "heading_en": "Handmade gentleness,\nclose to every day.",
-            "text": "お気に入りの一点と、ゆっくり過ごす時間を。",
-            "text_zh": "一件心爱的手作，一段慢下来的时光。",
-            "text_en": "A favourite piece, and time to slow down.",
-            "cta": "",
-            "cta_zh": "",
-            "cta_en": ""
+            "heading": "秋冬の編みものに、\nあたたかな色を。",
+            "heading_zh": "秋冬，\n织一点温暖的颜色。",
+            "heading_en": "Warm colors\nfor autumn and winter.",
+            "text": "秋冬におすすめの毛糸をご紹介します。",
+            "text_zh": "看看本季推荐的秋冬毛线。",
+            "text_en": "Explore our yarn picks for the season.",
+            "cta": "今季のおすすめを見る",
+            "cta_zh": "看本季主推",
+            "cta_en": "Explore seasonal yarn picks"
           }
         }
       },
       "block_order": [
         "slide-yarn",
         "slide-kit",
-        "slide-finished"
+        "slide-season"
       ],
       "settings": {
         "catalog_layout": true
