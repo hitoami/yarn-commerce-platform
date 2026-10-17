@@ -34,8 +34,9 @@ test('all literal and dynamic UI translations exist in the three section locales
 test('homepage follows the #131 IA: yarn first, then season feature, yarn sets and handmade pieces', () => {
   // #131（2026-10-10 锦晨确认）：活动图 → 品牌介绍（附 LINE）→ 挑毛线 → 本季主推（编辑专题）→ 用我们的毛线可以织（材料包）→ 手工成品精选。
   // 导览条、新手友好编织包、底部 LINE 帮助条停用而不删除，编辑器里可重新打开。
+  // 滚动进度小猫（#151）是底边固定的装饰层，不占版面顺序，放在最后。
   const live = index.order.filter(id => !index.sections[id].disabled);
-  assert.deepEqual(live, ['hero', 'story', 'yarn-entries', 'catalog', 'season', 'guide', 'project-picks', 'picks-finished', 'faq']);
+  assert.deepEqual(live, ['hero', 'story', 'yarn-entries', 'catalog', 'season', 'guide', 'project-picks', 'picks-finished', 'faq', 'scroll-cat']);
   for (const retired of ['guide-strip', 'beginner-kits', 'line-support', 'sale-picks', 'filter-switch', 'yarn-hero']) assert.equal(index.sections[retired].disabled, true, retired);
   assert.equal(index.sections.hero.type, 'hitoami-hero');
   assert.equal(index.sections.story.type, 'hitoami-story');
@@ -67,11 +68,30 @@ test('homepage follows the #131 IA: yarn first, then season feature, yarn sets a
   // 本季主推：首页只放一张整块可点的入口卡，7 款毛线在专题页（page.season）；价格为 0 或多颜色时不在专题页直接加购。
   assert.doesNotMatch(seasonCard, /data-group|sf_note/);
   assert.match(seasonCard, /<\{\{ sf_tag \}\} class="yx-season"/);
-  assert.equal(JSON.parse(fs.readFileSync('templates/page.season.json', 'utf8')).sections.main.settings.tag, 'catalog-2026-10-season');
+  // #131（用户 2026-10-16）：专题页选品与顺序按 Figma「02 季节主推」画布，用选品列表锁定；标签只在列表为空时兜底。
+  const seasonTemplate = JSON.parse(fs.readFileSync('templates/page.season.json', 'utf8')).sections.main;
+  assert.deepEqual(seasonTemplate.settings.products, ['mvp-yarn-26', 'mvp-yarn-24', 'mvp-yarn-18', 'mvp-yarn-16', 'mvp-yarn-11', 'mvp-yarn-05', 'mvp-yarn-04']);
+  assert.deepEqual(seasonTemplate.block_order.map(id => seasonTemplate.blocks[id].settings.product), seasonTemplate.settings.products);
+  for (const id of seasonTemplate.block_order) {
+    for (const asset of seasonTemplate.blocks[id].settings.assets.split(',')) assert.ok(fs.existsSync(`assets/${asset}`), asset);
+  }
+  assert.ok(fs.existsSync(`assets/${seasonTemplate.settings.cover_asset}`));
+  assert.equal(seasonTemplate.settings.tag, 'catalog-2026-10-season');
   assert.match(season, /sp_product\.tags contains sp_tag/);
   assert.doesNotMatch(season.match(/<ol class="yx-season-page__list">[\s\S]*<\/ol>/)[0], /sp_tag/);
-  assert.match(season, /has_only_default_variant and sp_variant\.available and sp_variant\.price > 0/);
+  // #131（用户 2026-10-16 选 E）：专题页每款用首页商品卡的横排版，不直接加购。
+  assert.match(season, /render 'yarn-pick-card', card_product: sp_item, layout: 'row'/);
+  assert.doesNotMatch(season, /form 'product'/);
   // 材料包卡只汇总关联了 Variant 的「毛线」配件，价格 = Variant 价格 × 团数。
+  // #131：集合还没有商品时（手工成品上架前）不显示「0/0 件」和价格带，改为三语「准备中」说明。
+  const grid = fs.readFileSync('sections/main-collection-product-grid.liquid', 'utf8');
+  const toolbar = fs.readFileSync('sections/yarn-browse-toolbar.liquid', 'utf8');
+  assert.match(grid, /\{%- if collection_preparing -%\}[\s\S]*yarn_project\.collection_preparing_title/);
+  assert.match(toolbar, /\{%- unless tb_preparing -%\}[\s\S]*yx-toolbar__count[\s\S]*\{%- endunless -%\}/);
+  for (const locale of ['ja', 'zh-CN', 'en.default']) {
+    const text = fs.readFileSync(`locales/${locale}.json`, 'utf8');
+    for (const key of ['collection_preparing_title', 'collection_preparing_text', 'collection_preparing_link']) assert.match(text, new RegExp(`"${key}": "[^"]+"`));
+  }
   assert.match(kitCard, /component_type\.value == '毛线' and kit_component\.variant\.value != blank/);
   assert.match(kitCard, /kit_variant\.price \| times: kit_qty/);
 

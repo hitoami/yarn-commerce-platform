@@ -19,16 +19,28 @@ module.exports = {
       { selector: '.hitoami-story__media img', minimum: 1, label: '品牌介绍图片' },
       { selector: '.yarn-home-catalog__grid .yx-product-card', minimum: 4, label: '首页真实毛线商品卡' },
     ] },
-    { key: 'yarn-collection', path: '/collections/yarn' },
+    { key: 'yarn-collection', path: '/collections/yarn', requiredContent: [
+      { selector: '.ycb-chip', minimum: 2, label: '毛线分类胶囊' },
+      { selector: '.ycb-grid .yx-product-card', minimum: 4, label: '目录真实毛线商品卡' },
+    ] },
+    // #85：手工成品上架前，同一模板显示「准备中」占位。
+    { key: 'finished-collection', path: '/collections/finished-goods' },
     // #131：演示商品已删除，编织包不再销售；成品详情等真实成品上架后再加回。
+    // #131：手工成品上架前集合为空，显示三语「准备中」说明而不是「0/0 件」。
+    { key: 'finished-collection', path: '/collections/finished-goods', requiredContent: [
+      { selector: '.yx-collection-preparing__title', minimum: 1, label: '手工成品准备中说明' },
+    ] },
     { key: 'yarn-pdp', path: '/products/mvp-yarn-18' },
     // 本季主推专题页：后台页面已建（handle season）；page.season 上线正式主题、后台改选该模板前，用 ?view 预览。
     { key: 'season', path: '/pages/season?view=season', requiredContent: [
       { selector: '.yx-season-page__art img', minimum: 1, label: '本季专题封面' },
-      { selector: '.yx-season-page__yarn', minimum: 1, label: '本季专题真实毛线' },
+      { selector: '.yx-season-page__yarn', minimum: 7, label: '本季专题 7 款毛线' },
+      { selector: '.yx-season-page__toc-thumb img', minimum: 7, label: '本季专题目录小图' },
     ] },
     { key: 'cart-drawer', path: '/products/mvp-yarn-18', openCart: true },
-    { key: 'search', path: '/search?q=%E6%AF%9B%E7%BA%BF' },
+    // #149：搜索按毛线 / 材料包 / 手工成品分组；「段染」覆盖毛线与材料包两组，另看一次无结果状态。
+    { key: 'search', path: '/search?q=%E6%AE%B5%E6%9F%93' },
+    { key: 'search-empty', path: '/search?q=zzqx' },
     { key: 'commercial-disclosure', path: '/pages/commercial-disclosure' },
     { key: 'returns-exchanges', path: '/pages/returns-exchanges' },
     { key: 'shipping', path: '/pages/shipping' },

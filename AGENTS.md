@@ -1,6 +1,6 @@
 # AGENTS.md
 
-日本市场毛线电商与手作平台，当前以 Shopify Theme 实现 MVP。当前产品范围见 `PRODUCT.md`。
+日本市场毛线电商与手作平台，当前以 Shopify Theme 实现 MVP。网站只卖**毛线**和**手工成品**；材料包、本季主推是导向购买的内容页，不是商品。当前产品范围见 `PRODUCT.md`。
 
 本文件是所有 agent 工具（Codex、Claude Code 等）的唯一规则入口。仓库技能放 `.agents/skills/`，`.claude/skills` 与 `.github/skills` 为指向它的链接。
 
@@ -46,7 +46,9 @@
 - My Project、UGC、收藏、点赞、社区和创作者状态属于未来 Platform Service；该服务只存 Shopify 实体 ID，不复制价格、库存和订单真值。
 - 保持 Hybrid Storefront；全量迁移 Headless 需要新 ADR 和人工批准。重要首屏商品内容用 Liquid / HTML 服务端渲染，不用 Storefront API 重复获取。
 - Rise 提供 Theme 和购买流程骨架，允许按批准方向重写 Liquid / CSS；运营内容必须映射到 Section setting、Block、Metaobject、Metafield 或 Shopify Product，可在 Shopify 编辑。
-- 店铺数据的查询与批量写入优先用 `npm run admin`；写入先出改动清单，获当次批准后加 `--write`，先试一条再批量，写后复核。
+- 店铺数据的查询与批量写入优先用 `npm run admin`；写入先出改动清单，获当次批准后加 `--write`，先试一条再批量，写后复核。不在 Shopify 后台网页里做批量写入。
+- `npm run admin` 读取当前工作区根目录的 `.env`（不提交，每个工作区各一份）。缺失时按 `.env.example` 建好骨架，请用户从 Dev Dashboard 粘贴 Client ID / secret；agent 不自行搜寻、复制或从浏览器抄写凭证。
+- 下架商品用归档（`ARCHIVED`），不永久删除；材料包只引用目录内毛线，不为材料包另建毛线商品。
 - 不虚构评价、销量、折扣或品牌证明。未授权素材只用于受保护的内部原型；发布用 raster 记录生成提示词或来源。
 - 浏览器不得包含 Admin token、数据库密码或其他服务端凭证；diff 不得含密钥、个人数据、未授权素材或原始会议记录。
 

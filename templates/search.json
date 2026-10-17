@@ -2,7 +2,34 @@
   "sections": {
     "main": {
       "type": "yarn-search",
-      "settings": {}
+      "blocks": {
+        "category-gradient": {
+          "type": "category",
+          "settings": { "field": "yarn.texture", "entry": "gradient", "aliases": "段染,渐变,段染め,グラデーション,gradient,variegated" }
+        },
+        "category-fluffy": {
+          "type": "category",
+          "settings": { "field": "yarn.texture", "entry": "fluffy", "aliases": "毛绒,蓬松,ふわふわ,もこもこ,fluffy" }
+        },
+        "category-loop-fancy": {
+          "type": "category",
+          "settings": { "field": "yarn.texture", "entry": "loop-fancy", "aliases": "圈圈,花式,ループ,ブークレ,boucle,loop" }
+        },
+        "category-fine-airy": {
+          "type": "category",
+          "settings": { "field": "yarn.texture", "entry": "fine-airy", "aliases": "细线,极细,細い,極細,fine" }
+        },
+        "category-basic-solid": {
+          "type": "category",
+          "settings": { "field": "yarn.texture", "entry": "basic-solid", "aliases": "纯色,单色,単色,無地,solid" }
+        }
+      },
+      "block_order": ["category-gradient", "category-fluffy", "category-loop-fancy", "category-fine-airy", "category-basic-solid"],
+      "settings": {
+        "yarn_collection": "yarn",
+        "finished_collection": "finished-goods",
+        "kits_url": "shopify://pages/kits"
+      }
     }
   },
   "order": [

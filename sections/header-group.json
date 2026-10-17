@@ -52,8 +52,58 @@
         "enable_language_selector": true,
         "margin_bottom": 0,
         "padding_top": 16,
-        "padding_bottom": 16
-      }
+        "padding_bottom": 16,
+        "drawer_yarn_collection": "yarn"
+      },
+      "blocks": {
+        "entry-1": {
+          "type": "yarn_entry",
+          "settings": {
+            "field": "yarn.texture",
+            "entry": "gradient",
+            "source_photo": "hitoami-source-texture-7.jpeg"
+          }
+        },
+        "entry-2": {
+          "type": "yarn_entry",
+          "settings": {
+            "field": "yarn.texture",
+            "entry": "fluffy",
+            "source_photo": "hitoami-source-texture-14.jpeg"
+          }
+        },
+        "entry-3": {
+          "type": "yarn_entry",
+          "settings": {
+            "field": "yarn.texture",
+            "entry": "loop-fancy",
+            "source_photo": "hitoami-source-texture-23.jpeg"
+          }
+        },
+        "entry-4": {
+          "type": "yarn_entry",
+          "settings": {
+            "field": "yarn.texture",
+            "entry": "fine-airy",
+            "source_photo": "hitoami-source-texture-8.jpeg"
+          }
+        },
+        "entry-5": {
+          "type": "yarn_entry",
+          "settings": {
+            "field": "yarn.texture",
+            "entry": "basic-solid",
+            "source_photo": "hitoami-source-texture-5.jpeg"
+          }
+        }
+      },
+      "block_order": [
+        "entry-1",
+        "entry-2",
+        "entry-3",
+        "entry-4",
+        "entry-5"
+      ]
     }
   },
   "order": [

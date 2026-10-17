@@ -1,9 +1,11 @@
 {% comment %}
   商品卡(卡片家族):无框卡片,照片即卡片。图片优先读 metafield yarn.card_image(运营上传的场景图),无则用主图;
   信息行显示品类与真实颜色数;规格行读 metafield yarn.spec_line(可选,无则省略);
-  原价只在 compare_at_price 真实存在时划线显示。整卡一个链接目标。
+  原价只在 compare_at_price 真实存在时划线显示。整卡一个链接目标:标题链接铺满整卡,收藏与加入购物车按钮浮在其上(#153)。
+  加入购物车:只有一个可买款式时直接加入 Shopify Cart;多款式链接到详情页选择,不替用户挑颜色;售罄时按钮禁用。
   show_discount:在图片左上角显示真实折扣比例(只在有划线价时)。
   beginner:读 metafield yarn.beginner_reason;有理由才显示「新手友好」标签,理由代替规格行;没有理由不显示标签。
+  layout: 'row'(#131 本季专题，用户 2026-10-16 选定 Figma 候选 E):同一张卡改为横排，图片在左，文字在右，并在价格下加「查看商品 →」;样式与数据不变。
   handmade(#131):手工成品。规格行换成「手工制作」说明;库存由 Shopify 跟踪且 10 件及以下时左上角显示「仅剩 N 件」,卖完显示「售罄」。
 {% endcomment %}
 {%- liquid
@@ -15,6 +17,10 @@
   assign card_off = 0
   if show_discount and card_product.compare_at_price > card_product.price
     assign card_off = card_product.compare_at_price | minus: card_product.price | times: 100 | divided_by: card_product.compare_at_price
+  endif
+  assign card_sizes = '(min-width: 750px) 300px, 45vw'
+  if layout == 'row'
+    assign card_sizes = '140px'
   endif
   assign card_stock = blank
   if handmade
@@ -37,13 +43,14 @@
     endif
   endif
 -%}
-<a class="yx-product-card" href="{{ card_product.url }}">
+<div class="yx-product-card{% if layout == 'row' %} yx-product-card--row{% endif %}">
   <div class="yx-product-card__media">
     {%- if card_image != blank -%}
-      {{ card_image | image_url: width: 600 | image_tag: widths: '300, 450, 600', sizes: '(min-width: 750px) 300px, 45vw', loading: 'lazy', alt: card_image.alt | default: card_product.title }}
+      {{ card_image | image_url: width: 600 | image_tag: widths: '300, 450, 600', sizes: card_sizes, loading: 'lazy', alt: card_image.alt | default: card_product.title }}
     {%- endif -%}
     {%- if card_off > 0 -%}<span class="yx-product-card__off">-{{ card_off }}%</span>{%- endif -%}
     {%- if card_stock != blank -%}<span class="yx-product-card__stock{% if card_product.available == false %} yx-product-card__stock--out{% endif %}">{{ card_stock }}</span>{%- endif -%}
+    {%- render 'yarn-favorite-button', entity_type: 'product', entity_id: card_product.id, entity_title: card_product.title, modifier: 'yx-card-fav' -%}
   </div>
   <div class="yx-product-card__body">
     {%- if card_reason != blank -%}
@@ -51,7 +58,7 @@
     {%- else -%}
       {%- render 'yarn-card-meta', meta_product: card_product -%}
     {%- endif -%}
-    <span class="yx-product-card__title">{{ card_product.title | escape }}</span>
+    <a class="yx-product-card__title yx-product-card__link" href="{{ card_product.url }}">{{ card_product.title | escape }}</a>
     {%- if card_reason != blank -%}
       <span class="yx-product-card__reason">{{ card_reason | escape }}</span>
     {%- elsif handmade -%}
@@ -59,12 +66,33 @@
     {%- else -%}
       <span class="yx-product-card__spec">{% render 'yarn-card-spec', product: card_product %}</span>
     {%- endif -%}
-    <span class="yx-product-card__price">
-      {% if card_product.price <= 0 %}{{ 'yarn_project.kit_not_on_sale' | t }}{% else %}
-      {%- if card_product.compare_at_price > card_product.price -%}
-        <s class="yx-product-card__was">{{ card_product.compare_at_price | money }}</s>
+    <div class="yx-product-card__buy">
+      <span class="yx-product-card__price">
+        {% if card_product.price <= 0 %}{{ 'yarn_project.kit_not_on_sale' | t }}{% else %}
+        {%- if card_product.compare_at_price > card_product.price -%}
+          <s class="yx-product-card__was">{{ card_product.compare_at_price | money }}</s>
+        {%- endif -%}
+        {{ card_product.price | money }}{% endif %}
+      </span>
+      {%- if card_product.price > 0 -%}
+        {%- capture cart_icon -%}<svg class="yx-card-cart__bag" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.5 8.5h13l-1.1 10.2a1.5 1.5 0 0 1-1.5 1.3H8.1a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M9 10.5V7a3 3 0 0 1 6 0v3.5"/></svg><svg class="yx-card-cart__check" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 12.5 4 4 8-9"/></svg>{%- endcapture -%}
+        {%- if card_product.available == false -%}
+          <button class="yx-card-cart" type="button" disabled aria-label="{{ 'yarn_project.card_sold_out' | t }}">{{ cart_icon }}</button>
+        {%- elsif card_product.variants.size == 1 -%}
+          <button
+            class="yx-card-cart"
+            type="button"
+            data-card-add="{{ card_product.selected_or_first_available_variant.id }}"
+            data-state="idle"
+            aria-label="{{ 'yarn_project.card_add_to_cart' | t: title: card_product.title | escape }}"
+            data-added="{{ 'yarn_project.card_added_announce' | t: title: card_product.title | escape }}"
+            data-error="{{ 'yarn_project.card_cart_error' | t | escape }}"
+          >{{ cart_icon }}<span class="yx-card-cart__text" aria-hidden="true">{{ 'yarn_project.card_added' | t }}</span></button>
+        {%- else -%}
+          <a class="yx-card-cart" href="{{ card_product.url }}" aria-label="{{ 'yarn_project.card_choose_options' | t: title: card_product.title | escape }}">{{ cart_icon }}</a>
+        {%- endif -%}
       {%- endif -%}
-      {{ card_product.price | money }}{% endif %}
-    </span>
+    </div>
+    {%- if layout == 'row' -%}<span class="yx-product-card__more">{{ 'yarn_project.season_view_yarn' | t }} <span aria-hidden="true">→</span></span>{%- endif -%}
   </div>
-</a>
+</div>

@@ -106,14 +106,13 @@
     {%- if ec_group_count == 1 -%}{%- assign ec_first_total = ec_total -%}{%- endif -%}
   {%- endfor -%}
 {%- endif -%}
-{%- if ec_group_count > 0 or section.settings.show_cat -%}
+{%- if ec_group_count > 0 -%}
 <section class="yarn-entries" data-yarn-entries aria-labelledby="EntryCircles-{{ section.id }}">
   <div class="yarn-entries__inner">
     <div class="yarn-entries__head">
       {%- if ec_eyebrow != blank -%}<p class="yarn-entries__eyebrow">{{ ec_eyebrow | escape }}</p>{%- endif -%}
       <h2 class="yarn-entries__heading" id="EntryCircles-{{ section.id }}">{{ ec_heading | escape }}</h2>
-      {% if section.settings.show_cat %}{% render 'yarn-companion' %}{% endif %}
-      {% unless section.settings.show_cat %}<img class="yarn-entries__flourish" src="{{ 'impeccable-category-heading-flourish.png' | asset_url }}" alt="" width="1706" height="368" loading="lazy">{% endunless %}
+      <img class="yarn-entries__flourish" src="{{ 'impeccable-category-heading-flourish.png' | asset_url }}" alt="" width="1706" height="368" loading="lazy">
     </div>
     <div class="yarn-entries__bar">
       <span class="yarn-entries__total" data-entries-total>{{ 'yarn_project.entries_total' | t: count: ec_first_total }}</span>
@@ -138,7 +137,7 @@
   "name": "挑毛线（横滑方卡）",
   "tag": "div",
   "class": "section-yarn-entry-circles",
-  "settings": [{"type":"checkbox","id":"show_cat","label":"显示可互动小猫（含手机）","default":false},
+  "settings": [
     { "type": "text", "id": "eyebrow", "label": "日文 · 小标题", "default": "毛糸を選ぶ" },
     { "type": "text", "id": "eyebrow_zh", "label": "中文 · 小标题", "default": "挑毛线" },
     { "type": "text", "id": "eyebrow_en", "label": "英文 · 小标题", "default": "Pick yarn" },

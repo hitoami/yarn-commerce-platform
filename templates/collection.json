@@ -9,55 +9,11 @@
  */
 {
   "sections": {
-    "banner": {
-      "type": "main-collection-banner",
-      "settings": {
-        "show_collection_description": true,
-        "show_collection_image": false,
-        "color_scheme": "scheme-1"
-      }
-    },
-    "browse-toolbar": {
-      "type": "yarn-browse-toolbar",
+    "browse": {
+      "type": "yarn-collection-browse",
       "blocks": {
-        "tab-all": {
-          "type": "tab",
-          "settings": {
-            "collection": "all",
-            "label": "すべて",
-            "label_zh": "全部",
-            "label_en": "All"
-          }
-        },
-        "tab-yarn": {
-          "type": "tab",
-          "settings": {
-            "collection": "yarn",
-            "label": "毛糸",
-            "label_zh": "毛线",
-            "label_en": "Yarn"
-          }
-        },
-        "tab-kits": {
-          "type": "tab",
-          "settings": {
-            "collection": "knit-kits",
-            "label": "編みものキット",
-            "label_zh": "编织包",
-            "label_en": "Kits"
-          }
-        },
-        "tab-finished": {
-          "type": "tab",
-          "settings": {
-            "collection": "finished-goods",
-            "label": "完成品",
-            "label_zh": "成品",
-            "label_en": "Finished"
-          }
-        },
         "chip-low": {
-          "type": "chip",
+          "type": "price_band",
           "settings": {
             "label": "¥500未満",
             "param": "filter.v.price.lte=499",
@@ -66,7 +22,7 @@
           }
         },
         "chip-mid": {
-          "type": "chip",
+          "type": "price_band",
           "settings": {
             "label": "¥500–1,499",
             "param": "filter.v.price.gte=500&filter.v.price.lte=1499",
@@ -75,7 +31,7 @@
           }
         },
         "chip-high": {
-          "type": "chip",
+          "type": "price_band",
           "settings": {
             "label": "¥1,500以上",
             "param": "filter.v.price.gte=1500",
@@ -85,40 +41,39 @@
         }
       },
       "block_order": [
-        "tab-all",
-        "tab-yarn",
-        "tab-kits",
-        "tab-finished",
         "chip-low",
         "chip-mid",
         "chip-high"
       ],
-      "settings": {}
-    },
-    "product-grid": {
-      "type": "main-collection-product-grid",
       "settings": {
-        "products_per_page": 16,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "standard",
-        "enable_filtering": false,
-        "filter_type": "vertical",
-        "enable_sorting": false,
-        "columns_mobile": "2",
-        "padding_top": 12,
-        "padding_bottom": 36
+        "category_filters": "filter.p.m.yarn.texture,filter.p.m.yarn.use",
+        "category_order": "gradient,fluffy,loop-fancy,fine-airy,basic-solid,amigurumi,bags-home,spring-summer-cotton",
+        "products_per_page": 12,
+        "handmade_collections": "finished-goods",
+        "kits_url": "shopify://pages/kits"
+      }
+    },
+    "line-help": {
+      "type": "yarn-line-contact",
+      "settings": {
+        "compact_layout": true,
+        "compact_heading": "どの毛糸にするか迷ったら",
+        "compact_action": "LINEで相談する",
+        "compact_text": "編みたいものを教えてください。毛糸と必要な玉数を一緒に選びます。",
+        "compact_heading_zh": "不确定选哪一团、要买几团？",
+        "compact_action_zh": "在 LINE 上咨询",
+        "compact_text_zh": "告诉我们想织什么，店员会帮你确认毛线和用量。",
+        "compact_heading_en": "Not sure which yarn or how much?",
+        "compact_action_en": "Ask us on LINE",
+        "compact_text_en": "Tell us what you want to make and we'll help with yarn and quantities.",
+        "primary_link": "",
+        "secondary_link": "shopify://pages/contact",
+        "color_scheme": "scheme-3"
       }
     }
   },
   "order": [
-    "banner",
-    "browse-toolbar",
-    "product-grid"
+    "browse",
+    "line-help"
   ]
 }

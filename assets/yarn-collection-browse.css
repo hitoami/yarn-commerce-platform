@@ -1,0 +1,106 @@
+/* #85 毛线目录。商品卡沿用 yarn-cards.css；这里只管目录头、分类胶囊、工具栏、网格、显示更多、筛选抽屉与「准备中」。 */
+.ycb { width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter))); margin: 0 auto; padding-block: var(--yarn-space-4) var(--yarn-space-7); color: var(--yarn-text-primary); }
+.ycb :is(a, button, select, input):focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: var(--yarn-focus-offset); }
+.ycb ul { margin: 0; padding: 0; list-style: none; }
+
+.ycb-crumbs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--yarn-space-4); color: var(--yarn-text-muted); font-size: 12px; line-height: 1.5; }
+.ycb-crumbs a { color: inherit; text-decoration: none; }
+.ycb-crumbs a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.ycb-head { display: grid; gap: var(--yarn-space-2); margin-bottom: var(--yarn-space-5); }
+.ycb-head__eyebrow { display: flex; align-items: center; gap: var(--yarn-space-2); margin: 0; color: var(--yarn-action); font-size: 12px; font-weight: 700; line-height: 1.5; }
+.ycb-head__title { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 28px; font-weight: 600; line-height: 1.3; }
+.ycb-head__intro, .ycb-head__intro p { margin: 0; color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.7; }
+.ycb-badge { padding: 3px 10px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-butter); color: var(--yarn-text-primary); font-size: 12px; font-weight: 600; }
+
+/* 分类胶囊：手机一行横滑，桌面换行。 */
+.ycb-chips { margin: 0 calc(-1 * var(--yarn-gutter)) var(--yarn-space-4); padding-inline: var(--yarn-gutter); overflow-x: auto; scrollbar-width: none; }
+.ycb-chips::-webkit-scrollbar { display: none; }
+.ycb-chips ul { display: flex; gap: var(--yarn-space-2); width: max-content; }
+.ycb-chip { display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 6px 18px 6px 6px; border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); color: var(--yarn-text-heading); text-decoration: none; white-space: nowrap; }
+.ycb-chip:hover { background: var(--yarn-action-subtle-hover); }
+.ycb-chip--active { border-color: var(--yarn-action); background: var(--yarn-action-subtle-bg); box-shadow: inset 0 0 0 .5px var(--yarn-action); }
+.ycb-chip__photo { flex: none; width: 40px; height: 40px; overflow: hidden; border-radius: 50%; background: var(--yarn-bg-sunken); }
+.ycb-chip__photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ycb-chip__name { font-size: 15px; font-weight: 500; }
+.ycb-chip__count { color: var(--yarn-text-muted); font-size: 13px; }
+
+/* 工具栏：筛选抽屉入口、排序与款数。 */
+.ycb-toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--yarn-space-2); margin-bottom: var(--yarn-space-5); padding-block: var(--yarn-space-3); border-block: 1px solid var(--yarn-border-subtle); }
+.ycb-toolbar__actions { display: flex; align-items: center; gap: var(--yarn-space-2); min-width: 0; }
+.ycb-toolbar__count { flex: none; margin: 0; color: var(--yarn-text-muted); font-size: 13px; }
+.ycb-sort { margin: 0; min-width: 0; }
+.ycb-pill { display: inline-flex; align-items: center; gap: 6px; min-height: var(--yarn-touch); max-width: 100%; padding: 0 var(--yarn-space-4); border: 1px solid var(--yarn-border-control); border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); color: var(--yarn-text-primary); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; }
+.ycb-pill svg { width: 16px; height: 16px; }
+.ycb-sort__select { padding-right: 36px; overflow: hidden; text-overflow: ellipsis; appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%); background-position: calc(100% - 20px) 52%, calc(100% - 15px) 52%; background-size: 5px 5px; background-repeat: no-repeat; }
+
+/* 商品网格与「显示更多」 */
+.ycb-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px var(--yarn-space-4); }
+.ycb-grid__item { min-width: 0; }
+.ycb-more { display: grid; justify-items: center; gap: var(--yarn-space-3); margin-top: var(--yarn-space-6); }
+.ycb-more__status { margin: 0; color: var(--yarn-text-muted); font-size: 13px; }
+.ycb-more__button, .ycb-exit { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: var(--yarn-touch); padding: 0 var(--yarn-space-5); border: 1px solid var(--yarn-border-control); border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); color: var(--yarn-text-heading); font-size: 15px; font-weight: 700; text-decoration: none; }
+.ycb-more__button { width: 100%; }
+.ycb-more__button:hover, .ycb-exit:hover { background: var(--yarn-action-subtle-hover); }
+.ycb-more__button[aria-busy='true'] { opacity: .6; cursor: progress; }
+
+.ycb-empty { display: grid; justify-items: start; gap: var(--yarn-space-2); padding-block: var(--yarn-space-5); }
+.ycb-empty h2 { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 20px; font-weight: 600; }
+.ycb-empty p { margin: 0 0 var(--yarn-space-2); color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.7; }
+
+/* 集合还没有商品：占位卡（DESIGN.md 成品区规则），不含商品名、价格或库存。 */
+.ycb-preparing { display: grid; gap: var(--yarn-space-5); }
+.ycb-preparing__text { margin: 0; color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.7; }
+.ycb-grid--placeholder .ycb-placeholder:nth-child(n + 3) { display: none; }
+.ycb-placeholder { display: grid; gap: 10px; }
+.ycb-placeholder__image { display: grid; place-items: center; aspect-ratio: 1; border-radius: var(--yarn-card-radius); background: var(--yarn-bg-sunken); color: var(--yarn-text-disabled); font-size: 13px; }
+.ycb-placeholder__row { display: flex; align-items: center; gap: var(--yarn-space-3); color: var(--yarn-text-muted); font-size: 13px; }
+.ycb-placeholder__bar { flex: 1; height: 12px; border-radius: var(--yarn-radius-pill); background: var(--yarn-border-subtle); }
+.ycb-placeholder__bar--short { width: 45%; }
+.ycb-exits { display: flex; flex-wrap: wrap; gap: var(--yarn-space-2); }
+
+/* 筛选抽屉：手机从底部升起，桌面靠右。 */
+.ycb-drawer { position: fixed; inset: auto 0 0; width: 100%; max-width: none; max-height: 85vh; margin: 0; padding: 0; border: 0; border-radius: var(--yarn-radius-panel) var(--yarn-radius-panel) 0 0; background: var(--yarn-bg-surface); color: var(--yarn-text-primary); }
+.ycb-drawer::backdrop { background: var(--yarn-overlay); }
+.ycb-drawer form { display: flex; flex-direction: column; max-height: 85vh; }
+.ycb-drawer__head { display: flex; align-items: center; justify-content: space-between; padding: var(--yarn-space-3) var(--yarn-space-2) var(--yarn-space-3) var(--yarn-space-5); border-bottom: 1px solid var(--yarn-border-subtle); }
+.ycb-drawer__head h2 { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 20px; font-weight: 600; }
+.ycb-drawer__close { display: grid; place-items: center; width: var(--yarn-touch); height: var(--yarn-touch); border: 0; background: transparent; color: var(--yarn-text-primary); cursor: pointer; }
+.ycb-drawer__close svg { width: 20px; height: 20px; }
+.ycb-drawer__body { flex: 1; overflow-y: auto; padding: var(--yarn-space-2) var(--yarn-space-5) var(--yarn-space-5); }
+.ycb-drawer__group { margin: 0; padding: var(--yarn-space-4) 0; border: 0; border-bottom: 1px solid var(--yarn-border-subtle); }
+.ycb-drawer__group legend { padding: 0; margin-bottom: var(--yarn-space-3); color: var(--yarn-text-heading); font-size: 15px; font-weight: 700; }
+.ycb-drawer__options { display: flex; flex-wrap: wrap; gap: var(--yarn-space-2); }
+.ycb-option { position: relative; cursor: pointer; }
+.ycb-option input { position: absolute; opacity: 0; pointer-events: none; }
+.ycb-option span { display: inline-flex; align-items: center; gap: 6px; min-height: var(--yarn-touch); padding: 0 var(--yarn-space-4); border: 1px solid var(--yarn-border-control); border-radius: var(--yarn-radius-pill); font-size: 14px; }
+.ycb-option small { color: var(--yarn-text-muted); font-size: 12px; }
+.ycb-option input:checked + span { border-color: var(--yarn-action); background: var(--yarn-action-subtle-bg); font-weight: 600; }
+.ycb-option input:focus-visible + span { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: var(--yarn-focus-offset); }
+.ycb-option input:disabled + span { color: var(--yarn-text-disabled); cursor: not-allowed; }
+.ycb-drawer__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--yarn-space-3); padding: var(--yarn-space-3) var(--yarn-space-5) max(var(--yarn-space-4), env(safe-area-inset-bottom)); border-top: 1px solid var(--yarn-border-subtle); }
+.ycb-drawer__reset { display: inline-flex; align-items: center; min-height: var(--yarn-touch); color: var(--yarn-text-primary); font-size: 14px; text-underline-offset: 4px; }
+.ycb-drawer__apply { flex: 1; max-width: 240px; min-height: 48px; border: 0; border-radius: var(--yarn-radius-pill); background: var(--yarn-cta-bg); color: var(--yarn-text-on-cta); font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
+.ycb-drawer__apply:hover { background: var(--yarn-cta-hover); }
+
+@media (min-width: 750px) {
+  .ycb { padding-top: var(--yarn-space-5); }
+  .ycb-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--yarn-space-6) var(--yarn-space-5); }
+  .ycb-grid--placeholder .ycb-placeholder:nth-child(n + 3) { display: grid; }
+  .ycb-more__button { width: auto; }
+}
+
+@media (min-width: 990px) {
+  .ycb { padding-block: var(--yarn-space-5) 72px; }
+  .ycb-head { margin-bottom: var(--yarn-space-6); }
+  .ycb-head__eyebrow { font-size: 13px; }
+  .ycb-head__title { font-size: 40px; }
+  .ycb-head__intro, .ycb-head__intro p { max-width: 600px; font-size: 16px; }
+  .ycb-chips { margin-inline: 0; padding-inline: 0; overflow: visible; }
+  .ycb-chips ul { flex-wrap: wrap; width: auto; gap: var(--yarn-space-3); }
+  .ycb-toolbar { margin-bottom: var(--yarn-space-6); padding-block: var(--yarn-space-4); }
+  .ycb-toolbar__count { font-size: 14px; }
+  .ycb-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px var(--yarn-space-5); }
+  .ycb-drawer { inset: 0 0 0 auto; width: min(420px, 100%); max-height: none; height: 100%; border-radius: var(--yarn-radius-panel) 0 0 var(--yarn-radius-panel); }
+  .ycb-drawer form { max-height: none; height: 100%; }
+}

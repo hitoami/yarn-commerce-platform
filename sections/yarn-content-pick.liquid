@@ -37,7 +37,7 @@
   <div class="page-width">
     <div class="yx-picks__head">
       <h2 id="ContentPick-{{ section.id }}">{{ cp_heading | escape }}</h2>
-      {%- if section.settings.all_link != blank -%}<a class="yx-picks__all" href="{{ section.settings.all_link }}">{{ 'yarn_project.card_view_all' | t }} →</a>{%- endif -%}
+      {%- if section.settings.all_link != blank -%}<a class="yx-picks__all" href="{% render 'yarn-local-url', url: section.settings.all_link %}">{{ 'yarn_project.card_view_all' | t }} →</a>{%- endif -%}
     </div>
     <a class="yx-content-card" href="{{ cp_link | default: '#' }}">
       {%- if cp_image != blank -%}
