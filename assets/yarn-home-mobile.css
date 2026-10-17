@@ -64,7 +64,7 @@
 body:has(.hitoami-hero--catalog) .yarn-entries__photo { border-radius: 50%; }
 body:has(.hitoami-hero--catalog) .yarn-entries__head { text-align: left; position: relative; }
 body:has(.hitoami-hero--catalog) .yarn-entries__eyebrow { color: var(--yarn-action); letter-spacing: .08em; text-indent: 0; }
-body:has(.hitoami-hero--catalog) .yarn-entries__head yarn-companion { height: 68px; }
+body:has(.hitoami-hero--catalog) .yarn-entries__flourish { display: none; } /* no decoration beside the heading (#151) */
 .yarn-home-catalog.page-width, .yarn-home-guide.page-width { width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter))); max-width: none; margin-inline: auto; padding-inline: 0; }
 @media (min-width: 750px) {
   /* Brand and categories share one warm band; the categories continue it without a top gap. */
@@ -72,7 +72,6 @@ body:has(.hitoami-hero--catalog) .yarn-entries__head yarn-companion { height: 68
   body:has(.hitoami-hero--catalog) .yarn-entries__head { display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; min-height: 68px; }
   body:has(.hitoami-hero--catalog) .yarn-entries__eyebrow { font-size: 13px; font-weight: 700; line-height: 1.2; letter-spacing: 0; }
   body:has(.hitoami-hero--catalog) .yarn-entries__heading { margin: 0; color: var(--yarn-text-heading); font-size: 28px; font-weight: 600; line-height: 1.25; letter-spacing: 0; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__head yarn-companion { position: absolute; width: 40%; max-width: 420px; right: 0; bottom: 0; }
   body:has(.hitoami-hero--catalog) .yarn-entries__bar:not(:has(.yarn-entries__tabs)) { display: none; }
   body:has(.hitoami-hero--catalog) .yarn-entries__scroller { margin-top: 32px; }
   body:has(.hitoami-hero--catalog) .yarn-entries__track { width: 100%; grid-auto-columns: minmax(0, 1fr); gap: 24px; }

@@ -198,7 +198,6 @@
       ],
       "settings": {
         "collection": "yarn",
-        "show_cat": true,
         "heading_zh": "想找什么样的毛线？",
         "heading": "どんな毛糸をお探しですか？",
         "heading_en": "What kind of yarn are you looking for?"

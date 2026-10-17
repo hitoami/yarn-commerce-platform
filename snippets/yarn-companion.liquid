@@ -1,8 +1,0 @@
-{{ 'yarn-companion.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'yarn-companion.js' | asset_url }}" defer="defer"></script>
-<yarn-companion>
-  <button type="button" class="yarn-companion__button" aria-label="{{ 'yarn_project.wake_cat' | t }}">
-    <span class="yarn-companion__cat" style="background-image:url({{ 'yarn-guide-cat.webp' | asset_url }})" aria-hidden="true"></span>
-    <svg class="yarn-companion__ball" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="12"/><path d="M6 8c9 0 14 6 16 16M3 13c8 0 14 5 17 13M4 18c5 0 10 3 13 9M8 4c0 7 5 15 14 19M13 3c0 7 5 14 12 16M18 4c0 4 3 9 8 11"/></svg>
-  </button>
-</yarn-companion>
