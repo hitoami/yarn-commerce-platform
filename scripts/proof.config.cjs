@@ -24,11 +24,10 @@ module.exports = {
       { selector: '.ycb-grid .yx-product-card', minimum: 4, label: '目录真实毛线商品卡' },
     ] },
     // #85：手工成品上架前，同一模板显示「准备中」占位。
-    { key: 'finished-collection', path: '/collections/finished-goods' },
     // #131：演示商品已删除，编织包不再销售；成品详情等真实成品上架后再加回。
     // #131：手工成品上架前集合为空，显示三语「准备中」说明而不是「0/0 件」。
     { key: 'finished-collection', path: '/collections/finished-goods', requiredContent: [
-      { selector: '.yx-collection-preparing__title', minimum: 1, label: '手工成品准备中说明' },
+      { selector: '.ycb-preparing__text', minimum: 1, label: '手工成品准备中说明' },
     ] },
     { key: 'yarn-pdp', path: '/products/mvp-yarn-18' },
     // 本季主推专题页：后台页面已建（handle season）；page.season 上线正式主题、后台改选该模板前，用 ?view 预览。
