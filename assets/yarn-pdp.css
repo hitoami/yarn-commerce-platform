@@ -77,6 +77,21 @@ product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit[dis
 .yp-yarn-spec dt { color: var(--yarn-text-muted); font-size: 12px; line-height: 1.4; }
 .yp-yarn-spec dd { margin: 0; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
 
+/* #177 R1：暂未开放选色 / 缺货出口（snippets/yarn-pdp-status.liquid） */
+.yp-status { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+.yp-status__head { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 15px; font-weight: 600; color: var(--yarn-text-primary); }
+.yp-status__tag { padding: 2px 10px; border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-sunken); color: var(--yarn-text-secondary); font-size: 12px; font-weight: 600; line-height: 1.5; }
+.yp-status__panel { display: flex; gap: 10px; padding: 14px; border-radius: 12px; background: var(--yarn-bg-band); }
+.yp-status__panel .svg-wrapper { flex: none; width: 20px; height: 20px; color: var(--yarn-action); }
+.yp-status__panel p { margin: 0; color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.65; }
+.yp-status__link { display: inline-block; margin-top: 4px; color: var(--yarn-action); font-size: 14px; font-weight: 600; text-decoration: none; }
+.yp-status__link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.yp-status--sold-out { padding: 16px; border-radius: 12px; background: var(--yarn-bg-band); }
+.yp-status__title { margin: 0; color: var(--yarn-text-primary); font-size: 16px; font-weight: 600; }
+.yp-status__note { margin: 0; color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.65; }
+.yp-status__ask { display: flex; align-items: center; justify-content: center; min-height: 48px; border: 1px solid var(--yarn-border-control); border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); color: var(--yarn-text-primary); font-size: 15px; font-weight: 500; text-decoration: none; }
+.yp-status__ask:hover { background: var(--yarn-action-subtle-bg); }
+.yp-status a:focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: var(--yarn-focus-offset); }
 .yp-usage { display: block; margin-top: calc(var(--yarn-space-2) - var(--yarn-space-6)); padding: 20px; border-radius: 20px; background: var(--yarn-bg-band); }
 .yp-usage section { display: flex; flex-direction: column; gap: 14px; }
 .yp-usage__head { display: flex; flex-direction: column; gap: var(--yarn-space-1); }

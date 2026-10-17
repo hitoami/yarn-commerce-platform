@@ -1,0 +1,11 @@
+/* 购物车（#177 R3）：免运费进度（snippets/yarn-cart-shipping.liquid）与材料包教程提醒（snippets/yarn-cart-kit-note.liquid）。 */
+.yarn-cart-ship { display: grid; gap: 10px; margin: 0 0 16px; padding: 14px 16px 16px; border: 1px solid var(--yarn-cta-border); border-radius: 14px; background: var(--yarn-action-subtle-bg); }
+.yarn-cart-ship__title { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--yarn-text-primary); font-size: 1.5rem; font-weight: 600; line-height: 1.4; }
+.yarn-cart-ship__title .svg-wrapper { flex: none; width: 20px; height: 20px; color: var(--yarn-action); }
+.yarn-cart-ship__bar { overflow: hidden; height: 8px; border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-sunken); }
+.yarn-cart-ship__bar span { display: block; height: 100%; border-radius: inherit; background: var(--yarn-home-action); }
+.yarn-cart-ship__rule { margin: 0; color: var(--yarn-text-muted); font-size: 1.3rem; line-height: 1.5; }
+.yarn-cart-kit { display: grid; gap: 4px; margin: 16px 0 0; padding: 14px 16px; border-radius: 12px; background: var(--yarn-bg-band); }
+.yarn-cart-kit__title { margin: 0; color: var(--yarn-text-primary); font-size: 1.4rem; font-weight: 600; }
+.yarn-cart-kit__text { margin: 0; color: var(--yarn-text-secondary); font-size: 1.3rem; line-height: 1.65; }
+@media (prefers-reduced-motion: no-preference) { .yarn-cart-ship__bar span { transition: width .3s ease; } }

@@ -1,0 +1,25 @@
+{%- comment -%}
+  购物车免运费进度（#177 R3）。门槛来自主题设置「免运费门槛」（日元，含税），只做提示；
+  实际运费以 Shopify 结账页为准。按购物车 total_price 计算，随数量修改与购物车页 js-contents / 抽屉一起刷新。0 或空时不渲染。
+{%- endcomment -%}
+{%- assign threshold = settings.yarn_free_shipping_threshold -%}
+{%- if threshold != blank and threshold > 0 -%}
+  {%- liquid
+    assign ship_goal = threshold | times: 100
+    assign ship_left = ship_goal | minus: cart.total_price
+    assign ship_ratio = cart.total_price | times: 100 | divided_by: ship_goal
+    if ship_ratio > 100
+      assign ship_ratio = 100
+    endif
+    assign ship_left_money = ship_left | money
+    assign ship_goal_money = ship_goal | money
+  -%}
+  <div class="yarn-cart-ship{% if ship_left <= 0 %} yarn-cart-ship--done{% endif %}">
+    <p class="yarn-cart-ship__title">
+      <span class="svg-wrapper" aria-hidden="true">{{ 'icon-truck.svg' | inline_asset_content }}</span>
+      {%- if ship_left > 0 -%}{{ 'yarn_cart.free_remaining' | t: amount: ship_left_money }}{%- else -%}{{ 'yarn_cart.free_reached' | t }}{%- endif -%}
+    </p>
+    <div class="yarn-cart-ship__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ ship_ratio }}" aria-label="{{ 'yarn_cart.free_rule' | t: amount: ship_goal_money | escape }}"><span style="width: {{ ship_ratio }}%"></span></div>
+    <p class="yarn-cart-ship__rule">{{ 'yarn_cart.free_rule' | t: amount: ship_goal_money }}</p>
+  </div>
+{%- endif -%}
