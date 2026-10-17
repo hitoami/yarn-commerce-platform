@@ -18,7 +18,7 @@ product-info.yarn-product-page--yarn .yp-yarn-badges { display: flex; flex-wrap:
 product-info.yarn-product-page--yarn .yp-yarn-badge { display: inline-flex; align-items: center; padding: 5px 9px; border-radius: var(--yarn-radius-pill); font-size: 12px; font-weight: 600; line-height: 1.2; white-space: nowrap; }
 product-info.yarn-product-page--yarn .yp-yarn-badge--yarn { background: var(--yarn-tint-blush); color: var(--yarn-text-heading); }
 product-info.yarn-product-page--yarn .yp-yarn-badge--beginner { background: var(--yarn-tint-sage); color: var(--yarn-text-secondary); }
-product-info.yarn-product-page.yarn-product-page--yarn .product__title h1 { color: var(--yarn-text-primary); font-family: var(--yarn-display); font-size: 24px; font-weight: 600; line-height: 1.35; }
+product-info.yarn-product-page.yarn-product-page--yarn .product__title h1 { color: var(--yarn-text-primary); font-family: var(--yarn-display); font-size: 24px; font-weight: 500; line-height: 1.35; }
 product-info.yarn-product-page--yarn .yp-yarn-price { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; row-gap: 2px; }
 product-info.yarn-product-page--yarn .yp-yarn-price > * { margin: 0; }
 product-info.yarn-product-page.yarn-product-page--yarn .yp-yarn-price .price { color: var(--yarn-home-action); font-size: 21px; font-weight: 600; line-height: 1.3; }
@@ -60,14 +60,14 @@ product-info.yarn-product-page--yarn .swatch-input__input:focus-visible + .swatc
 product-info.yarn-product-page--yarn .swatch-input__label .swatch { width: 100%; height: 100%; border-radius: var(--yarn-radius-pill); box-shadow: inset 0 0 0 1px var(--yarn-border-card); }
 
 /* 页内加购：灰棕实心主按钮 */
-product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit { background: var(--yarn-home-action); color: var(--yarn-text-inverse); font-family: var(--yarn-display); font-size: 16px; font-weight: 600; }
+product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit { background: var(--yarn-home-action); color: var(--yarn-text-inverse); font-family: var(--yarn-body); font-size: 16px; font-weight: 600; }
 product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit:not([disabled]):hover { filter: brightness(0.92); }
 product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit[disabled] { background: var(--yarn-border-disabled); color: var(--yarn-text-disabled); opacity: 1; }
 
 /* 下方内容 */
 .yp-yarn-details { display: flex; flex-direction: column; gap: var(--yarn-space-6); margin-top: var(--yarn-space-6); color: var(--yarn-text-primary); }
 .yp-yarn-details:empty { display: none; }
-.yp-yarn-block__title { margin: 0 0 var(--yarn-space-2); color: var(--yarn-text-primary); font-family: var(--yarn-display); font-size: 20px; font-weight: 600; line-height: 1.35; }
+.yp-yarn-block__title { margin: 0 0 var(--yarn-space-2); color: var(--yarn-text-primary); font-family: var(--yarn-display); font-size: 20px; font-weight: 500; line-height: 1.35; }
 .yp-yarn-block__title--section { margin: 0; font-size: 24px; line-height: 1.3; }
 .yp-yarn-block__head { display: flex; flex-direction: column; gap: var(--yarn-space-2); margin-bottom: 14px; }
 .yp-yarn-block__head p { margin: 0; color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.5; }
@@ -86,7 +86,7 @@ product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit[dis
 .yp-usage__options[hidden], .yp-usage__result[hidden], .yp-usage__fill[hidden] { display: none; }
 .yp-usage__option {
   min-height: var(--yarn-touch); padding: 0 18px; border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-radius-pill);
-  background: var(--yarn-bg-surface); color: var(--yarn-text-primary); font-family: var(--yarn-display); font-size: 15px; cursor: pointer;
+  background: var(--yarn-bg-surface); color: var(--yarn-text-primary); font-family: var(--yarn-body); font-size: 15px; cursor: pointer;
   transition: background-color 160ms ease-out, color 160ms ease-out, border-color 160ms ease-out;
 }
 .yp-usage__option[aria-pressed='true'] { border-color: var(--yarn-home-action); background: var(--yarn-home-action); color: var(--yarn-text-inverse); }
@@ -95,7 +95,7 @@ product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit[dis
 .yp-usage__result .yp-usage__note { margin-top: calc(-14px + var(--yarn-space-1)); color: var(--yarn-text-muted); font-size: 12px; line-height: 1.5; }
 .yp-usage__fill {
   min-height: var(--yarn-touch); padding: 0 14px; border: 0; border-radius: var(--yarn-radius-pill);
-  background: transparent; color: var(--yarn-home-action); font-family: var(--yarn-display); font-size: 14px; font-weight: 600; cursor: pointer;
+  background: transparent; color: var(--yarn-home-action); font-family: var(--yarn-body); font-size: 14px; font-weight: 600; cursor: pointer;
   margin-left: -14px; transition: background-color 160ms ease-out;
 }
 .yp-usage__fill:hover { background: var(--yarn-action-subtle-hover); }
@@ -138,7 +138,7 @@ product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit[dis
 .yp-sticky__qty-value { min-width: 28px; font-size: 16px; text-align: center; font-variant-numeric: tabular-nums; }
 .yp-sticky__add {
   flex: 1 1 auto; min-width: 0; min-height: 48px; padding: 0 var(--yarn-space-4); border: 0; border-radius: var(--yarn-radius-pill);
-  background: var(--yarn-home-action); color: var(--yarn-text-inverse); font-family: var(--yarn-display); font-size: 15px; font-weight: 600; line-height: 1.2;
+  background: var(--yarn-home-action); color: var(--yarn-text-inverse); font-family: var(--yarn-body); font-size: 15px; font-weight: 600; line-height: 1.2;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; font-variant-numeric: tabular-nums;
 }
 .yp-sticky__add:not([disabled]):active { transform: scale(0.98); }

@@ -1,0 +1,19 @@
+{
+  "kind": "AI-generated hero image (style C overhead still life)",
+  "date": "2026-10-18",
+  "issue": "#167",
+  "tool": "Codex image generation (gpt-6-astra)",
+  "slide": "① 毛线",
+  "format": "mobile 2:3 (separately composed from the desktop image)",
+  "references": {
+    "products": [
+      "圈圈纱",
+      "幼马海毛",
+      "莫兰迪8 澳洲美利奴羊毛线"
+    ],
+    "note": "Shopify 商品主图只作毛线外观参考，画面去掉吊牌",
+    "palette": "Logo clay #AB5631 与 design tokens"
+  },
+  "scope": "首页首屏氛围图，不作为商品图、色号或用量凭据。毛线按真实商品款式由 AI 重绘（PRODUCT.md 例外）。",
+  "prompt": "Use case: photorealistic-natural\nCreate a separately composed MOBILE hero photograph for hitoami, portrait 2:3, 1024 x 1536. Input image C1.png is the visual identity reference: recreate exactly the same four yarn balls, fibers, colors and single blank pale butter-yellow paper rectangle, on the same cream #F9F6F0 matte subtly textured paper surface. This must be a newly arranged portrait still life, NOT a crop of the landscape.\nTrue perpendicular 90-degree overhead editorial magazine photograph. Even diffuse soft light, delicate short contact shadows matching the reference. Natural realistic wool: warm apricot tan curly boucle ball, dusty blush pink fine fuzzy mohair ball, ivory plied wool ball, muted blue-gray plied wool ball. Preserve their distinct yarn textures.\nPrecise composition in normalized canvas coordinates: top 0–14% ONLY empty paper. Entire upper 0–52% should be uninterrupted clean paper; specifically x=8–85%, y=16–50% must contain absolutely no objects, shadows, stray fibers, leaf tips or decoration. All four balls, paper prop and their shadows entirely within y=54–94%, with generous side breathing room. A loose irregular staggered arrangement in the lower area, not a symmetrical grid. Suggested centers: tan at (32%,64%), pink at (69%,67%), ivory at (30%,83%), blue at (66%,85%). Ball diameters about 26–28% of canvas width, natural modest size, all completely visible. The small blank yellow paper peeks from beneath the blue ball, fully contained within x=8–92%, y=54–94%. Keep at least 6% empty paper below all objects and shadows.\nReference-matched restrained warm pastel colors, matte organic tactile fibers, high photographic detail and quiet negative space. No text, letters, logo, watermark, labels, tags, additional props or leaves. No plastic sheen, glowing edges, oversized objects, mechanical symmetry, cropping, horizon or perspective tilt. Output exactly one portrait 2:3 image.\nCRITICAL CORRECTION: the entire upper 54% of the portrait canvas must be EMPTY PAPER. Yarn must NOT begin at 43% height. Use smaller balls, each only 24% of image WIDTH (16% of image HEIGHT). Arrange tan bounding box x=19–43%, y=56–72%; pink x=57–81%, y=59–75%; ivory x=16–40%, y=76–92%; blue x=54–78%, y=77–93%. Yellow paper within x=60–88%, y=81–94%. Absolutely no object or shadow above y=54%. Respect these boxes strictly; prioritize empty upper area. These are composition instructions only, never draw boxes or coordinates."
+}

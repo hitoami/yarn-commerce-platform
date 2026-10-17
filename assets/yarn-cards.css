@@ -24,7 +24,7 @@
 .yx-card-meta__colors { margin-left: auto; white-space: nowrap; }
 .yx-product-card__title, .yx-catalog-card .card__heading {
   color: var(--yarn-text-heading); font-family: var(--yarn-display);
-  font-size: var(--yarn-card-title); font-weight: 600; line-height: 1.4;
+  font-size: var(--yarn-card-title); font-weight: 500; line-height: 1.4;
   margin: 0; min-height: 0; letter-spacing: 0;
 }
 .yx-product-card__title, .yx-catalog-card .card__heading a { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -99,13 +99,13 @@
 .yx-content-card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
 .yx-content-card__body { padding: 20px; align-self: center; }
 .yx-content-card__body .yx-badge { margin-bottom: 10px; }
-.yx-content-card__title { font-family: var(--yarn-display); font-size: 24px; font-weight: 600; line-height: 1.35; margin: 0 0 8px; color: var(--yarn-text-heading); }
+.yx-content-card__title { font-family: var(--yarn-display); font-size: 24px; font-weight: 500; line-height: 1.35; margin: 0 0 8px; color: var(--yarn-text-heading); }
 .yx-content-card__text { font-size: 16px; color: var(--yarn-text-muted); line-height: 1.6; margin: 0 0 10px; }
 .yx-content-card__link { display: inline-flex; align-items: center; min-height: var(--yarn-touch); color: var(--yarn-accent); font-size: 16px; }
 .yx-content-card:not(:has(.yx-content-card__media)) { grid-template-columns: 1fr; }
 /* Cross-category exits remain distinguishable from saleable product cards. */
 .yx-exit { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px; align-items: center; padding: 20px; background: var(--yarn-action-subtle-bg); border: 1px solid var(--yarn-accent); border-radius: var(--yarn-card-radius); color: var(--yarn-text-heading); }
-.yx-exit__title { font-family: var(--yarn-display); color: var(--yarn-text-heading); font-size: 24px; font-weight: 600; line-height: 1.35; margin: 0 0 8px; }
+.yx-exit__title { font-family: var(--yarn-display); color: var(--yarn-text-heading); font-size: 24px; font-weight: 500; line-height: 1.35; margin: 0 0 8px; }
 .yx-exit__text { font-size: 15px; color: var(--yarn-text-muted); line-height: 1.55; margin: 0 0 12px; }
 .yx-exit__cta, .yx-exit .yx-exit__cta { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: var(--yarn-touch); padding: 10px 18px; border-radius: var(--yarn-radius-pill); background: var(--yarn-accent); color: var(--yarn-text-on-action); font-size: 15px; line-height: 1.4; text-decoration: none; }
 .yx-exit__cta svg { width: 16px; height: 16px; }
@@ -128,7 +128,7 @@
 .yx-picks__titles { min-width: 0; }
 .yx-picks__titles .yx-picks__note { margin: 6px 0 0; font-size: 15px; }
 .yx-picks__head:has(.yx-picks__titles) .yx-picks__all { margin-bottom: -10px; } /* keep the 44px target, align the text with the note */
-.yx-picks__head h2 { margin: 0; min-width: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 32px; font-weight: 600; line-height: 1.3; letter-spacing: 0.01em; text-wrap: balance; }
+.yx-picks__head h2 { margin: 0; min-width: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 32px; font-weight: 500; line-height: 1.3; letter-spacing: 0.01em; text-wrap: balance; }
 .yx-picks__all { display: inline-flex; align-items: center; min-height: var(--yarn-touch); color: var(--yarn-action); font-size: 15px; font-weight: 600; white-space: nowrap; text-decoration: none; text-underline-offset: 4px; }
 .yx-picks__all:hover { text-decoration: underline; }
 .yx-picks__note { margin: -10px 0 16px; font-size: 14px; color: var(--yarn-text-muted); }
@@ -219,6 +219,8 @@
   transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), background-color 220ms ease, border-color 220ms ease, color 220ms ease, box-shadow 260ms ease;
 }
 .yx-card-cart svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.yx-card-cart__bag { display: inline-flex; }
+.yx-card-cart__bag svg { width: 22px; height: 22px; }
 .yx-card-cart__check { display: none; }
 .yx-card-cart__text { display: none; }
 .yx-card-cart:active:not(:disabled) { transform: scale(0.92); }
@@ -236,7 +238,10 @@
   position: fixed; z-index: 1000; top: 0; left: 0; width: 16px; height: 16px; margin: -8px 0 0 -8px;
   border-radius: 50%; background: var(--yarn-accent); box-shadow: 0 2px 6px var(--yarn-shadow-soft); pointer-events: none;
 }
-#cart-icon-bubble.is-bumping .svg-wrapper, #cart-icon-bubble.is-bumping .cart-count-bubble { animation: yx-bump 520ms cubic-bezier(0.16, 1, 0.3, 1); }
+#cart-icon-bubble.is-bumping .svg-wrapper, #cart-icon-bubble.is-bumping .cart-count-bubble,
+[data-favorites-header].is-bumping .svg-wrapper, [data-favorites-header].is-bumping .cart-count-bubble { animation: yx-bump 520ms cubic-bezier(0.16, 1, 0.3, 1); }
+.yx-cart-dot--heart { width: 20px; height: 20px; margin: -10px 0 0 -10px; background: none; box-shadow: none; color: var(--yarn-accent); }
+.yx-cart-dot--heart svg { display: block; width: 100%; height: 100%; fill: currentColor; }
 
 @media (hover: hover) {
   .yx-product-card:hover .yx-product-card__media img { transform: scale(1.035); }
@@ -248,6 +253,35 @@
 .yx-product-card--row .yarn-favorite.yx-card-fav { top: 4px; right: 4px; width: 32px; height: 32px; }
 .yx-product-card--row .yarn-favorite.yx-card-fav::before { content: ''; position: absolute; inset: -6px; }
 .yx-product-card--row .yarn-favorite.yx-card-fav svg { width: 17px; height: 17px; }
+/* #161 The same actions on every product card: Rise's native card (related products, collection grid,
+   complementary products) puts the cart beside the price; the discovery card floats it at the bottom right,
+   outside its card-wide link. */
+.yx-catalog-card__buy { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
+.yx-catalog-card__buy .price { min-width: 0; }
+.yx-catalog-card .card__information { container-type: inline-size; }
+.card--horizontal ~ .yarn-favorite.yx-card-fav { top: 4px; right: 4px; width: 32px; height: 32px; }
+.card--horizontal ~ .yarn-favorite.yx-card-fav::before { content: ''; position: absolute; inset: -6px; }
+.card--horizontal ~ .yarn-favorite.yx-card-fav svg { width: 17px; height: 17px; }
+.yp-product-card .yx-card-cart { position: absolute; right: 0; bottom: 0; }
+.yp-product-card .yp-card__price { padding-right: calc(var(--yarn-touch) + 8px); }
+/* #175 Favorites page: a quantity stepper and a labelled add button replace the round cart button. */
+.yx-card-buy { display: none; }
+.yd-search.is-favorites .yx-card-buy { position: relative; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+.yd-search.is-favorites .yx-product-card__buy .yx-card-cart { display: none; }
+.yx-card-buy__qty { display: inline-flex; align-items: center; height: var(--yarn-touch); border: 1px solid var(--yarn-border-subtle); border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); }
+.yx-card-buy__qty button { display: grid; place-items: center; width: 36px; height: 100%; padding: 0; border: 0; background: none; color: var(--yarn-text-primary); cursor: pointer; }
+.yx-card-buy__qty button:disabled { color: var(--yarn-text-muted); cursor: default; opacity: 0.5; }
+.yx-card-buy__qty button svg { width: 12px; height: 12px; }
+.yx-card-buy__qty label { display: contents; }
+.yx-card-buy__qty input { width: 32px; height: 100%; padding: 0; border: 0; background: none; color: var(--yarn-text-heading); font: inherit; font-size: 15px; font-weight: 600; text-align: center; -moz-appearance: textfield; }
+.yx-card-buy__qty input::-webkit-inner-spin-button, .yx-card-buy__qty input::-webkit-outer-spin-button { margin: 0; -webkit-appearance: none; }
+.yx-card-buy__qty button:focus-visible, .yx-card-buy__qty input:focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: -2px; border-radius: var(--yarn-radius-pill); }
+.yx-card-cart--wide { flex: 1 1 auto; padding-inline: 14px 16px; }
+.yx-card-cart--wide[data-state='added'] .yx-card-cart__label { display: none; }
+@media (max-width: 749px) {
+  .yx-card-buy__qty { width: 100%; justify-content: space-between; }
+  .yx-card-cart--wide { width: 100%; height: 40px; }
+}
 /* Narrow cards (two-up phones) keep the price whole: the added state shows the check alone. */
 @container (max-width: 200px) {
   .yx-card-cart[data-state='added'] { padding-inline: 9px; }
@@ -265,7 +299,7 @@
   .yx-product-card__media img, .yarn-favorite.yx-card-fav, .yx-card-cart { transition: none; }
   .yx-product-card:hover .yx-product-card__media img { transform: none; }
   .yarn-favorite.yx-card-fav.is-popping svg, .yarn-favorite.yx-card-fav.is-popping::after,
-  .yx-card-cart *, .yx-card-cart[data-state='error'], #cart-icon-bubble.is-bumping * { animation: none !important; }
+  .yx-card-cart *, .yx-card-cart[data-state='error'], #cart-icon-bubble.is-bumping *, [data-favorites-header].is-bumping * { animation: none !important; }
 }
 @media (max-width: 749px) {
   .yarn-favorite.yx-card-fav { top: 6px; right: 6px; width: 38px; height: 38px; }

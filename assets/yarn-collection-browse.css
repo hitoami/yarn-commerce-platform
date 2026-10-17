@@ -9,7 +9,7 @@
 
 .ycb-head { display: grid; gap: var(--yarn-space-2); margin-bottom: var(--yarn-space-5); }
 .ycb-head__eyebrow { display: flex; align-items: center; gap: var(--yarn-space-2); margin: 0; color: var(--yarn-action); font-size: 12px; font-weight: 700; line-height: 1.5; }
-.ycb-head__title { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 28px; font-weight: 600; line-height: 1.3; }
+.ycb-head__title { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 28px; font-weight: 500; line-height: 1.3; }
 .ycb-head__intro, .ycb-head__intro p { margin: 0; color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.7; }
 .ycb-badge { padding: 3px 10px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-butter); color: var(--yarn-text-primary); font-size: 12px; font-weight: 600; }
 
@@ -45,7 +45,7 @@
 .ycb-more__button[aria-busy='true'] { opacity: .6; cursor: progress; }
 
 .ycb-empty { display: grid; justify-items: start; gap: var(--yarn-space-2); padding-block: var(--yarn-space-5); }
-.ycb-empty h2 { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 20px; font-weight: 600; }
+.ycb-empty h2 { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 20px; font-weight: 500; }
 .ycb-empty p { margin: 0 0 var(--yarn-space-2); color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.7; }
 
 /* 集合还没有商品：占位卡（DESIGN.md 成品区规则），不含商品名、价格或库存。 */
@@ -64,7 +64,7 @@
 .ycb-drawer::backdrop { background: var(--yarn-overlay); }
 .ycb-drawer form { display: flex; flex-direction: column; max-height: 85vh; }
 .ycb-drawer__head { display: flex; align-items: center; justify-content: space-between; padding: var(--yarn-space-3) var(--yarn-space-2) var(--yarn-space-3) var(--yarn-space-5); border-bottom: 1px solid var(--yarn-border-subtle); }
-.ycb-drawer__head h2 { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 20px; font-weight: 600; }
+.ycb-drawer__head h2 { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 20px; font-weight: 500; }
 .ycb-drawer__close { display: grid; place-items: center; width: var(--yarn-touch); height: var(--yarn-touch); border: 0; background: transparent; color: var(--yarn-text-primary); cursor: pointer; }
 .ycb-drawer__close svg { width: 20px; height: 20px; }
 .ycb-drawer__body { flex: 1; overflow-y: auto; padding: var(--yarn-space-2) var(--yarn-space-5) var(--yarn-space-5); }

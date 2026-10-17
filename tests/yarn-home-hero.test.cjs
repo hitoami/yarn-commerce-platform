@@ -24,18 +24,29 @@ test('hero shows three clickable intent nodes using real raster assets (Issue #5
   assert.match(heroCss, /\.yarn-hero--connected \.yarn-hero__thread/);
 });
 
-test('homepage hero preserves the original atmosphere scenes with copy but no buttons (#131)', () => {
-  // #131：首屏暂用原 hitoami.com 的三张场景图与标题、说明，不放按钮；活动图模式（全部留空 / 浅色占位）仍由 section 支持。
+test('homepage hero v4: yarn, project yarn and season scenes, each with a browsing text link (#167)', () => {
+  // #167：三张对应网站真实入口（毛线集合 / 作品页 / 本季主推），成品「准备中」不再占首屏；
+  // 每张三语都有文字链，样式是浏览链接而不是购买按钮。活动图模式（全部留空 / 浅色占位）仍由 section 支持。
   const home = index.sections.hero;
   assert.equal(home.type, 'hitoami-hero');
-  assert.deepEqual(home.block_order.map(id => home.blocks[id].settings.scene), ['yarn', 'kit', 'finished']);
+  assert.deepEqual(home.block_order.map(id => home.blocks[id].settings.scene), ['yarn', 'kit', 'season']);
   for (const id of home.block_order) {
     const settings = home.blocks[id].settings;
-    assert.notEqual(settings.scene, 'placeholder', `${id}.scene`);
-    for (const key of ['heading', 'heading_zh', 'heading_en', 'text', 'text_zh', 'text_en']) assert.ok(settings[key], `${id}.${key}`);
-    for (const key of ['cta', 'cta_zh', 'cta_en']) assert.equal(settings[key] || '', '', `${id}.${key}`);
+    for (const key of ['heading', 'heading_zh', 'heading_en', 'text', 'text_zh', 'text_en', 'cta', 'cta_zh', 'cta_en']) assert.ok(settings[key], `${id}.${key}`);
+    assert.equal(settings.link || '', '', `${id}.link falls back to the localized page route`);
   }
   const section = fs.readFileSync('sections/hitoami-hero.liquid', 'utf8');
+  const css = fs.readFileSync('assets/hitoami-hero.css', 'utf8');
+  assert.match(section, /pages\['kits'\]\.url/);
+  assert.match(section, /pages\['season'\]\.url/);
+  for (const asset of ['hitoami-yarn-wide', 'hitoami-yarn-mobile', 'hitoami-kit-wide', 'hitoami-room-mobile', 'hitoami-season-wide', 'hitoami-season-mobile']) {
+    assert.match(section, new RegExp(`'${asset}\\.webp'`));
+    assert.ok(fs.existsSync(`assets/${asset}.webp`), asset);
+    assert.ok(fs.existsSync(`assets/${asset}.webp.source.json`), `${asset} source record`);
+  }
+  const cta = css.match(/^\.hitoami-cta \{[^}]*\}/m)[0];
+  assert.match(cta, /text-decoration: underline/);
+  assert.doesNotMatch(cta, /background|border-radius/);
   assert.match(section, /heading == blank and text == blank and cta == blank/);
   assert.match(section, /class="hitoami-slide__link"/);
   assert.match(section, /<h1 class="visually-hidden">/);

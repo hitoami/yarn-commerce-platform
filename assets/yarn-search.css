@@ -5,7 +5,7 @@
 .yd-search ::selection { background: var(--yarn-tint-blush); color: var(--yarn-text-primary); }
 .yd-search button, .yd-search input { font: inherit; }
 .yd-search a { color: inherit; }
-.yd-search h2 { margin: 0; font-family: var(--yarn-display); font-weight: 600; line-height: 1.4; color: var(--yarn-text-heading); }
+.yd-search h2 { margin: 0; font-family: var(--yarn-display); font-weight: 500; line-height: 1.4; color: var(--yarn-text-heading); }
 
 /* 页头：手机为返回 / 搜索 / 收藏，桌面为左侧大标题与右侧收藏。 */
 .yd-search__bar { display: grid; grid-template-columns: var(--yarn-touch) 1fr var(--yarn-touch); align-items: center; margin-bottom: var(--yarn-space-3); }
@@ -61,6 +61,7 @@
 .yd-search__note { margin: 0; padding: var(--yarn-space-3) 14px; border-radius: var(--yarn-card-radius); background: var(--yarn-bg-warm); color: var(--yarn-text-secondary); font-size: 13px; line-height: 1.6; }
 
 /* 首次进入与无结果：示例关键词 + 按手感逛毛线（进入毛线目录的同一筛选）。 */
+.yd-search__local-note { margin: 0 0 var(--yarn-space-4); color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.7; }
 .yd-search__empty, .yd-search__error { margin: var(--yarn-space-2) 0 var(--yarn-space-5); }
 .yd-search__empty h2, .yd-search__error h2 { font-size: 20px; }
 .yd-search__empty p, .yd-search__error p { margin: var(--yarn-space-2) 0 0; color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.7; }

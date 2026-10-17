@@ -3,10 +3,14 @@
 module.exports = {
   baseUrl: 'http://127.0.0.1:9292',
 
+  // prefix 是本地 dev 的语言路径，livePrefix 是线上 hitoami.com 的（--live 时使用）。
+  // browserLocale 写进浏览器 context，避免继承本机语言后被店铺的语言重定向带走。
+  // 本地 theme dev 代理（2026-10-17 核对，#154）：中文在 /、日文 /ja、英文 /en；线上日文为域名默认语言在 /，中文 /zh。
+  // 代理下 /ja/ 只能 GET 页面，POST 会 404，所以 proof 的购物车请求走店铺根路径（见 proof.cjs cartAjaxUrl）。
   locales: [
-    { key: 'ja', prefix: '/ja', lang: 'ja' },
-    { key: 'zh', prefix: '', lang: 'zh' },
-    { key: 'en', prefix: '/en', lang: 'en' },
+    { key: 'ja', prefix: '/ja', livePrefix: '', lang: 'ja', browserLocale: 'ja-JP' },
+    { key: 'zh', prefix: '', livePrefix: '/zh', lang: 'zh', browserLocale: 'zh-CN' },
+    { key: 'en', prefix: '/en', livePrefix: '/en', lang: 'en', browserLocale: 'en-US' },
   ],
 
   viewports: [
@@ -23,12 +27,10 @@ module.exports = {
       { selector: '.ycb-chip', minimum: 2, label: '毛线分类胶囊' },
       { selector: '.ycb-grid .yx-product-card', minimum: 4, label: '目录真实毛线商品卡' },
     ] },
-    // #85：手工成品上架前，同一模板显示「准备中」占位。
-    { key: 'finished-collection', path: '/collections/finished-goods' },
     // #131：演示商品已删除，编织包不再销售；成品详情等真实成品上架后再加回。
-    // #131：手工成品上架前集合为空，显示三语「准备中」说明而不是「0/0 件」。
+    // #131 / #152：手工成品上架前集合为空，yarn-collection-browse 显示三语「准备中」说明而不是「0/0 件」。
     { key: 'finished-collection', path: '/collections/finished-goods', requiredContent: [
-      { selector: '.yx-collection-preparing__title', minimum: 1, label: '手工成品准备中说明' },
+      { selector: '.ycb-preparing__text', minimum: 1, label: '手工成品准备中说明' },
     ] },
     { key: 'yarn-pdp', path: '/products/mvp-yarn-18' },
     // 本季主推专题页：后台页面已建（handle season）；page.season 上线正式主题、后台改选该模板前，用 ?view 预览。
@@ -58,7 +60,7 @@ module.exports = {
     '.product__title', '.product__description', '.product__text', '.rte', '.price', '.yp-kitstory',
     '.product-form__input legend', '.product-form__input label', '.product-form__input option',
     '.cart-item__name', '.cart-item__details', '.cart-notification-product',
-    '.collection-hero__title', '.collection-hero__description',
+    '.ycb-head__title', '.ycb-head__intro', '.ycb-chip__name',
     '.header__menu-item', '.menu-drawer__menu-item', '.list-menu__item', '.footer-block__details-content',
     '.predictive-search', '.yx-project-pick__title', '.yx-project-pick__yarn', '.yx-season-page__toc', '.yx-season-page__name', '.yx-season-page__facts', '.yx-season-page__note', '.yarn-favorite', '[data-proof-content]',
   ],

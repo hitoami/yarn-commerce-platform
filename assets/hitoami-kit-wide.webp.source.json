@@ -1,0 +1,15 @@
+{
+  "kind": "AI-generated hero image (style C overhead still life)",
+  "date": "2026-10-18",
+  "issue": "#167",
+  "tool": "Codex image generation (gpt-6-astra)",
+  "slide": "② 作品用线",
+  "format": "desktop 3:2",
+  "references": {
+    "products": [],
+    "note": "原创钩针小猫玩偶：计划中的 hitoami 作品，不对应任何现有商品或作品页",
+    "palette": "Logo clay #AB5631 与 design tokens"
+  },
+  "scope": "首页首屏氛围图，不作为商品图、色号或用量凭据。小猫玩偶是计划中的作品，文案标明准备中（PRODUCT.md）。",
+  "prompt": "Use case: photorealistic-natural. Create a landscape 3:2 photograph, 1536 x 1024, for hitoami's homepage, editorial flat-lay still life.\nMatch the supplied C1 and C3_y reference photographs' warm cream #F9F6F0 matte paper background, true overhead 90-degree camera, even diffuse soft daylight, delicate short contact shadows and restrained warm colors. Use the logo only as conceptual inspiration for an original cat hugging yarn, never reproduce lettering.\nCRITICAL composition: left 50% and top 14% are entirely empty cream paper. Every object and shadow fits in x=56–94%, y=20–92%. Asymmetrical separated staggered objects, airy gaps, no overlap except cat holding its ball. No text.\nHero: one ORIGINAL handmade palm-sized crochet cat, round plump squat seated proportions, terracotta #AB5631 chunky cotton yarn, cream belly, small triangular crocheted ears, two small black safety eyes, tiny understated stitched nose and sweet simple mouth. Two short front paws lovingly hold one tiny butter yellow #F8E5A9 yarn ball against its belly. Recognizable cat, charming handmade irregularity, no copied commercial toy characters. Show clearly countable individual single-crochet stitches and twisted matte cotton fibers across head, belly, ears, limbs. Real tactile stuffed amigurumi, subtle handmade unevenness. Pose the seated-shape doll for a true flat lay so its face and cream belly and hugged yarn are legible to the overhead camera.\nCat occupies roughly x=65–88%, y=22–62%. Beside and below it are exactly two separate chunky cotton yarn balls used to make it: one terracotta and one cream, each smaller than the entire cat, roughly x=60–73%, y=70–86% and x=80–92%, y=66–82%. One modest real crochet hook diagonally beside the arrangement and one small stitch marker, all within the right-side bounds. Plausible palm-sized toy scale relative to yarn and hook. No other props.\nReal camera product photography with crisp natural yarn stitch detail, soft matte paper grain, no CGI, no 3D render, no plastic yarn, no glowing edges, no excessive symmetry, no uncanny face, no giant toy, no horizon, no oblique camera, no deep long shadows. Entire blank left side and upper band remain clean and usable for website copy.\nRevision after composition QA: Keep the same tactile handmade photographic quality, but move the entire arrangement inward. Strictly no object beyond x=94% (1444px at 1536px width), or above y=20% (205px). Place cat ears below y=22%. Place hook between x=86–92%, y=40–68%, shorten its image footprint; keep marker at x=90%, y=32%. Terracotta yarn ball left edge at x=57% minimum. All shadows must also remain within x=56–94%, y=20–92%. Maintain airy separate objects."
+}

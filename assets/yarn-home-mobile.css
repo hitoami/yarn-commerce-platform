@@ -1,7 +1,7 @@
 /* #131 home composition. Preserve the original hero; align the remaining sections to the supplied reference.
    #140: desktop sizes follow Claude Design「首页 v2」; phones keep the approved #131 composition. */
 .yarn-home-catalog, .yarn-home-guide { padding-block: 36px; color: var(--yarn-text-primary); }
-.yarn-home-catalog h2, .yarn-home-guide h2 { margin: 0 0 12px; font: 400 24px/1.45 var(--yarn-display); }
+.yarn-home-catalog h2, .yarn-home-guide h2 { margin: 0 0 12px; font: 500 24px/1.45 var(--yarn-display); }
 .yarn-home-catalog > p, .yarn-home-guide p { color: var(--yarn-text-muted); font-size: 13px; line-height: 1.85; }
 .yarn-home-catalog__head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
 .yarn-home-catalog__head h2 { min-width: 0; }
@@ -27,7 +27,7 @@
 .yarn-home-guide summary::after { content: ''; flex: none; width: 8px; height: 8px; margin-right: 6px; border-right: 1.5px solid var(--yarn-text-muted); border-bottom: 1.5px solid var(--yarn-text-muted); transform: rotate(45deg) translate(-2px, -2px); transition: transform 0.2s ease; }
 .yarn-home-guide details[open] summary::after { transform: rotate(225deg) translate(-2px, -2px); }
 .yarn-home-guide summary:focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 4px; }
-.yarn-home-guide__q { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--yarn-action); color: var(--yarn-text-inverse); font: 600 13px/1 var(--yarn-display); }
+.yarn-home-guide__q { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--yarn-action); color: var(--yarn-text-inverse); font: 600 13px/1 var(--yarn-body); }
 .yarn-home-guide__question { flex: 1; min-width: 0; color: var(--yarn-text-heading); font-weight: 500; line-height: 1.5; }
 .yarn-home-guide details > p { margin: 0; padding: 0 22px 16px 34px; }
 .yarn-home-guide__all { display: flex; align-items: center; gap: 6px; min-height: 44px; border-top: 1px solid var(--yarn-border-subtle); color: var(--yarn-action); font-size: 14px; font-weight: 700; text-decoration: none; }
@@ -97,7 +97,7 @@ body:has(.hitoami-hero--catalog) .yarn-entries__flourish { display: none; } /* n
   .yarn-home-guide .yarn-home-guide__note { color: var(--yarn-text-muted); font-size: 15px; line-height: 1.5; }
   .yarn-home-guide--steps ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin: 0; padding: 0; list-style: none; counter-reset: steps; }
   .yarn-home-guide--steps li { display: flex; flex-direction: column; gap: 12px; padding: 24px; border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-radius-panel); background: var(--yarn-bg-band); counter-increment: steps; }
-  .yarn-home-guide--steps li::before { content: counter(steps); display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--yarn-tint-butter); color: var(--yarn-text-heading); font: 600 18px/1 var(--yarn-display); }
+  .yarn-home-guide--steps li::before { content: counter(steps); display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--yarn-tint-butter); color: var(--yarn-text-heading); font: 600 18px/1 var(--yarn-body); }
   .yarn-home-guide--steps h3 { color: var(--yarn-text-heading); font: 700 17px/1.3 var(--yarn-body); letter-spacing: 0; }
   .yarn-home-guide--steps li p { margin: 0; color: var(--yarn-text-secondary); font-size: 14px; line-height: 24px; }
   /* FAQ: heading, note and LINE help on the left; questions on the right. */
