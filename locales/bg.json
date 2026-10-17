@@ -807,6 +807,7 @@
     "search_scope": "Yarn · Kits · Handmade",
     "back": "Back to home",
     "favorites": "Favorites",
+    "favorites_count": "Favorites ({{ number }})",
     "favorite_add": "Save {{ title }} to favorites",
     "favorite_remove": "Remove {{ title }} from favorites",
     "saved": "Saved to favorites",

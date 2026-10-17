@@ -807,6 +807,7 @@
     "search_scope": "毛线 · 材料包 · 手工成品",
     "back": "返回首页",
     "favorites": "收藏",
+    "favorites_count": "收藏（{{ number }} 件）",
     "favorite_add": "收藏「{{ title }}」",
     "favorite_remove": "取消收藏「{{ title }}」",
     "saved": "已保存到收藏",

@@ -30,3 +30,23 @@ test('#169 the cart button only renders for finished goods, judged like search g
   assert.match(cart, /render 'yarn-discovery-product-kind', product: cart_product/);
   assert.match(cart, /{%- if cart_product\.price > 0 and cart_kind contains 'finished' -%}/);
 });
+
+test('#175 the header heart shows the favorites count and the card cart reuses the header cart icon', () => {
+  const header = read('sections/header.liquid');
+  assert.match(header, /data-favorites-header[\s\S]*data-label-count="{{ 'yarn_discovery\.favorites_count' \| t: number: '__N__' }}"/);
+  assert.match(header, /<span class="cart-count-bubble yarn-favorites-count" data-favorites-count aria-hidden="true" hidden><\/span>/);
+  assert.match(read('assets/yarn-favorites.js'), /querySelectorAll\('\[data-favorites-header\]'\)[\s\S]*has-favorites/);
+  assert.match(read('assets/yarn-card-actions.js'), /addEventListener\('yarn:favorite-toggled'/);
+  for (const path of ['snippets/yarn-card-cart.liquid', 'snippets/yarn-card-buy.liquid']) {
+    assert.match(read(path), /'icon-cart-empty\.svg' \| inline_asset_content/, `${path} header cart icon`);
+  }
+});
+
+test('#175 favorites cards carry a 1–99 quantity stepper wired to the add button', () => {
+  const buy = read('snippets/yarn-card-buy.liquid');
+  assert.match(buy, /<input id="{{ buy_id }}" type="number" inputmode="numeric" min="1" max="99" value="1" data-card-qty>/);
+  assert.match(buy, /data-qty-step="-1"[\s\S]*data-qty-step="1"[\s\S]*data-card-add=/);
+  assert.match(read('snippets/yarn-discovery-product-card.liquid'), /render 'yarn-card-buy', buy_product: product/);
+  assert.match(read('assets/yarn-card-actions.js'), /quantity: quantityFor\(button\)/);
+  assert.match(read('assets/yarn-search.js'), /this\.classList\.toggle\('is-favorites', isFavorites\)/);
+});
