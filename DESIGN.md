@@ -339,7 +339,7 @@ components:
 | 文字 | `text-primary` / `text-secondary` / `text-muted` / `text-disabled` | 正文与通用标题 / 次级正文 / 辅助说明 / 不可用 |
 | 文字（特定底） | `text-inverse` / `text-on-action` / `text-on-cta` | 深色区块 / 陶土实心按钮 / 奶油主按钮 |
 | 操作 | `action` / `accent` / `action-strong` / `action-subtle-bg` / `action-subtle-hover` | 链接与文字按钮 / 价格与实心按钮 / 按下与深色强调 / 导航选中、帮助浅面 / 其悬停 |
-| 主按钮 | `cta-bg` / `cta-hover` / `cta-border` | 奶油主按钮（加购、Hero、选中筛选） |
+| 主按钮 | `cta-bg` / `cta-hover` / `cta-border` | 奶油主按钮（加购、选中筛选） |
 | 边线 | `border-subtle` / `border-card` / `border-control` / `border-disabled` | 分组细线 / 卡片边 / 输入与筛选控件边（≥3:1）/ 不可用 |
 | 柔色面 | `tint-blush` / `tint-butter` / `tint-sage` | 品类角标毛线 / 编织包 / 成品，及信息卡；只表达分类 |
 | 状态 | `selected-text` / `focus` | 作品筛选选中态 / 键盘焦点与输入光标（全站唯一冷色，2px 轮廓 + 4px 偏移） |
@@ -403,7 +403,7 @@ components:
 
 ## hitoami 首屏（#110，#93 起与导览条拆开）
 
-已实现构图依据 [手机稿](docs/design/approved/110-home-mobile.md)，控件与桌面按 [Claude Design 1a](docs/design/approved/126-home-1a.source.md)。默认三张按毛线、编织材料包、成品排序；全幅小屋照片由 HTML 文案覆盖；手机 Hero 高度 `clamp(560px, 76svh, 710px)`。不放左右箭头与页码：圆点居中在底部（手机距底 30px、放在 90% 白的胶囊里；桌面距底 44px、无胶囊，见 #140），圆点为 `home-action`，未选中 35% 透明、选中拉长为 18px；支持滑动与方向键。标题 28–34px / 1.35，副文案 15px / 1.65，CTA 16px、至少 46px 高，使用 `home-action` 灰棕底和反白字。没有自动轮播。
+已实现构图依据 [手机稿](docs/design/approved/110-home-mobile.md)，控件与桌面按 [Claude Design 1a](docs/design/approved/126-home-1a.source.md)。默认三张按毛线、作品用线、本季主推排序（#167；2026-10-18 起画面为风格 C「俯拍杂志静物」：奶油纸面、正上方俯拍、物件分开错落，第 ② 张的小猫玩偶是计划中的作品，文案标明准备中；见 [首屏 v4 来源](docs/design/approved/167-hero-v4.source.md)；`season` 场景链接本季主推页，`kit` 场景链接作品页）；全幅小屋照片由 HTML 文案覆盖；手机 Hero 高度 `clamp(600px, 84svh, 760px)`（#167 俯拍静物让物件留在下半部）。不放左右箭头与页码：圆点居中在底部（手机距底 30px、放在 90% 白的胶囊里；桌面距底 44px、无胶囊，见 #140），圆点为 `home-action`，未选中 35% 透明、选中拉长为 18px；支持滑动与方向键。标题 28–34px / 1.35，副文案 15px / 1.65，文字链 15px（桌面 17px）粗体、`home-action` 色、下划线，行高区至少 44px，是浏览入口不是按钮（#167）。没有自动轮播。
 
 首屏底边为奶油波浪（手机 30px、桌面 44px），衔接下方导览条（`scrollbar-track` 底）。导览条挂线线芯 `home-rope`、线纹 `home-thread`；九帧猫重新切帧后脚底对齐，桌面约 100px 宽，沿挂线走到悬停入口旁，毛球滚在前方；手机不显示猫。轮播与导览条互不联动。首页桌面（≥990px）底边固定一只滚动进度猫（#151，用户 2026-10-17 要求）：同一九帧猫约 72px 宽推着毛线球随滚动从左走到右，身后毛线长度即进度；停下站 → 趴 → 睡，往回滚转身。毛线与线球的颜色和形状跟 Logo 一致：`home-logo` 实心线 2.4px、24px 实心线球带页面底色缠绕缝隙，无描边；手机不显示。品牌介绍为独立 section，标题 25px / 1.6、正文 15px / 1.9；桌面尺寸见上文 #140。
 

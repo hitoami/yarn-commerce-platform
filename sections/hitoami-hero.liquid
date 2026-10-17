@@ -1,9 +1,9 @@
 {% comment %}
-  首页首屏:整幅场景轮播,标题、说明与按钮压在左侧留白处(桌面对齐 1200 内容轴);圆点居中在底部的白色胶囊里(#126 Claude Design 1a);底边是一道波浪。
+  首页首屏:整幅场景轮播,标题、说明与文字链压在左侧留白处(桌面对齐 1200 内容轴);圆点居中在底部的白色胶囊里(#126 Claude Design 1a);底边是一道波浪。
   #131 活动图:标题、说明与按钮都留空时只显示图片(不加遮罩),填了链接则整张图可点;选「浅色占位」时未上传图片显示浅色占位块。
   作为首页第一个 section 时,页头透明地叠在图上(规则在 hitoami-hero.css)。
   与首屏下方的导览条互不关联:切换幻灯片不影响导览条,导览条也不控制幻灯片。
-  场景图可在每张幻灯片上传(桌面 / 手机),未上传时用内置的三张氛围图(来源见 docs/design/approved/home-scheme-c.source.md)。
+  场景图可在每张幻灯片上传(桌面 / 手机),未上传时用内置氛围图;#167 起毛线、作品用线、本季主推三张换成 v4(来源见同名 .source.json 与 docs/design/approved/167-hero-v4.source.md)。
   三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
 {% endcomment %}
 {{ 'hitoami-hero.css' | asset_url | stylesheet_tag }}
@@ -27,6 +27,9 @@
             elsif block.settings.scene == 'finished'
               assign desktop_asset = 'hitoami-finished-wide.webp'
               assign mobile_asset = 'hitoami-finished-mobile.webp'
+            elsif block.settings.scene == 'season'
+              assign desktop_asset = 'hitoami-season-wide.webp'
+              assign mobile_asset = 'hitoami-season-mobile.webp'
             endif
             capture heading
               render 'yarn-setting-text', settings: block.settings, key: 'heading'
@@ -47,11 +50,13 @@
             endif
             assign target = block.settings.link
             if target == blank and image_only == false
-              assign target = collections['knit-kits'].url | default: routes.all_products_collection_url
+              assign target = pages['kits'].url | default: routes.all_products_collection_url
               if block.settings.scene == 'yarn'
                 assign target = collections['yarn'].url | default: routes.all_products_collection_url
               elsif block.settings.scene == 'finished'
                 assign target = collections['finished-goods'].url | default: routes.all_products_collection_url
+              elsif block.settings.scene == 'season'
+                assign target = pages['season'].url | default: routes.all_products_collection_url
               endif
             endif
           %}
@@ -115,7 +120,7 @@
           "type": "select",
           "id": "scene",
           "label": "默认氛围图",
-          "info": "未上传图片时使用对应的内置场景；按钮链接留空时进入对应集合。活动图选「浅色占位」，上传图片前显示浅色块。",
+          "info": "未上传图片时使用对应的内置场景；链接留空时进入对应页面（毛线集合、作品页、本季主推或成品集合）。活动图选「浅色占位」，上传图片前显示浅色块。",
           "default": "kit",
           "options": [
             {
@@ -133,6 +138,10 @@
             {
               "value": "finished",
               "label": "成品角(成品)"
+            },
+            {
+              "value": "season",
+              "label": "窗边毛线篮(本季主推)"
             }
           ]
         },
@@ -213,26 +222,26 @@
         {
           "type": "text",
           "id": "cta",
-          "label": "日文 · 按钮",
+          "label": "日文 · 文字链",
           "default": "編みキットを見る"
         },
         {
           "type": "text",
           "id": "cta_zh",
-          "label": "中文 · 按钮",
+          "label": "中文 · 文字链",
           "default": "看看编织包"
         },
         {
           "type": "text",
           "id": "cta_en",
-          "label": "英文 · 按钮",
+          "label": "英文 · 文字链",
           "default": "Explore the kits"
         },
         {
           "type": "url",
           "id": "link",
           "label": "链接",
-          "info": "有按钮时是按钮链接，留空进入对应集合。标题、说明、按钮都留空时只显示图片，填了链接则整张图可点。"
+          "info": "有文字链时是它的目标，留空进入对应页面。标题、说明、文字链都留空时只显示图片，填了链接则整张图可点。"
         }
       ]
     }
@@ -247,15 +256,15 @@
             "scene": "yarn",
             "focus": 50,
             "tone": "dark",
-            "heading": "ここで、\n毎日を少しゆっくりと。",
-            "heading_zh": "来这里，\n把日子过慢一点。",
-            "heading_en": "Come in.\nTake life a stitch slower.",
-            "text": "色と手ざわりから、お気に入りを探そう。",
-            "text_zh": "从颜色与手感开始，找到自己的节奏。",
-            "text_en": "Explore colour and texture at your own pace.",
-            "cta": "毛糸を選ぶ",
-            "cta_zh": "挑选毛线",
-            "cta_en": "Explore the yarn"
+            "heading": "ひと玉ずつ、\n選ぶ楽しみ。",
+            "heading_zh": "一团一团，\n慢慢挑。",
+            "heading_en": "Choose yarn,\none ball at a time.",
+            "text": "グラデーションや段染め、モヘヤ、ループヤーンなど。hitoamiは毛糸の専門店です。",
+            "text_zh": "渐变、段染、马海毛、圈圈纱……这里是毛线专门店 hitoami。",
+            "text_en": "Gradient and variegated yarns, mohair, bouclé and more. Welcome to hitoami, a specialist yarn shop.",
+            "cta": "毛糸を見る",
+            "cta_zh": "浏览毛线",
+            "cta_en": "Browse yarn"
           }
         },
         {
@@ -264,32 +273,32 @@
             "scene": "kit",
             "focus": 50,
             "tone": "dark",
-            "heading": "キットを開いて、\n最初のひと目から。",
-            "heading_zh": "打开编织包，\n从第一针慢慢开始。",
-            "heading_en": "Open a kit.\nBegin with one stitch.",
-            "text": "材料と編み図を、ゆっくり選ぼう。",
-            "text_zh": "材料与图解，一起慢慢挑。",
-            "text_en": "Find your yarn, your pattern, your pace.",
-            "cta": "編みキットを見る",
-            "cta_zh": "看看编织包",
-            "cta_en": "Explore the kits"
+            "heading": "編みたいものから、\n糸を選ぶ。",
+            "heading_zh": "从想织的作品，\n找到想用的线。",
+            "heading_en": "Start with\nyour next project.",
+            "text": "作品ごとに、使う毛糸と玉数を紹介しています。ねこのあみぐるみは準備中です。",
+            "text_zh": "每个作品都写明用哪款毛线、用几团。小猫玩偶作品准备中。",
+            "text_en": "Each project lists its yarn and ball count. The cat amigurumi is coming soon.",
+            "cta": "作品と使う毛糸を見る",
+            "cta_zh": "看作品与用线",
+            "cta_en": "Explore projects and yarn"
           }
         },
         {
           "type": "slide",
           "settings": {
-            "scene": "finished",
+            "scene": "season",
             "focus": 50,
             "tone": "dark",
-            "heading": "手づくりのぬくもりを、\n毎日の暮らしへ。",
-            "heading_zh": "把手作的温柔，\n带进日常。",
-            "heading_en": "Handmade warmth.\nA place in your everyday.",
-            "text": "お気に入りのひと品を、あなたのもとへ。",
-            "text_zh": "挑一件喜欢的手作，陪伴每一天。",
-            "text_en": "Find a handmade piece to make your days a little warmer.",
-            "cta": "完成品を見る",
-            "cta_zh": "挑选成品",
-            "cta_en": "Explore finished pieces"
+            "heading": "秋冬の編みものに、\nあたたかな色を。",
+            "heading_zh": "秋冬，\n织一点温暖的颜色。",
+            "heading_en": "Warm colors\nfor autumn and winter.",
+            "text": "秋冬におすすめの毛糸をご紹介します。",
+            "text_zh": "看看本季推荐的秋冬毛线。",
+            "text_en": "Explore our yarn picks for the season.",
+            "cta": "今季のおすすめを見る",
+            "cta_zh": "看本季主推",
+            "cta_en": "Explore seasonal yarn picks"
           }
         }
       ]

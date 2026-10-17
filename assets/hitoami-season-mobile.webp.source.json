@@ -1,0 +1,20 @@
+{
+  "kind": "AI-generated hero image (style C overhead still life)",
+  "date": "2026-10-18",
+  "issue": "#167",
+  "tool": "Codex image generation (gpt-6-astra)",
+  "slide": "③ 本季主推",
+  "format": "mobile 2:3 (separately composed from the desktop image)",
+  "references": {
+    "products": [
+      "油画圈圈线",
+      "雪宝渐变和纯色",
+      "雪宝段染",
+      "印象日出"
+    ],
+    "note": "Shopify 商品主图只作毛线外观参考，画面去掉吊牌",
+    "palette": "Logo clay #AB5631 与 design tokens"
+  },
+  "scope": "首页首屏氛围图，不作为商品图、色号或用量凭据。毛线按真实商品款式由 AI 重绘（PRODUCT.md 例外）。",
+  "prompt": "Use case: photorealistic-natural.\nCreate a separately composed MOBILE hero photograph for hitoami, portrait aspect ratio exactly 2:3 (1024 x 1536). Use the supplied desktop photograph as the visual reference for the SAME physical objects, fibers, colors, paper, lighting and photographic style. Re-arrange the still life for a portrait canvas; do not crop the landscape photograph.\nScene: cream #F9F6F0 matte paper, subtle natural paper grain, true 90-degree overhead flat lay, even diffused soft light and short delicate shadows. Understated editorial magazine still-life photograph.\nObjects: the same fuzzy warm caramel/ochre oval yarn ball; the same smaller sage-green, cream and mustard variegated fuzzy yarn ball; the same larger flat round coiled boucle yarn cake with rust, muted dark olive and mustard loops. Same small natural beige linen swatch beneath part of the grouping, two golden ginkgo leaves, one russet maple leaf, one small brown acorn. Preserve natural wool fibers and relative sizes. May omit one ginkgo leaf if needed.\nSTRICT spatial layout in percentages of the entire portrait: top 0–14% is only bare paper for navigation. The complete region x=8–85%, y=16–50% must be pristine empty paper for copy: absolutely no objects, shadows, fabric, fibers, stems or leaf tips. In fact leave the entire upper 53% as uninterrupted bare paper. ALL objects including every shadow, linen edge, leaf tip and stem must fit within y=54–94%, with comfortable left/right margins, approximately x=9–91%. Arrange a naturally asymmetric compact still life in this lower zone: caramel ball upper-left of grouping, variegated ball upper-right, boucle cake below-left/center, small leaves and acorn to the lower-right over linen. Scale the whole grouping to fit; avoid gigantic objects. All three yarn forms must be fully visible and uncropped. Leave a 6% blank paper bottom margin. The composition must look immediately like the mobile companion of the reference.\nNo text, no labels, no tags, no graphics, no borders, no watermark. No plastic texture, no luminous edges, no dramatic shadows, no mechanical symmetry. Output the portrait photograph only.\n\nCRITICAL CORRECTION: Previous attempt placed the top of the caramel yarn at y=44%, which is unacceptable. Shrink the ENTIRE still life grouping by about 25% and move it DOWN. The highest fiber of any yarn must start at y=55% (pixel 845 in a 1536-high image); nothing whatsoever above that. Group bounding box including linen and shadows: x=15–88%, y=55–93%. Caramel yarn about x=26–49%, y=55–71%; sage yarn x=57–80%, y=62–78%; boucle cake x=27–59%, y=72–91%. Keep all physical objects proportional. The upper 54% of canvas must show nothing but plain cream paper. This empty upper region is more important than large product size."
+}

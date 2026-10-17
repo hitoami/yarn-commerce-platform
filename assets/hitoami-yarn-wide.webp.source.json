@@ -1,0 +1,19 @@
+{
+  "kind": "AI-generated hero image (style C overhead still life)",
+  "date": "2026-10-18",
+  "issue": "#167",
+  "tool": "Codex image generation (gpt-6-astra)",
+  "slide": "① 毛线",
+  "format": "desktop 3:2",
+  "references": {
+    "products": [
+      "圈圈纱",
+      "幼马海毛",
+      "莫兰迪8 澳洲美利奴羊毛线"
+    ],
+    "note": "Shopify 商品主图只作毛线外观参考，画面去掉吊牌",
+    "palette": "Logo clay #AB5631 与 design tokens"
+  },
+  "scope": "首页首屏氛围图，不作为商品图、色号或用量凭据。毛线按真实商品款式由 AI 重绘（PRODUCT.md 例外）。",
+  "prompt": "Create ONE landscape 3:2 image, 1536x1024, C1 homepage hero for hitoami. Understated editorial still-life PHOTOGRAPH taken exactly 90 degrees straight overhead, sensor parallel to surface, no perspective tilt. Continuous seamless matte cream paper near #F9F6F0 fills entire frame, no horizon or room.\nUse the three attached product reference images ONLY to understand yarn colors and fiber structure: image 1 pale apricot boucle compact small loops; image 2 dusty pink fine yarn with very sparse short fine fuzz (far less halo than reference); image 3 cream and gray-blue smooth plied yarn with distinct windings. Discard ALL reference labels, bands, lettering, props, packaging, scene, lighting and camera angle. Do not include any logo.\nExactly FOUR modest hand-sized yarn bundles, naturally flattened at contact, slightly different sizes, softly oblong and irregular cross-wound forms rather than perfect spheres or concentric targets. All four in two loosely staggered columns with generous clear gaps and different rotations. Suggested centers: apricot at (66%,35%), dusty pink at (85%,43%), cream at (67%,67%), gray-blue at (85%,77%). Each bundle roughly 12–14% of frame width and 17–21% of frame height. Keep the entire ensemble INCLUDING every fiber, strand, paper corner and visible shadow STRICTLY within x=58–94%, y=22–91%. No loose strands extending out of this zone.\nA single small plain matte butter-yellow paper rectangle near #F8E5A9 partially tucked under lower-right gray-blue yarn; plain blank paper, no writing or graphic, all edges inside prescribed zone.\nThe LEFT HALF x=0–50% must be entirely unmarked low-contrast cream negative space for future copy. TOP full width y=0–14% must be entirely empty cream for future navigation. Render NO copy or navigation. Broad diffused illumination from upper left, even neutral color rendering, short faint soft contact shadows immediately under yarn only. Photographic natural tactile material detail, restrained contrast, fine compact boucle loops clearly unlike the crisp smooth winding of cream/blue and sparse fine fuzz of pink. Real gravity, modest bundle height, no inflated shapes. Establish consistent C1–C3 style: same strict overhead camera, cream background, hand-sized object scale, neutral color rendering.\nAvoid glowing edges, backlit halos, animal fur, furry halos, mold-like fibers, giant or inflated yarn, plastic shine, glossy material, 3D rendering, floating cutouts, cloned identical balls, concentric bullseyes, room, furniture, scissors, flowers, props besides the single yellow rectangle, heavy grain, hard shadows, labels, tags, text, logos, borders, decorative graphic marks.\nCRITICAL CORRECTION: The four bundles must be SMALL in the full canvas, not close-up. Their exact maximum bounding boxes in a 1536x1024 canvas are: apricot x=920–1105 y=270–460; pink x=1230–1400 y=360–540; cream x=910–1095 y=620–790; blue x=1215–1400 y=710–875. Yellow paper including corners must fit x=1220–1420 y=765–905. Shadows and fibers must stay inside x=891–1440 y=226–930. Leave LARGE visible cream gaps between all bundles. Each bundle is only about 12% of entire image width, not 22%. Camera pulled back substantially. Do not enlarge subjects to fill the image. All content strictly in rightmost 42% of frame. Pale desaturated apricot, muted dusty pink. No bright or glowing fuzz."
+}
