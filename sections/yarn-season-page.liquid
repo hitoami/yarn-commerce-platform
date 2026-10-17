@@ -7,6 +7,8 @@
   介绍下方放首页商品卡的横排版（yarn-pick-card layout: 'row'，用户 2026-10-16 在 Figma 整体效果候选中选定 E），名称、规格、价格只取 Shopify，整卡进入商品页;专题页不直接加购，也不显示色样（商品没有颜色规格）。
   三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置;通用按钮用 Theme locales。
   画布图片的来源见 docs/design/approved/131-season-canvas.source.md。
+  #181 手机版（2026-10-17 用户确认 Figma「02 本季主推专题 · 手机重设计 · 390」）：封面满屏、目录竖排；成品图满屏宽 1 大 2 小、大图左右交替。
+  成品图每张都是按钮，点开 yarn-season-lightbox 全屏看大图（滑动 / ‹ › / 缩略图切换，✕、Esc、下滑关闭），大图用 data-full 的高清地址。
 {% endcomment %}
 {%- liquid
   assign sp_collection = section.settings.collection | default: collections['yarn']
@@ -81,6 +83,7 @@
                 </span>
                 <span class="yx-season-page__toc-num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
                 <span class="yx-season-page__toc-name">{{ sp_item.title | escape }}</span>
+                <svg class="yx-season-page__toc-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3v10M4 9l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </a>
             </li>
           {%- endfor -%}
@@ -112,23 +115,37 @@
           {%- for sp_slot in (1..3) -%}
             {%- assign sp_slot_at = sp_slot | minus: 1 -%}
             {%- if sp_slot == 1 -%}{%- assign sp_pick = sp_block.settings.image -%}{%- else -%}{%- assign sp_key = 'image_' | append: sp_slot -%}{%- assign sp_pick = sp_block.settings[sp_key] -%}{%- endif -%}
-            {%- if sp_slot == 1 -%}{%- assign sp_w = 1200 -%}{%- assign sp_sizes = '(min-width: 750px) 34vw, calc(100vw - 32px)' -%}{%- else -%}{%- assign sp_w = 800 -%}{%- assign sp_sizes = '(min-width: 750px) 23vw, 50vw' -%}{%- endif -%}
+            {%- if sp_slot == 1 -%}{%- assign sp_w = 1200 -%}{%- assign sp_sizes = '(min-width: 750px) 34vw, 61vw' -%}{%- else -%}{%- assign sp_w = 800 -%}{%- assign sp_sizes = '(min-width: 750px) 23vw, 39vw' -%}{%- endif -%}
+            {%- assign sp_full = blank -%}
+            {%- assign sp_fallback = blank -%}
+            {%- capture sp_img -%}
+              {%- if sp_pick != blank -%}
+                {{ sp_pick | image_url: width: sp_w | image_tag: widths: '400, 600, 800, 1200', sizes: sp_sizes, loading: 'lazy', alt: '' }}
+              {%- elsif sp_assets[sp_slot_at] != blank -%}
+                <img src="{{ sp_assets[sp_slot_at] | asset_url }}" width="640" height="853" loading="lazy" alt="">
+              {%- elsif sp_slot == 1 -%}
+                {%- assign sp_fallback = sp_item.metafields.yarn.card_image.value | default: sp_item.featured_image -%}
+                {%- if sp_fallback != blank -%}{{ sp_fallback | image_url: width: 1200 | image_tag: widths: '400, 600, 900, 1200', sizes: sp_sizes, loading: 'lazy', alt: '' }}{%- endif -%}
+              {%- endif -%}
+            {%- endcapture -%}
             {%- if sp_pick != blank -%}
-              {{ sp_pick | image_url: width: sp_w | image_tag: widths: '400, 600, 800, 1200', sizes: sp_sizes, loading: 'lazy', alt: '' }}
+              {%- assign sp_full = sp_pick | image_url: width: 2000 -%}
             {%- elsif sp_assets[sp_slot_at] != blank -%}
-              <img src="{{ sp_assets[sp_slot_at] | asset_url }}" width="640" height="853" loading="lazy" alt="">
-            {%- elsif sp_slot == 1 -%}
-              {%- assign sp_fallback = sp_item.metafields.yarn.card_image.value | default: sp_item.featured_image -%}
-              {%- if sp_fallback != blank -%}{{ sp_fallback | image_url: width: 1200 | image_tag: widths: '400, 600, 900, 1200', sizes: sp_sizes, loading: 'lazy', alt: '' }}{%- endif -%}
+              {%- assign sp_full = sp_assets[sp_slot_at] | asset_url -%}
+            {%- elsif sp_slot == 1 and sp_fallback != blank -%}
+              {%- assign sp_full = sp_fallback | image_url: width: 2000 -%}
+            {%- endif -%}
+            {%- if sp_full != blank -%}
+              <button type="button" class="yx-season-page__shot" data-full="{{ sp_full }}" aria-label="{{ 'yarn_project.season_photo_open' | t: name: sp_item.title, index: sp_slot, total: '__SHOTS__' | escape }}">{{ sp_img }}{%- if sp_slot == 1 -%}<span class="yx-season-page__zoom" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path d="M9.5 2.5h4v4M13.5 2.5 9 7M6.5 13.5h-4v-4M2.5 13.5 7 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>1/__SHOTS__</span>{%- endif -%}</button>
             {%- endif -%}
           {%- endfor -%}
         {%- endcapture -%}
-        {%- assign sp_shots = sp_gallery | split: '<img' | size | minus: 1 -%}
+        {%- assign sp_shots = sp_gallery | split: 'yx-season-page__shot"' | size | minus: 1 -%}
         {%- assign sp_num = forloop.index | prepend: '0' | slice: -2, 2 -%}
         {%- assign sp_mod = forloop.index | modulo: 2 -%}
         <li class="yx-season-page__yarn{% if sp_mod == 0 %} yx-season-page__yarn--flip{% endif %}" id="SeasonYarn-{{ forloop.index }}">
           <figure class="yx-season-page__figure">
-            <a class="yx-season-page__media yx-season-page__media--{{ sp_shots | at_least: 1 | at_most: 3 }}" href="{{ sp_item.url }}" tabindex="-1" aria-hidden="true">{{ sp_gallery }}</a>
+            <div class="yx-season-page__media yx-season-page__media--{{ sp_shots | at_least: 1 | at_most: 3 }}" data-season-gallery data-caption="{{ sp_item.title | escape }}">{{ sp_gallery | replace: '__SHOTS__', sp_shots }}</div>
             <figcaption class="visually-hidden">No.{{ sp_num }} — {{ sp_item.title | escape }}</figcaption>
           </figure>
           <div class="yx-season-page__copy">
@@ -141,6 +158,22 @@
         </li>
       {%- endfor -%}
     </ol>
+    <script src="{{ 'yarn-season-lightbox.js' | asset_url }}" defer="defer"></script>
+    <yarn-season-lightbox>
+      <dialog class="yx-lightbox" aria-label="{{ 'yarn_project.season_photo_viewer' | t }}">
+        <div class="yx-lightbox__bar">
+          <span class="yx-lightbox__count" data-count aria-live="polite"></span>
+          <button type="button" class="yx-lightbox__close" data-close aria-label="{{ 'accessibility.close' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        </div>
+        <div class="yx-lightbox__track" data-track tabindex="-1"></div>
+        <button type="button" class="yx-lightbox__step yx-lightbox__step--prev" data-step="-1" aria-label="{{ 'yarn_project.season_photo_prev' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="yx-lightbox__step yx-lightbox__step--next" data-step="1" aria-label="{{ 'yarn_project.season_photo_next' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="yx-lightbox__foot">
+          <div class="yx-lightbox__thumbs" data-thumbs></div>
+          <p class="yx-lightbox__caption" data-caption></p>
+        </div>
+      </dialog>
+    </yarn-season-lightbox>
   {%- endif -%}
 </article>
 
