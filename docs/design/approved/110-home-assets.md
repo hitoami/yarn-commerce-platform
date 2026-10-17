@@ -39,7 +39,7 @@ Create 1024x1536 PORTRAIT clean photographic background for the mobile FINISHED 
 ```
 
 
-本轮素材用于品牌氛围与分类导航，不代表真实可售商品或套件组成。用户提供的 `hitoami-logo-kit-v1.zip` 内 02 平面字标，经等比缩小与 WebP 编码用于 `hitoami-wordmark.webp`；保留原字形、颜色和透明留白。原生成包归用户提供材料，未重画。
+本轮素材用于品牌氛围与分类导航，不代表真实可售商品或套件组成。用户提供的 `hitoami-logo-kit-v1.zip` 内 02 平面字标，曾用于 `hitoami-wordmark.webp`；2026-10-16 起由猫抱毛线球字标 `hitoami-logo.webp` 取代（#140）。
 
 `hitoami-cat-atlas.webp` 和 `hitoami-yarn-ball.svg` 复用本会话已批准的 cat-nav 动画包，来源 `cat-nav/app/public/assets/cat-atlas.png`、`ball.svg`；精灵为 3×3 九帧。仅转码。
 

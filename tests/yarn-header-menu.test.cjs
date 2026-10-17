@@ -42,9 +42,9 @@ test('prototype navigation contains no locale, product-copy or tag-search overri
 
 test('hitoami uses the supplied wordmark image with an accessible name', () => {
   assert.match(wordmark, /alt="hitoami"/);
-  assert.match(wordmark, /hitoami-wordmark\.webp/);
+  assert.match(wordmark, /hitoami-logo\.webp/);
   assert.doesNotMatch(wordmark, /inline_asset_content|毛线工作室/);
-  assert.match(wordmark, /width="640"[\s\S]*height="246"/);
+  assert.match(wordmark, /width="1200"[\s\S]*height="316"/);
   assert.match(headerCss, /object-fit: contain/);
   assert.match(header, /assign yarn_brand_name = 'hitoami'/);
   assert.match(header, /"name": \{\{ yarn_brand_name \| json \}\}/);

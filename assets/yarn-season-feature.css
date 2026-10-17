@@ -18,12 +18,19 @@ a.yx-season:hover .yx-season__media img { transform: scale(1.03); }
 a.yx-season:hover .yx-season__link { background: var(--yarn-text-heading); color: var(--yarn-text-inverse); }
 
 @media (min-width: 750px) {
-  .yx-season { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; gap: 72px; padding: 72px 0; }
-  .yx-season__media { order: 2; aspect-ratio: 7 / 6; border-radius: var(--yarn-radius-panel); }
+  /* #140: copy left, wide cover right, solid pill CTA (Claude Design「首页 v2」). */
+  .yx-season { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; gap: 72px; padding: 72px 0 56px; }
+  .yx-season__media { order: 2; aspect-ratio: 624 / 334; border-radius: var(--yarn-radius-panel); }
+  .yx-season__media img { transition-duration: 240ms; }
   .yx-season__collage { gap: 6px; }
-  .yx-season__body { gap: var(--yarn-space-5); }
-  .yx-season__heading { font-size: clamp(4rem, 4vw, 5.6rem); line-height: 1.15; }
+  .yx-season__body { gap: 20px; }
+  .yx-season__heading { font-size: clamp(4rem, 3.6vw, 5.2rem); font-weight: 600; line-height: 1.25; }
   .yx-season__text { font-size: 1.6rem; }
+  .yx-season__link { margin-top: 0; border: 0; background: var(--yarn-action); color: var(--yarn-text-on-action); font-size: 14px; font-weight: 700; }
+  a.yx-season:hover .yx-season__link { background: var(--yarn-action-strong); color: var(--yarn-text-on-action); }
+}
+@media (min-width: 990px) {
+  .yx-season { grid-template-columns: minmax(0, 1fr) minmax(0, 624px); }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -79,3 +79,7 @@ Issue #65 删除了无模板使用的 `yarn-purpose-grid` / `yarn-seasonal-featu
 小猫由 `yarn-companion` snippet、CSS 与 custom element 接入 `yarn-entry-circles`，复用原 sprite，支持点击醒来/走动和减少动态效果。分类仍引用 `yarn_entry` 与 Shopify 商品字段，参考图可在 block 选择本轮原表实物图。毛线资料区 `yarn-catalog` 只渲染运营明确选择的已核实 Product，没有配置时给出整理提示。`yarn-home-guide` 以三语 block 承载新手指引和 FAQ。
 
 材料包公开条件在 `yarn-kit-visible` 集中处理：公开状态、封面、毛线 Variant/团数与教程领取链接缺一不可；当前路径不使用内部样例开关。价格与可售性继续取 Shopify，不随作品公开状态复制。商品页、卡片和材料包的零价状态显示「暂未开售」；整份材料缺项时阻止加购，可逐项购买其他可售材料。
+
+## #140 首页桌面（2026-10-16）
+
+桌面按 [首页 v2 来源](approved/140-home-v2.source.md) 实现，规格见 `DESIGN.md`「当前首页桌面」。样式仍在各 section 自己的样式文件与 `yarn-home-mobile.css`（随 `catalog_layout` 加载）里：≥750px 改字号与配色，≥990px 改分栏，手机规则不动。`yarn-catalog` 的「查看全部 →」移到标题行，说明留空时不渲染；`yarn-home-guide` 新增三语小标题、说明，常见问题模式另有 LINE 求助卡（未填链接时指向联系页）、首条默认展开与「查看全部问题」链接。`yarn-picks` 新增「占位卡数」：集合为空且大于 0 时显示「准备中」占位卡，首页成品区设为 5。
