@@ -3,8 +3,8 @@
   杂志式:开头为刊名 + 大标题 + 导语 + 封面大图，下方一排带小图的目录;每款毛线一段，3 张成品图（1 大 2 小）与介绍左右交替;商品资料排成细线规格表。
   选品:优先用「选品列表」（按列表顺序）；列表为空时，取所选集合（留空用 毛线 集合）里带指定标签的商品（前 50 件中取前 N 件）。
   标签只用于选品,不显示在页面上,也不出现「爆款」「热销」等字样。
-  每款介绍:有同一商品的「毛线介绍」block 时用 block 三语文案与配图（上传图优先，其次 block 里填的 Theme 素材文件名，都没有时用商品主图）;商品资料取商品描述(成分、规格、用途)。
-  价格为 0 或无货时不显示价格与「加入购物车」,只保留「查看商品」;多颜色商品去详情页选色,不在这里直接加购。价格与规格只取 Shopify。
+  每款介绍:有同一商品的「毛线介绍」block 时用 block 三语文案与配图（上传图优先，其次 block 里填的 Theme 素材文件名，都没有时用商品主图）。
+  介绍下方放首页同款商品卡（yarn-pick-card，用户 2026-10-16 在 Figma 候选中选定 D），名称、规格、价格只取 Shopify，整卡进入商品页;专题页不直接加购，也不显示色样（商品没有颜色规格）。
   三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置;通用按钮用 Theme locales。
   画布图片的来源见 docs/design/approved/131-season-canvas.source.md。
 {% endcomment %}
@@ -42,6 +42,7 @@
     assign sp_heading = page.title
   endif
 -%}
+{{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
 {{ 'yarn-season-page.css' | asset_url | stylesheet_tag }}
 <article class="yx-season-page">
   <header class="yx-season-page__cover">
@@ -123,9 +124,6 @@
           {%- endfor -%}
         {%- endcapture -%}
         {%- assign sp_shots = sp_gallery | split: '<img' | size | minus: 1 -%}
-        {%- assign sp_variant = sp_item.selected_or_first_available_variant -%}
-        {%- assign sp_buyable = false -%}
-        {%- if sp_item.has_only_default_variant and sp_variant.available and sp_variant.price > 0 -%}{%- assign sp_buyable = true -%}{%- endif -%}
         {%- assign sp_num = forloop.index | prepend: '0' | slice: -2, 2 -%}
         {%- assign sp_mod = forloop.index | modulo: 2 -%}
         <li class="yx-season-page__yarn{% if sp_mod == 0 %} yx-season-page__yarn--flip{% endif %}" id="SeasonYarn-{{ forloop.index }}">
@@ -138,24 +136,7 @@
             <h2 class="yx-season-page__name"><a href="{{ sp_item.url }}">{{ sp_item.title | escape }}</a></h2>
             {%- if sp_lead != blank -%}<p class="yx-season-page__lead">{{ sp_lead | escape }}</p>{%- endif -%}
             {%- if sp_note != blank -%}<p class="yx-season-page__note">{{ sp_note | escape }}</p>{%- endif -%}
-            {%- if sp_item.description != blank -%}<div class="yx-season-page__facts">{{ sp_item.description | replace: '</strong>：', '</strong>' | replace: '</strong>:', '</strong>' }}</div>{%- endif -%}
-            <div class="yx-season-page__buy">
-              {%- if sp_buyable -%}
-                <span class="yx-season-page__price">
-                  {%- if sp_variant.compare_at_price > sp_variant.price -%}<s>{{ sp_variant.compare_at_price | money }}</s> {% endif -%}
-                  {{ sp_variant.price | money }}
-                </span>
-              {%- endif -%}
-              <div class="yx-season-page__actions">
-                <a class="yx-season-page__btn" href="{{ sp_item.url }}">{{ 'yarn_project.season_view_yarn' | t }} <span aria-hidden="true">→</span></a>
-                {%- if sp_buyable -%}
-                  {%- form 'product', sp_item, class: 'yx-season-page__form' -%}
-                    <input type="hidden" name="id" value="{{ sp_variant.id }}">
-                    <button type="submit" class="yx-season-page__btn yx-season-page__btn--cart">{{ 'products.product.add_to_cart' | t }}</button>
-                  {%- endform -%}
-                {%- endif -%}
-              </div>
-            </div>
+            <div class="yx-season-page__card">{%- render 'yarn-pick-card', card_product: sp_item -%}</div>
           </div>
         </li>
       {%- endfor -%}
