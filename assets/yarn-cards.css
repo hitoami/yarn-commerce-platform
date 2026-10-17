@@ -312,3 +312,35 @@
   .yx-card-cart { min-width: 40px; height: 40px; padding-inline: 9px; font-size: 13px; }
   .yx-card-cart::before { content: ''; position: absolute; inset: -2px; }
 }
+
+/* #180: homepage steps share their numbers with the project cards. */
+.yx-picks__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--yarn-radius-pill);
+  background: var(--yarn-cta-bg);
+  color: var(--yarn-action);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: middle;
+}
+.yx-picks__steps { display: flex; gap: 8px; margin: 0 0 16px; padding: 0; list-style: none; }
+.yx-picks__step { display: flex; align-items: center; gap: 6px; padding: 4px 10px 4px 6px; border: 1px solid var(--yarn-border-subtle); border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); color: var(--yarn-text-heading); font-size: 12px; line-height: 1.5; }
+.yx-picks--guided .yx-project-pick__badge { display: inline-flex; align-items: center; gap: 6px; background: var(--yarn-cta-bg); }
+.yx-picks--guided .yx-project-pick__yarn > .yx-picks__number,
+.yx-picks--guided .yx-project-pick__meta > .yx-picks__number { margin-inline-end: 6px; }
+@media screen and (max-width: 749px) {
+  .yx-picks--guided .yx-picks__head:has(.yx-picks__titles) { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; row-gap: 6px; margin-bottom: 16px; }
+  .yx-picks--guided .yx-picks__head h2 { grid-column: 1; grid-row: 1; }
+  .yx-picks--guided .yx-picks__all { grid-column: 2; grid-row: 1; margin-top: -6px; }
+  .yx-picks--guided .yx-picks__titles .yx-picks__note { grid-column: 1 / -1; grid-row: 2; margin: 0; }
+  .yx-picks--guided .yx-project-picks { grid-auto-columns: 220px; gap: 12px; padding-bottom: 4px; }
+  .yx-picks--guided .yx-project-pick__media { aspect-ratio: 220 / 250; border-radius: var(--yarn-radius-media); }
+  .yx-picks--guided .yx-project-pick__badge { left: 10px; top: 10px; padding: 3px 10px 3px 6px; }
+  .yx-picks--guided .yx-picks__step { min-width: 0; }
+}

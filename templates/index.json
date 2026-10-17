@@ -230,9 +230,18 @@
         "heading": "わたしたちの毛糸で編めるもの",
         "heading_zh": "用我们的毛线可以织",
         "heading_en": "What you can knit with our yarn",
-        "note": "",
-        "note_zh": "",
-        "note_en": ""
+        "note": "はじめての方も、3ステップでスタート。",
+        "note_zh": "第一次来？三步就能开始。",
+        "note_en": "New here? Get started in three steps.",
+        "step_1": "作品を選ぶ",
+        "step_1_zh": "选作品",
+        "step_1_en": "Pick a project",
+        "step_2": "毛糸をまとめて購入",
+        "step_2_zh": "一次买齐毛线",
+        "step_2_en": "Buy all the yarn",
+        "step_3": "LINEで編み方を受け取る",
+        "step_3_zh": "LINE 领教程",
+        "step_3_en": "Get a LINE tutorial"
       }
     },
     "beginner-kits": {
@@ -367,6 +376,7 @@
     },
     "guide": {
       "type": "yarn-home-guide",
+      "disabled": true,
       "settings": {
         "heading": "はじめての方へ",
         "heading_zh": "第一次来，从这里开始",
