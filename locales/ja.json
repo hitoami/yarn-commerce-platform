@@ -871,5 +871,33 @@
     "yarn": "毛糸",
     "kit": "編みキット",
     "finished": "完成品"
+  },
+  "yarn_collection": {
+    "breadcrumb": "パンくずリスト",
+    "home": "ホーム",
+    "count_all": "全 {{ n }} 点",
+    "tax_included": "税込価格",
+    "preparing_badge": "準備中",
+    "preparing_text": "最初の作品を編んで撮影しているところです。販売開始後は、実物の写真・サイズ・価格・在庫をここに表示します。",
+    "placeholder_photo": "作品写真",
+    "exit_yarn": "毛糸を選ぶ",
+    "exit_kits": "材料セットを見る",
+    "chip_all": "すべて",
+    "filter": "絞り込み",
+    "sort": "並び替え",
+    "sort_manual": "おすすめ",
+    "sort_best_selling": "人気順",
+    "sort_price_ascending": "価格の安い順",
+    "sort_price_descending": "価格の高い順",
+    "sort_created_descending": "新着順",
+    "count": "{{ n }} 点",
+    "empty_title": "条件に合う商品がありません",
+    "empty_text": "分類を変えるか、絞り込みを解除してください。",
+    "clear_all": "絞り込みを解除",
+    "shown": "{{ total }} 点中 {{ shown }} 点を表示",
+    "show_more": "もっと見る",
+    "price": "価格",
+    "show_results": "結果を見る",
+    "sort_option": "並び替え：{{ name }}"
   }
 }

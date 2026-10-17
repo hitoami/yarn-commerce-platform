@@ -895,5 +895,33 @@
     "yarn": "Yarn",
     "kit": "Kits",
     "finished": "Finished pieces"
+  },
+  "yarn_collection": {
+    "breadcrumb": "Breadcrumb",
+    "home": "Home",
+    "count_all": "{{ n }} items",
+    "tax_included": "Prices include tax",
+    "preparing_badge": "Coming soon",
+    "preparing_text": "Our first handmade pieces are being knitted and photographed. Once listed, real photos, sizes, prices and stock will appear here.",
+    "placeholder_photo": "Product photo",
+    "exit_yarn": "Browse yarn",
+    "exit_kits": "See kits",
+    "chip_all": "All",
+    "filter": "Filter",
+    "sort": "Sort",
+    "sort_manual": "Recommended",
+    "sort_best_selling": "Best selling",
+    "sort_price_ascending": "Price, low to high",
+    "sort_price_descending": "Price, high to low",
+    "sort_created_descending": "Newest",
+    "count": "{{ n }} items",
+    "empty_title": "No products match",
+    "empty_text": "Try another category or clear the filters.",
+    "clear_all": "Clear filters",
+    "shown": "Showing {{ shown }} of {{ total }}",
+    "show_more": "Show more",
+    "price": "Price",
+    "show_results": "Show results",
+    "sort_option": "Sort: {{ name }}"
   }
 }
