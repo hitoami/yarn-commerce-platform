@@ -279,6 +279,7 @@
     "header": {
       "announcement": "การประกาศ",
       "menu": "เมนู",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} รายการ",
         "other": "{{ count }} รายการ"

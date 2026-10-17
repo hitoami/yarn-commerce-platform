@@ -279,6 +279,7 @@
     "header": {
       "announcement": "공지",
       "menu": "메뉴",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }}개 품목",
         "other": "{{ count }}개 품목"

@@ -279,6 +279,7 @@
     "header": {
       "announcement": "Kunngjøring",
       "menu": "Meny",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} vare",
         "other": "{{ count }} varer"

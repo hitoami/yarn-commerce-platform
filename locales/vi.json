@@ -279,6 +279,7 @@
     "header": {
       "announcement": "Thông báo",
       "menu": "Menu",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} mặt hàng",
         "other": "{{ count }} mặt hàng"

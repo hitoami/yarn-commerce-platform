@@ -279,6 +279,7 @@
     "header": {
       "announcement": "公告",
       "menu": "菜单",
+      "coming_soon": "准备中",
       "cart_count": {
         "one": "{{ count }} 件产品",
         "other": "{{ count }} 件产品"

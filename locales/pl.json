@@ -297,6 +297,7 @@
     "header": {
       "announcement": "Ogłoszenie",
       "menu": "Menu",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} pozycja",
         "other": "{{ count }} pozycje(-i)",

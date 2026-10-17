@@ -1,0 +1,89 @@
+{%- comment -%}
+  导航「毛线」的分类图块（#131）：手机抽屉与桌面大图面板共用，页头只计算一次。
+  每个 header 的「毛线入口」block 一格，数据与首页「挑毛线」相同：yarn_entry Metaobject + 商品字段，
+  链接到集合并带 Search & Discovery 筛选参数；款数与默认照片来自集合里引用该入口的商品（前 50 件）。
+  名称取 Metaobject 的 name，三语在 Translate & Adapt 维护。一件都没有的入口不渲染。
+  最后一格「查看全部毛线」：用 all_image，未设时拼集合前四件商品主图。
+  没有任何入口时不输出，导航按普通链接显示。
+
+  用法：{%- capture nav_tiles -%}{%- render 'yarn-nav-tiles', blocks: section.blocks, collection: collection, all_image: image -%}{%- endcapture -%}
+{%- endcomment -%}
+{%- assign nt_count = 0 -%}
+{%- capture nt_entries -%}
+{%- for block in blocks -%}
+{%- if block.type != 'yarn_entry' -%}{%- continue -%}{%- endif -%}
+{%- liquid
+  assign de_entry = metaobjects.yarn_entry[block.settings.entry]
+  assign de_count = 0
+  assign de_image = block.settings.image
+  assign de_products = blank
+  if de_entry != blank and collection != blank
+    assign de_id = de_entry.system.id
+    assign de_parts = block.settings.field | split: '.'
+    assign de_products = collection.products
+  endif
+  for de_product in de_products limit: 50
+    assign de_field = de_product.metafields[de_parts[0]][de_parts[1]]
+    if de_field == blank
+      continue
+    endif
+    assign de_found = false
+    if de_field.type contains 'list'
+      for de_ref in de_field.value
+        if de_ref.system.id == de_id
+          assign de_found = true
+        endif
+      endfor
+    elsif de_field.value.system.id == de_id
+      assign de_found = true
+    endif
+    if de_found
+      assign de_count = de_count | plus: 1
+      if de_image == blank
+        assign de_image = de_product.featured_image
+      endif
+    endif
+  endfor
+  assign de_gid = 'gid://shopify/Metaobject/' | append: de_id
+-%}
+{%- if de_count > 0 -%}
+{%- assign nt_count = nt_count | plus: 1 -%}
+<li>
+  <a class="yarn-nav-tile" href="{{ collection.url }}?filter.p.m.{{ block.settings.field }}={{ de_gid | url_encode }}" {{ block.shopify_attributes }}>
+    <span class="yarn-nav-tile__photo">
+      {%- if block.settings.image != blank -%}{{ block.settings.image | image_url: width: 400 | image_tag: widths: '200, 400', sizes: '160px', loading: 'lazy', alt: '' }}
+      {%- elsif block.settings.source_photo != blank -%}<img src="{{ block.settings.source_photo | asset_url }}" width="166" height="166" loading="lazy" alt="">
+      {%- elsif de_image != blank -%}{{ de_image | image_url: width: 400 | image_tag: widths: '200, 400', sizes: '160px', loading: 'lazy', alt: '' }}{%- endif -%}
+    </span>
+    <span class="yarn-nav-tile__text">
+      <span class="yarn-nav-tile__name">{{ de_entry.name.value | escape }}</span>
+      <span class="yarn-nav-tile__count">{{ 'yarn_project.entry_count' | t: count: de_count }}</span>
+    </span>
+  </a>
+</li>
+{%- endif -%}
+{%- endfor -%}
+{%- endcapture -%}
+{%- if nt_count > 0 -%}
+  {{ nt_entries }}
+  <li>
+    <a class="yarn-nav-tile yarn-nav-tile--all" href="{{ collection.url }}">
+      {%- if all_image != blank -%}
+        <span class="yarn-nav-tile__photo">{{ all_image | image_url: width: 400 | image_tag: widths: '200, 400', sizes: '160px', loading: 'lazy', alt: '' }}</span>
+      {%- else -%}
+        {%- comment -%}未设图片时拼四件商品主图，避免与分类图块重复。{%- endcomment -%}
+        <span class="yarn-nav-tile__photo yarn-nav-tile__photo--mosaic">
+          {%- for nt_product in collection.products limit: 4 -%}
+            {%- if nt_product.featured_image != blank -%}
+              {{ nt_product.featured_image | image_url: width: 200 | image_tag: widths: '100, 200', sizes: '80px', loading: 'lazy', alt: '' }}
+            {%- endif -%}
+          {%- endfor -%}
+        </span>
+      {%- endif -%}
+      <span class="yarn-nav-tile__text">
+        <span class="yarn-nav-tile__name">{{ 'yarn_project.entries_view_all' | t }}</span>
+        <span class="yarn-nav-tile__count">{{ 'yarn_project.entry_count' | t: count: collection.all_products_count }}</span>
+      </span>
+    </a>
+  </li>
+{%- endif -%}

@@ -279,6 +279,7 @@
     "header": {
       "announcement": "Duyuru",
       "menu": "Menü",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} ürün",
         "other": "{{ count }} ürün"

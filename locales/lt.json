@@ -297,6 +297,7 @@
     "header": {
       "announcement": "Skelbimas",
       "menu": "Meniu",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} prekė",
         "other": "{{ count }} prekės (-ių)",

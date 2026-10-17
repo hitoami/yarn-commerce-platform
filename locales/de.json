@@ -279,6 +279,7 @@
     "header": {
       "announcement": "Ankündigung",
       "menu": "Menü",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} Artikel",
         "other": "{{ count }} Artikel"

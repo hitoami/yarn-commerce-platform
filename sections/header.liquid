@@ -180,7 +180,11 @@
       endif
 
       if navigation_menu != blank
-        render 'yarn-header-drawer', navigation_menu: navigation_menu, show_country_selector: country_selector, show_language_selector: language_selector, show_social_links: social_links
+        capture nav_tiles
+          render 'yarn-nav-tiles', blocks: section.blocks, collection: section.settings.drawer_yarn_collection, all_image: section.settings.drawer_all_image
+        endcapture
+        assign nav_tiles = nav_tiles | strip
+        render 'yarn-header-drawer', navigation_menu: navigation_menu, nav_tiles: nav_tiles, show_country_selector: country_selector, show_language_selector: language_selector, show_social_links: social_links
       endif
 
       if render_search_left
@@ -223,7 +227,7 @@
 
     {%- liquid
       if navigation_menu != blank and section.settings.menu_type_desktop != 'drawer'
-        render 'yarn-header-menu', navigation_menu: navigation_menu
+        render 'yarn-header-menu', navigation_menu: navigation_menu, nav_tiles: nav_tiles
       endif
     %}
 
@@ -347,6 +351,9 @@
         this.getAttribute('data-sticky-type') === 'always' ||
         this.getAttribute('data-sticky-type') === 'reduce-logo-size';
       this.headerBounds = {};
+      // 桌面（≥1340px）不随下滑隐藏：滚过页头后吸顶「落下」并收紧，回到顶部再还原（#131）。
+      this.desktopQuery = window.matchMedia('(min-width: 1340px)');
+      this.docked = false;
 
       this.setHeaderHeight();
 
@@ -393,6 +400,13 @@
 
       if ([...this.predictiveSearches].some((predictiveSearch) => predictiveSearch.isOpen)) return;
 
+      if (this.desktopQuery.matches) {
+        this.dock(scrollTop);
+        this.currentScrollTop = scrollTop;
+        return;
+      }
+      if (this.docked) this.undock();
+
       if (scrollTop > this.currentScrollTop && scrollTop > this.headerBounds.bottom) {
         this.header.classList.add('scrolled-past-header');
         if (this.preventHide) return;
@@ -416,6 +430,26 @@
       }
 
       this.currentScrollTop = scrollTop;
+    }
+
+    dock(scrollTop) {
+      if (!this.docked && scrollTop > this.headerBounds.bottom + 40) {
+        this.docked = true;
+        this.closeMenuDisclosure();
+        this.header.classList.remove('shopify-section-header-hidden', 'animate');
+        this.header.classList.add('shopify-section-header-sticky', 'scrolled-past-header', 'yarn-header-docked');
+        document.documentElement.style.removeProperty('--header-bottom-position-desktop');
+      } else if (this.docked && scrollTop <= this.headerBounds.top) {
+        this.undock();
+      }
+    }
+
+    undock() {
+      this.docked = false;
+      this.closeMenuDisclosure();
+      this.header.classList.remove('yarn-header-docked', 'scrolled-past-header');
+      if (!this.headerIsAlwaysSticky) this.header.classList.remove('shopify-section-header-sticky');
+      document.documentElement.style.removeProperty('--header-bottom-position-desktop');
     }
 
     hide() {
@@ -509,7 +543,7 @@
 {
   "name": "t:sections.header.name",
   "class": "section-header",
-  "max_blocks": 3,
+  "max_blocks": 9,
   "settings": [
     {
       "type": "select",
@@ -683,11 +717,50 @@
       "unit": "px",
       "label": "t:sections.all.padding.padding_bottom",
       "default": 20
-    }
+    },
+    {
+      "type": "header",
+      "content": "导航（#131）"
+    },
+    {
+      "type": "paragraph",
+      "content": "菜单中指向 season 页面的项在手机菜单显示为带图横条；指向下方毛线集合的项展开为「毛线入口」图块（手机抽屉与桌面面板共用）；其他集合没有商品时标「准备中」。"
+    },
+    { "type": "image_picker", "id": "drawer_season_image", "label": "本季主推横条图片", "info": "留空时用本季油画圈圈线原图。" },
+    { "type": "text", "id": "drawer_season_text", "label": "本季主推横条文案（日文）", "default": "この季節、編みたい色。" },
+    { "type": "text", "id": "drawer_season_text_zh", "label": "本季主推横条文案（中文）", "default": "这一季，想织的颜色。" },
+    { "type": "text", "id": "drawer_season_text_en", "label": "本季主推横条文案（英文）", "default": "This season, colours to knit." },
+    { "type": "collection", "id": "drawer_yarn_collection", "label": "毛线集合", "info": "菜单里指向这个集合的项：手机菜单展开为分类图块，桌面点开为大图面板。" },
+    { "type": "image_picker", "id": "drawer_all_image", "label": "「全部毛线」图块图片", "info": "留空时拼集合前四件商品主图。" },
+    { "type": "text", "id": "nav_yarn_eyebrow", "label": "桌面毛线面板小标题（日文）", "default": "毛糸をえらぶ" },
+    { "type": "text", "id": "nav_yarn_eyebrow_zh", "label": "桌面毛线面板小标题（中文）", "default": "挑毛线" },
+    { "type": "text", "id": "nav_yarn_eyebrow_en", "label": "桌面毛线面板小标题（英文）", "default": "Choose yarn" },
+    { "type": "text", "id": "nav_yarn_title", "label": "桌面毛线面板标题（日文）", "default": "手ざわりと色で、編みたいひと玉を。" },
+    { "type": "text", "id": "nav_yarn_title_zh", "label": "桌面毛线面板标题（中文）", "default": "按手感和颜色，找到想织的那一团" },
+    { "type": "text", "id": "nav_yarn_title_en", "label": "桌面毛线面板标题（英文）", "default": "Find the ball you want to knit, by feel and colour." }
   ],
   "blocks": [
     {
       "type": "@app"
+    },
+    {
+      "type": "yarn_entry",
+      "name": "毛线入口",
+      "settings": [
+        {
+          "type": "select",
+          "id": "field",
+          "label": "商品字段",
+          "options": [
+            { "value": "yarn.texture", "label": "质感" },
+            { "value": "yarn.use", "label": "用途" }
+          ],
+          "default": "yarn.texture"
+        },
+        { "type": "text", "id": "entry", "label": "毛线入口 handle", "info": "yarn_entry Metaobject 的 handle，例如 gradient。" },
+        { "type": "image_picker", "id": "image", "label": "图片", "info": "留空时用首个匹配商品的主图。" },
+        { "type": "text", "id": "source_photo", "label": "主题内置图片文件名", "info": "与首页「挑毛线」相同的原图，如 hitoami-source-texture-7.jpeg。" }
+      ]
     }
   ]
 }

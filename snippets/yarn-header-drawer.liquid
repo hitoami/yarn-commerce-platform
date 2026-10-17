@@ -74,26 +74,75 @@
                         </div>
                       </div>
                     </details>
+                  {%- elsif link.type == 'page_link' and link.object.handle == 'season' -%}
+                    {%- comment -%}本季主推：菜单里指向 season 页面的项显示为带图横条（#131 导航手机稿）。{%- endcomment -%}
+                    {%- capture season_text -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'drawer_season_text' -%}{%- endcapture -%}
+                    <a
+                      id="YarnHeaderDrawer-{{ link.handle }}"
+                      href="{{ link.url | escape }}"
+                      class="yarn-drawer-feature focus-inset"
+                      {% if link.current %}aria-current="page"{% endif %}
+                    >
+                      <span class="yarn-drawer-feature__media">
+                        {%- if section.settings.drawer_season_image != blank -%}
+                          {{ section.settings.drawer_season_image | image_url: width: 800 | image_tag: widths: '400, 800', sizes: 'calc(100vw - 32px)', loading: 'lazy', alt: '' }}
+                        {%- else -%}
+                          <img src="{{ 'hitoami-source-oil-loop.jpeg' | asset_url }}" width="790" height="885" loading="lazy" alt="">
+                        {%- endif -%}
+                      </span>
+                      <span class="yarn-drawer-feature__text">
+                        <span class="yarn-drawer-feature__label">{{ link.title | escape }}</span>
+                        {%- if season_text != blank -%}<span class="yarn-drawer-feature__title">{{ season_text | escape }}</span>{%- endif -%}
+                      </span>
+                      <span class="svg-wrapper" aria-hidden="true">{{- 'icon-arrow.svg' | inline_asset_content -}}</span>
+                    </a>
+                  {%- elsif link.type == 'collection_link' and link.object.handle == section.settings.drawer_yarn_collection.handle and nav_tiles != blank -%}
+                    {%- comment -%}毛线：默认展开为分类图块，标题行可收起；图块由页头统一计算（yarn-nav-tiles）。{%- endcomment -%}
+                    <div class="yarn-drawer-yarn" data-drawer-group>
+                      <button
+                        type="button"
+                        id="YarnHeaderDrawer-{{ link.handle }}"
+                        class="yarn-drawer-yarn__toggle menu-drawer__menu-item list-menu__item link link--text focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"
+                        aria-expanded="true"
+                        aria-controls="YarnDrawerTiles"
+                      >
+                        <span class="yarn-drawer-yarn__title">{{ link.title | escape }}</span>
+                        <span class="yarn-drawer-yarn__total">{{ 'yarn_project.entry_count' | t: count: link.object.all_products_count }}</span>
+                        <span class="svg-wrapper yarn-drawer-chevron" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
+                      </button>
+                      <ul class="yarn-drawer-tiles list-unstyled" id="YarnDrawerTiles" role="list">
+                        {{ nav_tiles }}
+                      </ul>
+                    </div>
                   {%- else -%}
                     <a
                       id="YarnHeaderDrawer-{{ link.handle }}"
                       href="{{ link.url | escape }}"
-                      class="menu-drawer__menu-item list-menu__item link link--text focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}{% if link.type == 'collection_link' and link.object.handle == 'sale' %} yarn-menu-sale{% endif %}"
+                      class="menu-drawer__menu-item list-menu__item link link--text focus-inset yarn-drawer-row{% if link.current %} menu-drawer__menu-item--active{% endif %}{% if link.type == 'collection_link' and link.object.handle == 'sale' %} yarn-menu-sale{% endif %}"
                       {% if link.current %}aria-current="page"{% endif %}
                     >
                       <span>{{ link.title | escape }}</span>
+                      {%- if link.type == 'collection_link' and link.object.all_products_count == 0 -%}
+                        <span class="yarn-nav-badge">{{ 'sections.header.coming_soon' | t }}</span>
+                      {%- endif -%}
+                      <span class="svg-wrapper yarn-drawer-row__arrow" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
                     </a>
                   {%- endif -%}
                 </li>
               {%- endfor -%}
             </ul>
-            {%- if shop.customer_accounts_enabled -%}
-              <div class="yarn-account-drawer">
+            <div class="yarn-account-drawer">
+              <a class="menu-drawer__menu-item yarn-account-drawer-link link link--text focus-inset" href="{{ routes.search_url }}?browse=favorites">
+                <span class="svg-wrapper" aria-hidden="true">{{- 'icon-heart.svg' | inline_asset_content -}}</span>
+                {{ 'yarn_discovery.favorites' | t }}
+              </a>
+              {%- if shop.customer_accounts_enabled -%}
                 <a class="menu-drawer__menu-item yarn-account-drawer-link link link--text focus-inset" href="{{ routes.account_url }}">
+                  <span class="svg-wrapper" aria-hidden="true">{{- 'icon-account.svg' | inline_asset_content -}}</span>
                   {{ 'customer.account.title' | t }}
                 </a>
-              </div>
-            {%- endif -%}
+              {%- endif -%}
+            </div>
           </nav>
           {%- if show_language_selector and localization.available_languages.size > 1 -%}
             {%- comment -%}All shop languages side by side: one tap opens the same page in that language (#107).{%- endcomment -%}
@@ -143,3 +192,15 @@
     </div>
   </details>
 </header-drawer>
+{%- if nav_tiles != blank -%}
+  <script>
+    {%- comment -%}毛线标题行收起 / 展开分类图块。不用 details，避免触发 Rise 抽屉的子菜单滑动。{%- endcomment -%}
+    document.addEventListener('click', (event) => {
+      const toggle = event.target.closest('.yarn-drawer-yarn__toggle');
+      if (!toggle) return;
+      const open = toggle.getAttribute('aria-expanded') !== 'true';
+      toggle.setAttribute('aria-expanded', String(open));
+      document.getElementById(toggle.getAttribute('aria-controls')).hidden = !open;
+    });
+  </script>
+{%- endif -%}

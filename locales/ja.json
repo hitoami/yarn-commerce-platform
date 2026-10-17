@@ -279,6 +279,7 @@
     "header": {
       "announcement": "告知",
       "menu": "メニュー",
+      "coming_soon": "準備中",
       "cart_count": {
         "one": "{{ count }}個のアイテム",
         "other": "{{ count }}個のアイテム"

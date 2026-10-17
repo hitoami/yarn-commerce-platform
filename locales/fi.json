@@ -279,6 +279,7 @@
     "header": {
       "announcement": "Ilmoitus",
       "menu": "Valikko",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} tuote",
         "other": "{{ count }} tuotetta"
