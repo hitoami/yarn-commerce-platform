@@ -5,6 +5,8 @@ module.exports = {
 
   // prefix 是本地 dev 的语言路径，livePrefix 是线上 hitoami.com 的（--live 时使用）。
   // browserLocale 写进浏览器 context，避免继承本机语言后被店铺的语言重定向带走。
+  // 本地 theme dev 代理（2026-10-17 核对，#154）：中文在 /、日文 /ja、英文 /en；线上日文为域名默认语言在 /，中文 /zh。
+  // 代理下 /ja/ 只能 GET 页面，POST 会 404，所以 proof 的购物车请求走店铺根路径（见 proof.cjs cartAjaxUrl）。
   locales: [
     { key: 'ja', prefix: '/ja', livePrefix: '', lang: 'ja', browserLocale: 'ja-JP' },
     { key: 'zh', prefix: '', livePrefix: '/zh', lang: 'zh', browserLocale: 'zh-CN' },
