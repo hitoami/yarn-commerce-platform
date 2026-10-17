@@ -76,7 +76,7 @@ Issue #65 删除了无模板使用的 `yarn-purpose-grid` / `yarn-seasonal-featu
 
 品牌介绍可使用 `hitoami-brand-knitting-cat.png` 氛围图，上传图优先；生成提示词和适用范围记录在同名 `.source.json`，不作为真实人物或商品证据。本季封面复用油画圈圈原图，未核实选品时不声称有固定款数。
 
-小猫由 `yarn-companion` snippet、CSS 与 custom element 接入 `yarn-entry-circles`，复用原 sprite，支持点击醒来/走动和减少动态效果。分类仍引用 `yarn_entry` 与 Shopify 商品字段，参考图可在 block 选择本轮原表实物图。毛线资料区 `yarn-catalog` 只渲染运营明确选择的已核实 Product，没有配置时给出整理提示。`yarn-home-guide` 以三语 block 承载新手指引和 FAQ。
+首页只保留桌面底边的滚动进度小猫（`yarn-scroll-cat`，#151）；毛线分类区的可互动小猫已删除（用户 2026-10-17 决定）。分类仍引用 `yarn_entry` 与 Shopify 商品字段，参考图可在 block 选择本轮原表实物图。毛线资料区 `yarn-catalog` 只渲染运营明确选择的已核实 Product，没有配置时给出整理提示。`yarn-home-guide` 以三语 block 承载新手指引和 FAQ。
 
 材料包公开条件在 `yarn-kit-visible` 集中处理：公开状态、封面、毛线 Variant/团数与教程领取链接缺一不可；当前路径不使用内部样例开关。价格与可售性继续取 Shopify，不随作品公开状态复制。商品页、卡片和材料包的零价状态显示「暂未开售」；整份材料缺项时阻止加购，可逐项购买其他可售材料。
 
