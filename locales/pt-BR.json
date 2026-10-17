@@ -288,6 +288,7 @@
     "header": {
       "announcement": "Comunicado",
       "menu": "Menu",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} item",
         "other": "{{ count }} itens",

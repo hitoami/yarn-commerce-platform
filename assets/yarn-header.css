@@ -202,9 +202,10 @@
 
 @media screen and (max-width: 1339px) {
   /* Override Rise's four-column account layout as one coherent mobile row. */
+  /* Issue 131 mobile: menu + search on the left, logo centred, account + cart on the right. */
   #YarnHeader {
-    grid-template-areas: 'left-icons heading icons';
-    grid-template-columns: 44px minmax(0, 1fr) 132px;
+    grid-template-areas: 'left-icons search heading icons';
+    grid-template-columns: 44px 44px minmax(0, 1fr) 88px;
     column-gap: 0;
     min-height: 72px;
     padding: 10px 24px;
@@ -216,9 +217,14 @@
   }
 
   .header-wrapper .header__inline-menu,
-  #YarnHeader > .header__search,
   .header-wrapper .desktop-localization-wrapper {
     display: none;
+  }
+
+  #YarnHeader > .header__search {
+    display: inline-flex;
+    grid-area: search;
+    justify-self: start;
   }
 
   .header-wrapper .header__icon--favorites { display: none; }
@@ -233,12 +239,12 @@
   }
 
   .header-wrapper .header__icons {
-    width: 132px;
+    width: 88px;
     gap: 0;
   }
 
   #YarnHeader .header__icons > .header__search {
-    display: inline-flex;
+    display: none;
   }
 
   .header-wrapper .header__heading-link > .yarn-wordmark {
@@ -257,7 +263,7 @@
   }
 
   .header-wrapper .header__heading-link > .yarn-wordmark {
-    width: min(184px, calc(100vw - 218px));
+    width: min(184px, calc(100vw - 208px));
   }
 }
 
@@ -320,3 +326,111 @@
   color: var(--yarn-text-primary);
   font-weight: 600;
 }
+
+/* Issue 131 mobile drawer: season banner, yarn category tiles, rows with a coming-soon badge. */
+.header-wrapper .menu-drawer__navigation { padding: 16px; }
+
+.yarn-drawer-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  margin-bottom: var(--yarn-space-5);
+  overflow: hidden;
+  border-radius: var(--yarn-radius-panel);
+  background: var(--yarn-tint-butter);
+  color: var(--yarn-text-heading);
+  text-decoration: none;
+}
+.yarn-drawer-feature__media { grid-column: 1 / -1; aspect-ratio: 358 / 128; overflow: hidden; }
+.yarn-drawer-feature__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.yarn-drawer-feature__text { display: flex; flex-direction: column; gap: 2px; padding: 12px 16px 14px; }
+.yarn-drawer-feature__label { color: var(--yarn-action); font-size: var(--yarn-type-meta); font-weight: 700; }
+.yarn-drawer-feature__title { font-family: var(--yarn-display); font-size: 1.8rem; line-height: 1.4; }
+.yarn-drawer-feature .svg-wrapper { width: 20px; height: 20px; margin-right: 16px; color: var(--yarn-action); }
+
+.header-wrapper .yarn-drawer-yarn__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--yarn-space-2);
+  width: 100%;
+  min-height: var(--yarn-touch);
+  padding: 8px 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--yarn-text-heading);
+  font-size: 1.7rem;
+  text-align: left;
+  cursor: pointer;
+}
+.yarn-drawer-yarn__total { flex: 1; color: var(--yarn-text-muted); font-family: var(--yarn-body); font-size: 1.3rem; }
+/* Rise absolutely positions drawer item icons and hides carets; these arrows sit in the row instead. */
+.header-wrapper .menu-drawer__menu-item > .yarn-drawer-chevron,
+.header-wrapper .menu-drawer__menu-item > .yarn-drawer-row__arrow,
+.header-wrapper .yarn-account-drawer-link > .svg-wrapper {
+  position: static;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  transform: none;
+}
+.js .header-wrapper .menu-drawer__menu-item :is(.yarn-drawer-chevron, .yarn-drawer-row__arrow) .icon-caret { display: block; width: 14px; height: 14px; margin: auto; }
+.yarn-drawer-chevron svg { transition: transform 0.2s ease; }
+.yarn-drawer-yarn__toggle[aria-expanded='true'] .yarn-drawer-chevron svg { transform: rotate(180deg); }
+.yarn-drawer-row__arrow svg { transform: rotate(-90deg); }
+
+.yarn-drawer-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: var(--yarn-space-2) 0 var(--yarn-space-4);
+  padding: 0;
+}
+.yarn-drawer-tiles[hidden] { display: none; }
+.yarn-drawer-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  height: 100%;
+  padding: 8px 8px 12px;
+  border-radius: var(--yarn-radius-panel);
+  background: var(--yarn-bg-sunken);
+  color: var(--yarn-text-heading);
+  text-decoration: none;
+}
+.yarn-drawer-tiles > li:nth-child(1) .yarn-drawer-tile { background: var(--yarn-tint-blush); }
+.yarn-drawer-tiles > li:nth-child(2) .yarn-drawer-tile { background: var(--yarn-tint-butter); }
+.yarn-drawer-tiles > li:nth-child(3) .yarn-drawer-tile { background: var(--yarn-tint-sage); }
+.yarn-drawer-tiles > li:nth-child(5) .yarn-drawer-tile { background: var(--yarn-bg-band); }
+.yarn-drawer-tiles .yarn-drawer-tile--all { background: var(--yarn-action-subtle-bg); }
+.yarn-drawer-tile__photo { display: block; margin-bottom: 8px; aspect-ratio: 151 / 104; overflow: hidden; border-radius: var(--yarn-radius-media); background: var(--yarn-bg-surface); }
+.yarn-drawer-tile__photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.yarn-drawer-tile__photo--mosaic { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; }
+.yarn-drawer-tile__photo--mosaic img { min-height: 0; }
+.yarn-drawer-tile__name { padding-inline: 4px; font-family: var(--yarn-display); font-size: 1.5rem; line-height: 1.4; }
+.yarn-drawer-tile__count { padding-inline: 4px; color: var(--yarn-text-muted); font-size: 1.2rem; }
+
+.header-wrapper .yarn-drawer-row {
+  display: flex;
+  align-items: center;
+  gap: var(--yarn-space-2);
+  min-height: 56px;
+  padding: 14px 0;
+  border-top: 1px solid var(--yarn-border-subtle);
+  border-radius: 0;
+  font-size: 1.7rem;
+}
+.header-wrapper .yarn-drawer-row.menu-drawer__menu-item--active,
+.header-wrapper .yarn-drawer-row:hover { background: none; color: var(--yarn-action); }
+.header-wrapper .yarn-drawer-row > .yarn-drawer-row__arrow { margin-left: auto; }
+.yarn-drawer-badge {
+  padding: 2px 8px;
+  border-radius: var(--yarn-radius-pill);
+  background: var(--yarn-tint-butter);
+  color: var(--yarn-text-warm);
+  font-family: var(--yarn-body);
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.6;
+}
+.header-wrapper .yarn-account-drawer-link { gap: var(--yarn-space-3); align-items: center; }

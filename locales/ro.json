@@ -288,6 +288,7 @@
     "header": {
       "announcement": "Anunț",
       "menu": "Meniu",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} articol",
         "other": "{{ count }} articole",

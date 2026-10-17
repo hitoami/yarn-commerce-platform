@@ -279,6 +279,7 @@
     "header": {
       "announcement": "Известие",
       "menu": "Меню",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} артикул",
         "other": "{{ count }} артикула"

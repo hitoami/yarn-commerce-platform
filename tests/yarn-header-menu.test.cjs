@@ -35,8 +35,32 @@ test('desktop and drawer render the same Shopify link tree with escaped labels a
 
 test('prototype navigation contains no locale, product-copy or tag-search overrides', () => {
   for (const source of [desktop, drawer]) {
-    assert.doesNotMatch(source, /request\.locale|url_encode|tag:|routes\.search_url|routes\.all_products_collection_url/);
+    assert.doesNotMatch(source, /request\.locale|url_encode|(?<!image_)tag:|routes\.all_products_collection_url/);
     assert.doesNotMatch(source, /新品|新着|New arrivals|编织套装|編み物キット/);
+  }
+  assert.doesNotMatch(desktop, /routes\.search_url/);
+  // 抽屉里唯一的搜索地址是收藏入口（手机页头隐藏了收藏图标），不能拼搜索词替代菜单。
+  assert.deepEqual(drawer.match(/routes\.search_url[^"]*/g), ['routes.search_url }}?browse=favorites']);
+});
+
+test('mobile drawer follows the #131 nav comp: season banner, yarn tiles, coming-soon rows', () => {
+  assert.match(drawer, /link\.type == 'page_link' and link\.object\.handle == 'season'/);
+  assert.match(drawer, /yarn-setting-text', settings: section\.settings, key: 'drawer_season_text'/);
+  assert.match(drawer, /link\.object\.handle == section\.settings\.drawer_yarn_collection\.handle and drawer_tiles != blank/);
+  assert.match(drawer, /render 'yarn-drawer-entry', block: block, collection: drawer_collection/);
+  assert.match(drawer, /aria-expanded="true"[\s\S]*aria-controls="YarnDrawerTiles"/);
+  assert.match(drawer, /link\.object\.all_products_count == 0[\s\S]*'sections\.header\.coming_soon' \| t/);
+  const entry = fs.readFileSync('snippets/yarn-drawer-entry.liquid', 'utf8');
+  assert.match(entry, /metaobjects\.yarn_entry\[block\.settings\.entry\]/);
+  assert.match(entry, /filter\.p\.m\.\{\{ block\.settings\.field \}\}=\{\{ de_gid \| url_encode \}\}/);
+  assert.match(entry, /de_entry\.name\.value \| escape/);
+  const blockTypes = schema.blocks.map(block => block.type);
+  assert.deepEqual(blockTypes, ['@app', 'yarn_entry']);
+  for (const key of ['drawer_season_text', 'drawer_season_text_zh', 'drawer_season_text_en', 'drawer_yarn_collection']) {
+    assert.ok(schema.settings.some(setting => setting.id === key), key);
+  }
+  for (const locale of ['ja', 'zh-CN', 'en.default']) {
+    assert.match(fs.readFileSync(`locales/${locale}.json`, 'utf8'), /"coming_soon": "[^"]+"/, locale);
   }
 });
 

@@ -297,6 +297,7 @@
     "header": {
       "announcement": "Oznámenie",
       "menu": "Ponuka",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} položka",
         "other": "Počet položiek: {{ count }}",

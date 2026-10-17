@@ -509,7 +509,7 @@
 {
   "name": "t:sections.header.name",
   "class": "section-header",
-  "max_blocks": 3,
+  "max_blocks": 9,
   "settings": [
     {
       "type": "select",
@@ -683,11 +683,44 @@
       "unit": "px",
       "label": "t:sections.all.padding.padding_bottom",
       "default": 20
-    }
+    },
+    {
+      "type": "header",
+      "content": "手机菜单（#131）"
+    },
+    {
+      "type": "paragraph",
+      "content": "菜单中指向 season 页面的项显示为带图横条；指向下方毛线集合的项展开为「毛线入口」图块；其他集合没有商品时标「准备中」。"
+    },
+    { "type": "image_picker", "id": "drawer_season_image", "label": "本季主推横条图片", "info": "留空时用本季油画圈圈线原图。" },
+    { "type": "text", "id": "drawer_season_text", "label": "本季主推横条文案（日文）", "default": "この季節、編みたい色。" },
+    { "type": "text", "id": "drawer_season_text_zh", "label": "本季主推横条文案（中文）", "default": "这一季，想织的颜色。" },
+    { "type": "text", "id": "drawer_season_text_en", "label": "本季主推横条文案（英文）", "default": "This season, colours to knit." },
+    { "type": "collection", "id": "drawer_yarn_collection", "label": "毛线集合", "info": "菜单里指向这个集合的项在手机菜单中展开为分类图块。" },
+    { "type": "image_picker", "id": "drawer_all_image", "label": "「全部毛线」图块图片", "info": "留空时用集合图片。" }
   ],
   "blocks": [
     {
       "type": "@app"
+    },
+    {
+      "type": "yarn_entry",
+      "name": "毛线入口",
+      "settings": [
+        {
+          "type": "select",
+          "id": "field",
+          "label": "商品字段",
+          "options": [
+            { "value": "yarn.texture", "label": "质感" },
+            { "value": "yarn.use", "label": "用途" }
+          ],
+          "default": "yarn.texture"
+        },
+        { "type": "text", "id": "entry", "label": "毛线入口 handle", "info": "yarn_entry Metaobject 的 handle，例如 gradient。" },
+        { "type": "image_picker", "id": "image", "label": "图片", "info": "留空时用首个匹配商品的主图。" },
+        { "type": "text", "id": "source_photo", "label": "主题内置图片文件名", "info": "与首页「挑毛线」相同的原图，如 hitoami-source-texture-7.jpeg。" }
+      ]
     }
   ]
 }

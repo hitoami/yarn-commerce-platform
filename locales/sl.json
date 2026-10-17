@@ -297,6 +297,7 @@
     "header": {
       "announcement": "Obvestilo",
       "menu": "Meni",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} element",
         "other": "Št. elementov: {{ count }}",

@@ -288,6 +288,7 @@
     "header": {
       "announcement": "Objava",
       "menu": "Izbornik",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} artikl",
         "other": "Broj artikala: {{ count }}",

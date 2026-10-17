@@ -279,6 +279,7 @@
     "header": {
       "announcement": "Ανακοίνωση",
       "menu": "Μενού",
+      "coming_soon": "Coming soon",
       "cart_count": {
         "one": "{{ count }} στοιχείο",
         "other": "{{ count }} στοιχεία"
