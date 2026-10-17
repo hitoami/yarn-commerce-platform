@@ -1,0 +1,65 @@
+/* Homepage desktop scroll progress: a sprite cat nudges a yarn ball along the bottom edge; the unwound thread is the progress. */
+.yarn-scroll-cat { display: none; }
+
+@media screen and (min-width: 990px) {
+  .yarn-scroll-cat {
+    --ysc-cat-w: 72px;
+    --ysc-cat-h: 50px;
+    --ysc-ball: 22px;
+    --ysc-floor: 6px; /* the thread and the cat's feet rest this far above the screen edge */
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 4;
+    display: block;
+    height: calc(var(--ysc-cat-h) + var(--ysc-floor));
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .yarn-scroll-cat.is-ready { opacity: 1; }
+
+  .yarn-scroll-cat__thread {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 20px;
+    overflow: visible;
+    clip-path: inset(-10px calc(100% - var(--ysc-reach, 0px)) -10px -10px);
+  }
+
+  .yarn-scroll-cat__thread path { fill: none; stroke-width: 3.2; stroke-linecap: round; }
+  .yarn-scroll-cat__ply-core { stroke: var(--yarn-home-rope); }
+  /* Short dashes across the core read as the twist of plied yarn (same as the guide strip). */
+  .yarn-scroll-cat__ply-ridge { stroke: var(--yarn-home-thread); stroke-dasharray: 1 2.2; stroke-linecap: butt; }
+  .yarn-scroll-cat__knot { fill: var(--yarn-scrollbar-track); stroke: var(--yarn-home-thread); stroke-width: 1.4; }
+
+  .yarn-scroll-cat__cat {
+    position: absolute;
+    left: 0;
+    bottom: calc(var(--ysc-floor) - 3px);
+    width: var(--ysc-cat-w);
+    height: var(--ysc-cat-h);
+    background-repeat: no-repeat;
+    background-size: 900% 100%;
+    background-position: calc(var(--ysc-frame, 0) * 12.5%) 0;
+    transform: translateX(var(--ysc-cat-x, 0px)) scaleX(var(--ysc-dir, 1));
+  }
+
+  .yarn-scroll-cat__ball {
+    position: absolute;
+    left: 0;
+    bottom: calc(var(--ysc-floor) - 4px);
+    width: var(--ysc-ball);
+    height: var(--ysc-ball);
+    overflow: visible;
+    transform: translateX(var(--ysc-ball-x, 0px)) rotate(var(--ysc-spin, 0deg));
+  }
+
+  .yarn-scroll-cat__ball-body { fill: var(--yarn-tint-butter); }
+  .yarn-scroll-cat__ball path { fill: none; stroke: var(--yarn-home-thread); stroke-width: 0.8; stroke-linecap: round; }
+  .yarn-scroll-cat__ball-rim { fill: none; stroke: var(--yarn-home-thread); stroke-width: 1.3; }
+}

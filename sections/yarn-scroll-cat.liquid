@@ -1,0 +1,36 @@
+{% comment %}
+  首页桌面滚动进度：屏幕底边一只小猫推着毛线球，随页面滚动从左走到右，线球放出的毛线从左边线头一直铺到线球下，长度即进度。
+  停止滚动时坐下、再趴下睡觉；往回滚时转身；到页尾在线球旁睡着。只在桌面（≥990px）显示；减少动态时不播走路帧。
+  复用导览条的九帧小猫精灵图（yarn-guide-cat.webp）。纯装饰，不可交互、不进读屏。
+{% endcomment %}
+{{ 'yarn-scroll-cat.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'yarn-scroll-cat.js' | asset_url }}" defer="defer"></script>
+
+<yarn-scroll-cat class="yarn-scroll-cat" aria-hidden="true">
+  <svg class="yarn-scroll-cat__thread" preserveAspectRatio="none" focusable="false">
+    <path class="yarn-scroll-cat__ply-core"/>
+    <path class="yarn-scroll-cat__ply-ridge"/>
+    <circle class="yarn-scroll-cat__knot" r="3.5"/>
+  </svg>
+  <span class="yarn-scroll-cat__cat" style="background-image: url('{{ 'yarn-guide-cat.webp' | asset_url }}');"></span>
+  <svg class="yarn-scroll-cat__ball" viewBox="-11 -11 22 22" focusable="false">
+    <clipPath id="YarnScrollCatBall-{{ section.id }}"><circle r="9.6"/></clipPath>
+    <circle class="yarn-scroll-cat__ball-body" r="10"/>
+    <g clip-path="url(#YarnScrollCatBall-{{ section.id }})">
+      <path transform="rotate(-20)" d="M-11 -3.4Q0 -7.6 11 -3.4M-11 -1.8Q0 -6 11 -1.8M-11 -.2Q0 -4.4 11 -.2M-11 1.4Q0 -2.8 11 1.4"/>
+      <path transform="rotate(40)" d="M-11 -1.2Q0 -5.4 11 -1.2M-11 .4Q0 -3.8 11 .4M-11 2Q0 -2.2 11 2M-11 3.6Q0 -.6 11 3.6"/>
+      <path transform="rotate(100)" d="M-11 -2.9Q0 -7.1 11 -2.9M-11 -1.3Q0 -5.5 11 -1.3M-11 .3Q0 -3.9 11 .3M-11 1.9Q0 -2.3 11 1.9"/>
+    </g>
+    <circle class="yarn-scroll-cat__ball-rim" r="10"/>
+  </svg>
+</yarn-scroll-cat>
+
+{% schema %}
+{
+  "name": "滚动进度小猫",
+  "tag": "div",
+  "class": "section-yarn-scroll-cat",
+  "settings": [],
+  "presets": [{ "name": "滚动进度小猫" }]
+}
+{% endschema %}

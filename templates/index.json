@@ -1,5 +1,9 @@
 {
   "sections": {
+    "scroll-cat": {
+      "type": "yarn-scroll-cat",
+      "settings": {}
+    },
     "hero": {
       "type": "hitoami-hero",
       "blocks": {
@@ -531,6 +535,7 @@
     "beginner-kits",
     "filter-switch",
     "yarn-hero",
-    "line-support"
+    "line-support",
+    "scroll-cat"
   ]
 }

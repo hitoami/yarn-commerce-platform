@@ -34,8 +34,9 @@ test('all literal and dynamic UI translations exist in the three section locales
 test('homepage follows the #131 IA: yarn first, then season feature, yarn sets and handmade pieces', () => {
   // #131（2026-10-10 锦晨确认）：活动图 → 品牌介绍（附 LINE）→ 挑毛线 → 本季主推（编辑专题）→ 用我们的毛线可以织（材料包）→ 手工成品精选。
   // 导览条、新手友好编织包、底部 LINE 帮助条停用而不删除，编辑器里可重新打开。
+  // 滚动进度小猫（#151）是底边固定的装饰层，不占版面顺序，放在最后。
   const live = index.order.filter(id => !index.sections[id].disabled);
-  assert.deepEqual(live, ['hero', 'story', 'yarn-entries', 'catalog', 'season', 'guide', 'project-picks', 'picks-finished', 'faq']);
+  assert.deepEqual(live, ['hero', 'story', 'yarn-entries', 'catalog', 'season', 'guide', 'project-picks', 'picks-finished', 'faq', 'scroll-cat']);
   for (const retired of ['guide-strip', 'beginner-kits', 'line-support', 'sale-picks', 'filter-switch', 'yarn-hero']) assert.equal(index.sections[retired].disabled, true, retired);
   assert.equal(index.sections.hero.type, 'hitoami-hero');
   assert.equal(index.sections.story.type, 'hitoami-story');
