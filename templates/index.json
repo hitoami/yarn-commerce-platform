@@ -241,7 +241,16 @@
         "step_2_en": "Buy all the yarn",
         "step_3": "LINEで編み方を受け取る",
         "step_3_zh": "LINE 领教程",
-        "step_3_en": "Get a LINE tutorial"
+        "step_3_en": "Get a LINE tutorial",
+        "step_1_note": "写真から編みたい作品を選ぶ",
+        "step_1_note_zh": "从照片挑一件想织的",
+        "step_1_note_en": "Choose a project from the photos",
+        "step_2_note": "色と玉数は組み合わせ済み",
+        "step_2_note_zh": "颜色和团数已配好",
+        "step_2_note_en": "Colors and quantities are ready",
+        "step_3_note": "ご注文後に公式LINEを追加",
+        "step_3_note_zh": "下单后加官方 LINE",
+        "step_3_note_en": "Add our official LINE after ordering"
       }
     },
     "beginner-kits": {
