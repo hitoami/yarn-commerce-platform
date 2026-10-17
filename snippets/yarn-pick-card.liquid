@@ -76,6 +76,7 @@
       </span>
       {%- render 'yarn-card-cart', cart_product: card_product -%}
     </div>
+    {%- render 'yarn-card-buy', buy_product: card_product -%}
     {%- if layout == 'row' -%}<span class="yx-product-card__more">{{ 'yarn_project.season_view_yarn' | t }} <span aria-hidden="true">→</span></span>{%- endif -%}
   </div>
 </div>

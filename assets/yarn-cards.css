@@ -267,12 +267,12 @@
 /* #175 Favorites page: a quantity stepper and a labelled add button replace the round cart button. */
 .yx-card-buy { display: none; }
 .yd-search.is-favorites .yx-card-buy { position: relative; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
-.yd-search.is-favorites .yp-product-card > .yx-card-cart { display: none; }
-.yd-search.is-favorites .yp-product-card .yp-card__price { padding-right: 0; }
+.yd-search.is-favorites .yx-product-card__buy .yx-card-cart { display: none; }
 .yx-card-buy__qty { display: inline-flex; align-items: center; height: var(--yarn-touch); border: 1px solid var(--yarn-border-subtle); border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); }
 .yx-card-buy__qty button { display: grid; place-items: center; width: 36px; height: 100%; padding: 0; border: 0; background: none; color: var(--yarn-text-primary); cursor: pointer; }
 .yx-card-buy__qty button:disabled { color: var(--yarn-text-muted); cursor: default; opacity: 0.5; }
 .yx-card-buy__qty button svg { width: 12px; height: 12px; }
+.yx-card-buy__qty label { display: contents; }
 .yx-card-buy__qty input { width: 32px; height: 100%; padding: 0; border: 0; background: none; color: var(--yarn-text-heading); font: inherit; font-size: 15px; font-weight: 600; text-align: center; -moz-appearance: textfield; }
 .yx-card-buy__qty input::-webkit-inner-spin-button, .yx-card-buy__qty input::-webkit-outer-spin-button { margin: 0; -webkit-appearance: none; }
 .yx-card-buy__qty button:focus-visible, .yx-card-buy__qty input:focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: -2px; border-radius: var(--yarn-radius-pill); }

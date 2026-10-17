@@ -44,9 +44,9 @@ test('#175 the header heart shows the favorites count and the card cart reuses t
 
 test('#175 favorites cards carry a 1–99 quantity stepper wired to the add button', () => {
   const buy = read('snippets/yarn-card-buy.liquid');
-  assert.match(buy, /<input id="{{ buy_id }}" type="number" inputmode="numeric" min="1" max="99" value="1" data-card-qty>/);
+  assert.match(buy, /<label><span class="visually-hidden">[^<]*<\/span><input type="number" inputmode="numeric" min="1" max="99" value="1" data-card-qty><\/label>/);
   assert.match(buy, /data-qty-step="-1"[\s\S]*data-qty-step="1"[\s\S]*data-card-add=/);
-  assert.match(read('snippets/yarn-discovery-product-card.liquid'), /render 'yarn-card-buy', buy_product: product/);
+  assert.match(read('snippets/yarn-pick-card.liquid'), /render 'yarn-card-buy', buy_product: card_product/);
   assert.match(read('assets/yarn-card-actions.js'), /quantity: quantityFor\(button\)/);
   assert.match(read('assets/yarn-search.js'), /this\.classList\.toggle\('is-favorites', isFavorites\)/);
 });

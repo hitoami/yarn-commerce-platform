@@ -8,11 +8,9 @@
     {%- if buy_product.available == false -%}
       <button class="yx-card-cart yx-card-cart--wide" type="button" disabled>{{ 'products.product.sold_out' | t }}</button>
     {%- elsif buy_product.variants.size == 1 -%}
-      {%- assign buy_id = 'CardQty-' | append: buy_product.id -%}
       <div class="yx-card-buy__qty">
         <button type="button" data-qty-step="-1" disabled aria-label="{{ 'products.product.quantity.decrease' | t: product: buy_product.title | escape }}">{{ 'icon-minus.svg' | inline_asset_content }}</button>
-        <label class="visually-hidden" for="{{ buy_id }}">{{ 'products.product.quantity.input_label' | t: product: buy_product.title | escape }}</label>
-        <input id="{{ buy_id }}" type="number" inputmode="numeric" min="1" max="99" value="1" data-card-qty>
+        <label><span class="visually-hidden">{{ 'products.product.quantity.input_label' | t: product: buy_product.title | escape }}</span><input type="number" inputmode="numeric" min="1" max="99" value="1" data-card-qty></label>
         <button type="button" data-qty-step="1" aria-label="{{ 'products.product.quantity.increase' | t: product: buy_product.title | escape }}">{{ 'icon-plus.svg' | inline_asset_content }}</button>
       </div>
       <button
