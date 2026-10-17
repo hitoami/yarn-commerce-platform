@@ -12,7 +12,8 @@
 
 .header__heading-link > .yarn-wordmark {
   display: block;
-  width: 252px;
+  /* One logo size on every page (Issue 131); phones narrow it further below. */
+  width: 190px;
   max-width: 100%;
   aspect-ratio: 3.797;
   overflow: hidden;
@@ -493,4 +494,76 @@
   .yarn-mega .yarn-nav-tile__text { gap: 4px; padding: 0; }
   .yarn-mega .yarn-nav-tile__name { font-size: 2rem; }
   .yarn-mega .yarn-nav-tile__count { font-size: 1.3rem; }
+}
+
+/* Issue 131 desktop docking: once scrolled past, the header drops in from the top, tightens into a frosted bar,
+   and a yarn thread knits along its lower edge with a small ball rolling at the tip (scroll progress). */
+.yarn-scroll-thread { display: none; }
+@media screen and (min-width: 1340px) {
+  .section-header .header-wrapper,
+  .section-header #YarnHeader,
+  .section-header .header__heading-link > .yarn-wordmark {
+    transition: background-color 0.45s ease, box-shadow 0.45s ease, min-height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      padding 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .section-header .header__heading-link > .yarn-wordmark { transform-origin: left center; }
+
+  .section-header.yarn-header-docked { position: sticky; top: 0; }
+  .section-header.yarn-header-docked .header-wrapper {
+    background: color-mix(in srgb, var(--yarn-bg-surface) 86%, transparent);
+    border-bottom-color: transparent;
+    box-shadow: 0 10px 28px var(--yarn-shadow-soft);
+    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+    backdrop-filter: blur(14px) saturate(1.15);
+    animation: yarn-header-drop 0.62s cubic-bezier(0.18, 1.25, 0.4, 1) both;
+  }
+  .section-header.yarn-header-docked #YarnHeader { min-height: 64px; padding-block: 4px; }
+  .section-header.yarn-header-docked .header__heading-link > .yarn-wordmark { transform: scale(0.8); }
+
+  .yarn-scroll-thread {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -3px;
+    height: 6px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease 0.15s;
+  }
+  .yarn-header-docked .yarn-scroll-thread { opacity: 1; }
+  .yarn-scroll-thread__line {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: calc(var(--header-scroll-progress, 0) * (100% - 16px) + 8px);
+    background: var(--yarn-action);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6' viewBox='0 0 12 6'%3E%3Cpath d='M0 3C1.5.6 4.5.6 6 3s4.5 2.4 6 0' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x left center / 12px 6px;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6' viewBox='0 0 12 6'%3E%3Cpath d='M0 3C1.5.6 4.5.6 6 3s4.5 2.4 6 0' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x left center / 12px 6px;
+  }
+  .yarn-scroll-thread__ball {
+    position: absolute;
+    top: 50%;
+    /* Keep the 16px ball inside the bar at 0% and 100%. */
+    left: calc(var(--header-scroll-progress, 0) * (100% - 16px) + 8px);
+    width: 16px;
+    height: 16px;
+    color: var(--yarn-action);
+    transform: translate(-50%, -50%) rotate(calc(var(--header-scroll-progress, 0) * 1440deg));
+    filter: drop-shadow(0 2px 3px var(--yarn-shadow-soft));
+  }
+  .yarn-scroll-thread__ball svg { display: block; width: 100%; height: 100%; }
+}
+
+@keyframes yarn-header-drop {
+  0% { transform: translateY(-110%); }
+  100% { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-header .header-wrapper,
+  .section-header #YarnHeader,
+  .section-header .header__heading-link > .yarn-wordmark,
+  .yarn-scroll-thread { transition: none; }
+  .section-header.yarn-header-docked .header-wrapper { animation: none; }
+  .yarn-scroll-thread__ball { transform: translate(-50%, -50%); }
 }

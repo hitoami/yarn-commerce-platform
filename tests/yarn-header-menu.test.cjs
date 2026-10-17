@@ -103,3 +103,17 @@ test('header computes the yarn tiles once and the desktop yarn link opens them i
   assert.match(desktop, /link\.object\.all_products_count == 0[\s\S]*'sections\.header\.coming_soon' \| t/);
   assert.match(headerCss, /\.yarn-mega__tiles \{ display: grid; grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
 });
+
+test('desktop header docks with a drop-in, compact bar and yarn scroll thread, honouring reduced motion (#131)', () => {
+  assert.match(header, /this\.desktopQuery = window\.matchMedia\('\(min-width: 1340px\)'\)/);
+  assert.match(header, /if \(this\.desktopQuery\.matches\) \{\s*this\.dock\(scrollTop\);/);
+  assert.match(header, /classList\.add\('shopify-section-header-sticky', 'scrolled-past-header', 'yarn-header-docked'\)/);
+  assert.match(header, /--header-scroll-progress/);
+  assert.match(header, /<div class="yarn-scroll-thread" aria-hidden="true">/);
+  assert.match(headerCss, /\.section-header\.yarn-header-docked \.header-wrapper \{[\s\S]*animation: yarn-header-drop/);
+  assert.match(headerCss, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*\.section-header\.yarn-header-docked \.header-wrapper \{ animation: none; \}/);
+  const hero = fs.readFileSync('assets/hitoami-hero.css', 'utf8');
+  assert.doesNotMatch(hero, /yarn-wordmark \{ width:/, 'homepage must not resize the logo');
+  assert.doesNotMatch(hero, /header__icon--favorites \{ display: none/, 'homepage keeps the same header icons');
+  assert.match(headerCss, /width: 190px;/);
+});
