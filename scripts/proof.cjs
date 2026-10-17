@@ -112,26 +112,40 @@ async function inspectPage({ contentSelectors, ignoreSelectors }) {
   };
 }
 
+// 购物车 Ajax 地址：取主题自己的 routes（与 product-form.js 同源），去掉语言前缀。
+// 购物车不分语言；本地 theme dev 代理里日文页面在 /ja，但 /ja/ 下的 POST 一律 404（#154），
+// 线上 hitoami.com 日文在 /、/ja 不存在。店铺根路径的 /cart/*.js 在两边、三种语言都可用。
+function cartAjaxUrl(route, localeRoot = '/') {
+  const root = localeRoot.endsWith('/') ? localeRoot : `${localeRoot}/`;
+  const shopPath = route.startsWith(root) ? `/${route.slice(root.length)}` : route;
+  return `${shopPath}.js`;
+}
+
 async function openCartDrawer(page) {
-  await page.evaluate(async () => {
-    const root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+  const { routes, localeRoot } = await page.evaluate(() => ({
+    routes: window.routes,
+    localeRoot: (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/',
+  }));
+  if (!routes || !routes.cart_add_url || !routes.cart_url) throw new Error('页面缺少 window.routes.cart_add_url / cart_url，无法按主题地址加购');
+  const urls = { add: cartAjaxUrl(routes.cart_add_url, localeRoot), cart: cartAjaxUrl(routes.cart_url, localeRoot) };
+  await page.evaluate(async ({ add, cart: cartUrl }) => {
     const product = await (await fetch(`${location.pathname}.js`)).json();
     const variant = product.variants.find(v => v.available && v.price > 0);
     if (!variant) throw new Error('购买验收受阻：此商品没有已定价且可售的 Variant，未发送加购请求');
-    const response = await fetch(`${root}cart/add.js`, {
+    const response = await fetch(add, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ items: [{ id: variant.id, quantity: 1 }] }),
     });
     // Opening an empty drawer after a rejected request is not a successful cart check.
-    if (!response.ok) throw new Error(`加购失败 ${response.status}：${root}cart/add.js`);
-    const cartResponse = await fetch(`${root}cart.js`);
+    if (!response.ok) throw new Error(`加购失败 ${response.status}：${add}`);
+    const cartResponse = await fetch(cartUrl);
     if (!cartResponse.ok) throw new Error(`读取购物车失败 ${cartResponse.status}`);
     const cart = await cartResponse.json();
     if (!cart.items?.some(item => Number(item.variant_id) === Number(variant.id) && item.quantity >= 1)) {
       throw new Error('加购响应成功，但购物车未包含所选 Variant 和数量');
     }
-  });
+  }, urls);
   await page.reload({ waitUntil: 'load' });
   await page.click('#cart-icon-bubble');
   await page.waitForSelector('cart-drawer.active, cart-drawer .drawer.active, .drawer.active', { timeout: 8000 });
@@ -294,7 +308,11 @@ async function main() {
   process.exit(summary.failed ? 1 : 0);
 }
 
-main().catch(error => {
-  console.error(error.message);
-  process.exit(2);
-});
+if (require.main === module) {
+  main().catch(error => {
+    console.error(error.message);
+    process.exit(2);
+  });
+}
+
+module.exports = { cartAjaxUrl };
