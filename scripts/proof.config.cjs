@@ -3,6 +3,9 @@
 module.exports = {
   baseUrl: 'http://127.0.0.1:9292',
 
+  // 前缀按本地 theme dev 代理的实际路由（2026-10-17 核对，#154）：代理按店铺主语言渲染，
+  // 中文在 /、日文 /ja、英文 /en。线上 hitoami.com 不同：日文为域名默认语言在 /，中文 /zh，英文 /en。
+  // 代理下 /ja/ 只能 GET 页面，POST 会 404，所以 proof 的购物车请求走店铺根路径（见 proof.cjs cartAjaxUrl）。
   locales: [
     { key: 'ja', prefix: '/ja', lang: 'ja' },
     { key: 'zh', prefix: '', lang: 'zh' },
