@@ -293,7 +293,7 @@
       <a href="{{ routes.search_url }}?browse=favorites" class="header__icon header__icon--favorites link focus-inset" data-favorites-header
         aria-label="{{ 'yarn_discovery.favorites' | t }}" data-label="{{ 'yarn_discovery.favorites' | t }}" data-label-count="{{ 'yarn_discovery.favorites_count' | t: number: '__N__' }}">
         <span class="svg-wrapper"><svg class="icon yarn-header-heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20.2s-7.6-4.5-9.3-9.3C1.5 7.5 3.7 4.3 7.1 4.3c2.1 0 3.7 1.2 4.9 3 1.2-1.8 2.8-3 4.9-3 3.4 0 5.6 3.2 4.4 6.6-1.7 4.8-9.3 9.3-9.3 9.3z"/></svg></span>
-        <span class="cart-count-bubble yarn-favorites-count" data-favorites-count aria-hidden="true" hidden></span>
+        <div class="cart-count-bubble yarn-favorites-count" data-favorites-count aria-hidden="true" hidden></div>
       </a>
 
       {%- if shop.customer_accounts_enabled -%}

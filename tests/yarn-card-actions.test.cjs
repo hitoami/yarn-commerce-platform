@@ -34,7 +34,7 @@ test('#169 the cart button only renders for finished goods, judged like search g
 test('#175 the header heart shows the favorites count and the card cart reuses the header cart icon', () => {
   const header = read('sections/header.liquid');
   assert.match(header, /data-favorites-header[\s\S]*data-label-count="{{ 'yarn_discovery\.favorites_count' \| t: number: '__N__' }}"/);
-  assert.match(header, /<span class="cart-count-bubble yarn-favorites-count" data-favorites-count aria-hidden="true" hidden><\/span>/);
+  assert.match(header, /<div class="cart-count-bubble yarn-favorites-count" data-favorites-count aria-hidden="true" hidden><\/div>/);
   assert.match(read('assets/yarn-favorites.js'), /querySelectorAll\('\[data-favorites-header\]'\)[\s\S]*has-favorites/);
   assert.match(read('assets/yarn-card-actions.js'), /addEventListener\('yarn:favorite-toggled'/);
   for (const path of ['snippets/yarn-card-cart.liquid', 'snippets/yarn-card-buy.liquid']) {
