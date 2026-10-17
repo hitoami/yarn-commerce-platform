@@ -57,6 +57,16 @@
 .yx-project-pick__tag--materials { background: var(--yarn-tint-sage); }
 .yx-project-pick:hover .yx-project-pick__title { text-decoration: underline; text-underline-offset: 3px; }
 .yx-project-pick:focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: var(--yarn-focus-offset); }
+/* #131 season page (Figma candidate E): the same card laid out as a row, photo left, text right. */
+.yx-product-card--row { flex-direction: row; align-items: center; gap: 16px; height: auto; }
+.yx-product-card--row .yx-product-card__media { flex: none; width: 112px; }
+.yx-product-card--row .yx-product-card__body { min-width: 0; padding: 0; }
+.yx-product-card--row .yx-product-card__price { margin-top: 0; }
+.yx-product-card__more { margin-top: 2px; color: var(--yarn-action); font-size: 14px; font-weight: 600; line-height: 1.4; }
+@media (min-width: 750px) {
+  .yx-product-card--row { gap: 20px; }
+  .yx-product-card--row .yx-product-card__media { width: 140px; }
+}
 .yx-product-card:hover .yx-product-card__title { text-decoration: underline; text-underline-offset: 3px; }
 .yx-product-card:focus-visible, .yx-content-card:focus-visible, .yx-chip:focus-visible, .yx-exit a:focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: var(--yarn-focus-offset); }
 /* Adapt the native Shopify card to the same visual contract without replacing its form. */

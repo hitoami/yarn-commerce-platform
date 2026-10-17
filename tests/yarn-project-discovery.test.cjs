@@ -78,8 +78,8 @@ test('homepage follows the #131 IA: yarn first, then season feature, yarn sets a
   assert.equal(seasonTemplate.settings.tag, 'catalog-2026-10-season');
   assert.match(season, /sp_product\.tags contains sp_tag/);
   assert.doesNotMatch(season.match(/<ol class="yx-season-page__list">[\s\S]*<\/ol>/)[0], /sp_tag/);
-  // #131（用户 2026-10-16 选 D）：专题页每款用首页同款商品卡，不直接加购。
-  assert.match(season, /render 'yarn-pick-card', card_product: sp_item/);
+  // #131（用户 2026-10-16 选 E）：专题页每款用首页商品卡的横排版，不直接加购。
+  assert.match(season, /render 'yarn-pick-card', card_product: sp_item, layout: 'row'/);
   assert.doesNotMatch(season, /form 'product'/);
   // 材料包卡只汇总关联了 Variant 的「毛线」配件，价格 = Variant 价格 × 团数。
   // #131：集合还没有商品时（手工成品上架前）不显示「0/0 件」和价格带，改为三语「准备中」说明。

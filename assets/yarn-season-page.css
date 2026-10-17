@@ -1,6 +1,6 @@
 /* Season feature page (#131, page.season), after the Figma "02 季节主推" canvas: issue line + heading + lead beside a cover photo,
    a row of round-thumb contents; then one spread per yarn, a 1-large + 2-small photo gallery and the copy alternating sides;
-   under the copy sits the homepage product card (yarn-pick-card), so the season page and homepage share one card. */
+   under the copy sits the homepage product card as a row (yarn-pick-card), so the season page and homepage share one card. */
 .yx-season-page { width: min(var(--yarn-commerce-max), 100%); margin: 0 auto 64px; color: var(--yarn-text-primary); }
 .yx-season-page a:focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 3px; }
 
@@ -47,8 +47,8 @@
 .yx-season-page__lead { margin: 0; color: var(--yarn-text-heading); font: 600 1.7rem/1.6 var(--yarn-display); }
 .yx-season-page__note { margin: 0; color: var(--yarn-text-secondary); font-size: 1.4rem; line-height: 1.8; }
 
-/* Product card: the homepage card (yarn-pick-card) as-is, under the copy */
-.yx-season-page__card { width: min(220px, 100%); margin-top: var(--yarn-space-2); }
+/* Product card: the homepage card family laid out as a row (yarn-pick-card, layout: 'row'), under the copy */
+.yx-season-page__card { margin-top: var(--yarn-space-2); }
 .yx-season-page__empty { padding: 0 var(--yarn-gutter); }
 
 @media (min-width: 750px) {
@@ -80,7 +80,6 @@
   .yx-season-page__copy { max-width: 456px; }
   .yx-season-page__num { font-size: 2.8rem; }
   .yx-season-page__name { font-size: 3.4rem; }
-  .yx-season-page__card { width: 282px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
