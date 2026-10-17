@@ -1,5 +1,5 @@
 {%- comment -%}
-  #149 搜索结果里的毛线 / 成品卡：与首页和目录同一张 yarn-pick-card，外层只加搜索与收藏需要的数据。
+  #149 搜索结果里的毛线 / 成品卡：与首页和目录同一张 yarn-pick-card，外层只加搜索与收藏需要的数据;收藏爱心与加入购物车按钮由卡片自带(#161)。
   可搜文字：本商品自己的名称、描述、标签、规格行，以及所属毛线分类（yarn.texture / yarn.use 引用的 yarn_entry）名称。
 {%- endcomment -%}
 {%- liquid
@@ -27,5 +27,4 @@
   {%- else -%}
     {%- render 'yarn-pick-card', card_product: search_product -%}
   {%- endif -%}
-  {%- render 'yarn-favorite-button', entity_type: 'product', entity_id: search_product.id, entity_title: search_product.title -%}
 </div>
