@@ -75,9 +75,6 @@
   .yk-main { padding: 0; }
   .yk-title { font-size: 3.2rem; }
   .yk-more { padding-inline: 0; }
-  /* #183 桌面稿 v1：教程三步横排三格。 */
-  .yk-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 0; background: none; }
-  .yk-steps li { flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px; border-radius: 12px; background: var(--yarn-bg-band); }
 }
 
 /* Yarn set list page (#131): heading + the same kit cards as the homepage, two columns on phones, four on desktop. */
