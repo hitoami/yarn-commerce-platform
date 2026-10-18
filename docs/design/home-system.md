@@ -74,7 +74,7 @@ Issue #65 删除了无模板使用的 `yarn-purpose-grid` / `yarn-seasonal-featu
 
 当前手机构图以 [获批手机稿及来源](approved/131-mobile.source.md) 为准，替换上文 #126 的首页顺序与「手机无小猫」规则。用户同日明确要求保留线上 Hero：手机和桌面均继续使用手作小屋整幅场景、文案叠图、透明页头与波浪底边，沿用三张场景手动切换；本 Issue 不显示首屏购买按钮。`catalog_layout` 仅加载首屏以下的手机布局，不得覆盖 Hero。用户随后提供桌面缺失截图并要求对齐同一参考：桌面分类恢复五个圆图，去掉小猫下方的装饰线；FAQ 为标题与问题两列；独立新手指引已由 #180 合并进作品卡区。商品区和本季区仍需真实数据接入，整页尚未验收。
 
-品牌介绍可使用 `hitoami-brand-knitting-cat.png` 氛围图，上传图优先；生成提示词和适用范围记录在同名 `.source.json`，不作为真实人物或商品证据。本季封面复用油画圈圈原图，未核实选品时不声称有固定款数。
+品牌介绍可使用 `hitoami-brand-knitting-cat-768.webp` / `-1536.webp` 氛围图（#189 由原 2.6 MB PNG 转换），上传图优先；生成提示词和适用范围记录在 `hitoami-brand-knitting-cat-1536.webp.source.json`，不作为真实人物或商品证据。本季封面复用油画圈圈原图，未核实选品时不声称有固定款数。
 
 首页只保留桌面底边的滚动进度小猫（`yarn-scroll-cat`，#151）；毛线分类区的可互动小猫已删除（用户 2026-10-17 决定）。分类仍引用 `yarn_entry` 与 Shopify 商品字段，参考图可在 block 选择本轮原表实物图。毛线资料区 `yarn-catalog` 只渲染运营明确选择的已核实 Product，没有配置时给出整理提示。`yarn-home-guide` 的首页 `guide` 实例停用，`faq` 实例继续以三语 block 承载常见问题。
 

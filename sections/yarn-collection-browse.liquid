@@ -185,10 +185,13 @@
         <ul class="ycb-grid" role="list" data-ycb-grid>
           {%- for product in collection.products -%}
             <li class="ycb-grid__item">
+              {%- comment -%}#189：第一行（手机 2 张、桌面 4 张）是首屏 LCP 候选，不懒加载。{%- endcomment -%}
+              {%- assign cb_eager = false -%}
+              {%- if forloop.index <= 4 -%}{%- assign cb_eager = true -%}{%- endif -%}
               {%- if cb_handmade -%}
-                {%- render 'yarn-pick-card', card_product: product, handmade: true -%}
+                {%- render 'yarn-pick-card', card_product: product, handmade: true, eager: cb_eager -%}
               {%- else -%}
-                {%- render 'yarn-pick-card', card_product: product -%}
+                {%- render 'yarn-pick-card', card_product: product, eager: cb_eager -%}
               {%- endif -%}
             </li>
           {%- endfor -%}

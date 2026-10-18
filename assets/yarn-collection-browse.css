@@ -97,7 +97,9 @@
   .ycb-head__title { font-size: 40px; }
   .ycb-head__intro, .ycb-head__intro p { max-width: 600px; font-size: 16px; }
   .ycb-chips { margin-inline: 0; padding-inline: 0; overflow: visible; }
-  .ycb-chips ul { flex-wrap: wrap; width: auto; gap: var(--yarn-space-3); }
+  /* #189：日文 6 个胶囊在 12px 间距下总宽正好卡在 1200px 内容宽的临界点，字体分片加载时一行 / 两行来回跳（CLS 0.68）；收紧间距与右内边距留出余量。 */
+  .ycb-chips ul { flex-wrap: wrap; width: auto; gap: var(--yarn-space-2); }
+  .ycb-chip { padding-right: 16px; }
   .ycb-toolbar { margin-bottom: var(--yarn-space-6); padding-block: var(--yarn-space-4); }
   .ycb-toolbar__count { font-size: 14px; }
   .ycb-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px var(--yarn-space-5); }

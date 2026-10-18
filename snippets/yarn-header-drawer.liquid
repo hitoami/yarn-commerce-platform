@@ -87,7 +87,7 @@
                         {%- if section.settings.drawer_season_image != blank -%}
                           {{ section.settings.drawer_season_image | image_url: width: 800 | image_tag: widths: '400, 800', sizes: 'calc(100vw - 32px)', loading: 'lazy', alt: '' }}
                         {%- else -%}
-                          <img src="{{ 'hitoami-source-oil-loop.jpeg' | asset_url }}" width="790" height="885" loading="lazy" alt="">
+                          <img src="{{ 'hitoami-source-oil-loop-400.webp' | asset_url }}" srcset="{{ 'hitoami-source-oil-loop-400.webp' | asset_url }} 400w, {{ 'hitoami-source-oil-loop-800.webp' | asset_url }} 790w" sizes="calc(100vw - 32px)" width="790" height="885" loading="lazy" decoding="async" alt="">
                         {%- endif -%}
                       </span>
                       <span class="yarn-drawer-feature__text">

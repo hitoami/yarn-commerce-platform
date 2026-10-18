@@ -7,6 +7,7 @@
   beginner:读 metafield yarn.beginner_reason;有理由才显示「新手友好」标签,理由代替规格行;没有理由不显示标签。
   layout: 'row'(#131 本季专题，用户 2026-10-16 选定 Figma 候选 E):同一张卡改为横排，图片在左，文字在右，并在价格下加「查看商品 →」;样式与数据不变。
   handmade(#131):手工成品。规格行换成「手工制作」说明;库存由 Shopify 跟踪且 10 件及以下时左上角显示「仅剩 N 件」,卖完显示「售罄」。
+  eager(#189):首屏里的卡片（列表前几张）不懒加载，第一行加 fetchpriority=high，避免 LCP 图片迟迟不开始下载。
   其他商品(#177 R4):已定价但不可售时左上角显示「缺货」,价格降为灰色;未定价沿用「暂未开售」。没有标签 = 能买。
 {% endcomment %}
 {%- liquid
@@ -49,7 +50,11 @@
 <div class="yx-product-card{% if layout == 'row' %} yx-product-card--row{% endif %}">
   <div class="yx-product-card__media">
     {%- if card_image != blank -%}
-      {{ card_image | image_url: width: 600 | image_tag: widths: '300, 450, 600', sizes: card_sizes, loading: 'lazy', alt: card_image.alt | default: card_product.title }}
+      {%- if eager -%}
+        {{ card_image | image_url: width: 600 | image_tag: widths: '300, 450, 600', sizes: card_sizes, loading: 'eager', fetchpriority: 'high', alt: card_image.alt | default: card_product.title }}
+      {%- else -%}
+        {{ card_image | image_url: width: 600 | image_tag: widths: '300, 450, 600', sizes: card_sizes, loading: 'lazy', alt: card_image.alt | default: card_product.title }}
+      {%- endif -%}
     {%- endif -%}
     {%- if card_off > 0 -%}<span class="yx-product-card__off">-{{ card_off }}%</span>{%- endif -%}
     {%- if card_stock != blank -%}<span class="yx-product-card__stock{% if card_product.available == false %} yx-product-card__stock--out{% endif %}">{{ card_stock }}</span>{%- endif -%}

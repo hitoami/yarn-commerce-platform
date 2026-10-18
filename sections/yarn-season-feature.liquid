@@ -42,7 +42,7 @@
     {%- if section.settings.image != blank -%}
       {{ section.settings.image | image_url: width: 1200 | image_tag: widths: '400, 600, 900, 1200', sizes: '(min-width: 750px) 38vw, calc(100vw - 64px)', loading: 'lazy', alt: '' }}
     {%- elsif section.settings.source_image -%}
-      <img src="{{ 'hitoami-source-oil-loop.jpeg' | asset_url }}" width="790" height="885" loading="lazy" alt="">
+      <img src="{{ 'hitoami-source-oil-loop-800.webp' | asset_url }}" srcset="{{ 'hitoami-source-oil-loop-400.webp' | asset_url }} 400w, {{ 'hitoami-source-oil-loop-800.webp' | asset_url }} 790w" sizes="(min-width: 750px) 38vw, calc(100vw - 64px)" width="790" height="885" loading="lazy" decoding="async" alt="">
     {%- elsif sf_collage.size > 0 -%}
       <div class="yx-season__collage yx-season__collage--{{ sf_collage.size | at_most: 3 }}">
         {%- for sf_handle in sf_collage limit: 3 -%}

@@ -8,10 +8,16 @@
 {%- capture kl_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'heading' -%}{%- endcapture -%}
 {%- capture kl_note -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'note' -%}{%- endcapture -%}
 {%- capture kl_cards -%}
+  {%- assign kl_shown = 0 -%}
   {%- for project in shop.metaobjects.yarn_project.values -%}
     {%- if project.cover.value != blank -%}
       {%- capture kl_visible -%}{%- render 'yarn-kit-visible', project: project -%}{%- endcapture -%}
-      {%- if kl_visible == 'true' -%}{%- render 'yarn-project-pick-card', project: project -%}{%- endif -%}
+      {%- if kl_visible == 'true' -%}
+        {%- comment -%}#189：首屏的前 4 张（手机两行、桌面一行）不懒加载。{%- endcomment -%}
+        {%- assign kl_shown = kl_shown | plus: 1 -%}
+        {%- assign kl_eager = false -%}{%- if kl_shown <= 4 -%}{%- assign kl_eager = true -%}{%- endif -%}
+        {%- render 'yarn-project-pick-card', project: project, eager: kl_eager -%}
+      {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
 {%- endcapture -%}
