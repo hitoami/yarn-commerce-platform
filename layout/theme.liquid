@@ -11,9 +11,6 @@
       <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
     {%- endif -%}
 
-    {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
-      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
-    {%- endunless -%}
 
     {%- capture yarn_product_page_title -%}
       {%- if template.name == 'product' -%}
@@ -307,13 +304,18 @@
     {% # theme-check-disable RemoteAsset %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    {%- if request.locale.iso_code contains 'zh' -%}
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap">
-    {%- elsif request.locale.iso_code contains 'en' -%}
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500&family=Figtree:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap">
-    {%- else -%}
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500&family=Noto+Sans+JP:wght@400;500;600;700&display=swap">
-    {%- endif -%}
+    {%- liquid
+      # #189: 无衬线用可变字重（一份字体文件覆盖 400–700，原来是 4 个静态字重各一份；日文样式表 149 KB → 60 KB）。
+      # 样式表保持阻塞：改成 preload + onload 后页面提前排版，下方懒加载图提早开始下载，与首屏大图抢带宽，手机 LCP 反而慢 1–2 秒。
+      if request.locale.iso_code contains 'zh'
+        assign yarn_fonts_url = 'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500&family=Noto+Sans+SC:wght@400..700&display=swap'
+      elsif request.locale.iso_code contains 'en'
+        assign yarn_fonts_url = 'https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500&family=Figtree:wght@400..700&family=Noto+Sans+JP:wght@400..700&display=swap'
+      else
+        assign yarn_fonts_url = 'https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500&family=Noto+Sans+JP:wght@400..700&display=swap'
+      endif
+    -%}
+    <link rel="stylesheet" href="{{ yarn_fonts_url }}">
     {% # theme-check-enable RemoteAsset %}
     {{ 'yarn-design-tokens.css' | asset_url | stylesheet_tag }}
     {{ 'yarn-prototype.css' | asset_url | stylesheet_tag }}
@@ -332,16 +334,7 @@
       {{ 'component-discounts.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
 
-    {%- unless settings.type_body_font.system? -%}
-      {% comment %}theme-check-disable AssetPreload{% endcomment %}
-      <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
-      {% comment %}theme-check-enable AssetPreload{% endcomment %}
-    {%- endunless -%}
-    {%- unless settings.type_header_font.system? -%}
-      {% comment %}theme-check-disable AssetPreload{% endcomment %}
-      <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
-      {% comment %}theme-check-enable AssetPreload{% endcomment %}
-    {%- endunless -%}
+    {% # #189: Rise 默认字体 Murecho 被 #168 的 Noto / Source Serif / Figtree 覆盖，不再预加载（每页省约 311 KB 高优先级下载）。 %}
 
     {%- if localization.available_countries.size > 1 or localization.available_languages.size > 1 -%}
       {{ 'component-localization-form.css' | asset_url | stylesheet_tag: preload: true }}

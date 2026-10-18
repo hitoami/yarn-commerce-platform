@@ -54,7 +54,7 @@
       {%- elsif section.settings.cover_asset != blank -%}
         <img src="{{ section.settings.cover_asset | strip | asset_url }}" width="1200" height="896" loading="eager" fetchpriority="high" alt="">
       {%- elsif section.settings.source_image -%}
-        <img src="{{ 'hitoami-source-oil-loop.jpeg' | asset_url }}" width="790" height="885" loading="eager" fetchpriority="high" alt="">
+        <img src="{{ 'hitoami-source-oil-loop-800.webp' | asset_url }}" srcset="{{ 'hitoami-source-oil-loop-400.webp' | asset_url }} 400w, {{ 'hitoami-source-oil-loop-800.webp' | asset_url }} 790w" sizes="(min-width: 750px) 55vw, 100vw" width="790" height="885" loading="eager" fetchpriority="high" alt="">
       {%- else -%}
         {%- for sp_at in (0..sp_last) limit: 4 -%}
           {%- assign sp_cover = all_products[sp_handles[sp_at]].featured_image -%}
