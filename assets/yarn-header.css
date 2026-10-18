@@ -441,7 +441,7 @@
 }
 .header-wrapper .yarn-account-drawer-link { gap: var(--yarn-space-3); align-items: center; }
 
-/* Issue 131 desktop: wave underline marks the current or open item; the yarn link opens a six-tile panel. */
+/* Issue 131 desktop: a yarn strand marks the hovered, open or current item; the yarn link opens a six-tile panel. */
 @media screen and (min-width: 1340px) {
   .yarn-main-menu { gap: var(--yarn-space-3); }
   .yarn-main-menu .header__menu-item,
@@ -453,24 +453,37 @@
     text-decoration: none;
   }
   .yarn-main-menu .header__menu-item > span:first-child { position: relative; text-decoration: none; }
-  .yarn-main-menu .header__menu-item > span:first-child::after {
-    content: '';
+  /* A yarn strand draws out from its curled tail on hover, focus or open, and winds back faster on leave (Issue 190, after Woobles).
+     The current page keeps its strand until another item is pointed at or opened, so only one item reads as selected. */
+  .yarn-nav-strand-defs { position: absolute; width: 0; height: 0; }
+  .yarn-nav-strand {
     position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -7px;
-    height: 6px;
-    background: var(--yarn-action);
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6' viewBox='0 0 12 6'%3E%3Cpath d='M0 3C1.5.6 4.5.6 6 3s4.5 2.4 6 0' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x left center / 12px 6px;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6' viewBox='0 0 12 6'%3E%3Cpath d='M0 3C1.5.6 4.5.6 6 3s4.5 2.4 6 0' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x left center / 12px 6px;
-    opacity: 0;
-    transition: opacity 0.15s ease;
+    left: -2px;
+    right: -2px;
+    bottom: -13px;
+    height: 14px;
+    overflow: hidden;
+    pointer-events: none;
   }
-  /* The wave marks only the current page and the open menu; hover just tints the text, so two items never both look selected. */
-  .yarn-main-menu :is(.header__active-menu-item, [aria-current='page'], details[open] > .header__menu-item) > span:first-child::after { opacity: 1; }
+  .yarn-nav-strand svg { display: block; width: 160px; height: 14px; }
+  .yarn-nav-strand path {
+    stroke: url(#YarnNavPly) var(--yarn-home-logo);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1 1.1;
+    stroke-dashoffset: 1.05;
+    transition: stroke-dashoffset 0.2s cubic-bezier(0.4, 0, 1, 1);
+  }
+  .yarn-main-menu .header__menu-item:is(:hover, :focus-visible) .yarn-nav-strand path,
+  .yarn-main-menu details[open] > .header__menu-item .yarn-nav-strand path,
+  .yarn-main-menu:not(:has(.header__menu-item:is(:hover, :focus-visible), details[open])) :is(.header__active-menu-item, [aria-current='page']) .yarn-nav-strand path {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.5s cubic-bezier(0.33, 0.8, 0.3, 1);
+  }
   .yarn-main-menu .header__menu-item:hover,
   .yarn-main-menu details[open] > .header__menu-item { color: var(--yarn-action); }
-  /* Rise underlines an open summary (thicker on hover); the wave replaces it. */
+  /* Rise underlines an open summary (thicker on hover); the strand replaces it. */
   .yarn-main-menu details[open] > .header__menu-item,
   .yarn-main-menu details[open]:hover > .header__menu-item,
   .yarn-main-menu .header__menu-item:hover span { text-decoration: none; }
@@ -507,6 +520,32 @@
   .yarn-mega .yarn-nav-tile__count { font-size: 1.3rem; }
 }
 
+/* Issue 190 desktop: opened panels unroll downward from under the header while fading in, and the page dims behind them. */
+@media screen and (min-width: 1340px) {
+  .yarn-main-menu details[open] > :is(.yarn-mega__content, .header__submenu) {
+    animation: yarn-menu-unroll 0.42s cubic-bezier(0.16, 1, 0.3, 1) both, yarn-menu-fade 0.16s linear both;
+  }
+  .yarn-mega[open] :is(.yarn-mega__head, .yarn-mega__tiles > li) {
+    animation: yarn-menu-settle 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.08s;
+  }
+  .yarn-mega[open] .yarn-mega__tiles > li:nth-child(n + 4) { animation-delay: 0.14s; }
+  .yarn-mega[open]::before { animation: yarn-menu-fade 0.35s ease both; }
+}
+
+@keyframes yarn-menu-unroll {
+  0% { transform: translateY(-12px); clip-path: inset(0 -40px 100% -40px); }
+  100% { transform: none; clip-path: inset(0 -40px -40px -40px); }
+}
+@keyframes yarn-menu-settle {
+  0% { opacity: 0; transform: translateY(-8px); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes yarn-menu-fade {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
 /* Issue 131 desktop docking: once scrolled past, the header drops in from the top and tightens into a frosted bar. */
 @media screen and (min-width: 1340px) {
   .section-header .header-wrapper,
@@ -541,4 +580,8 @@
   .section-header #YarnHeader,
   .section-header .header__heading-link > .yarn-wordmark { transition: none; }
   .section-header.yarn-header-docked .header-wrapper { animation: none; }
+  /* Keep the strand and panels as state changes, without the drawing or sliding. */
+  .yarn-nav-strand path { transition: none !important; }
+  .yarn-main-menu details[open] > :is(.yarn-mega__content, .header__submenu) { animation: yarn-menu-fade 0.15s ease both; }
+  .yarn-mega[open] :is(.yarn-mega__head, .yarn-mega__tiles > li) { animation: none; }
 }

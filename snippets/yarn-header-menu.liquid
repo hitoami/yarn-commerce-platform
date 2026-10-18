@@ -1,5 +1,11 @@
 {%- comment -%}Desktop navigation. Menu labels and URLs come from Shopify Navigation; a top-level link to the collection with handle `sale` is highlighted.{%- endcomment -%}
 <nav class="header__inline-menu" aria-label="{{ 'sections.header.menu' | t }}">
+  <svg class="yarn-nav-strand-defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <pattern id="YarnNavPly" width="3.2" height="3.2" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
+      <rect width="3.2" height="3.2" style="fill: var(--yarn-home-logo)"/>
+      <rect width="1.1" height="3.2" style="fill: var(--yarn-action-strong)"/>
+    </pattern>
+  </svg>
   <ul class="list-menu list-menu--inline yarn-main-menu" role="list">
     {%- for link in navigation_menu.links -%}
       <li>
@@ -10,7 +16,7 @@
                 id="YarnHeaderMenu-{{ link.handle }}"
                 class="header__menu-item list-menu__item link focus-inset{% if link.child_active %} header__active-menu-item{% endif %}"
               >
-                <span>{{ link.title | escape }}</span>
+                <span>{{ link.title | escape }}{%- render 'yarn-nav-strand' -%}</span>
                 {{- 'icon-caret.svg' | inline_asset_content -}}
               </summary>
               <ul
@@ -67,7 +73,7 @@
                 id="YarnHeaderMenu-{{ link.handle }}"
                 class="header__menu-item list-menu__item link focus-inset{% if link.current or link.child_active %} header__active-menu-item{% endif %}"
               >
-                <span>{{ link.title | escape }}</span>
+                <span>{{ link.title | escape }}{%- render 'yarn-nav-strand' -%}</span>
                 {{- 'icon-caret.svg' | inline_asset_content -}}
               </summary>
               <div id="YarnMegaMenu-{{ forloop.index }}" class="mega-menu__content yarn-mega__content motion-reduce global-settings-popup" tabindex="-1">
@@ -91,7 +97,7 @@
             class="header__menu-item list-menu__item link link--text focus-inset{% if link.current %} header__active-menu-item{% endif %}{% if link.type == 'collection_link' and link.object.handle == 'sale' %} yarn-menu-sale{% endif %}"
             {% if link.current %}aria-current="page"{% endif %}
           >
-            <span>{{ link.title | escape }}</span>
+            <span>{{ link.title | escape }}{%- render 'yarn-nav-strand' -%}</span>
             {%- if link.type == 'collection_link' and link.object.all_products_count == 0 -%}
               <span class="yarn-nav-badge">{{ 'sections.header.coming_soon' | t }}</span>
             {%- endif -%}
