@@ -18,12 +18,13 @@
 - 数据：规格读 `yarn.composition`（无则 `yarn.material`）、`ball_weight_g` / `ball_length_m`、`thickness`、`gauge`、`needle_knit` / `needle_crochet`（都没有时用 `needle_size`）；颜色有 Shopify 原生色板（选项关联 `shopify.color-pattern`）时显示 44px 色块，否则显示编号圆钮；新手角标与卡片理由读 `yarn.beginner_reason`；「要买几团？」即 CONTEXT 的参照标准，读 `yarn.usage_estimates` → `yarn_usage`；作品是灵感入口（用户 2026-10-02 决定，不构成材料要求或推荐），为 `materials` 或 `components` 引用本商品、可公开且有封面的 `yarn_project`；编织包读 `yarn.related_kits`，没有配对不显示，卡片规格行读 `yarn.spec_line`；洗涤读 `yarn.care`，按关键词配图标（漂白 → 禁止、熨烫 → 熨斗、晾干 → 勾、其余 → 洗涤）。缺数据的块整块不渲染。
 - 样板商品（#122，用户 2026-10-04 决定）：`demo-cotton-candy-yarn-50g` 用 demo 数据填满全部区块，作为对照视觉稿的基准页；其他毛线由选品组逐步补真实数据。
 - 「按参考填入 N 团」只改原生数量输入，不加购。手机常驻栏的数量写回同一（隐藏的）输入，「加入」点击原加购按钮；售罄 / 不可售时随原按钮禁用，加购错误显示在常驻栏上方。Rise 切换颜色会把数量重置为最小值，沿用原行为。
-- 桌面（≥750px）不显示常驻栏，下方内容沿 1104px 轴展开；桌面视觉稿待手机实现确认后另出。
+- 手机 v2（#182，用户 2026-10-17 确认，[来源](approved/182-mobile-v2.source.md)）：在上述顺序上，去掉缩略图行、价格移到标题右侧、标题下加 ✓ 清单与保障条、「用这款线能织」提前、规格 / 要买几团 / 新手能用吗 / 怎么洗与商品介绍收为插画图标折叠行；规则见 `DESIGN.md`「毛线详情 · 手机 v2」。
+- 桌面（≥750px）不显示常驻栏。#182 桌面稿 D1（用户 2026-10-17 确认）起：作品卡与插画折叠行（含购买须知）放在右栏，购买须知改为 main-product 的 `collapsible_tab` block，规则见 `DESIGN.md`「毛线详情 · 桌面 v2」。
 
 ## 手机重设计（#177，2026-10-17 用户确认）
 
 - 按 [A1 手机稿](approved/177-mobile-a1.source.md)：#120 / #122 结构不变；只有默认 Variant 时颜色位显示「暂未开放选色」说明，补上颜色 Variant 后由原生选色器接管；缺货时显示询问到货与同类毛线出口；推荐区价格不带 JPY；购买须知第一项改为「关于颜色与批次」。实现见 `snippets/yarn-pdp-status.liquid`。
-- 桌面（#183，[桌面稿 v1](approved/183-desktop-a1.source.md)）：介绍超过 4 行折叠；「线的规格」与「要买几团？」左右并排（只有其一时占满 1104 轴）。本节取代上文「桌面视觉稿待手机实现确认后另出」。
+- 桌面（#183，[桌面稿 v1](approved/183-desktop-a1.source.md)）的介绍折叠与规格 / 用量并排已由 #182 桌面 v2 取代（用户 2026-10-17 确认 04 页桌面稿后要求变基解决冲突）。
 
 ## 实现与内容边界
 

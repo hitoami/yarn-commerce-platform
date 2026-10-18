@@ -122,7 +122,8 @@ test('a row button adds only that row, and an edited quantity is respected and r
 
 test('the cart drawer refreshes from the add response when every section came back', async () => {
   let rendered = null;
-  const drawer = { getSectionsToRender: () => [{ id: 'cart-drawer' }, { id: 'cart-icon-bubble' }], setActiveElement() {}, renderContents: (state) => { rendered = state; } };
+  const classes = new Set(['is-empty']);
+  const drawer = { classList: { remove: (name) => classes.delete(name) }, getSectionsToRender: () => [{ id: 'cart-drawer' }, { id: 'cart-icon-bubble' }], setActiveElement() {}, renderContents: (state) => { rendered = state; } };
   let sent;
   const ui = setup(async (_, options) => { sent = JSON.parse(options.body); return { ok: true, status: 200, json: async () => ({ sections: { 'cart-drawer': '<div></div>', 'cart-icon-bubble': '<div></div>' } }) }; }, { drawer });
   ui.click('all');
@@ -130,6 +131,8 @@ test('the cart drawer refreshes from the add response when every section came ba
   assert.deepEqual(sent.sections, ['cart-drawer', 'cart-icon-bubble']);
   assert.equal(sent.sections_url, '/zh/pages/projects/tassel-scarf');
   assert.ok(rendered);
+  // #182: a drawer opened from an empty cart must drop is-empty, or Rise keeps the new items hidden.
+  assert.equal(classes.has('is-empty'), false);
   assert.deepEqual(ui.navigations, []);
 });
 

@@ -7,6 +7,9 @@
   #177 R2(用户 2026-10-17 确认手机稿 A1):每种线一行、行内团数步进器(默认原作团数);一个主按钮——
   全部可买为「全部加入购物车」,部分缺货为「只加入可买的 N 团」(缺的不自动换线或换色),一行都买不了时不放禁用按钮,
   改为说明 + 询问到货(主题设置「官方 LINE 链接」,留空为联系页)+ 看其他材料包。教程改为三步说明 + 文字链接。
+  #182 v2(Figma 03 页,借鉴 Woobles):封面波浪底边;标题下 ✓ 清单 + 快捷主按钮;「你会收到什么」两栏(包裹里 / 需要自备,
+  自备无配件时只写「工具以教程为准」);教程三步带插画图标;手机吸底栏(封面 + 合计 + 全部加入)。快捷按钮与吸底栏只转发点击到
+  购买区的主按钮(yarn-kit-proxy),加购逻辑与状态仍只在 yarn-kit-buy 里。
 {% endcomment %}
 {{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
 {{ 'yarn-kit.css' | asset_url | stylesheet_tag }}
@@ -21,10 +24,22 @@
   assign ready_total = 0
   assign missing_name = blank
   assign missing_pending = false
+  assign kit_balls_list = ''
+  assign colour_pending_any = false
   for component in project.components.value
     if component.component_type.value == '毛线' and component.variant.value != blank
       assign yarn_rows = yarn_rows | plus: 1
       assign row_qty = component.quantity.value | default: 1
+      capture kit_ball_item
+        echo 'yarn_project.kit_yarn_line' | t: name: component.variant.value.product.title, count: row_qty
+      endcapture
+      if kit_balls_list != ''
+        assign kit_balls_list = kit_balls_list | append: '、'
+      endif
+      assign kit_balls_list = kit_balls_list | append: kit_ball_item
+      if component.variant.value.product.has_only_default_variant
+        assign colour_pending_any = true
+      endif
       assign row_ok = true
       unless component.variant.value.available
         assign row_ok = false
@@ -63,11 +78,13 @@
       {%- else -%}
         <div class="yk-placeholder" aria-hidden="true"></div>
       {%- endif -%}
+      <span class="yk-cover__badge">{{ 'yarn_project.kit_badge' | t }} · {{ 'yarn_project.kit_check_no_tools_short' | t }}</span>
+      <svg class="yk-cover__wave" viewBox="0 0 390 28" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 28 C 65 0 130 0 195 14 S 325 28 390 4 L390 28 Z" fill="currentColor"/></svg>
     </div>
     <div class="yk-main">
       <header class="yk-head">
         {%- if project.release_scope.value == '仅内部原型' -%}<p class="yk-demo">{{ 'yarn_project.demo_content' | t }}</p>{%- endif -%}
-        <span class="yk-pill">{{ 'yarn_project.kit_no_tools' | t }}</span>
+        <span class="yk-pill">{{ 'yarn_project.kit_badge' | t }} · {{ 'yarn_project.kit_check_no_tools_short' | t }}</span>
         <h1 class="yk-title">{{ project.title.value | escape }}</h1>
         {%- if project.summary.value != blank -%}<p class="yk-summary">{{ project.summary.value | escape | newline_to_br }}</p>{%- endif -%}
         {%- if project.difficulty.value != blank or project.made_for.value != blank or project.holiday.value != blank -%}
@@ -76,6 +93,19 @@
             {%- if project.made_for.value != blank -%}<li data-proof-content>{{ project.made_for.value | escape }}</li>{%- endif -%}
             {%- if project.holiday.value != blank -%}<li data-proof-content>{{ project.holiday.value | escape }}</li>{%- endif -%}
           </ul>
+        {%- endif -%}
+        {%- if yarn_rows > 0 -%}
+          <ul class="yk-check" role="list">
+            <li class="yk-check__row"><span class="svg-wrapper" aria-hidden="true">{{ 'icon-checkmark.svg' | inline_asset_content }}</span><span data-proof-content>{{ 'yarn_project.kit_check_balls' | t: list: kit_balls_list | escape }}</span></li>
+            {%- if project.tutorial_url.value != blank -%}<li class="yk-check__row"><span class="svg-wrapper" aria-hidden="true">{{ 'icon-checkmark.svg' | inline_asset_content }}</span><span>{{ 'yarn_project.kit_check_tutorial' | t }}</span></li>{%- endif -%}
+            <li class="yk-check__row yk-check__row--info"><span class="svg-wrapper" aria-hidden="true">{{ 'icon-info.svg' | inline_asset_content }}</span><span>{{ 'yarn_project.kit_check_no_tools' | t }}{% if colour_pending_any %} · {{ 'yarn_pdp.colour_pending' | t }}{% endif %}</span></li>
+          </ul>
+          {%- if ready_rows > 0 -%}
+            <yarn-kit-proxy class="yk-quick">
+              <button type="button" class="yk-add-all yk-quick__button" data-kit-proxy>{% if ready_rows == yarn_rows %}{% if yarn_rows == 1 %}{{ 'yarn_project.kit_add' | t }}{% else %}{{ 'yarn_project.kit_add_all' | t }}{% endif %}{% else %}{{ 'yarn_project.kit_add_available' | t: count: ready_balls }}{% endif %} · {{ ready_total | money }}</button>
+              <p class="yk-quick__hint">{{ 'yarn_project.kit_quick_hint' | t }}</p>
+            </yarn-kit-proxy>
+          {%- endif -%}
         {%- endif -%}
       </header>
 
@@ -183,18 +213,47 @@
         <p class="yk-status" data-kit-status role="status" aria-live="polite" hidden></p>
         <a class="yk-cart-link" data-kit-cart href="{{ routes.cart_url }}" hidden>{{ 'yarn_project.kit_view_cart' | t }}</a>
       </yarn-kit-buy>
+      {%- if ready_rows > 0 -%}
+        <yarn-kit-proxy class="yk-sticky" data-kit-sticky data-visible="false" inert>
+          <div class="yk-sticky__bar" role="region" aria-label="{{ 'yarn_pdp.sticky_label' | t }}">
+            {%- if project.cover.value != blank -%}<span class="yk-sticky__thumb" aria-hidden="true">{{ project.cover.value | image_url: width: 104 | image_tag: width: 52, height: 52, loading: 'lazy', alt: '' }}</span>{%- endif -%}
+            <span class="yk-sticky__sum"><span data-kit-proxy-count>{{ 'yarn_project.kit_total' | t: count: ready_balls }}</span><strong data-kit-proxy-total>{{ ready_total | money }}</strong></span>
+            <button type="button" class="yk-sticky__add" data-kit-proxy data-kit-proxy-short>{{ 'yarn_project.kit_sticky_add' | t }}</button>
+          </div>
+        </yarn-kit-proxy>
+      {%- endif -%}
       {%- endif -%}
 
-      {%- if self_rows > 0 -%}
-        <section class="yk-section">
-          <h2 class="yk-h2">{{ 'yarn_project.kit_self_supply' | t }}</h2>
-          <ul class="yk-self" role="list">
-            {%- for component in project.components.value -%}
-              {%- unless component.component_type.value == '毛线' and component.variant.value != blank -%}
-                <li><strong>{{ component.title.value | escape }}</strong>{%- if component.specification.value != blank -%}<span>{{ component.specification.value | escape }}</span>{%- endif -%}</li>
-              {%- endunless -%}
-            {%- endfor -%}
-          </ul>
+      {%- if yarn_rows > 0 -%}
+        <section class="yk-section yk-get" aria-labelledby="KitGet-{{ section.id }}">
+          <h2 class="yk-h2" id="KitGet-{{ section.id }}">{{ 'yarn_project.kit_get_heading' | t }}</h2>
+          <div class="yk-get__grid">
+            <div class="yk-get__box yk-get__box--in">
+              <h3 class="yk-get__title">{{ 'yarn_project.kit_get_in' | t }}</h3>
+              <ul class="yk-get__list" role="list">
+                {%- for component in project.components.value -%}
+                  {%- if component.component_type.value == '毛线' and component.variant.value != blank -%}
+                    {%- assign get_qty = component.quantity.value | default: 1 -%}
+                    <li>{% render 'yarn-spot-icon', name: 'yarn-ball', size: 52, base: 'cream' %}<span data-proof-content>{{ component.variant.value.product.title | escape }}<br>{{ 'yarn_project.kit_get_balls' | t: count: get_qty }}</span></li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+            <div class="yk-get__box yk-get__box--bring">
+              <h3 class="yk-get__title">{{ 'yarn_project.kit_self_supply' | t }}</h3>
+              {%- if self_rows > 0 -%}
+                <ul class="yk-self" role="list">
+                  {%- for component in project.components.value -%}
+                    {%- unless component.component_type.value == '毛线' and component.variant.value != blank -%}
+                      <li><strong>{{ component.title.value | escape }}</strong>{%- if component.specification.value != blank -%}<span>{{ component.specification.value | escape }}</span>{%- endif -%}</li>
+                    {%- endunless -%}
+                  {%- endfor -%}
+                </ul>
+              {%- else -%}
+                <p class="yk-get__note">{{ 'yarn_project.kit_get_bring_default' | t }}</p>
+              {%- endif -%}
+            </div>
+          </div>
         </section>
       {%- endif -%}
 
@@ -205,19 +264,23 @@
         </section>
       {%- endif -%}
 
-      {%- if project.tutorial_url.value != blank -%}
-        <section class="yk-tutorial">
-          <h2 class="yk-h2">{{ 'yarn_project.kit_tutorial_how' | t }}</h2>
-          <ol class="yk-steps">
-            <li>{{ 'yarn_project.kit_tutorial_step_1' | t }}</li>
-            <li>{{ 'yarn_project.kit_tutorial_step_2' | t }}</li>
-            <li>{{ 'yarn_project.kit_tutorial_step_3' | t }}</li>
-          </ol>
-          <a class="yk-tutorial__link" href="{{ project.tutorial_url.value | escape }}" target="_blank" rel="noopener noreferrer">{{ 'yarn_project.kit_tutorial_link' | t }} <span aria-hidden="true">→</span></a>
-        </section>
-      {%- endif -%}
     </div>
   </div>
+
+  {%- if project.tutorial_url.value != blank -%}
+    {%- comment -%}#182 桌面稿 D2：教程三步为通栏波浪色带（手机仍在内容之后，顺序不变）。{%- endcomment -%}
+    {%- assign tut_name = project.title.value | split: '｜' | last | strip -%}
+    <section class="yk-tutorial">
+      <svg class="yk-tutorial__wave" viewBox="0 0 390 28" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 28 C 65 0 130 0 195 14 S 325 28 390 4 L390 28 Z" fill="currentColor"/></svg>
+      <h2 class="yk-h2">{{ 'yarn_project.kit_tutorial_how' | t }}</h2>
+      <ol class="yk-steps">
+        <li>{% render 'yarn-spot-icon', name: 'tote-bag', size: 60 %}<span class="yk-steps__title">{{ 'yarn_project.kit_step1_title' | t }}</span><span class="yk-steps__note">{{ 'yarn_project.kit_step1_note' | t }}</span></li>
+        <li>{% render 'yarn-spot-icon', name: 'chat', size: 60 %}<span class="yk-steps__title">{{ 'yarn_project.kit_step2_title' | t }}</span><span class="yk-steps__note" data-proof-content>{{ 'yarn_project.kit_step2_note' | t: name: tut_name | escape }}</span></li>
+        <li>{% render 'yarn-spot-icon', name: 'pattern-book', size: 60 %}<span class="yk-steps__title">{{ 'yarn_project.kit_step3_title' | t }}</span><span class="yk-steps__note">{{ 'yarn_project.kit_step3_note' | t }}</span></li>
+      </ol>
+      <a class="yk-tutorial__link" href="{{ project.tutorial_url.value | escape }}" target="_blank" rel="noopener noreferrer">{{ 'yarn_project.kit_tutorial_link' | t }} <span aria-hidden="true">→</span></a>
+    </section>
+  {%- endif -%}
 
   {%- capture more_cards -%}
     {%- assign more_shown = 0 -%}

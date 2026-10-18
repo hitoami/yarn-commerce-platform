@@ -75,9 +75,6 @@
   .yk-main { padding: 0; }
   .yk-title { font-size: 3.2rem; }
   .yk-more { padding-inline: 0; }
-  /* #183 桌面稿 v1：教程三步横排三格。 */
-  .yk-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 0; background: none; }
-  .yk-steps li { flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px; border-radius: 12px; background: var(--yarn-bg-band); }
 }
 
 /* Yarn set list page (#131): heading + the same kit cards as the homepage, two columns on phones, four on desktop. */
@@ -93,3 +90,73 @@
 .yk-row select { width: 100%; max-width: 260px; min-height: var(--yarn-touch); margin-top: 4px; padding: 8px; color: var(--yarn-text-primary); background: var(--yarn-bg-surface); border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-card-radius); }
 .yk-row select:focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 3px; }
 .yk-detail [hidden] { display: none !important; }
+
+/* Issue 182 v2（Figma 03 页，借鉴 Woobles）：封面波浪、✓ 清单 + 快捷主按钮、「你会收到什么」、教程三步插画、手机吸底栏。 */
+.yk-cover { position: relative; }
+.yk-cover__badge { position: absolute; top: var(--yarn-space-4); left: var(--yarn-space-4); padding: 4px 10px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-butter); color: var(--yarn-text-primary); font-size: 1.2rem; font-weight: 600; }
+.yk-cover__wave { position: absolute; inset: auto 0 -1px; display: block; width: 100%; height: 28px; color: var(--yarn-bg-page); }
+.yk-check { display: grid; gap: 7px; margin: 4px 0 0; padding: 0; list-style: none; }
+.yk-check__row { display: flex; align-items: flex-start; gap: 8px; color: var(--yarn-text-primary); font-size: 1.4rem; line-height: 1.5; }
+.yk-check__row .svg-wrapper { flex: none; width: 18px; height: 18px; margin-top: 1px; color: var(--yarn-action); }
+.yk-check__row .svg-wrapper svg { width: 18px; height: 18px; }
+.yk-check__row--info, .yk-check__row--info .svg-wrapper { color: var(--yarn-text-muted); }
+.yk-quick { display: grid; gap: 8px; width: 100%; margin-top: 6px; }
+.yk-quick__hint { margin: 0; color: var(--yarn-text-muted); font-size: 1.2rem; }
+
+.yk-get__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--yarn-space-3); }
+.yk-get__box { display: grid; align-content: start; gap: var(--yarn-space-3); padding: 14px; border-radius: 14px; }
+.yk-get__box--in { background: var(--yarn-action-subtle-bg); }
+.yk-get__box--bring { border: 1px dashed var(--yarn-border-card); }
+.yk-get__title { margin: 0; color: var(--yarn-text-primary); font-size: 1.4rem; font-weight: 600; }
+.yk-get__box--bring .yk-get__title { color: var(--yarn-text-muted); }
+.yk-get__list { display: flex; flex-wrap: wrap; gap: var(--yarn-space-3); margin: 0; padding: 0; list-style: none; }
+.yk-get__list li { display: grid; justify-items: center; gap: 6px; width: 72px; color: var(--yarn-text-primary); font-size: 1.2rem; line-height: 1.4; text-align: center; }
+.yk-get__note { margin: 0; color: var(--yarn-text-muted); font-size: 1.3rem; line-height: 1.6; }
+
+.yk-steps li::before { content: none; }
+.yk-tutorial__link { justify-self: center; }
+
+.yk-sticky { display: none; }
+
+@media (max-width: 989px) {
+  .yk-pill { display: none; }
+  .yk-main { padding-top: 4px; }
+  /* 吸底栏：快捷按钮与购买区主按钮都滚出视口时滑入。 */
+  body:has(.yk-sticky) { padding-bottom: 76px; }
+  .yk-sticky { position: fixed; inset: auto 0 0; z-index: 3; display: block; transform: translateY(100%); transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .yk-sticky[data-visible='true'] { transform: none; }
+  .yk-sticky__bar { display: flex; align-items: center; gap: 10px; padding: var(--yarn-space-3) var(--yarn-space-4) calc(var(--yarn-space-4) + env(safe-area-inset-bottom)); border-top: 1px solid var(--yarn-border-subtle); background: var(--yarn-bg-surface); }
+  .yk-sticky__thumb { flex: none; width: 52px; height: 52px; overflow: hidden; border-radius: 10px; background: var(--yarn-bg-sunken); }
+  .yk-sticky__thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .yk-sticky__sum { display: grid; flex: none; color: var(--yarn-text-muted); font-size: 1.2rem; line-height: 1.3; }
+  .yk-sticky__sum strong { color: var(--yarn-accent); font-size: 1.7rem; font-weight: 600; }
+  .yk-sticky__add { flex: 1 1 auto; min-width: 0; min-height: 48px; padding: 0 var(--yarn-space-4); border: 0; border-radius: var(--yarn-radius-pill); background: var(--yarn-home-action); color: var(--yarn-text-on-action); font-size: 1.5rem; font-weight: 600; cursor: pointer; }
+  .yk-sticky__add:disabled { opacity: .55; cursor: not-allowed; }
+}
+@media (min-width: 990px) {
+  /* 桌面购买框就在标题下方，不再放快捷主按钮。 */
+  .yk-cover__badge, .yk-cover__wave, .yk-quick { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .yk-sticky { transition: none; } }
+
+/* Issue 182 桌面稿 D2：教程三步为通栏色带（波浪顶边），手机三列，桌面横排加箭头。 */
+.yk-tutorial { position: relative; display: grid; justify-items: center; gap: var(--yarn-space-4); margin-top: 48px; padding: 20px var(--yarn-gutter) 32px; background: var(--yarn-bg-band); }
+.yk-tutorial__wave { position: absolute; inset: -27px 0 auto; display: block; width: 100%; height: 28px; color: var(--yarn-bg-band); }
+.yk-tutorial .yk-h2 { margin: 0; text-align: center; font: 500 2rem/1.4 var(--yarn-display); }
+.yk-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--yarn-space-2); width: 100%; margin: 0; padding: 0; background: none; list-style: none; }
+.yk-steps li { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 6px; color: var(--yarn-text-primary); font-size: 1.3rem; line-height: 1.45; text-align: center; }
+.yk-steps .yarn-spot { border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); }
+.yk-steps .yarn-spot img { width: 80%; height: 80%; }
+.yk-steps__title { font-weight: 600; }
+.yk-steps__note { color: var(--yarn-text-muted); font-size: 1.2rem; }
+@media (min-width: 990px) {
+  /* 通栏：色带铺满视口宽度，内容仍居中。 */
+  .yk-tutorial { margin: 72px calc(50% - 50vw) 0; padding: 24px 0 56px; gap: 28px; }
+  .yk-tutorial__wave { inset: -39px 0 auto; height: 40px; }
+  .yk-tutorial .yk-h2 { font-size: 2.8rem; }
+  .yk-steps { grid-template-columns: repeat(3, 240px); justify-content: center; column-gap: 72px; }
+  .yk-steps li { position: relative; gap: 10px; font-size: 1.6rem; }
+  .yk-steps li + li::before { content: '→'; position: absolute; top: 34px; left: -52px; color: var(--yarn-action); font-size: 2.4rem; line-height: 1; }
+  .yk-steps .yarn-spot { --spot-size: 96px !important; width: 96px; height: 96px; }
+  .yk-steps__note { font-size: 1.4rem; }
+}

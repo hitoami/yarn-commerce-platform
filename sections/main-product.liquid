@@ -114,6 +114,7 @@
             </yarn-product-context>
 
             {%- assign show_product_details = false -%}
+            {%- assign yarn_tabs = '' -%}
             {%- for block in section.blocks -%}
               {%- case block.type -%}
                 {%- when '@app' -%}
@@ -194,14 +195,13 @@
                     {%- capture yarn_intro -%}{%- render 'yarn-product-description', product: product -%}{%- endcapture -%}
                     {%- assign yarn_intro_text = yarn_intro | strip_html | strip -%}
                     {%- if yarn_intro_text != blank -%}
-                      {%- comment -%}#183 桌面：介绍超过约 4 行时折叠，「展开商品介绍」切换（yarn-pdp.js）；手机照旧全文。{%- endcomment -%}
-                      <yarn-intro class="yp-yarn-intro-wrap" data-more="{{ 'yarn_pdp.intro_more' | t | escape }}" data-less="{{ 'yarn_pdp.intro_less' | t | escape }}">
-                        <div class="product__description rte yp-yarn-intro" id="YarnIntro-{{ section.id }}" data-yarn-intro>{{ yarn_intro }}</div>
-                        <button type="button" class="yp-yarn-intro__toggle" data-yarn-intro-toggle aria-controls="YarnIntro-{{ section.id }}" aria-expanded="false" hidden>{{ 'yarn_pdp.intro_more' | t }}</button>
-                      </yarn-intro>
+                      <div class="product__description rte yp-yarn-intro">{{ yarn_intro }}</div>
                     {%- endif -%}
                   {%- endif -%}
-                  {%- if yarn_pdp -%}{%- render 'yarn-pdp-status', product: product -%}{%- endif -%}
+                  {%- if yarn_pdp -%}
+                    {%- render 'yarn-pdp-checklist', product: product -%}
+                    {%- render 'yarn-pdp-status', product: product -%}
+                  {%- endif -%}
                 {%- when 'inventory' -%}
                   <p
                     class="product__inventory{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}"
@@ -281,23 +281,60 @@
                 {%- when 'custom_liquid' -%}
                   {{ block.settings.custom_liquid }}
                 {%- when 'collapsible_tab' -%}
+                  {%- liquid
+                    capture tab_heading
+                      render 'yarn-setting-text', settings: block.settings, key: 'heading'
+                    endcapture
+                    capture tab_content
+                      render 'yarn-setting-text', settings: block.settings, key: 'content'
+                    endcapture
+                    assign tab_heading = tab_heading | strip | default: block.settings.page.title
+                  -%}
+                  {%- if yarn_pdp -%}
+                    {%- comment -%}#182 桌面稿：毛线页的购买须知并入右栏插画折叠行（在 yarn-pdp-details 里输出）。{%- endcomment -%}
+                    {%- capture yarn_tab -%}
+                      <details class="yp-acc__item" id="Details-{{ block.id }}-{{ section.id }}" {{ block.shopify_attributes }}>
+                        <summary class="yp-acc__summary">
+                          {%- liquid
+                            assign tab_spot = 'chat'
+                            case block.settings.icon
+                              when 'leaf'
+                                assign tab_spot = 'swatches'
+                              when 'truck', 'plane', 'box'
+                                assign tab_spot = 'delivery'
+                              when 'return'
+                                assign tab_spot = 'return'
+                              when 'washing', 'dryer', 'iron'
+                                assign tab_spot = 'hand-wash'
+                            endcase
+                          -%}
+                          {% render 'yarn-spot-icon', name: tab_spot, size: 44, base: 'cream' %}
+                          <h2 class="yp-acc__title">{{ tab_heading | escape }}</h2>
+                          <span class="svg-wrapper yp-acc__caret" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
+                        </summary>
+                        <div class="yp-acc__text rte">{{ tab_content }}{{ block.settings.page.content }}</div>
+                      </details>
+                    {%- endcapture -%}
+                    {%- assign yarn_tabs = yarn_tabs | append: yarn_tab -%}
+                  {%- else -%}
                   <div class="product__accordion accordion quick-add-hidden" {{ block.shopify_attributes }}>
                     <details id="Details-{{ block.id }}-{{ section.id }}">
                       <summary>
                         <div class="summary__title">
                           {% render 'icon-accordion', icon: block.settings.icon %}
                           <h2 class="h4 accordion__title inline-richtext">
-                            {{ block.settings.heading | default: block.settings.page.title | escape }}
+                            {{ tab_heading | escape }}
                           </h2>
                         </div>
                         {{- 'icon-caret.svg' | inline_asset_content -}}
                       </summary>
                       <div class="accordion__content rte" id="ProductAccordion-{{ block.id }}-{{ section.id }}">
-                        {{ block.settings.content }}
+                        {{ tab_content }}
                         {{ block.settings.page.content }}
                       </div>
                     </details>
                   </div>
+                  {%- endif -%}
                 {%- when 'quantity_selector' -%}
                   <div
                     id="Quantity-Form-{{ section.id }}"
@@ -769,6 +806,10 @@
               {{ 'products.product.view_full_details' | t }}
               {{- 'icon-arrow.svg' | inline_asset_content -}}
             </a>
+            {%- comment -%}#182 桌面稿：作品卡与折叠行放进右栏（手机仍在购买信息之后，顺序不变）。{%- endcomment -%}
+            {%- if yarn_pdp -%}
+              {% render 'yarn-pdp-details', product: product, section_id: section.id, tabs: yarn_tabs %}
+            {%- endif -%}
           </section>
         </div>
       </div>
@@ -782,7 +823,6 @@
       {%- endif -%}
 
       {%- if yarn_pdp -%}
-        {% render 'yarn-pdp-details', product: product, section_id: section.id %}
         {% render 'yarn-pdp-sticky-buy', product: product, section_id: section.id, product_title: product_title_text %}
       {%- endif -%}
 
@@ -1311,6 +1351,26 @@
           "type": "richtext",
           "id": "content",
           "label": "t:sections.main-product.blocks.collapsible_tab.settings.content.label"
+        },
+        {
+          "type": "text",
+          "id": "heading_zh",
+          "label": "标题（简体中文）"
+        },
+        {
+          "type": "text",
+          "id": "heading_en",
+          "label": "标题（英文）"
+        },
+        {
+          "type": "richtext",
+          "id": "content_zh",
+          "label": "内容（简体中文）"
+        },
+        {
+          "type": "richtext",
+          "id": "content_en",
+          "label": "内容（英文）"
         },
         {
           "type": "page",
