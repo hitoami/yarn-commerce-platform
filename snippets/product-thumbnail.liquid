@@ -26,8 +26,12 @@
 {% endcomment %}
 
 {%- liquid
+  # #189：首张不懒加载的图（商品页主图，手机 LCP）同时提高下载优先级。
+  assign fetch_priority = 'auto'
   unless lazy_load == false
     assign lazy = 'lazy'
+  else
+    assign fetch_priority = 'high'
   endunless
 
   assign desktop_columns = 1
@@ -84,6 +88,7 @@
         | image_tag:
           class: image_class,
           loading: lazy,
+          fetchpriority: fetch_priority,
           sizes: sizes,
           widths: '246, 493, 600, 713, 823, 990, 1100, 1206, 1346, 1426, 1646, 1946'
       }}

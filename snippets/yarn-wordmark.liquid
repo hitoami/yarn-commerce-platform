@@ -1,4 +1,5 @@
 {%- comment -%}用户 2026-10-16 提供的 hitoami 猫抱毛线球字标（#140），裁去留白后等比缩放，不重画字形。{%- endcomment -%}
 <span class="yarn-wordmark">
-  <img class="yarn-wordmark__image" src="{{ 'hitoami-logo.webp' | asset_url }}" width="1200" height="316" alt="hitoami" fetchpriority="high">
+  {%- comment -%}#189：页头最宽约 190px，按 400 / 600 / 1200 宽选图（原来每页都下载 1200 宽）。{%- endcomment -%}
+  <img class="yarn-wordmark__image" src="{{ 'hitoami-logo-400.webp' | asset_url }}" srcset="{{ 'hitoami-logo-400.webp' | asset_url }} 400w, {{ 'hitoami-logo-600.webp' | asset_url }} 600w, {{ 'hitoami-logo.webp' | asset_url }} 1200w" sizes="200px" width="1200" height="316" alt="hitoami" fetchpriority="high">
 </span>

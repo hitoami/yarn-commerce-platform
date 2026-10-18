@@ -20,6 +20,7 @@ const KEEP = {
   'sections/yarn-browse-toolbar.liquid': '旧集合工具栏；#85 改用 yarn-collection-browse。PR #146 仍在改，合并后再删',
   'sections/collapsible-content.liquid': 'Rise 折叠内容 section，商家可在编辑器添加；#182 起商品页购买须知改为 main-product 的 collapsible_tab block',
   'assets/collapsible-content.css': '随 collapsible-content section 保留（#182）',
+  'assets/hitoami-source-oil-loop.jpeg': '原图；页面改用由它生成的 -400 / -800 WebP（#189），保留作来源',
 };
 
 const list = dir => (fs.existsSync(dir) ? fs.readdirSync(dir, { recursive: true }) : [])
