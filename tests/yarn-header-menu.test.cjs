@@ -117,10 +117,21 @@ test('desktop header docks with a drop-in and compact bar, honouring reduced mot
   assert.match(headerCss, /width: 190px;/);
 });
 
-test('desktop wave marks only the current page or open menu; Rise underline is suppressed (#131)', () => {
-  const wave = headerCss.match(/\.yarn-main-menu :is\(([^)]*)\) > span:first-child::after \{ opacity: 1; \}/);
-  assert.ok(wave, 'wave visibility rule present');
-  assert.doesNotMatch(wave[1], /:hover/, 'hover must not show the wave');
+test('desktop yarn strand draws on hover / focus / open; the current page yields so one item reads as selected (#190)', () => {
+  assert.equal((desktop.match(/<span>\{\{ link\.title \| escape \}\}\{%- render 'yarn-nav-strand' -%\}<\/span>/g) || []).length, 3, 'every top-level label carries the strand');
+  assert.match(desktop, /<pattern id="YarnNavPly"/, 'twist pattern defined once, outside the loop');
+  assert.doesNotMatch(desktop.split('{%- for link in')[1], /id="YarnNavPly"/);
+  const strand = fs.readFileSync('snippets/yarn-nav-strand.liquid', 'utf8');
+  assert.match(strand, /aria-hidden="true"/);
+  assert.match(strand, /pathLength="1"/);
+  const shown = headerCss.match(/([^{}]*)\{\s*stroke-dashoffset: 0;/);
+  assert.ok(shown, 'strand visible rule present');
+  assert.match(shown[1], /\.header__menu-item:is\(:hover, :focus-visible\) \.yarn-nav-strand path/);
+  assert.match(shown[1], /details\[open\] > \.header__menu-item \.yarn-nav-strand path/);
+  assert.match(shown[1], /:not\(:has\(\.header__menu-item:is\(:hover, :focus-visible\), details\[open\]\)\) :is\(\.header__active-menu-item, \[aria-current='page'\]\)/);
+  assert.doesNotMatch(headerCss, /span:first-child::after/, 'old repeating wave removed');
+  assert.match(headerCss, /details\[open\] > :is\(\.yarn-mega__content, \.header__submenu\) \{\s*animation: yarn-menu-unroll/);
+  assert.match(headerCss, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*\.yarn-nav-strand path \{ transition: none !important; \}/);
   assert.match(headerCss, /\.yarn-main-menu details\[open\]:hover > \.header__menu-item,[\s\S]*?\{ text-decoration: none; \}/);
   assert.match(headerCss, /transform: translateY\(-14%\);/, 'logo lifted so letters align with the menu');
 });
