@@ -99,7 +99,29 @@
                   {% endif %}
                 >
                   <summary id="Summary-{{ block.id }}-{{ section.id }}">
-                    {% render 'icon-accordion', icon: block.settings.icon %}
+                    {%- liquid
+                      # #182：商品页的购买须知改用手绘插画图标（只映射有对应插画的图标，其余沿用线描）。
+                      assign row_spot = blank
+                      if template.name == 'product'
+                        case block.settings.icon
+                          when 'leaf'
+                            assign row_spot = 'swatches'
+                          when 'truck'
+                            assign row_spot = 'delivery'
+                          when 'return'
+                            assign row_spot = 'return'
+                          when 'washing'
+                            assign row_spot = 'hand-wash'
+                          when 'chat_bubble'
+                            assign row_spot = 'chat'
+                        endcase
+                      endif
+                    -%}
+                    {%- if row_spot != blank -%}
+                      {% render 'yarn-spot-icon', name: row_spot, size: 44, base: 'cream' %}
+                    {%- else -%}
+                      {% render 'icon-accordion', icon: block.settings.icon %}
+                    {%- endif -%}
                     <h3 class="accordion__title inline-richtext h4">
                       {{ row_heading | default: block.settings.page.title | escape }}
                     </h3>

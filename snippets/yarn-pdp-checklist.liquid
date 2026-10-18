@@ -1,0 +1,129 @@
+{%- comment -%}
+  毛线详情 v2 首屏 ✓ 清单与保障条（#182，Figma 03 页 v2，借鉴 Woobles 首屏承诺清单）。
+  每行只读 Shopify 已有数据，没有数据的行不渲染，不写示例值：
+  - 克重 · 成分：yarn.ball_weight_g / yarn.composition（无则 material）
+  - 可以织：引用本商品、可公开且有封面的 yarn_project 标题（最多 2 个）
+  - 参考团数：yarn.usage_estimates 第一条（作品名 + 团数）
+  - 选色状态：只有默认 Variant 且已定价、可售时显示「暂未开放选色」+ 询问入口（替代 #177 的选色说明面板）
+  保障条：免运费门槛（主题设置，0 不显示）/ 选线咨询（LINE 链接或联系页）/ 日本全国配送。
+  参数：product
+{%- endcomment -%}
+{%- liquid
+  assign y = product.metafields.yarn
+  assign ck_composition = y.composition.value | default: y.material.value
+  assign ck_weight = y.ball_weight_g.value
+  assign ck_line = settings.yarn_line_url
+  if ck_line == blank
+    capture ck_line
+      render 'yarn-local-url', url: '/pages/contact'
+    endcapture
+  endif
+  assign ck_kits = ''
+  assign ck_kit_count = 0
+  for project in shop.metaobjects.yarn_project.values
+    if ck_kit_count >= 2
+      break
+    endif
+    if project.cover.value == blank
+      continue
+    endif
+    assign ck_uses = false
+    for component in project.components.value
+      if component.variant.value.product.id == product.id
+        assign ck_uses = true
+        break
+      endif
+    endfor
+    if ck_uses
+      capture ck_visible
+        render 'yarn-kit-visible', project: project
+      endcapture
+      if ck_visible == 'true'
+        assign ck_name = project.title.value | split: '｜' | last | strip
+        if ck_kit_count > 0
+          assign ck_kits = ck_kits | append: '、'
+        endif
+        assign ck_kits = ck_kits | append: ck_name
+        assign ck_kit_count = ck_kit_count | plus: 1
+      endif
+    endif
+  endfor
+  assign ck_usage = blank
+  for usage in y.usage_estimates.value
+    if usage.name.value != blank and usage.balls.value > 0
+      assign ck_usage = usage
+      break
+    endif
+  endfor
+  assign ck_colour = false
+  if product.price > 0 and product.available and product.has_only_default_variant
+    assign ck_colour = true
+  endif
+-%}
+{%- capture ck_rows -%}
+  {%- if ck_weight != blank or ck_composition != blank -%}
+    <li class="yp-check__row">
+      <span class="svg-wrapper" aria-hidden="true">{{ 'icon-checkmark.svg' | inline_asset_content }}</span>
+      <span data-proof-content>
+        {%- if ck_weight != blank -%}{{ 'yarn_pdp.check_weight' | t: weight: ck_weight }}{%- endif -%}
+        {%- if ck_weight != blank and ck_composition != blank %} · {% endif -%}
+        {%- if ck_composition != blank -%}{{ ck_composition | escape }}{%- endif -%}
+      </span>
+    </li>
+  {%- endif -%}
+  {%- if ck_kit_count > 0 -%}
+    <li class="yp-check__row">
+      <span class="svg-wrapper" aria-hidden="true">{{ 'icon-checkmark.svg' | inline_asset_content }}</span>
+      <span data-proof-content>{{ 'yarn_pdp.check_kits' | t: names: ck_kits | escape }}</span>
+    </li>
+  {%- endif -%}
+  {%- if ck_usage != blank -%}
+    <li class="yp-check__row">
+      <span class="svg-wrapper" aria-hidden="true">{{ 'icon-checkmark.svg' | inline_asset_content }}</span>
+      <span data-proof-content>{{ 'yarn_pdp.check_usage' | t: work: ck_usage.name.value, count: ck_usage.balls.value | escape }}</span>
+    </li>
+  {%- endif -%}
+  {%- if ck_colour -%}
+    <li class="yp-check__row yp-check__row--info">
+      <span class="svg-wrapper" aria-hidden="true">{{ 'icon-info.svg' | inline_asset_content }}</span>
+      <span>
+        {{- 'yarn_pdp.colour_pending' | t }} ·
+        <a href="{{ ck_line }}"{% if settings.yarn_line_url != blank %} target="_blank" rel="noopener noreferrer"{% endif %}>
+          {%- if settings.yarn_line_url != blank -%}{{ 'yarn_pdp.colour_ask_line' | t }}{%- else -%}{{ 'yarn_pdp.colour_ask_contact' | t }}{%- endif -%}
+        </a>
+      </span>
+    </li>
+  {%- endif -%}
+{%- endcapture -%}
+{%- if ck_rows contains 'yp-check__row' -%}
+  <ul class="yp-check" role="list">{{ ck_rows }}</ul>
+{%- endif -%}
+
+{%- comment -%}
+  保障条：手机为一行线描图标（免运费 / 选线咨询 / 全国配送）；桌面（#182 D1，用户 2026-10-17 确认）为三格插画：
+  免运费 + 全国配送 / 选线咨询 / 退换（7 日内联系，与退换货说明一致）。
+{%- endcomment -%}
+{%- assign ck_threshold = settings.yarn_free_shipping_threshold -%}
+<ul class="yp-trust" role="list">
+  {%- if ck_threshold != blank and ck_threshold > 0 -%}
+    {%- assign ck_goal = ck_threshold | times: 100 | money_without_trailing_zeros -%}
+    <li>
+      <span class="svg-wrapper yp-trust__line" aria-hidden="true">{{ 'icon-truck.svg' | inline_asset_content }}</span>
+      {% render 'yarn-spot-icon', name: 'delivery', size: 44 %}
+      <span class="yp-trust__text"><strong>{{ 'yarn_pdp.trust_free' | t: amount: ck_goal }}</strong><small>{{ 'yarn_pdp.trust_ship' | t }}</small></span>
+    </li>
+  {%- endif -%}
+  <li>
+    <span class="svg-wrapper yp-trust__line" aria-hidden="true">{{ 'icon-chat-bubble.svg' | inline_asset_content }}</span>
+    {% render 'yarn-spot-icon', name: 'chat', size: 44 %}
+    <span class="yp-trust__text"><a href="{{ ck_line }}"{% if settings.yarn_line_url != blank %} target="_blank" rel="noopener noreferrer"{% endif %}><strong>{% if settings.yarn_line_url != blank %}{{ 'yarn_pdp.trust_line' | t }}{% else %}{{ 'yarn_pdp.trust_staff' | t }}{% endif %}</strong></a><small>{{ 'yarn_pdp.trust_line_note' | t }}</small></span>
+  </li>
+  <li class="yp-trust__mobile">
+    <span class="svg-wrapper yp-trust__line" aria-hidden="true">{{ 'icon-checkmark.svg' | inline_asset_content }}</span>
+    <span class="yp-trust__text"><strong>{{ 'yarn_pdp.trust_ship' | t }}</strong></span>
+  </li>
+  <li class="yp-trust__desktop">
+    {% render 'yarn-spot-icon', name: 'return', size: 44 %}
+    <span class="yp-trust__text"><a href="{% render 'yarn-local-url', url: '/pages/returns-exchanges' %}"><strong>{{ 'yarn_pdp.trust_return' | t }}</strong></a><small>{{ 'yarn_pdp.trust_return_note' | t }}</small></span>
+  </li>
+</ul>

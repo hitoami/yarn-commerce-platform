@@ -42,7 +42,7 @@ html[lang]:root {
 
 /* BEGIN generated colors — edit design/tokens/colors.json, then run npm run tokens */
 :root {
-  --yarn-home-action: #675144; /* umber-700 · hitoami 低饱和主操作：首页按钮；毛线详情页加入、选中与价格 */
+  --yarn-home-action: #a6472e; /* clay-600 · 主操作（A1 陶土按钮，#177）：首页按钮；毛线详情页加入、选中与价格；与 action 同值 */
   --yarn-home-thread: #8c8880; /* sand-600 · hitoami 小猫展开的装饰毛线 */
   --yarn-home-rope: #b8b1a4; /* sand-400 · 首页导览条挂线的线芯（线纹用 home-thread）；不得用于文字 */
   --yarn-home-logo: #ab5631; /* clay-580 · Logo 品牌色（取自 hitoami-logo.webp）；首页滚动小猫的毛线与毛线球（#151）；不得用于文字 */
@@ -62,7 +62,7 @@ html[lang]:root {
   --yarn-text-on-action: #fffefa; /* cream-50 · 陶土实心按钮上的文字 */
   --yarn-text-on-cta: #292a28; /* charcoal-950 · 奶油主按钮上的文字 */
   --yarn-action: #a6472e; /* clay-600 · 链接、文字按钮、图标勾选、编号徽章文字 */
-  --yarn-accent: #b93b20; /* clay-550 · 价格、跨区导航与结账等实心按钮 */
+  --yarn-accent: #ab5631; /* clay-580 · 价格（与 Logo 同色，A1 #177）、跨区导航与结账等实心按钮 */
   --yarn-action-strong: #8f3c26; /* clay-700 · 按下态、深色强调面 */
   --yarn-action-subtle-bg: #fff9e9; /* cream-150 · 浅色操作面：导航选中、帮助 */
   --yarn-action-subtle-hover: #fff3de; /* cream-200 · 浅色操作面的悬停 */

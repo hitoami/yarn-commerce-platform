@@ -1400,6 +1400,13 @@
     ]
   },
   {
+    "name": "官方 LINE 与购物车提示",
+    "settings": [
+      { "type": "url", "id": "yarn_line_url", "label": "官方 LINE 链接", "info": "商品页「询问颜色 / 到货」、材料包「询问到货」使用（#177）。留空时链接到联系页，按钮文字随之改为「联系店员」。" },
+      { "type": "number", "id": "yarn_free_shipping_threshold", "label": "免运费门槛（日元，含税）", "info": "购物车页与购物车抽屉的免运费进度（#177）。须与 Shopify 运费设置、公告条一致；填 0 不显示。", "default": 9900 }
+    ]
+  },
+  {
     "name": "账号收藏",
     "settings": [
       { "type": "text", "id": "yarn_favorites_endpoint", "label": "Shopify App Proxy 收藏路径", "info": "收藏服务安装后填写同域路径，例如 /apps/mewool/favorites。不要填写密钥。留空时不会假装已保存收藏。" }

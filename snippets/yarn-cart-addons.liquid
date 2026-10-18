@@ -1,0 +1,72 @@
+{%- comment -%}
+  购物车抽屉凑单（#182 v2，借鉴 Woobles 就地凑单；用户 2026-10-17 批准规则）。只读 Shopify 商品与库存，不改价、不加赠品。
+  1. 同款多备 1 团：购物车里第一件可再加 1 团的毛线（可售，且未被 Shopify 库存上限挡住）。理由是批次色差（与购买须知一致）。
+  2. 凑满免运费，可以看看：未达免运费门槛时，「毛线」集合里可售、单价 ≤ 差额、不在购物车里的毛线，同分类（yarn.texture）优先，最多 3 件；满额后不渲染。
+  参数 part：'spare'（进度条下）或 'addons'（商品行之后）。「+」按钮由 assets/yarn-cart.js 走 /cart/add.js 加 1 件并刷新抽屉。
+{%- endcomment -%}
+{%- liquid
+  assign spare_item = blank
+  assign cart_ids = cart.items | map: 'product_id'
+  assign first_texture = blank
+  for item in cart.items
+    assign item_collections = item.product.collections | map: 'handle'
+    unless item.product.tags contains '毛糸' or item_collections contains 'yarn'
+      continue
+    endunless
+    if first_texture == blank
+      assign first_texture = item.product.metafields.yarn.texture.value.first.system.id | default: item.product.metafields.yarn.texture.value.system.id
+    endif
+    if spare_item == blank and item.variant.available
+      assign spare_room = true
+      if item.variant.inventory_management == 'shopify' and item.variant.inventory_policy != 'continue' and item.variant.inventory_quantity <= item.quantity
+        assign spare_room = false
+      endif
+      if spare_room
+        assign spare_item = item
+      endif
+    endif
+  endfor
+  assign addon_threshold = settings.yarn_free_shipping_threshold | default: 0
+  assign addon_left = addon_threshold | times: 100 | minus: cart.total_price
+-%}
+{%- if part == 'spare' and spare_item != blank -%}
+  <div class="yarn-cart-spare">
+    <span class="yarn-cart-spare__media">{%- if spare_item.image != blank -%}{{ spare_item.image | image_url: width: 112 | image_tag: width: 56, height: 56, loading: 'lazy', alt: '' }}{%- endif -%}</span>
+    <div class="yarn-cart-spare__text">
+      <p class="yarn-cart-spare__title" data-proof-content>{{ 'yarn_cart.spare_title' | t: name: spare_item.product.title | escape }}</p>
+      <p class="yarn-cart-spare__note">{{ 'yarn_cart.spare_note' | t }}</p>
+      <p class="yarn-cart-spare__price">{{ spare_item.final_price | money }}</p>
+    </div>
+    <button type="button" class="yarn-cart-spare__add" data-cart-quick-add="{{ spare_item.variant_id }}" aria-label="{{ 'yarn_cart.spare_add_label' | t: name: spare_item.product.title | escape }}">{{ 'yarn_cart.spare_add' | t }}</button>
+  </div>
+{%- endif -%}
+{%- if part == 'addons' and addon_threshold > 0 and addon_left > 0 and collections['yarn'] != blank -%}
+  {%- capture addon_cards -%}
+    {%- assign addon_shown = 0 -%}
+    {%- for pass in (1..2) -%}
+      {%- for addon in collections['yarn'].products limit: 50 -%}
+        {%- if addon_shown >= 3 -%}{%- break -%}{%- endif -%}
+        {%- if cart_ids contains addon.id or addon.available == false or addon.price <= 0 or addon.price > addon_left -%}{%- continue -%}{%- endif -%}
+        {%- assign addon_texture = addon.metafields.yarn.texture.value.first.system.id | default: addon.metafields.yarn.texture.value.system.id -%}
+        {%- assign addon_same = false -%}
+        {%- if first_texture != blank and addon_texture == first_texture -%}{%- assign addon_same = true -%}{%- endif -%}
+        {%- if pass == 1 and addon_same == false -%}{%- continue -%}{%- endif -%}
+        {%- if pass == 2 and addon_same and first_texture != blank -%}{%- continue -%}{%- endif -%}
+        {%- assign addon_shown = addon_shown | plus: 1 -%}
+        {%- capture addon_title -%}{%- render 'yarn-product-title', product: addon -%}{%- endcapture -%}
+        <li class="yarn-cart-addon">
+          <a class="yarn-cart-addon__media" href="{{ addon.url }}" tabindex="-1" aria-hidden="true">{%- if addon.featured_image != blank -%}{{ addon.featured_image | image_url: width: 96 | image_tag: width: 48, height: 48, loading: 'lazy', alt: '' }}{%- endif -%}</a>
+          <a class="yarn-cart-addon__text" href="{{ addon.url }}"><span data-proof-content>{{ addon_title | strip | escape }}</span><strong>{{ addon.price | money }}</strong></a>
+          <button type="button" class="yarn-cart-addon__add" data-cart-quick-add="{{ addon.selected_or_first_available_variant.id }}" aria-label="{{ 'yarn_cart.addon_add_label' | t: name: addon_title | strip | escape }}">{{ 'icon-plus.svg' | inline_asset_content }}</button>
+        </li>
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if addon_cards contains 'yarn-cart-addon' -%}
+    <div class="yarn-cart-addons">
+      <p class="yarn-cart-addons__title">{{ 'yarn_cart.addons_title' | t }}</p>
+      <ul class="yarn-cart-addons__list" role="list">{{ addon_cards }}</ul>
+    </div>
+  {%- endif -%}
+{%- endif -%}
+{%- if part == 'addons' -%}<p class="yarn-cart-quick-status visually-hidden" role="status" data-cart-quick-status data-error="{{ 'yarn_cart.quick_error' | t | escape }}"></p>{%- endif -%}

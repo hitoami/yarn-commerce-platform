@@ -1,0 +1,37 @@
+{%- comment -%}
+  毛线详情页说明下方的状态块（#177 R1，Figma「02 重设计 · 手机稿 v1」）：
+  - #182 起「暂未开放选色」改为首屏 ✓ 清单里的一行（snippets/yarn-pdp-checklist.liquid），本块只处理缺货。
+  - 已定价但缺货：说明 + 询问到货 + 同类毛线（毛线集合按第一个 yarn.texture 分类筛选，无分类时为毛线集合；URL 由 Shopify 按当前语言生成）。
+  询问入口读主题设置「官方 LINE 链接」，留空时指向联系页并改用「联系店员」文案（PRODUCT.md）。不另存库存或价格。
+  参数：product
+{%- endcomment -%}
+{%- liquid
+  assign status_line = settings.yarn_line_url
+  if status_line == blank
+    capture status_line
+      render 'yarn-local-url', url: '/pages/contact'
+    endcapture
+  endif
+-%}
+{%- if product.price > 0 and product.available == false -%}
+  {%- liquid
+    assign similar_url = collections['yarn'].url | default: routes.all_products_collection_url
+    assign similar_texture = product.metafields.yarn.texture.value
+    if similar_texture.first
+      assign similar_texture = similar_texture.first
+    endif
+    if similar_texture.system.id != blank
+      assign similar_gid = 'gid://shopify/Metaobject/' | append: similar_texture.system.id
+      assign similar_gid = similar_gid | url_encode
+      assign similar_url = similar_url | append: '?filter.p.m.yarn.texture=' | append: similar_gid
+    endif
+  -%}
+  <div class="yp-status yp-status--sold-out" role="status">
+    <p class="yp-status__title">{{ 'yarn_pdp.sold_out_title' | t }}</p>
+    <p class="yp-status__note">{{ 'yarn_pdp.sold_out_note' | t }}</p>
+    <a class="yp-status__ask" href="{{ status_line }}"{% if settings.yarn_line_url != blank %} target="_blank" rel="noopener noreferrer"{% endif %}>
+      {%- if settings.yarn_line_url != blank -%}{{ 'yarn_pdp.restock_ask_line' | t }}{%- else -%}{{ 'yarn_pdp.restock_ask_contact' | t }}{%- endif -%}
+    </a>
+    <a class="yp-status__link" href="{{ similar_url }}">{{ 'yarn_pdp.see_similar' | t }} <span aria-hidden="true">→</span></a>
+  </div>
+{%- endif -%}

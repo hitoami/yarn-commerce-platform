@@ -1,0 +1,17 @@
+{%- comment -%}
+  材料包教程领取提醒（#177 R3，用户 2026-10-17 决定用通用文案）。只在购物车里有从材料包加入的毛线时显示，
+  判断依据是材料包加购已写入的隐藏行属性 _Kit（sections/yarn-kit-detail.liquid），不新增数据、不写作品名。
+{%- endcomment -%}
+{%- assign kit_in_cart = false -%}
+{%- for kit_item in cart.items -%}
+  {%- if kit_item.properties['_Kit'] != blank -%}{%- assign kit_in_cart = true -%}{%- break -%}{%- endif -%}
+{%- endfor -%}
+{%- if kit_in_cart -%}
+  <div class="yarn-cart-kit">
+    {% render 'yarn-spot-icon', name: 'pattern-book', size: 44, base: 'cream' %}
+    <div>
+      <p class="yarn-cart-kit__title">{{ 'yarn_cart.kit_title' | t }}</p>
+      <p class="yarn-cart-kit__text">{{ 'yarn_cart.kit_text' | t }}</p>
+    </div>
+  </div>
+{%- endif -%}

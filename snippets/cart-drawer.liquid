@@ -7,6 +7,8 @@
 
 {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'yarn-cart.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'yarn-cart.js' | asset_url }}" defer="defer"></script>
 
 <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
@@ -89,6 +91,8 @@
         >
           <div id="CartDrawer-CartItems" class="drawer__contents js-contents">
             {%- if cart != empty -%}
+              {%- render 'yarn-cart-shipping' -%}
+              {%- render 'yarn-cart-addons', part: 'spare' -%}
               <div class="drawer__cart-items-wrapper">
                 <table class="cart-items" role="table">
                   <thead role="rowgroup">
@@ -480,6 +484,8 @@
                   </tbody>
                 </table>
               </div>
+              {%- render 'yarn-cart-addons', part: 'addons' -%}
+              {%- render 'yarn-cart-kit-note' -%}
             {%- endif -%}
             <p id="CartDrawer-LiveRegionText" class="visually-hidden" role="status"></p>
             <p id="CartDrawer-LineItemStatus" class="visually-hidden" aria-hidden="true" role="status">
@@ -530,7 +536,7 @@
 
           <div class="totals" role="status">
             <h2 class="totals__total">{{ 'sections.cart.estimated_total' | t }}</h2>
-            <p class="totals__total-value">{{ cart.total_price | money_with_currency }}</p>
+            <p class="totals__total-value">{{ cart.total_price | money }}</p>
           </div>
 
           <small class="tax-note caption-large rte">
@@ -587,8 +593,10 @@
               disabled
             {% endif %}
           >
+            <span class="svg-wrapper yarn-cart-lock" aria-hidden="true">{{- 'icon-padlock.svg' | inline_asset_content -}}</span>
             {{ 'sections.cart.checkout' | t }}
           </button>
+          <p class="yarn-cart-trust">{{ 'yarn_cart.footer_trust' | t }}</p>
         </div>
       </div>
     </div>

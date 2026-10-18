@@ -36,7 +36,7 @@ product-info.yarn-product-page .thumbnail { border-radius: 8px; }
 product-info.yarn-product-page .product-form__buttons { max-width: none; }
 product-info.yarn-product-page .product-form__submit { background: var(--yarn-cta-bg); color: var(--yarn-text-heading); border-radius: var(--yarn-radius-pill); font-weight: 700; font-size: 18px; }
 product-info.yarn-product-page .product-form__submit::after { box-shadow: none; }
-product-info.yarn-product-page .shopify-payment-button__button--unbranded { background: var(--yarn-bg-surface); border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-radius-pill); color: var(--yarn-text-heading); font-size: 16px; }
+product-info.yarn-product-page .shopify-payment-button__button--unbranded { background: var(--yarn-bg-surface); border: 1px solid var(--yarn-border-control); border-radius: var(--yarn-radius-pill); color: var(--yarn-text-heading); font-size: 16px; }
 product-info.yarn-product-page .product__description:empty { display: none; }
 product-info.yarn-product-page .product__description { font-size: 16px; line-height: 1.7; }
 product-info.yarn-product-page .product__description h2 { font-size: 24px; font-weight: 700; }
