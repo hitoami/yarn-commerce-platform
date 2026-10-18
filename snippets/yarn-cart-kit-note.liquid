@@ -8,7 +8,10 @@
 {%- endfor -%}
 {%- if kit_in_cart -%}
   <div class="yarn-cart-kit">
-    <p class="yarn-cart-kit__title">{{ 'yarn_cart.kit_title' | t }}</p>
-    <p class="yarn-cart-kit__text">{{ 'yarn_cart.kit_text' | t }}</p>
+    {% render 'yarn-spot-icon', name: 'pattern-book', size: 44, base: 'cream' %}
+    <div>
+      <p class="yarn-cart-kit__title">{{ 'yarn_cart.kit_title' | t }}</p>
+      <p class="yarn-cart-kit__text">{{ 'yarn_cart.kit_text' | t }}</p>
+    </div>
   </div>
 {%- endif -%}

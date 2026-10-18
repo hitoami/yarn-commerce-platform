@@ -539,6 +539,14 @@
     }
   },
   "yarn_cart": {
+    "spare_title": "{{ name }} · 多备 1 团",
+    "spare_note": "同一批次一起买，颜色最一致；补买时可能有批次色差。",
+    "spare_add": "+ 1 团",
+    "spare_add_label": "再加 1 团{{ name }}",
+    "addons_title": "凑满免运费，可以看看",
+    "addon_add_label": "把{{ name }}加入购物车",
+    "quick_error": "没能加入购物车。",
+    "footer_trust": "日本全国配送 · LINE 选线支持 · Shopify 安全结账",
     "free_remaining": "再买 {{ amount }} 即可免运费",
     "free_reached": "已满足免运费条件",
     "free_rule": "订单含税满 {{ amount }}，日本全国免运费（以结账页为准）",
@@ -546,6 +554,21 @@
     "kit_text": "下单后，把订单号和作品名发到官方 LINE，店员核对后发送教程。"
   },
   "yarn_pdp": {
+    "trust_line_note": "配色与用量都能问",
+    "trust_return": "7 日内联系",
+    "trust_return_note": "瑕疵或错发可退换",
+    "about_heading": "关于这款线",
+    "check_weight": "{{ weight }} g / 团",
+    "check_kits": "可以织：{{ names }}",
+    "check_usage": {
+      "one": "织{{ work }}约 {{ count }} 团",
+      "other": "织{{ work }}约 {{ count }} 团"
+    },
+    "trust_free": "满 {{ amount }} 免运费",
+    "trust_line": "LINE 真人选线",
+    "trust_staff": "店员选线咨询",
+    "trust_ship": "日本全国配送",
+    "beginner_heading": "新手能用吗？",
     "per_ball": "/ 团",
     "per_ball_tax_included": "/ 团（含税）",
     "option_selected_html": "<span class=\"yp-option-name\">{{ name }}：</span>{{ value }}",
@@ -559,8 +582,6 @@
     "restock_ask_line": "在 LINE 询问到货",
     "restock_ask_contact": "联系店员询问到货",
     "see_similar": "看同类的其他毛线",
-    "intro_more": "展开商品介绍",
-    "intro_less": "收起",
     "spec_heading": "线的规格",
     "spec_material": "成分",
     "spec_weight_length": "重量 / 长度",
@@ -598,6 +619,25 @@
     "sticky_selected": "已选：{{ value }}"
   },
   "yarn_project": {
+    "kit_step1_title": "下单买线",
+    "kit_step1_note": "照这页一次买齐",
+    "kit_step2_title": "LINE 发订单号",
+    "kit_step2_note": "附上作品名「{{ name }}」",
+    "kit_step3_title": "收到教程",
+    "kit_step3_note": "店员核对后发送",
+    "kit_check_balls": "团数已算好：{{ list }}",
+    "kit_check_tutorial": "教程：下单后在官方 LINE 领取",
+    "kit_check_no_tools": "只含毛线，不含工具",
+    "kit_check_no_tools_short": "只含毛线",
+    "kit_quick_hint": "想换团数或单买，在下方「所需毛线」里调整",
+    "kit_get_heading": "买这个材料包，你会收到什么？",
+    "kit_get_in": "包裹里",
+    "kit_get_balls": {
+      "one": "× {{ count }} 团",
+      "other": "× {{ count }} 团"
+    },
+    "kit_get_bring_default": "工具以教程为准",
+    "kit_sticky_add": "全部加入",
     "kit_partial_tag": "部分缺货",
     "kit_card_partial": "部分毛线缺货 · 可先买其余毛线",
     "kit_card_blocked": "所需毛线缺货 · 暂不可买",

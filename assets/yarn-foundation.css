@@ -54,3 +54,10 @@
 }
 :is(.header-wrapper, .yarn-footer) .disclosure__link { min-height: var(--yarn-touch); color: var(--yarn-text-primary); }
 :is(.header-wrapper, .yarn-footer) .disclosure__link:hover { background: var(--yarn-action-subtle-bg); color: var(--yarn-action); }
+
+/* Issue 182 手绘插画图标（snippets/yarn-spot-icon.liquid）：无底或奶油圆底，尺寸由 --spot-size 控制。 */
+.yarn-spot { --spot-size: 44px; flex: none; display: inline-grid; place-items: center; width: var(--spot-size); height: var(--spot-size); }
+.yarn-spot img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.yarn-spot--cream { border-radius: var(--yarn-radius-pill); background: var(--yarn-cta-bg); }
+.yarn-spot--cream img { width: 78%; height: 78%; }
+.accordion summary > .yarn-spot { margin-inline-end: var(--yarn-space-3); }

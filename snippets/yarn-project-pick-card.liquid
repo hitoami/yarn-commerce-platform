@@ -1,6 +1,7 @@
 {%- comment -%}
   材料包卡(#131;原作品卡):首页「用我们的毛线可以织」与毛线详情页「用这款线能织」共用。
   封面 + 「材料包」角标 + 标题 + 所需毛线(配件里类型为「毛线」且关联了 Variant 的条目:商品名 × 团数)+ 参考价(各 Variant 价格 × 团数之和)+ 教程在 LINE。
+  show_steps 仅首页传入，编号随对应信息显示。
   内容卡,不能直接加购;没有关联毛线的作品只显示封面与标题。调用方负责只传入可公开且有封面的 project。
   #177 R4:按所需毛线的真实可售状态显示一行状态——全部可买时照旧显示参考价;部分缺货、全部缺货在封面左下角加中性标签,
   状态行写清能做什么;有未定价的线时写「暂未开售」。状态只读 Shopify Variant,不另存库存。
@@ -48,12 +49,13 @@
 <a class="yx-project-pick" href="{{ project.system.url }}">
   <span class="yx-project-pick__media">
     {{ project.cover.value | image_url: width: 800 | image_tag: widths: '300, 450, 600, 800', sizes: '(min-width: 750px) 300px, 45vw', loading: 'lazy', alt: '' }}
-    <span class="yx-project-pick__badge">{{ 'yarn_project.kit_badge' | t }}</span>
+    <span class="yx-project-pick__badge">{% if show_steps %}<span class="yx-picks__number">1</span> {% endif %}{{ 'yarn_project.kit_badge' | t }}</span>
     {%- if kit_state == 'blocked' -%}<span class="yx-project-pick__stock">{{ 'yarn_project.kit_sold_out' | t }}</span>{%- elsif kit_state == 'partial' -%}<span class="yx-project-pick__stock yx-project-pick__stock--partial">{{ 'yarn_project.kit_partial_tag' | t }}</span>{%- endif -%}
   </span>
   <span class="yx-project-pick__title">{{ project.title.value | escape }}</span>
   {%- if kit_yarn_name != blank -%}
     <span class="yx-project-pick__yarn">
+      {%- if show_steps -%}<span class="yx-picks__number">2</span> {% endif -%}
       {{- 'yarn_project.kit_yarn_line' | t: name: kit_yarn_name, count: kit_yarn_count -}}
       {%- if kit_yarn_kinds > 1 %} · {{ 'yarn_project.kit_yarn_more' | t: count: kit_yarn_kinds }}{% endif -%}
     </span>
@@ -68,7 +70,7 @@
     <span class="yx-project-pick__meta">
       {%- if kit_total > 0 -%}{{ 'yarn_project.kit_price_about' | t: price: kit_price }}{%- endif -%}
       {%- if kit_total > 0 and project.tutorial_url.value != blank %} · {% endif -%}
-      {%- if project.tutorial_url.value != blank -%}{{ 'yarn_project.kit_tutorial_line' | t }}{%- endif -%}
+      {%- if project.tutorial_url.value != blank -%}{% if show_steps %}<span class="yx-picks__number">3</span> {% endif %}{{ 'yarn_project.kit_tutorial_line' | t }}{%- endif -%}
     </span>
   {%- endif -%}
 </a>

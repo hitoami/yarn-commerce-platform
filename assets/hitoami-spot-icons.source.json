@@ -1,0 +1,25 @@
+{
+  "kind": "AI-generated spot illustration icon set",
+  "date": "2026-10-17",
+  "tool": "Codex CLI 0.163 built-in image_gen (GPT image)",
+  "issue": "#182",
+  "files": [
+    "hitoami-spot-yarn-ball.png",
+    "hitoami-spot-hook-needles.png",
+    "hitoami-spot-scissors.png",
+    "hitoami-spot-sewing-needle.png",
+    "hitoami-spot-chat.png",
+    "hitoami-spot-pattern-book.png",
+    "hitoami-spot-delivery.png",
+    "hitoami-spot-swatches.png",
+    "hitoami-spot-bulb.png",
+    "hitoami-spot-yarn-count.png",
+    "hitoami-spot-tote-bag.png",
+    "hitoami-spot-hand-wash.png",
+    "hitoami-spot-return.png"
+  ],
+  "process": "v1 sheet set the style (not used directly: background not transparent). v2 redrew the same 12 icons on flat #FF00FF using v1 as style reference; v3 added the return parcel using v2 as reference. Magenta chroma-keyed out, edge spill removed, each icon cropped to a square with 8% padding and exported at 160×160 PNG with alpha.",
+  "scope": "Explanatory spot icons only (≥36px): PDP accordion rows, kit 'what you get' and tutorial steps, cart milestone and reminders. Not product imagery and not evidence of products, tools included in kits, or services.",
+  "prompt_v2_sheet": "Redraw the attached approved reference as ONE PNG image, exactly 1536×1024 pixels. Use the reference for the same twelve subjects, same order, hand-drawn charcoal ink outlines, opaque gouache fills, and fine paper grain confined to the objects. Preserve its warm handmade illustration style.\n\nBACKGROUND: Every background pixel must be perfectly flat, uniform pure magenta #FF00FF across the entire canvas, including gaps and openings between objects. No background texture, gradients, vignette, lighting, shadows, cream circles, blobs, halos, or cell borders. Magenta is only the chroma-key background: no magenta or pink-purple in the icon materials.\n\nLAYOUT: Strict invisible 4-column × 3-row grid. Each cell is 384×341.33 pixels. Cell centers are x=192,576,960,1344 and y=170.67,512,853.33. Center one complete icon on each center. Each icon's COMPLETE bounding box, including strands, thread, rays and water drops, must fit within the CENTRAL 60% of its cell: maximum width 230 pixels and maximum height 204 pixels. Keep generous clear magenta padding on all sides. Nothing touches or crosses a cell edge. All twelve icons have a consistent small visual scale.\n\nSUBJECTS, left to right, top to bottom:\nRow 1: (1) terracotta yarn ball with a short curling strand; (2) crochet hook crossed with two knitting needles; (3) small open craft scissors; (4) tapestry needle with a short curly yarn threaded through its eye.\nRow 2: (5) warm-white speech bubble with a small yarn heart; (6) open pattern booklet with a stitch diagram made of yarn loops and pictorial knitting marks, no writing; (7) small warm-white delivery van with a yarn-tied parcel; (8) fan of yarn color swatch cards on a ring.\nRow 3: (9) warm-white light bulb with a yarn-curl filament and short rays; (10) three yarn balls stacked in a pyramid; (11) canvas tote bag with two yarn balls peeking out; (12) wash basin with a folded knitted scarf and two water drops, with water in warm white/sand, no blue.\n\nPALETTE inside icons: terracotta #ab5631, deep terracotta #9a4528, butter cream #f8e5a9, blush #f4dfdc, warm sand #ebe5dc, warm white #fffefa, charcoal #2f302f. Blush is pale warm blush, never pink-purple. Warm-white scissor blades, booklet pages, van body, bulb glass, tote bag and basin must be fully opaque and clearly outlined in charcoal. Keep the reference's gentle irregular hand-inked contours and gouache/paper grain within solid opaque object silhouettes.\n\nNo drop shadows or ground shadows under any objects. No text, letters, numbers, labels, logos or watermarks. Generate exactly one image.",
+  "prompt_v3_return": "Create ONE new 1024x1024 raster spot icon for “returns & exchanges”. Use the attached hitoami-spot-icons-v2.png approved style sheet as the visual style reference only; do not reproduce the sheet or its multiple icons. Subject: a small kraft/warm-sand cardboard parcel tied with terracotta yarn, with a curved return arrow drawn as a strand of terracotta yarn looping back around the parcel. Make the return arrow clear and handmade, including its yarn arrowhead. Match the reference exactly: hand-drawn wobbly charcoal #2f302f ink outlines, the same relative line weight and visual scale as an individual reference icon, flat gouache fills with subtle paper grain confined to the icon. Palette only terracotta #ab5631, deep terracotta #9a4528, butter cream #f8e5a9, blush #f4dfdc, warm sand #ebe5dc, warm white #fffefa, plus charcoal outlines. Canvas background must be one perfectly flat, uniform pure magenta #FF00FF, edge to edge, with no grain, gradient, shadow, or blob. Center the complete icon, including the looping yarn arrow, entirely within the central 60% of the canvas, with clear magenta space all around. No magenta inside the parcel or yarn shapes. No drop shadow. No text, letters, numbers, logos, or watermark. Output exactly one image."
+}

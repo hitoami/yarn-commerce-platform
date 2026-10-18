@@ -1,6 +1,6 @@
 {%- comment -%}
   毛线详情页说明下方的状态块（#177 R1，Figma「02 重设计 · 手机稿 v1」）：
-  - 可售但 Shopify 只有默认 Variant：显示「颜色 · 暂未开放选色」与说明；补上颜色 Variant 后由原生选色器接管，本块不再渲染。
+  - #182 起「暂未开放选色」改为首屏 ✓ 清单里的一行（snippets/yarn-pdp-checklist.liquid），本块只处理缺货。
   - 已定价但缺货：说明 + 询问到货 + 同类毛线（毛线集合按第一个 yarn.texture 分类筛选，无分类时为毛线集合；URL 由 Shopify 按当前语言生成）。
   询问入口读主题设置「官方 LINE 链接」，留空时指向联系页并改用「联系店员」文案（PRODUCT.md）。不另存库存或价格。
   参数：product
@@ -33,18 +33,5 @@
       {%- if settings.yarn_line_url != blank -%}{{ 'yarn_pdp.restock_ask_line' | t }}{%- else -%}{{ 'yarn_pdp.restock_ask_contact' | t }}{%- endif -%}
     </a>
     <a class="yp-status__link" href="{{ similar_url }}">{{ 'yarn_pdp.see_similar' | t }} <span aria-hidden="true">→</span></a>
-  </div>
-{%- elsif product.price > 0 and product.has_only_default_variant -%}
-  <div class="yp-status yp-status--colour">
-    <p class="yp-status__head"><span class="yp-status__label">{{ 'yarn_pdp.color_label' | t }}</span><span class="yp-status__tag">{{ 'yarn_pdp.colour_pending' | t }}</span></p>
-    <div class="yp-status__panel">
-      <span class="svg-wrapper" aria-hidden="true">{{ 'icon-info.svg' | inline_asset_content }}</span>
-      <p>
-        {{ 'yarn_pdp.colour_pending_note' | t }}
-        <a class="yp-status__link" href="{{ status_line }}"{% if settings.yarn_line_url != blank %} target="_blank" rel="noopener noreferrer"{% endif %}>
-          {%- if settings.yarn_line_url != blank -%}{{ 'yarn_pdp.colour_ask_line' | t }}{%- else -%}{{ 'yarn_pdp.colour_ask_contact' | t }}{%- endif %} <span aria-hidden="true">→</span>
-        </a>
-      </p>
-    </div>
   </div>
 {%- endif -%}
