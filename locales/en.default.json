@@ -72,6 +72,9 @@
     "button_label": "Subscribe"
   },
   "accessibility": {
+    "show_line_qr": "Show QR code",
+    "hide_line_qr": "Hide QR code",
+    "line_qr_alt": "QR code to add us on LINE",
     "skip_to_text": "Skip to content",
     "skip_to_product_info": "Skip to product information",
     "close": "Close",

@@ -409,6 +409,8 @@ components:
 - **公告条**:奶油底,文案与三语译文都存在 `announcement` block 的 `text` / `text_zh` / `text_en`,不在 Liquid 写死;首页有 Hero 时隐藏。
 - **语言一致性**:页面上的品类、用途一类标签一律走 Theme locale,不渲染 Shopify 的 `product.type`(该字段不可翻译,原值混着日文与中文)。404 标题用 `templates.404.title`,不用 Shopify 返回的英文 `page_title`。商品标题、描述、选项名与 Metaobject 正文属于 Shopify 内容层,由 Translate & Adapt 维护。
 
+首页品牌区的手机 LINE 入口（#196，用户 2026-10-24 选定 A）使用 `border-subtle` 顶部分隔线、40px 官方 LINE 图标、18px / 700 的 `text-heading` 添加好友文字与 `action` 右箭头；主链接至少 56px 高。下方 14px `text-muted` 原生二维码展开控件至少 44px 高，与主文字左对齐。无卡片底色，不改全局品牌色；二维码保持原始比例。构图与素材来源见 [手机 A](docs/design/approved/196-line-mobile-a.source.md)，手机实现待用户验收；桌面沿用原布局。
+
 ## Do / Don't
 
 **Do**:延续暖纸+细线+炭黑的世界;新增文案查三语断行与手机可读;运营内容一律映射到 Shopify 可编辑层;每轮实现后把规范变化蒸馏回本文。

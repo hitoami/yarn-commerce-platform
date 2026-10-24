@@ -72,6 +72,9 @@
     "button_label": "S'inscrire"
   },
   "accessibility": {
+    "show_line_qr": "Afficher le code QR",
+    "hide_line_qr": "Masquer le code QR",
+    "line_qr_alt": "Code QR pour nous ajouter sur LINE",
     "skip_to_text": "Ignorer et passer au contenu",
     "close": "Fermer",
     "unit_price_separator": "par",

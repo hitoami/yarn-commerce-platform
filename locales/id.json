@@ -72,6 +72,9 @@
     "button_label": "Berlangganan"
   },
   "accessibility": {
+    "show_line_qr": "Tampilkan kode QR",
+    "hide_line_qr": "Sembunyikan kode QR",
+    "line_qr_alt": "Kode QR untuk menambahkan kami di LINE",
     "skip_to_text": "Langsung ke konten",
     "close": "Tutup",
     "unit_price_separator": "per",

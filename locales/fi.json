@@ -72,6 +72,9 @@
     "button_label": "Tilaa"
   },
   "accessibility": {
+    "show_line_qr": "Näytä QR-koodi",
+    "hide_line_qr": "Piilota QR-koodi",
+    "line_qr_alt": "QR-koodi meidän lisäämiseksi LINE-kavereihin",
     "skip_to_text": "Ohita ja siirry sisältöön",
     "close": "Sulje",
     "unit_price_separator": "kohti",

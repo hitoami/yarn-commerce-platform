@@ -76,6 +76,8 @@ Issue #65 删除了无模板使用的 `yarn-purpose-grid` / `yarn-seasonal-featu
 
 品牌介绍可使用 `hitoami-brand-knitting-cat-768.webp` / `-1536.webp` 氛围图（#189 由原 2.6 MB PNG 转换），上传图优先；生成提示词和适用范围记录在 `hitoami-brand-knitting-cat-1536.webp.source.json`，不作为真实人物或商品证据。本季封面复用油画圈圈原图，未核实选品时不声称有固定款数。
 
+手机品牌区的 LINE 入口按用户 2026-10-24 选定的 [#196 方案 A](approved/196-line-mobile-a.source.md)：细分隔线、官方图标、添加好友文字与陶土箭头，下一行用原生 `details` 展开二维码。复用品牌 Section 的 `line_link` / `line_qr`；没有链接时继续显示联系页回退。二维码控件文字取 Theme locales。随主题提供的二维码只对用户本次给出的对应账号链接生效，更换链接须同时上传对应二维码。桌面沿用原卡片结构；手机实现待用户验收，未发布。
+
 首页只保留桌面底边的滚动进度小猫（`yarn-scroll-cat`，#151）；毛线分类区的可互动小猫已删除（用户 2026-10-17 决定）。分类仍引用 `yarn_entry` 与 Shopify 商品字段，参考图可在 block 选择本轮原表实物图。毛线资料区 `yarn-catalog` 只渲染运营明确选择的已核实 Product，没有配置时给出整理提示。`yarn-home-guide` 的首页 `guide` 实例停用，`faq` 实例继续以三语 block 承载常见问题。
 
 材料包公开条件在 `yarn-kit-visible` 集中处理：公开状态、封面、毛线 Variant/团数与教程领取链接缺一不可；当前路径不使用内部样例开关。价格与可售性继续取 Shopify，不随作品公开状态复制。商品页、卡片和材料包的零价状态显示「暂未开售」；整份材料缺项时阻止加购，可逐项购买其他可售材料。

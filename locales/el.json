@@ -72,6 +72,9 @@
     "button_label": "Εγγραφή"
   },
   "accessibility": {
+    "show_line_qr": "Εμφάνιση κωδικού QR",
+    "hide_line_qr": "Απόκρυψη κωδικού QR",
+    "line_qr_alt": "Κωδικός QR για να μας προσθέσετε στο LINE",
     "skip_to_text": "Απευθείας μετάβαση στο περιεχόμενο",
     "close": "Κλείσιμο",
     "unit_price_separator": "ανά",

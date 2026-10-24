@@ -72,6 +72,9 @@
     "button_label": "订阅"
   },
   "accessibility": {
+    "show_line_qr": "查看二维码",
+    "hide_line_qr": "收起二维码",
+    "line_qr_alt": "添加 LINE 好友的二维码",
     "skip_to_text": "跳到内容",
     "close": "关闭",
     "unit_price_separator": "单价",
