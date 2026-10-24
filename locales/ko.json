@@ -72,6 +72,9 @@
     "button_label": "가입하기"
   },
   "accessibility": {
+    "show_line_qr": "QR 코드 보기",
+    "hide_line_qr": "QR 코드 닫기",
+    "line_qr_alt": "LINE 친구 추가용 QR 코드",
     "skip_to_text": "콘텐츠로 건너뛰기",
     "close": "닫기",
     "unit_price_separator": "단위",

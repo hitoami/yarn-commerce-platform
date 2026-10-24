@@ -72,6 +72,9 @@
     "button_label": "訂閱"
   },
   "accessibility": {
+    "show_line_qr": "查看二維碼",
+    "hide_line_qr": "收起二維碼",
+    "line_qr_alt": "加入 LINE 好友的二維碼",
     "skip_to_text": "跳至內容",
     "close": "關閉",
     "unit_price_separator": "每",

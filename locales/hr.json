@@ -72,6 +72,9 @@
     "button_label": "Pretplatite se"
   },
   "accessibility": {
+    "show_line_qr": "Prikaži QR kod",
+    "hide_line_qr": "Sakrij QR kod",
+    "line_qr_alt": "QR kod za dodavanje na LINE",
     "skip_to_text": "Preskoči na sadržaj",
     "close": "Zatvori",
     "unit_price_separator": "po",

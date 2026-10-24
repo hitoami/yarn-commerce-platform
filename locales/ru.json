@@ -72,6 +72,9 @@
     "button_label": "Подписаться"
   },
   "accessibility": {
+    "show_line_qr": "Показать QR-код",
+    "hide_line_qr": "Скрыть QR-код",
+    "line_qr_alt": "QR-код для добавления нас в LINE",
     "skip_to_text": "Перейти к контенту",
     "close": "Закрыть",
     "unit_price_separator": "за",

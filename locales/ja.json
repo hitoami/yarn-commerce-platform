@@ -72,6 +72,9 @@
     "button_label": "登録"
   },
   "accessibility": {
+    "show_line_qr": "QRコードを表示",
+    "hide_line_qr": "QRコードを閉じる",
+    "line_qr_alt": "LINEの友だち追加用QRコード",
     "skip_to_text": "コンテンツに進む",
     "close": "閉じる",
     "unit_price_separator": "あたり",

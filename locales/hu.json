@@ -72,6 +72,9 @@
     "button_label": "Feliratkozás"
   },
   "accessibility": {
+    "show_line_qr": "QR-kód megjelenítése",
+    "hide_line_qr": "QR-kód elrejtése",
+    "line_qr_alt": "QR-kód a LINE-ismerősnek jelöléshez",
     "skip_to_text": "Ugrás a tartalomhoz",
     "close": "Bezárás",
     "unit_price_separator": "/",

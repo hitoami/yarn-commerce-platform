@@ -45,6 +45,7 @@
   body:has(.hitoami-hero--catalog) .hitoami-story__line { display: block; margin-top: 10px; padding: 0; border: 0; background: none; }
   body:has(.hitoami-hero--catalog) .hitoami-story__line-copy { display: none; }
   body:has(.hitoami-hero--catalog) .hitoami-story__line-cta { justify-content: start; padding: 0; background: none; color: var(--yarn-action); font-size: 12px; }
+  body:has(.hitoami-hero--catalog) .hitoami-story__line--has-mobile { display: none; }
   body:has(.hitoami-hero--catalog) .yarn-entries { padding: 26px 0 22px; }
   body:has(.hitoami-hero--catalog) .yarn-entries__inner { width: calc(100% - 48px); }
   body:has(.hitoami-hero--catalog) .yarn-entries__head { text-align: left; }

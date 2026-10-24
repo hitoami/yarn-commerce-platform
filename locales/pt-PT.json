@@ -72,6 +72,9 @@
     "button_label": "Subscrever"
   },
   "accessibility": {
+    "show_line_qr": "Mostrar código QR",
+    "hide_line_qr": "Ocultar código QR",
+    "line_qr_alt": "Código QR para nos adicionar no LINE",
     "skip_to_text": "Saltar para o conteúdo",
     "close": "Encerrar",
     "unit_price_separator": "por",

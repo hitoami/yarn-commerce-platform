@@ -72,6 +72,9 @@
     "button_label": "สมัครรับข้อมูล"
   },
   "accessibility": {
+    "show_line_qr": "แสดงคิวอาร์โค้ด",
+    "hide_line_qr": "ซ่อนคิวอาร์โค้ด",
+    "line_qr_alt": "คิวอาร์โค้ดสำหรับเพิ่มเราเป็นเพื่อนใน LINE",
     "skip_to_text": "ข้ามไปยังเนื้อหา",
     "close": "ปิด",
     "unit_price_separator": "ต่อ",

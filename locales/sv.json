@@ -72,6 +72,9 @@
     "button_label": "Prenumerera"
   },
   "accessibility": {
+    "show_line_qr": "Visa QR-kod",
+    "hide_line_qr": "Dölj QR-kod",
+    "line_qr_alt": "QR-kod för att lägga till oss på LINE",
     "skip_to_text": "Gå vidare till innehåll",
     "close": "Stäng",
     "unit_price_separator": "per",

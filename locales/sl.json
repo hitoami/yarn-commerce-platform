@@ -72,6 +72,9 @@
     "button_label": "Naroči"
   },
   "accessibility": {
+    "show_line_qr": "Prikaži kodo QR",
+    "hide_line_qr": "Skrij kodo QR",
+    "line_qr_alt": "Koda QR za dodajanje med prijatelje v LINE",
     "skip_to_text": "Preskoči na vsebino",
     "close": "Zapri",
     "unit_price_separator": "na",
