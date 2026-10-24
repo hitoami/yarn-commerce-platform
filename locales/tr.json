@@ -72,6 +72,9 @@
     "button_label": "Abone ol"
   },
   "accessibility": {
+    "show_line_qr": "QR kodunu göster",
+    "hide_line_qr": "QR kodunu gizle",
+    "line_qr_alt": "Bizi LINE üzerinden eklemek için QR kodu",
     "skip_to_text": "İçeriğe atla",
     "close": "Kapat",
     "unit_price_separator": "/",

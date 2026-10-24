@@ -72,6 +72,9 @@
     "button_label": "Přihlásit k odběru"
   },
   "accessibility": {
+    "show_line_qr": "Zobrazit QR kód",
+    "hide_line_qr": "Skrýt QR kód",
+    "line_qr_alt": "QR kód pro přidání do přátel v LINE",
     "skip_to_text": "Přejít k obsahu",
     "close": "Zavřít",
     "unit_price_separator": "za",

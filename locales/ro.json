@@ -72,6 +72,9 @@
     "button_label": "Abonați-vă"
   },
   "accessibility": {
+    "show_line_qr": "Afișează codul QR",
+    "hide_line_qr": "Ascunde codul QR",
+    "line_qr_alt": "Cod QR pentru a ne adăuga pe LINE",
     "skip_to_text": "Salt la conținut",
     "close": "Închideți",
     "unit_price_separator": "pe",

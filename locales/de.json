@@ -72,6 +72,9 @@
     "button_label": "Abonnieren"
   },
   "accessibility": {
+    "show_line_qr": "QR-Code anzeigen",
+    "hide_line_qr": "QR-Code ausblenden",
+    "line_qr_alt": "QR-Code, um uns auf LINE hinzuzufügen",
     "skip_to_text": "Direkt zum Inhalt",
     "close": "Schließen",
     "unit_price_separator": "pro",

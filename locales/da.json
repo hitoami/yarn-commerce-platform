@@ -72,6 +72,9 @@
     "button_label": "Abonner"
   },
   "accessibility": {
+    "show_line_qr": "Vis QR-kode",
+    "hide_line_qr": "Skjul QR-kode",
+    "line_qr_alt": "QR-kode til at tilføje os på LINE",
     "skip_to_text": "Gå til indhold",
     "close": "Luk",
     "unit_price_separator": "pr.",

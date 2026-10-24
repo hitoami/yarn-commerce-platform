@@ -72,6 +72,9 @@
     "button_label": "Prenumeruoti"
   },
   "accessibility": {
+    "show_line_qr": "Rodyti QR kodą",
+    "hide_line_qr": "Slėpti QR kodą",
+    "line_qr_alt": "QR kodas, skirtas pridėti mus LINE",
     "skip_to_text": "Eiti į turinį",
     "close": "Uždaryti",
     "unit_price_separator": "per",

@@ -72,6 +72,9 @@
     "button_label": "Đăng ký"
   },
   "accessibility": {
+    "show_line_qr": "Hiện mã QR",
+    "hide_line_qr": "Ẩn mã QR",
+    "line_qr_alt": "Mã QR để thêm chúng tôi trên LINE",
     "skip_to_text": "Chuyển đến nội dung",
     "close": "Đóng",
     "unit_price_separator": "trên",

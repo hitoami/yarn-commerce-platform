@@ -72,6 +72,9 @@
     "button_label": "Абониране"
   },
   "accessibility": {
+    "show_line_qr": "Показване на QR кода",
+    "hide_line_qr": "Скриване на QR кода",
+    "line_qr_alt": "QR код за добавяне в LINE",
     "skip_to_text": "Преминаване към съдържанието",
     "close": "Затваряне",
     "unit_price_separator": "за",

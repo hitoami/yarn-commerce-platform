@@ -72,6 +72,9 @@
     "button_label": "Abonneren"
   },
   "accessibility": {
+    "show_line_qr": "QR-code tonen",
+    "hide_line_qr": "QR-code verbergen",
+    "line_qr_alt": "QR-code om ons toe te voegen op LINE",
     "skip_to_text": "Meteen naar de content",
     "close": "Sluiten",
     "unit_price_separator": "per",
