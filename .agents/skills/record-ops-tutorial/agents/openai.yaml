@@ -1,0 +1,4 @@
+interface:
+  display_name: "中文实操视频"
+  short_description: "把真实后台操作录成可复核的中文教程，包含配音字幕、恢复核对和交付"
+  default_prompt: "使用 $record-ops-tutorial，把这次操作制作成中文实操视频，沿用已确认的样片节奏并核对最终状态。"
