@@ -3,6 +3,7 @@
   封面 + 「材料包」角标 + 标题 + 所需毛线(配件里类型为「毛线」且关联了 Variant 的条目:商品名 × 团数)+ 参考价(各 Variant 价格 × 团数之和)+ 教程在 LINE。
   show_steps 仅首页传入，编号随对应信息显示。
   eager(#189):材料包列表首屏的卡片不懒加载。
+  教程段包在 __tutorial 里(#211):材料包列表手机版顶部已统一说明,隐藏卡上的重复。
   内容卡,不能直接加购;没有关联毛线的作品只显示封面与标题。调用方负责只传入可公开且有封面的 project。
   #177 R4:按所需毛线的真实可售状态显示一行状态——全部可买时照旧显示参考价;部分缺货、全部缺货在封面左下角加中性标签,
   状态行写清能做什么;有未定价的线时写「暂未开售」。状态只读 Shopify Variant,不另存库存。
@@ -74,8 +75,7 @@
   {%- elsif kit_total > 0 or project.tutorial_url.value != blank -%}
     <span class="yx-project-pick__meta">
       {%- if kit_total > 0 -%}{{ 'yarn_project.kit_price_about' | t: price: kit_price }}{%- endif -%}
-      {%- if kit_total > 0 and project.tutorial_url.value != blank %} · {% endif -%}
-      {%- if project.tutorial_url.value != blank -%}{% if show_steps %}<span class="yx-picks__number">3</span> {% endif %}{{ 'yarn_project.kit_tutorial_line' | t }}{%- endif -%}
+      {%- if project.tutorial_url.value != blank -%}<span class="yx-project-pick__tutorial">{% if kit_total > 0 %} · {% endif %}{% if show_steps %}<span class="yx-picks__number">3</span> {% endif %}{{ 'yarn_project.kit_tutorial_line' | t }}</span>{%- endif -%}
     </span>
   {%- endif -%}
 </a>
