@@ -3,6 +3,7 @@
 <script src="{{ 'yarn-collection-browse.js' | asset_url }}" defer="defer"></script>
 {%- comment -%}
   #85 毛线目录（手机稿「06 毛线集合页 · 390」，用户 2026-10-17 确认）：目录头 → 一排分类胶囊 → 筛选 / 排序 → 商品卡 → 显示更多。
+  #209 手机（用户 2026-10-29 批准）：标题行带款数与排序，筛选图标并入胶囊行，面包屑与介绍移到列表底部；只靠 CSS 重排，桌面不变。
   分类胶囊与首页圆图、搜索页分类是同一个 Search & Discovery 筛选（filter.p.m.yarn.texture 等），只显示有商品的分类。
   「筛选」抽屉只列出后台真实开启的其他筛选（目前是供货情况）与价格带 block；没有的字段不显示。
   商品卡与首页同一张 yarn-pick-card；集合还没有商品（手工成品上架前）时显示「准备中」占位，不含商品名、价格或库存。
@@ -102,8 +103,9 @@
       {%- endif -%}
     </p>
     <h1 class="ycb-head__title">{{ collection.title | escape }}</h1>
-    {%- if collection.description != blank -%}<div class="ycb-head__intro">{{ collection.description }}</div>{%- endif -%}
   </header>
+  {%- comment -%}#209：介绍放在目录头外，手机移到列表底部（与面包屑一起），桌面仍紧跟标题。{%- endcomment -%}
+  {%- if collection.description != blank -%}<div class="ycb-head__intro">{{ collection.description }}</div>{%- endif -%}
 
   {%- if cb_preparing -%}
     <div class="ycb-preparing">
@@ -150,7 +152,8 @@
       <div class="ycb-toolbar__actions">
         <button class="ycb-pill" type="button" data-ycb-open aria-haspopup="dialog" aria-controls="CollectionFilters-{{ section.id }}">
           {{- 'icon-filter.svg' | inline_asset_content -}}
-          <span>{{ 'yarn_collection.filter' | t }}{% if cb_other_active > 0 %} · {{ cb_other_active }}{% endif %}</span>
+          <span class="ycb-pill__label">{{ 'yarn_collection.filter' | t }}</span>
+          {%- if cb_other_active > 0 -%}<span class="ycb-pill__count"><span class="ycb-pill__sep"> · </span>{{ cb_other_active }}</span>{%- endif -%}
         </button>
         <form class="ycb-sort" action="{{ collection.url }}" method="get" data-ycb-sort-form>
           {%- for filter in collection.filters -%}
@@ -182,7 +185,7 @@
           <a class="ycb-exit" href="{{ collection.url }}">{{ 'yarn_collection.clear_all' | t }}</a>
         </div>
       {%- else -%}
-        <ul class="ycb-grid" role="list" data-ycb-grid>
+        <ul class="ycb-grid{% if cb_handmade %} ycb-grid--handmade{% endif %}" role="list" data-ycb-grid>
           {%- for product in collection.products -%}
             <li class="ycb-grid__item">
               {%- comment -%}#189：第一行（手机 2 张、桌面 4 张）是首屏 LCP 候选，不懒加载。{%- endcomment -%}
