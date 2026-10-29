@@ -1,5 +1,6 @@
 {% comment %}
   材料包列表页(#131,页面模板 page.kits):标题 + 说明 + 所有可公开且有封面的材料包卡(与首页同一张卡)。
+  手机版(#211)照片按首页同款 282:352 竖框完整显示,标题下三行 ✓ 说明取代卡上重复的角标与教程字样。
   材料包少,先不做筛选和排序;顺序同后台「编织作品」条目顺序。标题与说明三语在编辑器维护,留空时标题用页面标题。
   三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
 {% endcomment %}
@@ -9,22 +10,31 @@
 {%- capture kl_note -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'note' -%}{%- endcapture -%}
 {%- capture kl_cards -%}
   {%- assign kl_shown = 0 -%}
+  {%- assign kl_tutorial_all = true -%}
   {%- for project in shop.metaobjects.yarn_project.values -%}
     {%- if project.cover.value != blank -%}
       {%- capture kl_visible -%}{%- render 'yarn-kit-visible', project: project -%}{%- endcapture -%}
       {%- if kl_visible == 'true' -%}
         {%- comment -%}#189：首屏的前 4 张（手机两行、桌面一行）不懒加载。{%- endcomment -%}
         {%- assign kl_shown = kl_shown | plus: 1 -%}
+        {%- if project.tutorial_url.value == blank -%}{%- assign kl_tutorial_all = false -%}{%- endif -%}
         {%- assign kl_eager = false -%}{%- if kl_shown <= 4 -%}{%- assign kl_eager = true -%}{%- endif -%}
         {%- render 'yarn-project-pick-card', project: project, eager: kl_eager -%}
       {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
 {%- endcapture -%}
-<section class="yk-list">
+<section class="yk-list{% if kl_tutorial_all %} yk-list--tutorial-all{% endif %}">
   <header class="yk-list__head">
     <h1 class="yk-title">{{ kl_heading | default: page.title | escape }}</h1>
     {%- if kl_note != blank -%}<p class="yk-summary">{{ kl_note | escape }}</p>{%- endif -%}
+    {%- comment -%}#211：手机版把每张卡重复的「材料包」角标与「教程在 LINE」收成一处说明；桌面暂不显示。{%- endcomment -%}
+    <ul class="yk-check yk-list__checks">
+      <li class="yk-check__row"><span class="svg-wrapper" aria-hidden="true">{{ 'icon-checkmark.svg' | inline_asset_content }}</span><span>{{ 'yarn_project.kit_list_check_balls' | t }}</span></li>
+      {%- comment -%}只有每个材料包都有教程时才统一说明，卡上的教程字样也只在这时隐藏。{%- endcomment -%}
+      {%- if kl_tutorial_all -%}<li class="yk-check__row"><span class="svg-wrapper" aria-hidden="true">{{ 'icon-checkmark.svg' | inline_asset_content }}</span><span>{{ 'yarn_project.kit_check_tutorial' | t }}</span></li>{%- endif -%}
+      <li class="yk-check__row"><span class="svg-wrapper" aria-hidden="true">{{ 'icon-checkmark.svg' | inline_asset_content }}</span><span>{{ 'yarn_project.kit_check_no_tools' | t }}</span></li>
+    </ul>
   </header>
   {%- if kl_cards contains 'yx-project-pick' -%}
     <div class="yx-project-picks yk-list__grid">{{ kl_cards }}</div>
