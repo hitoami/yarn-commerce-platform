@@ -22,6 +22,14 @@
   overflow: hidden;
 }
 
+/* Issue 232（用户 2026-10-30 准奏）：手机 150、平板 190、桌面 230，与各端页头高度相称。 */
+@media screen and (max-width: 749px) {
+  .header-wrapper .header__heading-link > .yarn-wordmark { width: min(150px, calc(100vw - 208px)); }
+}
+@media screen and (min-width: 990px) {
+  .header__heading-link > .yarn-wordmark { width: 230px; }
+}
+
 .yarn-wordmark__image {
   display: block;
   width: 100%;
@@ -266,9 +274,6 @@
     padding: 8px 16px;
   }
 
-  .header-wrapper .header__heading-link > .yarn-wordmark {
-    width: min(184px, calc(100vw - 208px));
-  }
 }
 
 /* Warm paper, display lettering and terracotta actions match the homepage. */
