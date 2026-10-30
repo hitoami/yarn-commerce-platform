@@ -15,7 +15,7 @@ description: Use for the nightly 每日提案 run, or when 锦晨 approves or re
 
 - **准奏 / 要**：给 Issue 加 `已准奏` 标签并评论「朱批：准」。小改进入「实现」；大改先出 Figma 原型（见「分大小」），把原型链接写进 Issue 正文 `**原型**：<链接>`，去掉 `已准奏`，标题改为 `[每日提案] 大改（原型待批） · <标题>`，重新呈上；第二次准奏再进入「实现」。
 - **驳回 / 不要**：在 `DESIGN.md`「不做清单」加一行（日期、Issue、不做什么、原因），Issue 评论理由并以 `not planned` 关闭。这一行随下一次实现 PR 一起提交；没有实现 PR 时单独开文档 PR 合并。
-- 同时最多实现 2 个；其余保留 `已准奏` 标签，下一次运行接着做。
+- 并行（用户 2026-10-29 决定）：每本准奏的奏折在自己的会话、自己的 worktree 里实现，可同时进行；上线由 `scripts/release.sh` 的本机锁排队，一次只发一个。御书房面板的准奏会直接开新会话。
 
 ## 实现
 
@@ -23,7 +23,7 @@ description: Use for the nightly 每日提案 run, or when 锦晨 approves or re
 
 1. 分支 `codex/<issue>-<slug>`，先只改手机（<750px），桌面不变，除非提案另有说明。
 2. `npm run verify`；在本地预览（`npx shopify theme dev --store tutaka-54.myshopify.com --live-reload off`）上跑 `npm run proof`（三语、390 / 1440），按 `docs/agents/visual-review.md` 自查截图。
-3. 合并到 `main`；开 `main` → `production` 的 PR 并合并。
+3. 合并到 `main`；开 `main` → `production` 的 PR 并合并（已有开着的同名 PR 就复用它，不重复开）。
 4. `scripts/release.sh "<内容> (PR-<编号>)"`。设置文件不一致时停下并说明，不强推。
 5. `PROOF_BASE_URL=https://hitoami.com node scripts/proof.cjs --live --pages <页>`。
 6. Issue 记：已上线、自查结论、新主题名称、回滚方式（重新发布上一版 release 主题），然后关闭。在对话里同样简报。
@@ -34,7 +34,7 @@ description: Use for the nightly 每日提案 run, or when 锦晨 approves or re
 
 在新工作区里做：`git worktree add .claude/worktrees/daily-<日期> origin/main`，按 `AGENTS.md` 先跑 `./init.sh`。
 
-1. 有 `已准奏` 标签、还没上线的提案：按「实现」接着做（最多 2 个）。
+1. 有 `已准奏` 标签、还没上线、也没有会话在办的提案：每本开一个新会话（独立 worktree）按「实现」接着做。
 2. 补足队列：数开放且没有 `已准奏` 标签的 `每日提案` Issue，不足 3 个就补到 3 个。
 3. 结束时在对话里简报：上线了什么、新呈了几本，提醒「输入 /zouzhe 打开御书房批阅」。然后删除本次工作区。
 

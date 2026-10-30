@@ -12,7 +12,20 @@ CHECK=""
 LABEL="${1:?用法：scripts/release.sh \"<内容> (PR-<编号>)\"}"
 NAME="hitoami release $(date +%F) $LABEL"
 WORK="$(mktemp -d)"
+# 几个会话可能同时准奏上线：本机同一时间只跑一个发布，其余排队（最多等 30 分钟；超过 1 小时的锁视为残留）。
+mkdir -p "$HOME/.cache"
+LOCK="$HOME/.cache/hitoami-release.lock"
 trap 'rm -rf "$WORK"' EXIT
+if [ -z "$CHECK" ]; then
+  waited=0
+  until mkdir "$LOCK" 2>/dev/null; do
+    if [ -n "$(find "$LOCK" -maxdepth 0 -mmin +60 2>/dev/null)" ]; then rmdir "$LOCK"; continue; fi
+    [ "$waited" -ge 1800 ] && { echo "另一个发布占用超过 30 分钟，放弃。" >&2; exit 1; }
+    [ "$waited" -eq 0 ] && echo "另一个会话正在发布，排队等待……"
+    sleep 15; waited=$((waited + 15))
+  done
+  trap 'rm -rf "$WORK"; rmdir "$LOCK" 2>/dev/null' EXIT
+fi
 json() { node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const v=JSON.parse(s.slice(s.search(/[\[{]/)));console.log(eval(process.argv[1]))})' "$1"; }
 
 git fetch -q origin production

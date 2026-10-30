@@ -96,6 +96,11 @@
       {{ input_dataset }}
     >
     <label for="{{ input_id }}">
+      {%- comment -%}#222（用户 2026-10-29 准奏）：该色号的变体有图时，数字左边加一张小圆图；没有图时和原来一样只有数字。{%- endcomment -%}
+      {%- assign pill_image = value.variant.featured_image -%}
+      {%- if pill_image -%}
+        <span class="yp-pill-photo" aria-hidden="true">{{ pill_image | image_url: width: 56 | image_tag: width: 28, height: 28, loading: 'lazy', alt: '' }}</span>
+      {%- endif -%}
       {{ value -}}
       {{ label_unavailable }}
     </label>
