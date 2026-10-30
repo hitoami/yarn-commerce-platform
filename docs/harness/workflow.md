@@ -43,13 +43,11 @@ flowchart LR
 每次上线都需要当次明确的人工批准（见 `AGENTS.md` 生产安全）。
 
 1. 开 `main` → `production` 的 PR 并合并。
-2. 拉取线上主题的设置文件，与 `production` 比对，避免覆盖后台改过的内容：
-   `shopify theme pull --theme <线上主题 ID> --only 'config/*.json' --only 'templates/*.json' --only 'sections/*.json' --path <临时目录>`
-   有差异时先把后台改动并回仓库，再继续。
-3. 把 `production` 推成一份新的未发布主题，命名 `hitoami release <日期> <内容> (PR-<编号>)`：
-   `shopify theme push --unpublished --theme "<名称>" --path <production 代码目录>`
-4. 发布这份新主题：`shopify theme publish --theme <新主题 ID> --force`，再用 `shopify theme list` 确认它是 live。
-5. 在线上地址跑 `node scripts/proof.cjs --live`（设置 `PROOF_BASE_URL`），在对应 Issue 记下新主题名称、ID 和回滚方式。
+2. 运行 `scripts/release.sh "<内容> (PR-<编号>)"`（先用 `--check` 只比对）。脚本会：
+   - 拉取线上主题的设置文件，按 JSON 内容与 `production` 比对；有差异就停下，先把后台改动并回仓库；
+   - 把 `production` 推到上一份 release 主题（两份轮流覆盖，主题数不增长），改名为 `hitoami release <日期> <内容> (PR-<编号>)`；
+   - 发布并确认它是 live。
+3. 在线上地址跑 `node scripts/proof.cjs --live`（设置 `PROOF_BASE_URL`），在对应 Issue 记下新主题名称、ID 和回滚方式。
 
 回滚：在 Shopify 后台重新发布上一版 release 主题。
 
