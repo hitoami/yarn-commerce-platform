@@ -1,0 +1,12 @@
+# hitoami 自定义应用：只装结账页扩展，没有后端服务器（ADR 0002）。
+# client_id 由锦晨登录后运行 `npx shopify app config link` 写入；不要手抄凭证。
+client_id = ""
+name = "hitoami"
+application_url = "https://hitoami.com"
+embedded = false
+
+[access_scopes]
+scopes = ""
+
+[build]
+include_config_on_deploy = true

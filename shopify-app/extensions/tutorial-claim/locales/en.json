@@ -1,0 +1,9 @@
+{
+  "eyebrow": "Get the pattern",
+  "heading": "You have all the yarn for “{{kit}}”",
+  "line": "Get the pattern on LINE",
+  "lineNote": "Opens hitoami’s official LINE with your order number and project already filled in. Just send it — we’ll check and send the pattern.",
+  "contact": "Get the pattern via our contact page",
+  "contactNote": "Please include order {{order}} and the project “{{kit}}”. We’ll check and send the pattern.",
+  "message": "I'd like the pattern\nOrder: {order}\nProject: {kit}"
+}

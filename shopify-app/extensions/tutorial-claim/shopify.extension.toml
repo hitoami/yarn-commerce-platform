@@ -1,0 +1,31 @@
+# #244 下单后一键领教程：下单完成页与订单状态页的「领取教程」卡片。
+api_version = "2026-10"
+
+[[extensions]]
+name = "领取教程"
+handle = "tutorial-claim"
+type = "ui_extension"
+
+[[extensions.targeting]]
+module = "./src/ThankYou.jsx"
+target = "purchase.thank-you.block.render"
+
+[[extensions.targeting]]
+module = "./src/OrderStatus.jsx"
+target = "customer-account.order-status.block.render"
+
+# 读材料包元对象（yarn_project / yarn_material）用 Storefront API。
+[extensions.capabilities]
+api_access = true
+
+# 在结账编辑器里由运营填写；留空时按钮改去联系页。
+[extensions.settings]
+[[extensions.settings.fields]]
+key = "line_id"
+type = "single_line_text_field"
+name = "官方 LINE ID（如 @hitoami）"
+
+[[extensions.settings.fields]]
+key = "contact_url"
+type = "single_line_text_field"
+name = "未配置 LINE 时的联系页地址"
