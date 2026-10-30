@@ -154,6 +154,28 @@ async function openCartDrawer(page) {
   await page.waitForTimeout(600);
 }
 
+// #245：从毛线集合的 products.json 里挑一款已定价、所有色号都缺货的商品，作为缺货页样本。
+function pickSoldOut(products) {
+  const product = products.find(item => item.variants.length && item.variants.every(v => !v.available) && item.variants.some(v => Number(v.price) > 0));
+  return product ? `/products/${product.handle}` : null;
+}
+
+async function resolvePages(pages, baseUrl) {
+  const skipped = [];
+  const resolved = [];
+  for (const page of pages) {
+    if (page.path || page.find !== 'sold-out-yarn') { resolved.push(page); continue; }
+    let found = null;
+    try {
+      const response = await fetch(`${baseUrl}/collections/yarn/products.json?limit=250`, { signal: AbortSignal.timeout(20000) });
+      found = pickSoldOut((await response.json()).products || []);
+    } catch {}
+    if (found) resolved.push({ ...page, path: found });
+    else skipped.push(`${page.key}：目录里暂无缺货商品，跳过`);
+  }
+  return { resolved, skipped };
+}
+
 async function runJob(browser, job, baseUrl) {
   const { page: target, locale, viewport } = job;
   const context = await browser.newContext({
@@ -235,6 +257,7 @@ function writeReport(results, meta) {
     `- 预览：${meta.baseUrl}`,
     `- 结论：**${failed.length ? '未通过' : '通过'}**（主题侧语言泄漏 ${count('leaks')}，失败项 ${count('failures')}；内容层混语言 ${count('contentLeaks')}、提醒 ${count('warnings')} 不阻塞）`,
     '',
+    ...(meta.skipped && meta.skipped.length ? ['## 跳过', '', ...meta.skipped.map(item => `- ${item}`), ''] : []),
     '## 截图清单',
     '',
     `| 页面 | 语言 | ${meta.viewports.map(v => `${v.key} ${v.width}`).join(' | ')} |`,
@@ -265,7 +288,7 @@ function writeReport(results, meta) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const baseUrl = (args.base || process.env.PROOF_BASE_URL || config.baseUrl).replace(/\/$/, '');
-  const pages = pick(config.pages, args.pages, '页面');
+  let pages = pick(config.pages, args.pages, '页面');
   const live = Boolean(args.live || process.env.PROOF_LIVE);
   const locales = pick(config.locales, args.locales, '语言').map(locale => (live ? { ...locale, prefix: locale.livePrefix } : locale));
   const viewports = pick(config.viewports, args.viewports, '视口');
@@ -277,6 +300,9 @@ async function main() {
     else console.error(`无法打开 ${baseUrl}。先在另一个终端运行：npx shopify theme dev --store tutaka-54.myshopify.com --live-reload off`);
     process.exit(2);
   }
+
+  const { resolved, skipped } = await resolvePages(pages, baseUrl);
+  pages = resolved;
 
   const { chromium } = require('playwright-core');
   const browser = await chromium.launch({ channel: process.env.PROOF_BROWSER_CHANNEL || 'chrome' });
@@ -304,7 +330,7 @@ async function main() {
     time: new Date().toISOString(),
     git: `${git[0]}${Number(git[1]) ? `（另有 ${git[1].trim()} 个未提交改动）` : ''}`,
     baseUrl: live ? `${baseUrl}（线上语言路径）` : baseUrl,
-    pages, locales, viewports,
+    pages, locales, viewports, skipped,
     seconds: Math.round((Date.now() - started) / 1000),
   };
   const summary = writeReport(results, meta);
@@ -320,4 +346,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { cartAjaxUrl };
+module.exports = { cartAjaxUrl, pickSoldOut };
