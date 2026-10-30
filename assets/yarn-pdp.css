@@ -233,8 +233,6 @@ product-info.yarn-product-page.yarn-product-page--yarn .product-form__submit[dis
 @media (prefers-reduced-motion: reduce) { .yp-acc__caret { transition: none; } }
 
 .yp-acc__text p { margin: 0 0 8px; }
-.yp-sticky__thumb { flex: none; width: 52px; height: 52px; overflow: hidden; border-radius: 10px; background: var(--yarn-bg-sunken); }
-.yp-sticky__thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 @media (max-width: 749px) {
   product-info.yarn-product-page--yarn .yp-yarn-price .product__tax { display: none; }
