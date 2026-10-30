@@ -66,6 +66,12 @@ jobs:
       - name: Verify theme
         run: npm run verify
 
+      - name: Make room under the 20-theme limit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/prune-themes.sh
+
       - name: Create or update unpublished preview theme
         id: deploy
         shell: bash
