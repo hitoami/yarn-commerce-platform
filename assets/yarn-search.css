@@ -80,6 +80,13 @@
 .yd-search__chip-name { color: var(--yarn-text-heading); font-size: 15px; font-weight: 500; }
 .yd-search__chip-count { color: var(--yarn-text-muted); font-size: 13px; }
 
+/* #233（用户 2026-10-30 准奏）：手机毛线结果与毛线目录（#209）一致——照片铺满方框，不重复「毛线」小标签，色数保留。成品组不变。 */
+@media (max-width: 749px) {
+  .yd-search__grid[data-search-catalog='yarn'] .yx-card-meta__kind { display: none; }
+  .yd-search__grid[data-search-catalog='yarn'] .yx-card-meta:not(:has(.yx-card-meta__colors)) { display: none; }
+  .yd-search__grid[data-search-catalog='yarn'] .yx-product-card__media img { object-fit: cover; }
+}
+
 @media (min-width: 750px) {
   .yd-search__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--yarn-space-6) var(--yarn-space-5); }
 }
