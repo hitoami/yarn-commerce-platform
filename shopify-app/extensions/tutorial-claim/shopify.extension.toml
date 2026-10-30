@@ -4,6 +4,7 @@ api_version = "2026-10"
 [[extensions]]
 name = "领取教程"
 handle = "tutorial-claim"
+uid = "4c714425-142a-927d-62f9-58ca4121ab13e46791d6"
 type = "ui_extension"
 
 [[extensions.targeting]]
