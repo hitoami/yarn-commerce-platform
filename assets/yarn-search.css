@@ -82,8 +82,9 @@
 
 /* #233（用户 2026-10-30 准奏）：手机毛线结果与毛线目录（#209）一致——照片铺满方框，不重复「毛线」小标签，色数保留。成品组不变。 */
 @media (max-width: 749px) {
-  .yd-search__grid[data-search-catalog='yarn'] .yx-card-meta__kind { display: none; }
-  .yd-search__grid[data-search-catalog='yarn'] .yx-card-meta:not(:has(.yx-card-meta__colors)) { display: none; }
+  /* #246（用户 2026-10-30 准奏）：色数并进规格行，标题从同一高度开始。 */
+  .yd-search__grid[data-search-catalog='yarn'] .yx-card-meta { display: none; }
+  .yd-search__grid[data-search-catalog='yarn'] .yx-product-card__spec-colors { display: inline; }
   .yd-search__grid[data-search-catalog='yarn'] .yx-product-card__media img { object-fit: cover; }
 }
 

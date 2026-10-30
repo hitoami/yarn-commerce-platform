@@ -22,6 +22,8 @@
 .yx-product-card__body { display: flex; flex: 1; flex-direction: column; gap: 4px; padding: 12px 2px 4px; }
 .yx-card-meta { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; color: var(--yarn-text-muted); font-size: 12px; line-height: 1.4; letter-spacing: 0.04em; }
 .yx-card-meta__colors { margin-left: auto; white-space: nowrap; }
+/* 色数在规格行里的副本：默认隐藏，只在手机毛线目录 / 搜索结果显示（#246）。 */
+.yx-product-card__spec-colors { display: none; white-space: nowrap; }
 .yx-product-card__title, .yx-catalog-card .card__heading {
   color: var(--yarn-text-heading); font-family: var(--yarn-display);
   font-size: var(--yarn-card-title); font-weight: 500; line-height: 1.4;

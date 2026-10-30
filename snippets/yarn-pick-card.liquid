@@ -72,7 +72,9 @@
     {%- elsif handmade -%}
       <span class="yx-product-card__spec">{{ 'yarn_project.card_handmade_note' | t }}</span>
     {%- else -%}
-      <span class="yx-product-card__spec">{% render 'yarn-card-spec', product: card_product %}</span>
+      {%- capture card_colors %}{% render 'yarn-card-color-count', count_product: card_product %}{% endcapture -%}
+      {%- assign card_colors = card_colors | strip -%}
+      <span class="yx-product-card__spec">{% render 'yarn-card-spec', product: card_product %}{% if card_colors != blank %}<span class="yx-product-card__spec-colors"> · {{ card_colors }}</span>{% endif %}</span>
     {%- endif -%}
     <div class="yx-product-card__buy">
       <span class="yx-product-card__price{% if card_product.available == false or card_product.price <= 0 %} yx-product-card__price--muted{% endif %}">
