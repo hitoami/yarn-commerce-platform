@@ -50,6 +50,7 @@ if [ -n "$SLOT_ID" ]; then
   npx shopify theme rename --store "$STORE" --theme "$SLOT_ID" --name "$NAME" >/dev/null
   NEW_ID="$SLOT_ID"
 else
+  "$(dirname "$0")/prune-themes.sh" 1
   NEW_ID="$(npx shopify theme push --store "$STORE" --path "$WORK/code" --unpublished --theme "$NAME" --json | json 'v.theme.id')"
 fi
 echo "已推送：$NEW_ID（$NAME）"
