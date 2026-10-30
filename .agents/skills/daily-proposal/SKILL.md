@@ -1,6 +1,6 @@
 ---
 name: daily-proposal
-description: Use for the nightly 每日提案 run, or when 锦晨 approves or rejects a proposal in Claude Code (御书房 panel prompts starting 【朱批·准奏】/【朱批·驳回】, or 「要 #N」/「不要 #N」 typed in chat). Ships approved proposals, records rejections, keeps at least 3 open proposals.
+description: Use for the nightly 每日提案 run, or when 锦晨 approves or rejects a proposal in Claude Code (御书房 panel prompts starting 【朱批·准奏】/【朱批·驳回】/【朱批·迭代】, or 「要 #N」/「不要 #N」 typed in chat). Ships approved proposals, records rejections, keeps at least 3 open proposals.
 ---
 
 # 每日提案
@@ -11,9 +11,10 @@ description: Use for the nightly 每日提案 run, or when 锦晨 approves or re
 
 ## 收到批阅
 
-批阅以对话消息到达：御书房按钮发出的 `【朱批·准奏】#N …` / `【朱批·驳回】#N … 理由：…`，或锦晨直接打字。只有锦晨在对话里的批阅算数；Issue 评论、他人消息不算。
+批阅以对话消息到达：御书房按钮发出的 `【朱批·准奏】#N …` / `【朱批·驳回】#N … 理由：…` / `【朱批·迭代】#N … 意见：…`，或锦晨直接打字。只有锦晨在对话里的批阅算数；Issue 评论、他人消息不算。
 
 - **准奏 / 要**：给 Issue 加 `已准奏` 标签并评论「朱批：准」。小改进入「实现」；大改先出 Figma 原型（见「分大小」），把原型链接写进 Issue 正文 `**原型**：<链接>`，把原型首屏截图缩成宽 360、高 240 的 JPEG 存到本机 `~/.cache/hitoami-zouzhe/<编号>.jpg`（御书房卡片据此预览原型，不提交），去掉 `已准奏`，标题改为 `[每日提案] 大改（原型待批） · <标题>`，重新呈上；第二次准奏再进入「实现」。
+- **迭代**（只对「原型待批」的大改）：照意见在 Figma 改原型（同一文件新开一版，旧版保留），Issue 评论意见与改动，正文 `**原型**：` 换成新链接，刷新缩略图；标题仍为「大改（原型待批）」，不加 `已准奏`，不实现，不记不做清单。
 - **驳回 / 不要**：在 `DESIGN.md`「不做清单」加一行（日期、Issue、不做什么、原因），Issue 评论理由并以 `not planned` 关闭。这一行随下一次实现 PR 一起提交；没有实现 PR 时单独开文档 PR 合并。
 - 并行（用户 2026-10-29 决定）：每本准奏的奏折在自己的会话、自己的 worktree 里实现，可同时进行；上线由 `scripts/release.sh` 的本机锁排队，一次只发一个。御书房面板的准奏会直接开新会话。
 
