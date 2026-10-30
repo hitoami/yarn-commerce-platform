@@ -34,7 +34,8 @@ module.exports = {
     ] },
     { key: 'yarn-pdp', path: '/products/mvp-yarn-18' },
     // #177：缺货毛线（询问到货 + 同类毛线出口）与材料包的可购买 / 暂不可买两种购买区。
-    { key: 'yarn-pdp-sold-out', path: '/products/yarn-tyndall', requiredContent: [
+    // #245：缺货商品会变，运行时从毛线集合里找一款已定价、全部色号缺货的；找不到就跳过这一项。
+    { key: 'yarn-pdp-sold-out', path: null, find: 'sold-out-yarn', requiredContent: [
       { selector: '.yp-status--sold-out', minimum: 1, label: '缺货出口' },
     ] },
     { key: 'kits', path: '/pages/kits', requiredContent: [

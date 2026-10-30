@@ -112,8 +112,9 @@ div.ycb-head__intro { margin-bottom: var(--yarn-space-5); }
   .ycb-chip__count { font-size: 12px; }
   .ycb .ycb-grid { margin-top: var(--yarn-space-4); }
   /* 毛线目录里卡片不再重复「毛线」小标签；色数保留。成品集合不受影响。 */
-  .ycb-grid:not(.ycb-grid--handmade) .yx-card-meta__kind { display: none; }
-  .ycb-grid:not(.ycb-grid--handmade) .yx-card-meta:not(:has(.yx-card-meta__colors)) { display: none; }
+  /* #246（用户 2026-10-30 准奏）：色数并进规格行，标题从同一高度开始。 */
+  .ycb-grid:not(.ycb-grid--handmade) .yx-card-meta { display: none; }
+  .ycb-grid:not(.ycb-grid--handmade) .yx-product-card__spec-colors { display: inline; }
   /* 用户 2026-10-29 决定：目录页手机卡片照片铺满方框（DESIGN.md 照片 contain 规则的例外）。 */
   .ycb-grid .yx-product-card__media img { object-fit: cover; }
   div.ycb-head__intro { order: 1; margin: var(--yarn-space-6) 0 0; }

@@ -1,0 +1,16 @@
+{%- comment -%}
+  Real color count text for a card ("6 色" / "6 colors"), or nothing when the product has one color or none.
+  The count comes from the product's color option, never from photo text.
+  Accepts: count_product
+{%- endcomment -%}
+{%- liquid
+  assign yx_color_count = 0
+  for option in count_product.options_with_values
+    assign yx_option_name = option.name | downcase
+    if yx_option_name contains '色' or yx_option_name contains 'color' or yx_option_name contains 'colour' or yx_option_name contains 'カラー'
+      assign yx_color_count = option.values.size
+      break
+    endif
+  endfor
+-%}
+{%- if yx_color_count > 1 -%}{{ 'yarn_project.card_color_count' | t: count: yx_color_count }}{%- endif -%}

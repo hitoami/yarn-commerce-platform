@@ -1,19 +1,20 @@
 ---
 name: daily-proposal
-description: Use for the nightly 每日提案 run, or when 锦晨 approves or rejects a proposal in Claude Code (御书房 panel prompts starting 【朱批·准奏】/【朱批·驳回】, or 「要 #N」/「不要 #N」 typed in chat). Ships approved proposals, records rejections, keeps at least 3 open proposals.
+description: Use for the nightly 每日提案 run, or when 锦晨 approves or rejects a proposal in Claude Code (御书房 panel prompts starting 【朱批·准奏】/【朱批·驳回】/【朱批·迭代】, or 「要 #N」/「不要 #N」 typed in chat). Ships approved proposals, records rejections, keeps at least 3 open proposals.
 ---
 
 # 每日提案
 
-用户 2026-10-29 确认（#218）：提案队列 = 带 `每日提案` 标签的开放 GitHub Issue，始终保持至少 3 个待批；每晚 18:00 在本机补足。批阅在 Claude Code 里做：御书房面板（`/zouzhe`）的「准奏 / 驳回」按钮，或在对话里说「要 #N」「不要 #N + 原因」。不用 Slack。
+用户 2026-10-29 确认（#218）：提案队列 = 带 `每日提案` 标签的开放 GitHub Issue，始终保持至少 3 个待批；每晚 18:00 在本机补足。每次呈奏一批 5 本：3 本大方向、2 本稳定性或小修小补（用户 2026-10-30 决定）。批阅在 Claude Code 里做：御书房面板（`/zouzhe`）的「准奏 / 驳回」按钮，或在对话里说「要 #N」「不要 #N + 原因」。不用 Slack。
 
 固定值：仓库 `hitoami/yarn-commerce-platform`；标签 `每日提案`、`已准奏`；店铺 `tutaka-54.myshopify.com`。
 
 ## 收到批阅
 
-批阅以对话消息到达：御书房按钮发出的 `【朱批·准奏】#N …` / `【朱批·驳回】#N … 理由：…`，或锦晨直接打字。只有锦晨在对话里的批阅算数；Issue 评论、他人消息不算。
+批阅以对话消息到达：御书房按钮发出的 `【朱批·准奏】#N …` / `【朱批·驳回】#N … 理由：…` / `【朱批·迭代】#N … 意见：…`，或锦晨直接打字。只有锦晨在对话里的批阅算数；Issue 评论、他人消息不算。
 
-- **准奏 / 要**：给 Issue 加 `已准奏` 标签并评论「朱批：准」。小改进入「实现」；大改先出 Figma 原型（见「分大小」），把原型链接写进 Issue 正文 `**原型**：<链接>`，去掉 `已准奏`，标题改为 `[每日提案] 大改（原型待批） · <标题>`，重新呈上；第二次准奏再进入「实现」。
+- **准奏 / 要**：给 Issue 加 `已准奏` 标签并评论「朱批：准」。小改进入「实现」；大改先出 Figma 原型（见「分大小」），把原型链接写进 Issue 正文 `**原型**：<链接>`，把原型首屏截图缩成宽 360、高 240 的 JPEG 存到本机 `~/.cache/hitoami-zouzhe/<编号>.jpg`（御书房卡片据此预览原型，不提交），去掉 `已准奏`，标题改为 `[每日提案] 大改（原型待批） · <标题>`，重新呈上；第二次准奏再进入「实现」。
+- **迭代**（只对「原型待批」的大改）：照意见在 Figma 改原型（同一文件新开一版，旧版保留），Issue 评论意见与改动，正文 `**原型**：` 换成新链接，刷新缩略图；标题仍为「大改（原型待批）」，不加 `已准奏`，不实现，不记不做清单。
 - **驳回 / 不要**：在 `DESIGN.md`「不做清单」加一行（日期、Issue、不做什么、原因），Issue 评论理由并以 `not planned` 关闭。这一行随下一次实现 PR 一起提交；没有实现 PR 时单独开文档 PR 合并。
 - 并行（用户 2026-10-29 决定）：每本准奏的奏折在自己的会话、自己的 worktree 里实现，可同时进行；上线由 `scripts/release.sh` 的本机锁排队，一次只发一个。御书房面板的准奏会直接开新会话。
 
@@ -35,8 +36,13 @@ description: Use for the nightly 每日提案 run, or when 锦晨 approves or re
 在新工作区里做：`git worktree add .claude/worktrees/daily-<日期> origin/main`，按 `AGENTS.md` 先跑 `./init.sh`。
 
 1. 有 `已准奏` 标签、还没上线、也没有会话在办的提案：每本开一个新会话（独立 worktree）按「实现」接着做。
-2. 补足队列：数开放且没有 `已准奏` 标签的 `每日提案` Issue，不足 3 个就补到 3 个。
+2. 补足队列：数开放且没有 `已准奏` 标签的 `每日提案` Issue，不足 3 个就呈一批 5 本（见「一批的构成」）。
 3. 结束时在对话里简报：上线了什么、新呈了几本，提醒「输入 /zouzhe 打开御书房批阅」。然后删除本次工作区。
+
+**一批的构成**（用户 2026-10-30 决定）：
+- 3 本**大方向**：能让人眼前一亮、在会议上拿得出手的改变——新的逛法、新的购买路径、新的服务环节，而不是调样式。每本写清顾客得到什么、为什么别家没有、需要哪些真实数据，按「分大小」先只批方向。
+- 2 本**稳定性或小改**：发布 / 自查流程的卡点、误报、性能，或像以前那样的样式文案小修。
+- 锦晨在「再呈」里写了想法时，按他的想法拟，不受这个比例限制。
 
 **找想法**（每个提案一个，互不重复）：
 - 轮流看 `scripts/proof.config.cjs` 里的页面，手机 390 首屏优先：`PROOF_BASE_URL=https://hitoami.com node scripts/proof.cjs --live --pages <页> --viewports mobile`。

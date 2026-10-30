@@ -11,6 +11,12 @@ CHECK=""
 [ "${1:-}" = "--check" ] && { CHECK=1; shift; }
 LABEL="${1:?用法：scripts/release.sh \"<内容> (PR-<编号>)\"}"
 NAME="hitoami release $(date +%F) $LABEL"
+# #245：Shopify 主题名最多 50 个字符；超长要在推送前拦下，否则推送已覆盖备用主题、重命名才报错。
+chars() { node -e 'console.log([...process.argv[1]].length)' "$1"; }
+if [ "$(chars "$NAME")" -gt 50 ]; then
+  echo "主题名「${NAME}」超过 Shopify 上限 50 个字符：内容说明最多 $((50 - $(chars "hitoami release $(date +%F) "))) 个字符，请缩短后重试。" >&2
+  exit 1
+fi
 WORK="$(mktemp -d)"
 # 几个会话可能同时准奏上线：本机同一时间只跑一个发布，其余排队（最多等 30 分钟；超过 1 小时的锁视为残留）。
 mkdir -p "$HOME/.cache"
