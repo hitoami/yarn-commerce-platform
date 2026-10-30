@@ -29,16 +29,29 @@ flowchart LR
     Preview --> QA[human acceptance]
     QA --> Release[main to production PR]
     Release --> Approval[release owner approval]
-    Approval --> Live[merge and publish]
+    Approval --> Live[merge, push new theme, publish]
 ```
 
 ## Branches
 
 - `main`：日常集成分支，目标是连接未发布 Shopify Theme。
-- `production`：线上发布分支；在正式上线前保持与已发布主题断开。
+- `production`：已批准上线的代码；**没有连接线上主题**，合并后网站不会变化。
 - `codex/<issue>-<slug>`：每个 Issue 一个短期分支。
 
-如果 `production` 已连接发布主题，合并到该分支就是上线动作，因此人工批准必须发生在合并之前。
+## 上线步骤
+
+每次上线都需要当次明确的人工批准（见 `AGENTS.md` 生产安全）。
+
+1. 开 `main` → `production` 的 PR 并合并。
+2. 拉取线上主题的设置文件，与 `production` 比对，避免覆盖后台改过的内容：
+   `shopify theme pull --theme <线上主题 ID> --only 'config/*.json' --only 'templates/*.json' --only 'sections/*.json' --path <临时目录>`
+   有差异时先把后台改动并回仓库，再继续。
+3. 把 `production` 推成一份新的未发布主题，命名 `hitoami release <日期> <内容> (PR-<编号>)`：
+   `shopify theme push --unpublished --theme "<名称>" --path <production 代码目录>`
+4. 发布这份新主题：`shopify theme publish --theme <新主题 ID> --force`，再用 `shopify theme list` 确认它是 live。
+5. 在线上地址跑 `node scripts/proof.cjs --live`（设置 `PROOF_BASE_URL`），在对应 Issue 记下新主题名称、ID 和回滚方式。
+
+回滚：在 Shopify 后台重新发布上一版 release 主题。
 
 ## Issue readiness
 
