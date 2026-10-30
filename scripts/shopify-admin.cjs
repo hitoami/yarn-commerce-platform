@@ -4,12 +4,14 @@
 //
 //   npm run admin -- summary
 //   npm run admin -- coverage ja
+//   npm run admin -- gaps        (content gap report as Markdown, read-only)
 //   npm run admin -- '{ shop { name } }'
 //   npm run admin -- -f query.graphql --vars '{"first":5}'
 //   npm run admin -- --write -f change.graphql   (mutations need --write)
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { findGaps, renderGaps } = require('./content-gaps.cjs');
 
 const API_VERSION = '2026-07';
 
@@ -126,25 +128,70 @@ async function coverage(gql, locale) {
   return { locale, coverage: out };
 }
 
+const GAP_PRODUCTS = `query($after: String) {
+  products(first: 100, after: $after, query: "status:active") {
+    nodes {
+      handle title productType tags descriptionHtml tracksInventory totalInventory
+      variantsCount { count } mediaCount { count }
+      metafields(first: 50, namespace: "yarn") { nodes { key value } }
+      translations(locale: "ja") { key value outdated }
+    }
+    pageInfo { hasNextPage endCursor }
+  }
+}`;
+
+const GAP_PROJECTS = `query($after: String) {
+  metaobjects(type: "yarn_project", first: 50, after: $after) {
+    nodes {
+      handle displayName
+      fields { key value references(first: 30) { nodes { ... on Metaobject { handle fields { key value } } } } }
+    }
+    pageInfo { hasNextPage endCursor }
+  }
+}`;
+
+async function fetchAll(gql, query, root) {
+  const nodes = [];
+  let after = null;
+  do {
+    const page = (await gql(query, { after }))[root];
+    nodes.push(...page.nodes);
+    after = page.pageInfo.hasNextPage ? page.pageInfo.endCursor : null;
+  } while (after);
+  return nodes;
+}
+
+async function gaps(gql) {
+  const products = (await fetchAll(gql, GAP_PRODUCTS, 'products')).map(p => ({
+    ...p,
+    variantsCount: p.variantsCount.count,
+    mediaCount: p.mediaCount.count,
+    metafields: p.metafields.nodes,
+  }));
+  const projects = await fetchAll(gql, GAP_PROJECTS, 'metaobjects');
+  return renderGaps(findGaps({ products, projects }));
+}
+
 async function main() {
   const opts = parseArgs(process.argv.slice(2));
   const [first, ...rest] = opts.positional;
   const env = loadEnv(process.cwd());
   const gql = client(env.store, await getToken(env));
 
+  if (first === 'gaps') return gaps(gql);
   if (first === 'coverage') {
     if (!rest[0]) throw new Error('Usage: coverage <locale>, e.g. coverage ja');
     return coverage(gql, rest[0]);
   }
   const query = opts.file ? fs.readFileSync(opts.file, 'utf8') : PRESETS[first] || first;
-  if (!query) throw new Error('Usage: npm run admin -- <summary | coverage <locale> | GraphQL query | -f file.graphql> [--vars JSON] [--write]');
+  if (!query) throw new Error('Usage: npm run admin -- <summary | gaps | coverage <locale> | GraphQL query | -f file.graphql> [--vars JSON] [--write]');
   if (isMutation(query) && !opts.write) throw new Error('Refusing to run a mutation without --write');
   return gql(query, opts.vars);
 }
 
 if (require.main === module) {
   main()
-    .then(result => console.log(JSON.stringify(result, null, 2)))
+    .then(result => console.log(typeof result === 'string' ? result : JSON.stringify(result, null, 2)))
     .catch(err => { console.error(err.message); process.exit(1); });
 }
 
