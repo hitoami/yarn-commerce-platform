@@ -198,10 +198,8 @@
                                 {%- for option in item.options_with_values -%}
                                   <div class="product-option">
                                     <dt>{% render 'yarn-option-label', option_name: option.name %}:</dt>
-                                    <dd>
-                                      {{ option.value -}}
-                                      {%- unless forloop.last %}, {% endunless %}
-                                    </dd>
+                                    {%- comment -%}#221：每个选项各占一行，不再加 Rise 的逗号分隔。{%- endcomment -%}
+                                    <dd> {{ option.value }}</dd>
                                   </div>
                                 {%- endfor -%}
                               {%- endif -%}
