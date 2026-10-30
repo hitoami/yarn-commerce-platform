@@ -18,7 +18,7 @@ description: Use for the nightly 每日提案 run or when the user asks to proce
 列出带 `每日提案` 标签的开放 Issue。每个 Issue 正文末尾记有 `slack-ts: <消息 ts>`；读那条消息的消息串。
 
 - 只认 `U0BV2A9F7SQ` 的回复，且不是本流程自己发的消息（本流程的消息都以 🧶 开头）。
-- 「要」：进入第 2 步。一次运行最多实现 2 个，其余在消息串回复「已排队，明晚做」。
+- 「要」：小改进入第 2 步；大改先出 Figma 原型（见第 3 步「分大小」），贴到消息串，等第二次「要」再进入第 2 步。一次运行最多处理 2 个，其余在消息串回复「已排队，明晚做」。
 - 「不要 + 原因」：在 `DESIGN.md`「不做清单」加一行（日期、Issue、不做什么、原因），以 `not planned` 关闭 Issue，在消息串回复「已记下」。
 - 其他内容（提问、修改意见）：在消息串回答；需要改提案就改 Issue 和图，再回复。不算批准。
 - 没有回复：不动。
@@ -48,12 +48,12 @@ description: Use for the nightly 每日提案 run or when the user asks to proce
 
 **分大小**：
 - 小改（只动样式、文案或现有 section 设置）：不出 Figma。附现状截图和参考图。
-- 大改（新 section、新页面、结构重排）：先 `node scripts/figma-capture.cjs <线上 URL> <captureId>` 把现状原样送进 Figma，在副本上改出改后稿，按节点路径定位修改，不按名字 `findOne`。
+- 大改（新 section、新页面、结构重排）：提案只写文字和现状截图，先请用户批准方向（用户 2026-10-29 决定，省去被拒提案的原型成本）。第一次「要」之后才出原型：`node scripts/figma-capture.cjs <线上 URL> <captureId>` 把现状原样送进 Figma，在副本上改出改后稿，按节点路径定位修改，不按名字 `findOne`。
 
 **发出去**：
 1. 开 Issue（标签 `每日提案`）：问题、改成什么、依据、大小、影响页面和语言、验收。
 2. 发 Slack #hitoami，一条消息：
-   `🧶 每日提案 #<issue>：<标题>` / 问题 / 改成 / 大小 / Issue 链接（大改附 Figma 链接）/ `回复「要」直接实现并上线，或「不要 + 原因」`。
+   `🧶 每日提案 #<issue>：<标题>` / 问题 / 改成 / 大小 / Issue 链接 / 小改写 `回复「要」直接实现并上线，或「不要 + 原因」`；大改写 `回复「要」后先出 Figma 原型给你看，确认后再上线`。
    截图放在消息串里。
 3. 把消息 ts 记到 Issue 正文末尾：`slack-ts: <ts>`。
 
