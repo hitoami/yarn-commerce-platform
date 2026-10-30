@@ -22,10 +22,7 @@
 >
   <p class="yp-sticky__error" role="alert" data-sticky-error hidden></p>
   <div class="yp-sticky__bar" role="region" aria-label="{{ 'yarn_pdp.sticky_label' | t }}">
-    {%- comment -%}#182 v2：滚动后也能看到在买哪一款（借鉴 Woobles 吸底栏）。{%- endcomment -%}
-    {%- if product.featured_image != blank -%}
-      <span class="yp-sticky__thumb" aria-hidden="true">{{ product.featured_image | image_url: width: 104 | image_tag: width: 52, height: 52, loading: 'lazy', alt: '' }}</span>
-    {%- endif -%}
+    {%- comment -%}#221（用户 2026-10-29 准奏）：去掉 #182 的商品小图，390 宽下按钮才能完整显示「加入 · 合计」。{%- endcomment -%}
     {%- unless product.has_only_default_variant -%}
       <span class="yp-sticky__chip" id="YarnStickyChip-{{ section_id }}">
         {%- if sticky_swatch.color != blank or sticky_swatch.image != blank -%}
