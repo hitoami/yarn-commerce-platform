@@ -42,6 +42,10 @@ product-info.yarn-product-page--yarn .product-form__input--pill input[type='radi
   border-color: var(--yarn-home-action) !important; box-shadow: inset 0 0 0 1px var(--yarn-home-action);
   background-color: var(--yarn-bg-surface) !important; color: var(--yarn-text-primary) !important; font-weight: 600;
 }
+/* #222：色号有变体图时，数字左边加 28px 小圆图。 */
+product-info.yarn-product-page--yarn .product-form__input--pill input[type='radio'] + label:has(.yp-pill-photo) { display: inline-flex; gap: 6px; padding: 0 12px 0 7px; }
+product-info.yarn-product-page--yarn .yp-pill-photo { flex: none; width: 28px; height: 28px; overflow: hidden; border-radius: var(--yarn-radius-pill); box-shadow: inset 0 0 0 1px var(--yarn-border-card); }
+product-info.yarn-product-page--yarn .yp-pill-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
 product-info.yarn-product-page--yarn .product-form__input--pill input[type='radio']:focus-visible + label { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: 2px; }
 /* 有色值时的原生色板（视觉稿 1a）：44px 圆，选中为 2px 灰棕环，色块带细线。 */
 product-info.yarn-product-page--yarn .product-form__input--swatch { display: flex; flex-wrap: wrap; gap: 6px; }
