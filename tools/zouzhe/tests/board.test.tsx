@@ -45,3 +45,39 @@ test('the board draws three lanes, a folded archive, and opens a memorial', asyn
     await ui.unmount()
   }
 })
+
+test('缓议 moves a pending memorial to the folded 缓议 box by labelling the Issue, and 取回 brings it back', async ($, on) => {
+  let labels: { name: string }[] = []
+  const edits: string[][] = []
+  on('command.register', () => ({ value: { command: 'zouzhe' } }))
+  on('ui.open', () => ({ value: { isPlaced: true } }))
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  on('clock.now', () => ({ value: Date.parse('2026-10-31T12:00:00Z') }))
+  on('process.run', (_, e) => {
+    if (e.argv[0] === 'gh' && e.argv[2] === 'edit') {
+      edits.push([...e.argv])
+      labels = e.argv.includes('--add-label') ? [{ name: '缓议' }] : []
+      return { value: { exitCode: 0, stdout: '', stderr: '' } as never }
+    }
+    const list = [issue(283, '[每日提案] 运营 + 小改 · 新手友好胶囊', { labels, updatedAt: '2026-10-31T12:05:00Z' })]
+    return { value: { exitCode: 0, stdout: e.argv[0] === 'gh' ? JSON.stringify(list) : '', stderr: '' } as never }
+  })
+
+  await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: true })
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  const has = async (words: string) =>
+    (await ui.findAll({ type: 'Text' })).some((t: { text?: string }) => (t.text ?? '').replace(/​/g, '').includes(words))
+
+  expect(await has('1 本待朱批')).toBe(true)
+  await ui.press({ key: 'shelve-card-283' })
+  expect(edits.at(-1)).toEqual(['gh', 'issue', 'edit', '283', '--repo', 'hitoami/yarn-commerce-platform', '--add-label', '缓议'])
+  expect(await has('案牍已清')).toBe(true)
+  // The 缓议 box is folded until opened; then its row offers 取回.
+  expect(await has('新手友好胶囊')).toBe(false)
+  await ui.press({ key: 'fold-shelved' })
+  expect(await has('新手友好胶囊')).toBe(true)
+  await ui.press({ key: 'row-back-283' })
+  expect(edits.at(-1)).toContain('--remove-label')
+  expect(await has('1 本待朱批')).toBe(true)
+  await ui.unmount()
+})

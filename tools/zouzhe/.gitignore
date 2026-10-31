@@ -1,2 +1,5 @@
 # Claude Code 载入插件时生成的类型文件，不提交。
 .claude-plugin/types/
+# tsc 在没有生成类型时也会吐出 .js，不提交。
+hooks/*.js
+tests/*.js
