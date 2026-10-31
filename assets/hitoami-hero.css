@@ -1,16 +1,16 @@
 /* Home hero: full-bleed scene carousel (from #110), independent of the guide strip below. */
-hitoami-hero { display: block; isolation: isolate; background: var(--yarn-scrollbar-track); color: var(--yarn-text-warm); }
+hitoami-hero { display: block; isolation: isolate; background: var(--yarn-bg-page); color: var(--yarn-text-warm); }
 hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 4px; }
 .hitoami-hero { position: relative; isolation: isolate; }
 /* #167: the built-in scenes keep the subject in the lower half, so the phone hero is a little taller to clear the copy. */
 .hitoami-slides { position: relative; min-height: 660px; min-height: clamp(600px, 84svh, 760px); overflow: hidden; touch-action: pan-y pinch-zoom; }
-.hitoami-slide { position: absolute; inset: 0; background: var(--yarn-scrollbar-track); }
+.hitoami-slide { position: absolute; inset: 0; background: var(--yarn-bg-page); }
 /* A copy-safe veil stays independent of merchant artwork. */
-.hitoami-slide::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, color-mix(in srgb, var(--yarn-scrollbar-track) 78%, transparent), color-mix(in srgb, var(--yarn-scrollbar-track) 25%, transparent) 38%, transparent 58%); }
+.hitoami-slide::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, color-mix(in srgb, var(--yarn-bg-page) 78%, transparent), color-mix(in srgb, var(--yarn-bg-page) 25%, transparent) 38%, transparent 58%); }
 .hitoami-slide--light::after { background: linear-gradient(180deg, color-mix(in srgb, var(--yarn-text-warm) 88%, transparent), color-mix(in srgb, var(--yarn-text-warm) 60%, transparent) 38%, transparent 62%); }
 .hitoami-slide[hidden], .hitoami-controls[hidden] { display: none; }
 /* Soft wavy lower edge into the page ground. */
-.hitoami-wave { position: absolute; bottom: -1px; left: 0; z-index: 1; width: 100%; height: 30px; fill: var(--yarn-scrollbar-track); pointer-events: none; }
+.hitoami-wave { position: absolute; bottom: -1px; left: 0; z-index: 1; width: 100%; height: 30px; fill: var(--yarn-bg-page); pointer-events: none; }
 .hitoami-scene, .hitoami-scene img { position: absolute; inset: 0; width: 100%; height: 100%; }
 .hitoami-scene img { object-fit: cover; object-position: var(--scene-focus, 50%) 50%; }
 /* #131 image-only campaign slides: no copy veil; the whole slide can be the link. */
@@ -48,10 +48,12 @@ hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus)
 }
 @media (min-width: 750px) {
   .hitoami-slides { min-height: 620px; height: clamp(620px, 71svh, 880px); }
-  /* Issue 274: the window-corner series fills the whole hero; the left-side veil keeps the copy on the sheer curtain legible. */
+  /* Issue 274: the built-in window-corner photo is a right-docked 3:2 box at full hero height, so wide screens see
+     the whole chair instead of a zoomed crop; its left edge fades into the page cream behind the copy. */
   .hitoami-slide--default-scene { background: var(--yarn-bg-page); }
-  .hitoami-slide--default-scene .hitoami-scene img { object-position: 50% 50%; }
-  .hitoami-slide::after { background: linear-gradient(90deg, color-mix(in srgb, var(--yarn-scrollbar-track) 88%, transparent), color-mix(in srgb, var(--yarn-scrollbar-track) 50%, transparent) 34%, transparent 56%); }
+  .hitoami-slide--default-scene .hitoami-scene { left: auto; right: 0; width: auto; max-width: 100%; aspect-ratio: 3 / 2; -webkit-mask-image: linear-gradient(90deg, transparent, var(--yarn-text-primary) 24%); mask-image: linear-gradient(90deg, transparent, var(--yarn-text-primary) 24%); }
+  .hitoami-slide--default-scene .hitoami-scene img { object-position: 100% 50%; }
+  .hitoami-slide::after { background: linear-gradient(90deg, color-mix(in srgb, var(--yarn-bg-page) 88%, transparent), color-mix(in srgb, var(--yarn-bg-page) 50%, transparent) 34%, transparent 56%); }
   .hitoami-slide--light::after { background: linear-gradient(90deg, color-mix(in srgb, var(--yarn-text-warm) 88%, transparent), color-mix(in srgb, var(--yarn-text-warm) 55%, transparent) 34%, transparent 60%); }
   .hitoami-copy { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; box-sizing: border-box; width: min(var(--yarn-commerce-max), calc(100% - 64px)); max-width: none; height: 100%; margin: 0 auto; padding: 0 0 40px; }
   .hitoami-copy > * { max-width: 640px; }
