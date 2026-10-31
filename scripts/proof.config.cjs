@@ -39,6 +39,18 @@ module.exports = {
         { noOverflow: true },
         { shot: true },
       ] },
+      // #284：新手友好胶囊只列有新手理由的毛线，卡片下出现理由。
+      { key: 'beginner', label: '新手友好', steps: [
+        { waitFor: '[data-ycb-beginner]' },
+        { click: '[data-ycb-beginner]' },
+        // 列表载完全部商品、筛好后才去掉 aria-busy。
+        { waitFor: '[data-ycb-grid]:not([aria-busy])' },
+        { expect: '.ycb-grid .yx-product-card', minimum: 1, label: '新手友好的毛线' },
+        { expect: '.ycb-reason', minimum: 1, label: '卡片下的新手理由' },
+        { expect: '[data-ycb-grid] > li[hidden]', present: true, minimum: 1, label: '其他毛线被筛掉' },
+        { noOverflow: true },
+        { shot: true },
+      ] },
       { key: 'map', label: '手感地图', steps: [
         { click: '[data-ycb-view="map"]' },
         { waitFor: '.ycb-ball' },

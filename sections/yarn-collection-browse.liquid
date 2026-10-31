@@ -7,6 +7,7 @@
   分类胶囊与首页圆图、搜索页分类是同一个 Search & Discovery 筛选（filter.p.m.yarn.texture 等），只显示有商品的分类。
   「筛选」抽屉只列出后台真实开启的其他筛选（目前是供货情况）与价格带 block；没有的字段不显示。
   商品卡与首页同一张 yarn-pick-card；集合还没有商品（手工成品上架前）时显示「准备中」占位，不含商品名、价格或库存。
+  #284 新手友好（用户 2026-10-31 准奏）：只列填了新手理由的毛线，打开后卡片下显示理由；和粗细一样在浏览器里筛，网址 ycb_beginner=1。
   #243 手感地图（用户 2026-10-30 批准第 4 版原型，卡片保持原样、粗细做成胶囊）：毛线目录的另一种看法，「列表 / 手感地图」切换在同一页。
   粗细五档只由规格行（yarn.spec_line 的克数与米数）算出，缺米数的不上图；粗细、对比、地图都在浏览器里对已载入的全部商品做，
   状态记在网址 ycb_view / ycb_weight / ycb_cmp / ycb_here 上。没有 JS 时只有原来的列表。
@@ -41,6 +42,13 @@
     endif
   endfor
   assign cb_sort = collection.sort_by | default: collection.default_sort_by
+  assign cb_beginner_first = blank
+  unless cb_handmade
+    capture cb_beginner_first
+      render 'yarn-beginner-first', beginner_collection: collection
+    endcapture
+    assign cb_beginner_first = cb_beginner_first | strip
+  endunless
   assign cb_sort_keys = 'manual,best-selling,price-ascending,price-descending,created-descending' | split: ','
 -%}
 {%- capture cb_chips -%}
@@ -146,6 +154,16 @@
               <span class="ycb-chip__count">{{ collection.all_products_count }}</span>
             </a>
           </li>
+          {%- if cb_beginner_first != blank -%}
+            {%- assign cb_beginner_product = all_products[cb_beginner_first] -%}
+            {%- assign cb_beginner_image = cb_beginner_product.metafields.yarn.card_image.value | default: cb_beginner_product.featured_image -%}
+            <li data-ycb-js hidden>
+              <button class="ycb-chip ycb-chip--beginner" type="button" data-ycb-beginner aria-pressed="false">
+                <span class="ycb-chip__photo">{%- if cb_beginner_image != blank -%}{{ cb_beginner_image | image_url: width: 120 | image_tag: widths: '80, 120', sizes: '40px', loading: 'lazy', alt: '' }}{%- endif -%}</span>
+                <span class="ycb-chip__name">{{ 'yarn_collection.beginner' | t }}</span>
+              </button>
+            </li>
+          {%- endif -%}
           {%- unless cb_handmade -%}
             <li data-ycb-js hidden>
               <button class="ycb-chip ycb-chip--weight" type="button" data-ycb-weight-open aria-haspopup="dialog" aria-controls="CollectionWeight-{{ section.id }}">
@@ -230,7 +248,7 @@
                 endfor
               endcapture
             -%}
-            <li class="ycb-grid__item" data-ycb-item="{{ product.handle }}" data-ycb-spec="{{ product.metafields.yarn.spec_line.value | escape }}" data-ycb-cats="{{ cb_item_cats | strip }}"{% if cb_item_image != blank %} data-ycb-img="{{ cb_item_image | image_url: width: 160 }}"{% endif %}>
+            <li class="ycb-grid__item"{% if product.metafields.yarn.beginner_reason.value != blank %} data-ycb-beginner-item{% endif %} data-ycb-item="{{ product.handle }}" data-ycb-spec="{{ product.metafields.yarn.spec_line.value | escape }}" data-ycb-cats="{{ cb_item_cats | strip }}"{% if cb_item_image != blank %} data-ycb-img="{{ cb_item_image | image_url: width: 160 }}"{% endif %}>
               {%- comment -%}#189：第一行（手机 2 张、桌面 4 张）是首屏 LCP 候选，不懒加载。{%- endcomment -%}
               {%- assign cb_eager = false -%}
               {%- if forloop.index <= 4 -%}{%- assign cb_eager = true -%}{%- endif -%}
@@ -238,6 +256,9 @@
                 {%- render 'yarn-pick-card', card_product: product, handmade: true, eager: cb_eager -%}
               {%- else -%}
                 {%- render 'yarn-pick-card', card_product: product, eager: cb_eager -%}
+              {%- endif -%}
+              {%- if product.metafields.yarn.beginner_reason.value != blank -%}
+                <p class="ycb-reason"><span class="yx-product-card__badge">{{ 'yarn_project.card_badge_beginner' | t }}</span> {{ product.metafields.yarn.beginner_reason.value | escape }}</p>
               {%- endif -%}
             </li>
           {%- endfor -%}

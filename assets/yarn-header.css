@@ -297,6 +297,8 @@
 
 
 .header-wrapper .yarn-drawer-row__total { color: var(--yarn-text-muted); font-family: var(--yarn-body); font-size: 1.3rem; }
+/* Issue 284：毛线行下的「第一次织毛线」，缩进一级、比主行小一号。 */
+.header-wrapper .yarn-drawer-sub { display: flex; align-items: center; min-height: var(--yarn-touch); padding: 0 16px 0 28px; color: var(--yarn-action); font-family: var(--yarn-body); font-size: 1.4rem; font-weight: 700; text-decoration: none; }
 /* Rise absolutely positions drawer item icons and hides carets; these arrows sit in the row instead. */
 .header-wrapper .menu-drawer__menu-item > .yarn-drawer-row__arrow,
 .header-wrapper .yarn-drawer-language > .yarn-drawer-row__arrow {
@@ -427,6 +429,9 @@
   .yarn-mega__title { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 2.2rem; line-height: 1.4; }
   .yarn-mega__all { color: var(--yarn-action); font-size: 1.5rem; text-decoration: none; white-space: nowrap; }
   .yarn-mega__all:hover { text-decoration: underline; }
+  .yarn-mega__links { display: flex; align-items: center; gap: var(--yarn-space-5); }
+  .yarn-mega__first { padding: 6px 14px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: 1.5rem; font-weight: 700; text-decoration: none; white-space: nowrap; }
+  .yarn-mega__first:hover { text-decoration: underline; }
   .yarn-mega__tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 24px; margin: 0; padding: 0; }
   .yarn-mega .yarn-nav-tile { flex-direction: row; align-items: center; gap: 20px; min-height: 128px; padding: 16px; }
   .yarn-mega .yarn-nav-tile:hover { box-shadow: inset 0 0 0 1px var(--yarn-border-card); }
