@@ -10,7 +10,6 @@
 {%- if request.page_type == 'index' -%}{%- assign pp_guided = true -%}{%- endif -%}
 {%- capture pp_steps -%}
   {%- if pp_guided -%}
-    {%- assign step_shown = 0 -%}
     {%- for step in (1..3) -%}
       {%- assign step_key = 'step_' | append: step -%}
       {%- capture step_text -%}{%- render 'yarn-setting-text', settings: section.settings, key: step_key, allow_blank: true -%}{%- endcapture -%}
@@ -18,11 +17,10 @@
       {%- capture step_note -%}{%- render 'yarn-setting-text', settings: section.settings, key: step_note_key, allow_blank: true -%}{%- endcapture -%}
       {%- if step_text != blank -%}
         <li class="yx-picks__step">
-          {%- if step_shown > 0 -%}<span class="yx-picks__thread" aria-hidden="true"></span>{%- endif -%}
-          <span class="yx-picks__number">{{ step }}</span>{{ step_text | escape }}
+          <span class="yx-picks__number" aria-hidden="true">0{{ step }}</span>
+          <span class="yx-picks__step-title">{{ step_text | escape }}</span>
           {%- if step_note != blank -%}<span class="yx-picks__step-note">{{ step_note | escape }}</span>{%- endif -%}
         </li>
-        {%- assign step_shown = step_shown | plus: 1 -%}
       {%- endif -%}
     {%- endfor -%}
   {%- endif -%}
@@ -45,7 +43,6 @@
   <div class="yx-picks__inner page-width">
     <div class="yx-picks__head">
       <div class="yx-picks__titles">
-        <p class="yarn-section-eyebrow">{{ 'yarn_project.eyebrow_projects' | t }}</p>
         <h2 id="ProjectPicks-{{ section.id }}">{{ pp_heading | escape }}</h2>
         {%- if pp_note != blank -%}<p class="yx-picks__note">{{ pp_note | escape }}</p>{%- endif -%}
       </div>
@@ -78,15 +75,15 @@
     {"type": "text", "id": "step_3", "label": "日文 · 第 3 步(可空)", "default": "LINEで編み方を受け取る"},
     {"type": "text", "id": "step_3_zh", "label": "中文 · 第 3 步(可空)", "default": "LINE 领教程"},
     {"type": "text", "id": "step_3_en", "label": "英文 · 第 3 步(可空)", "default": "Get a LINE tutorial"},
-    {"type": "text", "id": "step_1_note", "label": "日文 · 第 1 步桌面说明(可空)", "default": "写真から編みたい作品を選ぶ"},
-    {"type": "text", "id": "step_1_note_zh", "label": "中文 · 第 1 步桌面说明(可空)", "default": "从照片挑一件想织的"},
-    {"type": "text", "id": "step_1_note_en", "label": "英文 · 第 1 步桌面说明(可空)", "default": "Choose a project from the photos"},
-    {"type": "text", "id": "step_2_note", "label": "日文 · 第 2 步桌面说明(可空)", "default": "色と玉数は組み合わせ済み"},
-    {"type": "text", "id": "step_2_note_zh", "label": "中文 · 第 2 步桌面说明(可空)", "default": "颜色和团数已配好"},
-    {"type": "text", "id": "step_2_note_en", "label": "英文 · 第 2 步桌面说明(可空)", "default": "Colors and quantities are ready"},
-    {"type": "text", "id": "step_3_note", "label": "日文 · 第 3 步桌面说明(可空)", "default": "ご注文後に公式LINEを追加"},
-    {"type": "text", "id": "step_3_note_zh", "label": "中文 · 第 3 步桌面说明(可空)", "default": "下单后加官方 LINE"},
-    {"type": "text", "id": "step_3_note_en", "label": "英文 · 第 3 步桌面说明(可空)", "default": "Add our official LINE after ordering"},
+    {"type": "text", "id": "step_1_note", "label": "日文 · 第 1 步说明(可空)", "default": "写真から編みたい作品を選ぶ"},
+    {"type": "text", "id": "step_1_note_zh", "label": "中文 · 第 1 步说明(可空)", "default": "从照片挑一件想织的"},
+    {"type": "text", "id": "step_1_note_en", "label": "英文 · 第 1 步说明(可空)", "default": "Choose a project from the photos"},
+    {"type": "text", "id": "step_2_note", "label": "日文 · 第 2 步说明(可空)", "default": "色と玉数は組み合わせ済み"},
+    {"type": "text", "id": "step_2_note_zh", "label": "中文 · 第 2 步说明(可空)", "default": "颜色和团数已配好"},
+    {"type": "text", "id": "step_2_note_en", "label": "英文 · 第 2 步说明(可空)", "default": "Colors and quantities are ready"},
+    {"type": "text", "id": "step_3_note", "label": "日文 · 第 3 步说明(可空)", "default": "ご注文後に公式LINEを追加"},
+    {"type": "text", "id": "step_3_note_zh", "label": "中文 · 第 3 步说明(可空)", "default": "下单后加官方 LINE"},
+    {"type": "text", "id": "step_3_note_en", "label": "英文 · 第 3 步说明(可空)", "default": "Add our official LINE after ordering"},
     { "type": "metaobject_list", "id": "projects", "label": "作品及顺序", "metaobject_type": "yarn_project", "limit": 8 },
     { "type": "range", "id": "limit", "min": 2, "max": 8, "step": 1, "default": 4, "label": "最多显示" },
     { "type": "url", "id": "all_link", "label": "查看全部链接(可空)" },
