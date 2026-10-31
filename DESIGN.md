@@ -306,7 +306,7 @@ components:
 
 - 首屏到分类连成一条 `bg-band` 色带：品牌与分类上下 56px，分类顶部不再留白；其余区块在 `bg-page` 上，每块上下 72px。区块标题 32px / 600 `text-heading`，小标题 13px / 700 `action`，区块说明 15px `text-muted`，「查看全部 →」15px / 700 `action`。
 - 首屏切换：底部居中一条胶囊写出每张名字和「01 / 03」，取代圆点（#274，见下文「hitoami 首屏」）。
-- 品牌：图 460×300 比例、16px 圆角，与文字间距 56px；标题 28px / 1.5，正文 15px / 1.9；LINE 卡 `border-subtle` 细线、`action` 实心胶囊按钮（悬停 `text-warm`）。
+- 品牌：图 460×300 比例、16px 圆角，与文字间距 56px；标题 28px / 1.5，正文 15px / 1.9；LINE 入口见下文「品牌区 LINE 入口」，与手机同一行。
 - 分类：标题 28px / 600，标题行不放小猫（#151 删除）；五个圆图最大 200px、间距 24px，名称 15px / 500 正文字体，款数 12px `text-muted`；桌面不显示「查看全部毛线」。
 - 毛线商品：4 列 24px；卡片 `bg-sunken` 底、照片铺满，标题 / 规格 / 价格 16 / 14 / 21px 间距 8px，不显示品类行。
 - 本季入口：左文右图，图 624:334、16px 圆角；标题 `clamp(4rem, 3.6vw, 5.2rem)` / 600 / 1.25；按钮为 `action` 实心胶囊（悬停 `action-strong`）。
@@ -411,7 +411,7 @@ components:
 - **公告条**:奶油底,文案与三语译文都存在 `announcement` block 的 `text` / `text_zh` / `text_en`,不在 Liquid 写死;首页有 Hero 时隐藏。
 - **语言一致性**:页面上的品类、用途一类标签一律走 Theme locale,不渲染 Shopify 的 `product.type`(该字段不可翻译,原值混着日文与中文)。404 标题用 `templates.404.title`,不用 Shopify 返回的英文 `page_title`。商品标题、描述、选项名与 Metaobject 正文属于 Shopify 内容层,由 Translate & Adapt 维护。
 
-首页品牌区的手机 LINE 入口（#196，用户 2026-10-24 选定 A）使用 `border-subtle` 顶部分隔线、40px 官方 LINE 图标、18px / 700 的 `text-heading` 添加好友文字与 `action` 右箭头；主链接至少 56px 高。下方 14px `text-muted` 原生二维码展开控件至少 44px 高，与主文字左对齐。无卡片底色，不改全局品牌色；二维码保持原始比例。构图与素材来源见 [手机 A](docs/design/approved/196-line-mobile-a.source.md)，手机实现已获用户同日发布批准；桌面沿用原布局。
+首页品牌区 LINE 入口桌面与手机同一行（#196 手机 A，#292 用户 2026-10-31 选定 [Figma 方案 A](https://www.figma.com/design/dgYI1k4yzVLB1qCcSTA07C) 并要求两端去掉箭头）：`border-subtle` 顶部分隔线、官方 LINE 图标（手机 40px / 桌面 48px）、`text-heading` 添加好友文字（18px / 700）及下方 `text-muted` 说明（手机 13px / 桌面 14px），无箭头、无卡片底色；主链接至少 56px 高。桌面行右侧直接显示 84px 二维码（6px 内边距、`border-card` 细框）与 12px「手机扫码添加」；手机用 14px `text-muted` 原生二维码展开控件（至少 44px 高，与文字左对齐）。二维码保持原始比例。未填 LINE 链接时仍显示联系页回退卡片。
 
 ## Do / Don't
 

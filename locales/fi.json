@@ -90,7 +90,8 @@
     "total_reviews": "arvosteluja yhteensä",
     "star_reviews_info": "{{ rating_value }}/{{ rating_max }} tähteä",
     "collapsible_content_title": "Pienenettävä sisältö",
-    "complementary_products": "Täydentävät tuotteet"
+    "complementary_products": "Täydentävät tuotteet",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

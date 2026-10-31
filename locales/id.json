@@ -90,7 +90,8 @@
     "total_reviews": "ulasan keseluruhan",
     "star_reviews_info": "{{ rating_value }} dari {{ rating_max }} bintang",
     "collapsible_content_title": "Konten yang dapat ditutup",
-    "complementary_products": "Produk pelengkap"
+    "complementary_products": "Produk pelengkap",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

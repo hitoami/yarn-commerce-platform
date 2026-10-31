@@ -90,7 +90,8 @@
     "total_reviews": "összes értékelés",
     "star_reviews_info": "{{ rating_max }}/{{ rating_value }} csillag",
     "collapsible_content_title": "Összecsukható tartalom",
-    "complementary_products": "Kiegészítő termékek"
+    "complementary_products": "Kiegészítő termékek",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

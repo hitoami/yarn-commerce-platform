@@ -90,7 +90,8 @@
     "total_reviews": "anmeldelser i alt",
     "star_reviews_info": "{{ rating_value }} ud af {{ rating_max }} stjerner",
     "collapsible_content_title": "Indhold, der kan skjules",
-    "complementary_products": "Supplerende produkter"
+    "complementary_products": "Supplerende produkter",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

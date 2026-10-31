@@ -90,7 +90,8 @@
     "total_reviews": "suma recenzji",
     "star_reviews_info": "{{ rating_value }} z {{ rating_max }} gwiazdek",
     "collapsible_content_title": "Zwijana treść",
-    "complementary_products": "Produkty uzupełniające"
+    "complementary_products": "Produkty uzupełniające",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

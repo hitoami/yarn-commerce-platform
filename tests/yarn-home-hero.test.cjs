@@ -74,3 +74,15 @@ test('hero capsule names every slide in the page language and swipes on phones (
   assert.match(js, /pointermove/);
   assert.doesNotMatch(js, /setInterval|setTimeout/);
 });
+
+test('home frosted header keeps the phone language sheet on screen (Issue 290)', () => {
+  // backdrop-filter / transform / filter on the header wrapper make it the containing block for position: fixed,
+  // which pinned the bottom language sheet above the screen on the home page. The blur lives on ::before instead.
+  const css = fs.readFileSync('assets/hitoami-hero.css', 'utf8');
+  for (const rule of css.match(/[^{}]*\.header-wrapper[^{}]*\{[^}]*\}/g) || []) {
+    const [selector, body] = rule.split('{');
+    if (/::before\s*$/.test(selector.trim())) continue;
+    assert.doesNotMatch(body, /backdrop-filter|transform|(^|[^-])filter:|contain:|will-change/, selector.trim());
+  }
+  assert.match(css, /\.header-wrapper:not\(\.scrolled-past-header \.header-wrapper\)::before \{[^}]*backdrop-filter: blur/);
+});

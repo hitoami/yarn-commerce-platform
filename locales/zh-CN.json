@@ -90,7 +90,8 @@
     "total_reviews": "总评论数",
     "star_reviews_info": "{{ rating_value }}/{{ rating_max }} 星",
     "collapsible_content_title": "可折叠内容",
-    "complementary_products": "互补产品"
+    "complementary_products": "互补产品",
+    "scan_line_qr": "手机扫码添加"
   },
   "blogs": {
     "article": {

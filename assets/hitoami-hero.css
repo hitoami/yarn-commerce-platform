@@ -76,7 +76,10 @@ hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus)
 /* The hero slides under the header by exactly its height (68px phone, 72px tablet, 84px desktop). */
 body:has(#MainContent > .shopify-section:first-child hitoami-hero) .section-header { margin-bottom: -68px; }
 @media (min-width: 600px) { body:has(#MainContent > .shopify-section:first-child hitoami-hero) .section-header { margin-bottom: -72px; } }
-body:has(#MainContent > .shopify-section:first-child hitoami-hero) .header-wrapper:not(.scrolled-past-header .header-wrapper) { background: color-mix(in srgb, var(--yarn-bg-surface) 80%, transparent); border: 0; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+/* Issue 290: the frosted band is painted on a pseudo-element. A backdrop-filter on the wrapper itself would make it the
+   containing block for fixed children, pinning the phone language sheet (fixed to the screen bottom) above the screen. */
+body:has(#MainContent > .shopify-section:first-child hitoami-hero) .header-wrapper:not(.scrolled-past-header .header-wrapper) { background: transparent; border: 0; isolation: isolate; }
+body:has(#MainContent > .shopify-section:first-child hitoami-hero) .header-wrapper:not(.scrolled-past-header .header-wrapper)::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: color-mix(in srgb, var(--yarn-bg-surface) 80%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 body:has(#MainContent > .shopify-section:first-child hitoami-hero) .shopify-section-header-sticky .header-wrapper { background: var(--yarn-bg-surface); }
 body:has(#MainContent > .shopify-section:first-child hitoami-hero) #YarnHeader { background: transparent; }
 body:has(#MainContent > .shopify-section:first-child hitoami-hero) .announcement-bar-section { display: none; }

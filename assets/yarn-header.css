@@ -579,7 +579,8 @@
   text-decoration: none;
 }
 .yarn-lang__option small { color: var(--yarn-text-muted); font-size: 1.2rem; font-weight: 400; }
-.yarn-lang__option:hover { background: var(--yarn-action-subtle-hover); }
+/* Issue 290: hover is a neutral sand tint so it never reads as the cream "current language" fill; touch screens skip it. */
+@media (hover: hover) { .yarn-lang__option:not([aria-current='true']):hover { background: var(--yarn-bg-band); } }
 .yarn-lang__option[aria-current='true'] { background: var(--yarn-action-subtle-bg); color: var(--yarn-action); }
 .yarn-lang__check { margin-left: auto; }
 
