@@ -19,7 +19,6 @@
 }
 .yarn-home-catalog__empty { padding: 24px 0; border-top: 1px solid var(--yarn-border-subtle); }
 .yarn-home-guide__intro > * { margin-top: 0; }
-.yarn-home-guide .yarn-home-guide__eyebrow { margin: 0 0 6px; color: var(--yarn-action); font-size: 13px; font-weight: 700; line-height: 1.2; }
 .yarn-home-guide .yarn-home-guide__note { margin: -4px 0 0; }
 .yarn-home-guide ol { margin: 20px 0 0; padding-left: 24px; }
 .yarn-home-guide li, .yarn-home-guide details { padding: 16px 0; border-top: 1px solid var(--yarn-border-subtle); }
@@ -56,7 +55,6 @@
   body:has(.hitoami-hero--catalog) .yarn-entries { padding: 26px 0 22px; }
   body:has(.hitoami-hero--catalog) .yarn-entries__inner { width: calc(100% - 48px); }
   body:has(.hitoami-hero--catalog) .yarn-entries__head { text-align: left; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__eyebrow { letter-spacing: .08em; text-indent: 0; color: var(--yarn-action); }
   body:has(.hitoami-hero--catalog) .yarn-entries__heading { font-size: 21px; font-weight: 400; margin-top: 9px; }
   body:has(.hitoami-hero--catalog) .yarn-entries__flourish, body:has(.hitoami-hero--catalog) .yarn-entries__hint { display: none; }
   body:has(.hitoami-hero--catalog) .yarn-entries__track { grid-template-rows: auto; grid-auto-columns: 85px; gap: 16px; }
@@ -70,14 +68,12 @@
 /* The supplied desktop reference uses compact circles and a shared content axis. */
 body:has(.hitoami-hero--catalog) .yarn-entries__photo { border-radius: 50%; }
 body:has(.hitoami-hero--catalog) .yarn-entries__head { text-align: left; position: relative; }
-body:has(.hitoami-hero--catalog) .yarn-entries__eyebrow { color: var(--yarn-action); letter-spacing: .08em; text-indent: 0; }
 body:has(.hitoami-hero--catalog) .yarn-entries__flourish { display: none; } /* no decoration beside the heading (#151) */
 .yarn-home-catalog.page-width, .yarn-home-guide.page-width { width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter))); max-width: none; margin-inline: auto; padding-inline: 0; }
 @media (min-width: 750px) {
   /* Brand and categories share one warm band; the categories continue it without a top gap. */
   body:has(.hitoami-hero--catalog) .yarn-entries { padding: 0 0 56px; }
   body:has(.hitoami-hero--catalog) .yarn-entries__head { display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; min-height: 68px; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__eyebrow { font-size: 13px; font-weight: 700; line-height: 1.2; letter-spacing: 0; }
   body:has(.hitoami-hero--catalog) .yarn-entries__heading { margin: 0; color: var(--yarn-text-heading); font-size: 28px; font-weight: 600; line-height: 1.25; letter-spacing: 0; }
   body:has(.hitoami-hero--catalog) .yarn-entries__bar:not(:has(.yarn-entries__tabs)) { display: none; }
   body:has(.hitoami-hero--catalog) .yarn-entries__scroller { margin-top: 32px; }
@@ -147,7 +143,6 @@ body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.hitoam
 body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.yarn-entries), :has(.yx-season), :has(.yarn-home-guide--faq)) { background: var(--yarn-bg-warm); }
 body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-entries), :has(.yarn-home-catalog), :has(.yx-season), :has(.yx-picks), :has(.yarn-home-guide--faq)) { padding-block: 48px; }
 body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) { padding-block: 0; background: none; }
-body:has(.hitoami-hero--catalog) :is(.yarn-section-eyebrow, .hitoami-story__eyebrow, .yarn-entries__eyebrow, .yarn-home-guide__eyebrow) { display: block; margin: 0 0 8px; color: var(--yarn-action); font: 700 13px/1.3 var(--yarn-body); letter-spacing: 0.04em; text-indent: 0; }
 body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2 { margin: 0; color: var(--yarn-text-heading); font: 500 24px/1.45 var(--yarn-display); letter-spacing: 0; }
 @media (min-width: 750px) {
   body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-entries), :has(.yarn-home-catalog), :has(.yx-season), :has(.yx-picks), :has(.yarn-home-guide--faq)) { padding-block: 80px; }
