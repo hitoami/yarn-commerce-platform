@@ -4,7 +4,6 @@
   右侧：步骤卡或问答（首条默认展开），问答末尾可加「查看全部问题」链接。三语文案经 yarn-setting-text 取。
 {% endcomment %}
 {%- capture heading -%}{% render 'yarn-setting-text', settings: section.settings, key: 'heading' %}{%- endcapture -%}
-{%- capture eyebrow -%}{% render 'yarn-setting-text', settings: section.settings, key: 'eyebrow' %}{%- endcapture -%}
 {%- capture note -%}{% render 'yarn-setting-text', settings: section.settings, key: 'note' %}{%- endcapture -%}
 {%- capture help_title -%}{% render 'yarn-setting-text', settings: section.settings, key: 'help_title' %}{%- endcapture -%}
 {%- capture help_text -%}{% render 'yarn-setting-text', settings: section.settings, key: 'help_text' %}{%- endcapture -%}
@@ -12,7 +11,6 @@
 {%- capture all_label -%}{% render 'yarn-setting-text', settings: section.settings, key: 'all_label' %}{%- endcapture -%}
 <section class="yarn-home-guide yarn-home-guide--{{ section.settings.mode }} page-width" aria-labelledby="Guide-{{ section.id }}">
  <div class="yarn-home-guide__intro">
-  {%- if eyebrow != blank -%}<p class="yarn-home-guide__eyebrow">{{ eyebrow | escape }}</p>{%- endif -%}
   <h2 id="Guide-{{ section.id }}">{{ heading | escape }}</h2>
   {%- if note != blank -%}<p class="yarn-home-guide__note">{{ note | escape }}</p>{%- endif -%}
   {%- if section.settings.mode == 'faq' and help_cta != blank -%}
@@ -44,9 +42,9 @@
  "name":"新手指引与常见问题",
  "settings":[
   {"type":"select","id":"mode","label":"形式","options":[{"value":"steps","label":"步骤"},{"value":"faq","label":"常见问题"}],"default":"steps"},
-  {"type":"text","id":"eyebrow","label":"日文 · 小标题（可空）"},
-  {"type":"text","id":"eyebrow_zh","label":"中文 · 小标题（可空）"},
-  {"type":"text","id":"eyebrow_en","label":"英文 · 小标题（可空）"},
+  {"type":"text","id":"eyebrow","label":"日文 · 小标题（Issue 317 起不再显示）"},
+  {"type":"text","id":"eyebrow_zh","label":"中文 · 小标题（Issue 317 起不再显示）"},
+  {"type":"text","id":"eyebrow_en","label":"英文 · 小标题（Issue 317 起不再显示）"},
   {"type":"text","id":"heading","label":"日文 · 标题","default":"はじめての方へ"},
   {"type":"text","id":"heading_zh","label":"中文 · 标题","default":"第一次来，从这里开始"},
   {"type":"text","id":"heading_en","label":"英文 · 标题","default":"New here? Start here."},
