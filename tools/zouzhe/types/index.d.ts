@@ -1,5 +1,6 @@
 // drafted：大改已出原型，等第二次朱批。
-export type Status = 'pending' | 'drafted' | 'doing' | 'done' | 'rejected'
+// shelved：缓议，好想法先留着，以后再办（Issue 带「缓议」标签、仍开放）。
+export type Status = 'pending' | 'drafted' | 'doing' | 'done' | 'rejected' | 'shelved'
 
 // 刚点过准奏 / 驳回、GitHub 还没跟上时的本地暂记；at 为按下时刻（ISO）。
 export type Pressed = { status: Status; at: string }
