@@ -1041,6 +1041,8 @@
     "map_here": "この糸",
     "map_go": "詳しく見る",
     "map_loading": "すべての毛糸を読み込み中…",
-    "map_from_product": "手ざわりマップで見る"
+    "map_from_product": "手ざわりマップで見る",
+    "beginner": "初心者向け",
+    "first_time": "はじめての方はこちらの毛糸から"
   }
 }

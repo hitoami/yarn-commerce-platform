@@ -184,7 +184,12 @@
           render 'yarn-nav-tiles', blocks: section.blocks, collection: section.settings.drawer_yarn_collection, all_image: section.settings.drawer_all_image
         endcapture
         assign nav_tiles = nav_tiles | strip
-        render 'yarn-header-drawer', navigation_menu: navigation_menu, show_country_selector: country_selector, show_language_selector: language_selector, show_social_links: social_links
+        # #284：有新手友好毛线时，毛线入口旁多一个「第一次织毛线」，指向毛线目录的新手友好筛选。
+        capture nav_first_time
+          render 'yarn-beginner-first', beginner_collection: section.settings.drawer_yarn_collection
+        endcapture
+        assign nav_first_time = nav_first_time | strip
+        render 'yarn-header-drawer', navigation_menu: navigation_menu, show_country_selector: country_selector, show_language_selector: language_selector, show_social_links: social_links, first_time: nav_first_time
       endif
 
       if render_search_left
@@ -227,7 +232,7 @@
 
     {%- liquid
       if navigation_menu != blank and section.settings.menu_type_desktop != 'drawer'
-        render 'yarn-header-menu', navigation_menu: navigation_menu, nav_tiles: nav_tiles
+        render 'yarn-header-menu', navigation_menu: navigation_menu, nav_tiles: nav_tiles, first_time: nav_first_time
       endif
     %}
 

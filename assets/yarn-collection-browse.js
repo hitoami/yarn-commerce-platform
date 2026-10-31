@@ -49,12 +49,13 @@
     return index === -1 ? BAND_LIMITS.length : index;
   }
 
-  const STATE_KEYS = ['ycb_view', 'ycb_weight', 'ycb_cmp', 'ycb_here'];
+  const STATE_KEYS = ['ycb_view', 'ycb_weight', 'ycb_beginner', 'ycb_cmp', 'ycb_here'];
   function readState(params) {
     const weight = Number(params.get('ycb_weight'));
     return {
       view: params.get('ycb_view') === 'map' ? 'map' : 'list',
       weight: params.get('ycb_weight') !== null && Number.isInteger(weight) && weight >= 0 && weight <= BAND_LIMITS.length ? weight : null,
+      beginner: params.get('ycb_beginner') === '1',
       cmp: (params.get('ycb_cmp') || '').split(',').filter(Boolean).slice(0, 3),
       here: params.get('ycb_here') || '',
     };
@@ -65,6 +66,7 @@
     STATE_KEYS.forEach((key) => next.delete(key));
     if (state.view === 'map') next.set('ycb_view', 'map');
     if (state.weight !== null) next.set('ycb_weight', String(state.weight));
+    if (state.beginner) next.set('ycb_beginner', '1');
     if (keepVisit && state.cmp.length > 1) next.set('ycb_cmp', state.cmp.join(','));
     if (keepVisit && state.here) next.set('ycb_here', state.here);
     return next;
@@ -176,7 +178,7 @@
       const title = li.querySelector('.yx-product-card__title');
       const band = weightBand(metresPer100g(li.dataset.ycbSpec));
       return {
-        li, band, handle: li.dataset.ycbItem, cats: (li.dataset.ycbCats || '').split(' ').filter(Boolean),
+        li, band, handle: li.dataset.ycbItem, beginner: li.hasAttribute('data-ycb-beginner-item'), cats: (li.dataset.ycbCats || '').split(' ').filter(Boolean),
         img: li.dataset.ycbImg || '', spec: li.dataset.ycbSpec || '', name: title?.textContent.trim() || '', url: title?.getAttribute('href') || '#',
         price: li.querySelector('.yx-product-card__price')?.textContent.replace(/\s+/g, ' ').trim() || '',
       };
@@ -235,7 +237,7 @@
       pop.hidden = true;
       map.append(pop);
       board.replaceChildren();
-      const placed = items.filter((item) => item.band !== null);
+      const placed = items.filter((item) => item.band !== null && (!state.beginner || item.beginner));
       const rows = bands.map((_, index) => index).filter((index) => state.weight === null || state.weight === index);
       const compare = state.cmp.length > 1;
       board.classList.toggle('ycb-map__board--compare', compare);
@@ -244,7 +246,7 @@
         head.append(el('div', 'ycb-map__gut'), ...state.cmp.map((handle) => el('div', 'ycb-map__col', catName(handle))));
         board.append(head);
       }
-      const named = compare ? false : categoryActive() || state.weight !== null;
+      const named = compare ? false : categoryActive() || state.weight !== null || state.beginner;
       rows.forEach((index) => {
         const row = el('div', 'ycb-map__row');
         row.append(gutter(index));
@@ -271,7 +273,7 @@
         }
         board.append(row);
       });
-      const missing = items.length - placed.length;
+      const missing = items.filter((item) => !state.beginner || item.beginner).length - placed.length;
       map.querySelector('[data-ycb-map-status]').textContent = missing > 0 ? fill(T.tMissing, missing) : '';
       const here = board.querySelector('.is-here');
       if (here) here.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
@@ -293,11 +295,11 @@
       if (!items) return;
       let shown = 0;
       items.forEach((item) => {
-        const visible = state.weight === null || item.band === state.weight;
+        const visible = (state.weight === null || item.band === state.weight) && (!state.beginner || item.beginner);
         item.li.hidden = !visible;
         if (visible) shown += 1;
       });
-      if (count) count.textContent = state.weight === null ? countText : fill(T.tCount, shown);
+      if (count) count.textContent = state.weight === null && !state.beginner ? countText : fill(T.tCount, shown);
     }
 
     function renderChrome() {
@@ -306,6 +308,10 @@
       map.hidden = !isMap;
       grid.hidden = isMap;
       if (sortForm) sortForm.hidden = isMap;
+      const beginnerButton = section.querySelector('[data-ycb-beginner]');
+      beginnerButton?.classList.toggle('ycb-chip--active', state.beginner);
+      beginnerButton?.setAttribute('aria-pressed', String(state.beginner));
+      section.toggleAttribute('data-ycb-beginner-on', state.beginner);
       const weightButton = section.querySelector('[data-ycb-weight-open]');
       weightButton?.classList.toggle('ycb-chip--active', state.weight !== null);
       const weightValue = section.querySelector('[data-ycb-weight-value]');
@@ -324,6 +330,7 @@
         button.addEventListener('click', clear);
         active.append(button);
       };
+      if (state.beginner && beginnerButton) chip(beginnerButton.querySelector('.ycb-chip__name').textContent.trim(), () => update({ beginner: false }));
       if (state.weight !== null) chip(`${bands[state.weight].name}`, () => update({ weight: null }));
       if (state.cmp.length > 1) chip(`${T.tCompareOn} ${state.cmp.map(catName).join(' × ')}`, () => update({ cmp: [] }));
       active.hidden = !active.children.length;
@@ -341,13 +348,19 @@
     async function update(change) {
       state = { ...state, ...change };
       renderChrome();
-      if (state.view === 'map' || state.weight !== null || state.cmp.length > 1) await loadAll();
+      // 要全部商品时先标「载入中」，列表变淡，载完筛好再恢复，避免先闪出全部商品。
+      if (state.view === 'map' || state.weight !== null || state.beginner || state.cmp.length > 1) {
+        if (!items) grid.setAttribute('aria-busy', 'true');
+        await loadAll();
+      }
       renderChrome();
       renderList();
+      grid.removeAttribute('aria-busy');
       if (state.view === 'map') renderBoard();
     }
 
     section.querySelectorAll('[data-ycb-view]').forEach((button) => button.addEventListener('click', () => update({ view: button.dataset.ycbView })));
+    section.querySelector('[data-ycb-beginner]')?.addEventListener('click', () => update({ beginner: !state.beginner }));
 
     section.querySelectorAll('[data-ycb-sheet-close]').forEach((button) => button.addEventListener('click', () => button.closest('dialog').close()));
     [weightSheet, catsSheet].forEach((sheet) => sheet?.addEventListener('click', (event) => { if (event.target === sheet) sheet.close(); }));

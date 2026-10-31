@@ -1053,6 +1053,8 @@
     "map_here": "You are here",
     "map_go": "View",
     "map_loading": "Loading all yarns…",
-    "map_from_product": "See on the texture map"
+    "map_from_product": "See on the texture map",
+    "beginner": "Beginner-friendly",
+    "first_time": "New to knitting? Start with these"
   }
 }

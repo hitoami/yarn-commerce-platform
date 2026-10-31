@@ -1041,6 +1041,8 @@
     "map_here": "你在这里",
     "map_go": "去看看",
     "map_loading": "正在载入全部毛线…",
-    "map_from_product": "在手感地图上看"
+    "map_from_product": "在手感地图上看",
+    "beginner": "新手友好",
+    "first_time": "第一次织毛线？从这几款开始"
   }
 }

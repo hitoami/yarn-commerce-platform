@@ -63,9 +63,29 @@ test('243: weight comes only from grams and metres in the localized spec line', 
 
 test('243: view and weight survive category links; compare and "you are here" do not', () => {
   const state = readState(new URLSearchParams('ycb_view=map&ycb_weight=3&ycb_cmp=fluffy,loop-fancy&ycb_here=mvp-yarn-01'));
-  assert.deepEqual(state, { view: 'map', weight: 3, cmp: ['fluffy', 'loop-fancy'], here: 'mvp-yarn-01' });
+  assert.deepEqual(state, { view: 'map', weight: 3, beginner: false, cmp: ['fluffy', 'loop-fancy'], here: 'mvp-yarn-01' });
   const link = writeState(new URLSearchParams('filter.p.m.yarn.texture=gid%3A1'), state, { keepVisit: false });
   assert.equal(link.toString(), 'filter.p.m.yarn.texture=gid%3A1&ycb_view=map&ycb_weight=3');
   assert.equal(readState(new URLSearchParams('ycb_weight=9')).weight, null);
   assert.equal(readState(new URLSearchParams('ycb_weight=0')).weight, 0);
+});
+
+test('284: the beginner filter is kept in the URL and survives category links like the weight filter', () => {
+  const state = readState(new URLSearchParams('ycb_beginner=1&ycb_weight=1'));
+  assert.equal(state.beginner, true);
+  assert.equal(readState(new URLSearchParams('ycb_beginner=yes')).beginner, false);
+  const link = writeState(new URLSearchParams('filter.p.m.yarn.texture=gid%3A1'), state, { keepVisit: false });
+  assert.equal(link.get('ycb_beginner'), '1');
+  assert.equal(link.get('ycb_weight'), '1');
+});
+
+test('284: beginner chip and header entry only render when a yarn has a beginner reason', () => {
+  const section = fs.readFileSync('sections/yarn-collection-browse.liquid', 'utf8');
+  assert.match(section, /if cb_beginner_first != blank/);
+  assert.match(section, /data-ycb-beginner-item/);
+  const header = fs.readFileSync('sections/header.liquid', 'utf8');
+  assert.match(header, /render 'yarn-beginner-first', beginner_collection: section.settings.drawer_yarn_collection/);
+  for (const file of ['snippets/yarn-header-menu.liquid', 'snippets/yarn-header-drawer.liquid']) {
+    assert.match(fs.readFileSync(file, 'utf8'), /first_time != blank[\s\S]*\?ycb_beginner=1/);
+  }
 });
