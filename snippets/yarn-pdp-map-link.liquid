@@ -1,0 +1,23 @@
+{%- comment -%}
+  #243 毛线详情页「在手感地图上看」：打开毛线目录的手感地图并标出这团线（ycb_here）。
+  规格行里有克数和米数才显示（与地图同一条规则，见 assets/yarn-collection-browse.js metresPer100g）；否则这团线不在图上，不给入口。
+  参数：product
+{%- endcomment -%}
+{%- liquid
+  assign map_spec = product.metafields.yarn.spec_line.value | default: ''
+  assign map_ok = false
+  if map_spec contains 'g'
+    if map_spec contains 'm' or map_spec contains '米'
+      if map_spec contains '约' or map_spec contains '約' or map_spec contains 'pprox'
+        assign map_ok = true
+      endif
+    endif
+  endif
+-%}
+{%- if map_ok and collections['yarn'] != blank -%}
+  <a class="yp-map-link" href="{{ collections['yarn'].url }}?ycb_view=map&amp;ycb_here={{ product.handle | url_encode }}">
+    {%- render 'yarn-weight-strand', band: 2 -%}
+    <span>{{ 'yarn_collection.map_from_product' | t }}</span>
+    <span aria-hidden="true">›</span>
+  </a>
+{%- endif -%}

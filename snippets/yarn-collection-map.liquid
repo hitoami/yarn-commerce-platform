@@ -1,0 +1,65 @@
+{%- comment -%}
+  #243 手感地图与两个面板（粗细、全部分类），由 assets/yarn-collection-browse.js 填内容（档名取自粗细面板）；没有 JS 时整块不出现。
+  竖轴五档按每 100g 的米数：极粗 ≤100m、粗 ≤200m、中粗 ≤350m、细 ≤800m、极细 >800m。
+  参数：section_id、pages（列表总页数，地图要载入全部页）
+{%- endcomment -%}
+<div class="ycb-map" data-ycb-map data-ycb-js hidden
+  data-pages="{{ pages }}"
+  data-t-count="{{ 'yarn_collection.count' | t: n: '__N__' | escape }}"
+  data-t-empty="{{ 'yarn_collection.map_empty_row' | t | escape }}"
+  data-t-missing="{{ 'yarn_collection.map_missing' | t: n: '__N__' | escape }}"
+  data-t-here="{{ 'yarn_collection.map_here' | t | escape }}"
+  data-t-weight-any="{{ 'yarn_collection.weight_any' | t | escape }}"
+  data-t-compare="{{ 'yarn_collection.compare' | t: n: '__N__' | escape }}"
+  data-t-compare-on="{{ 'yarn_collection.compare_on' | t | escape }}"
+  data-t-group-texture="{{ 'yarn_collection.group_texture' | t | escape }}"
+  data-t-group-use="{{ 'yarn_collection.group_use' | t | escape }}"
+  data-t-loading="{{ 'yarn_collection.map_loading' | t | escape }}"
+  data-t-clear="{{ 'accessibility.close' | t | escape }}">
+  <p class="ycb-map__status" data-ycb-map-status role="status"></p>
+  <div class="ycb-map__board" data-ycb-board></div>
+  <p class="ycb-map__foot">{%- render 'yarn-weight-strand', band: 4 -%} {{ 'yarn_collection.map_foot' | t }}</p>
+  <div class="ycb-pop" data-ycb-pop hidden>
+    <img class="ycb-pop__image" alt="" width="72" height="72" data-ycb-pop-image>
+    <div class="ycb-pop__body">
+      <p class="ycb-pop__name" data-ycb-pop-name></p>
+      <p class="ycb-pop__spec" data-ycb-pop-spec></p>
+      <p class="ycb-pop__price" data-ycb-pop-price></p>
+    </div>
+    <a class="ycb-pop__go" href="#" data-ycb-pop-go>{{ 'yarn_collection.map_go' | t }} <span aria-hidden="true">→</span></a>
+    <button class="ycb-pop__close" type="button" data-ycb-pop-close aria-label="{{ 'accessibility.close' | t }}">{{ 'icon-close.svg' | inline_asset_content }}</button>
+  </div>
+</div>
+
+<dialog class="ycb-drawer ycb-sheet" id="CollectionWeight-{{ section_id }}" aria-labelledby="CollectionWeightTitle-{{ section_id }}" data-ycb-weight-sheet>
+  <header class="ycb-drawer__head">
+    <h2 id="CollectionWeightTitle-{{ section_id }}">{{ 'yarn_collection.weight_title' | t }}</h2>
+    <button class="ycb-drawer__close" type="button" data-ycb-sheet-close aria-label="{{ 'accessibility.close' | t }}">{{ 'icon-close.svg' | inline_asset_content }}</button>
+  </header>
+  <div class="ycb-drawer__body">
+    <p class="ycb-sheet__note">{{ 'yarn_collection.weight_note' | t }}</p>
+    <ul class="ycb-weights" role="list">
+      <li><button class="ycb-weight" type="button" data-ycb-weight=""><span class="ycb-weight__name">{{ 'yarn_collection.weight_any' | t }}</span></button></li>
+      {%- for i in (0..4) -%}
+        {%- assign band_key = 'yarn_collection.band_' | append: i -%}
+        {%- assign range_key = 'yarn_collection.band_range_' | append: i -%}
+        <li><button class="ycb-weight" type="button" data-ycb-weight="{{ i }}">{%- render 'yarn-weight-strand', band: i -%}<span class="ycb-weight__name">{{ band_key | t }}</span><small>{{ range_key | t }}</small><span class="ycb-weight__count" data-ycb-weight-count></span></button></li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</dialog>
+
+<dialog class="ycb-drawer ycb-sheet" id="CollectionCats-{{ section_id }}" aria-labelledby="CollectionCatsTitle-{{ section_id }}" data-ycb-cats-sheet>
+  <header class="ycb-drawer__head">
+    <h2 id="CollectionCatsTitle-{{ section_id }}">{{ 'yarn_collection.cats_title' | t }}</h2>
+    <button class="ycb-drawer__close" type="button" data-ycb-sheet-close aria-label="{{ 'accessibility.close' | t }}">{{ 'icon-close.svg' | inline_asset_content }}</button>
+  </header>
+  <div class="ycb-drawer__body">
+    <p class="ycb-sheet__note">{{ 'yarn_collection.cats_note' | t }}</p>
+    <div data-ycb-cats-body></div>
+  </div>
+  <footer class="ycb-drawer__foot">
+    <button class="ycb-drawer__reset ycb-sheet__clear" type="button" data-ycb-cmp-clear>{{ 'yarn_collection.compare_clear' | t }}</button>
+    <button class="ycb-drawer__apply" type="button" data-ycb-cmp-go disabled></button>
+  </footer>
+</dialog>

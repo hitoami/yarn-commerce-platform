@@ -7,6 +7,9 @@
   分类胶囊与首页圆图、搜索页分类是同一个 Search & Discovery 筛选（filter.p.m.yarn.texture 等），只显示有商品的分类。
   「筛选」抽屉只列出后台真实开启的其他筛选（目前是供货情况）与价格带 block；没有的字段不显示。
   商品卡与首页同一张 yarn-pick-card；集合还没有商品（手工成品上架前）时显示「准备中」占位，不含商品名、价格或库存。
+  #243 手感地图（用户 2026-10-30 批准第 4 版原型，卡片保持原样、粗细做成胶囊）：毛线目录的另一种看法，「列表 / 手感地图」切换在同一页。
+  粗细五档只由规格行（yarn.spec_line 的克数与米数）算出，缺米数的不上图；粗细、对比、地图都在浏览器里对已载入的全部商品做，
+  状态记在网址 ycb_view / ycb_weight / ycb_cmp / ycb_here 上。没有 JS 时只有原来的列表。
 {%- endcomment -%}
 {%- liquid
   assign cb_cat_params = section.settings.category_filters | remove: ' ' | split: ','
@@ -76,7 +79,7 @@
               endif
             endfor
           -%}
-          <li>
+          <li data-ycb-cat="{{ entry_handle }}" data-ycb-group="{{ cb_field_parts[1] }}">
             <a class="ycb-chip{% if value.active %} ycb-chip--active{% endif %}"{% if value.active %} aria-current="true"{% endif %} href="{{ collection.url }}?{{ value.param_name }}={{ value.value | url_encode }}">
               <span class="ycb-chip__photo">{%- if cb_image != blank -%}{{ cb_image | image_url: width: 120 | image_tag: widths: '80, 120', sizes: '40px', loading: 'lazy', alt: '' }}{%- endif -%}</span>
               <span class="ycb-chip__name">{{ value.label | escape }}</span>
@@ -143,10 +146,25 @@
               <span class="ycb-chip__count">{{ collection.all_products_count }}</span>
             </a>
           </li>
+          {%- unless cb_handmade -%}
+            <li data-ycb-js hidden>
+              <button class="ycb-chip ycb-chip--weight" type="button" data-ycb-weight-open aria-haspopup="dialog" aria-controls="CollectionWeight-{{ section.id }}">
+                <span class="ycb-chip__photo ycb-chip__strand">{%- render 'yarn-weight-strand', band: 2 -%}</span>
+                <span class="ycb-chip__name">{{ 'yarn_collection.weight' | t }}</span>
+                <span class="ycb-chip__count" data-ycb-weight-value></span>
+              </button>
+            </li>
+          {%- endunless -%}
           {{ cb_chips }}
+          {%- unless cb_handmade -%}
+            <li class="ycb-chips__more" data-ycb-js hidden>
+              <button class="ycb-chip ycb-chip--more" type="button" data-ycb-cats-open aria-haspopup="dialog" aria-controls="CollectionCats-{{ section.id }}">{{ 'yarn_collection.all_categories' | t }}</button>
+            </li>
+          {%- endunless -%}
         </ul>
       </nav>
     {%- endif -%}
+    <div class="ycb-active" data-ycb-active hidden></div>
 
     <div class="ycb-toolbar">
       <div class="ycb-toolbar__actions">
@@ -174,7 +192,13 @@
           <noscript><button class="ycb-pill" type="submit">{{ 'products.facets.apply' | t }}</button></noscript>
         </form>
       </div>
-      <p class="ycb-toolbar__count" role="status">{{ 'yarn_collection.count' | t: n: collection.products_count }}</p>
+      {%- unless cb_handmade -%}
+        <div class="ycb-views" role="group" aria-label="{{ 'yarn_collection.view_label' | t }}" data-ycb-js hidden>
+          <button class="ycb-views__button" type="button" data-ycb-view="list" aria-pressed="true">{{ 'yarn_collection.view_list' | t }}</button>
+          <button class="ycb-views__button" type="button" data-ycb-view="map" aria-pressed="false">{{ 'yarn_collection.view_map' | t }}</button>
+        </div>
+      {%- endunless -%}
+      <p class="ycb-toolbar__count" role="status" data-ycb-count>{{ 'yarn_collection.count' | t: n: collection.products_count }}</p>
     </div>
 
     {%- paginate collection.products by section.settings.products_per_page -%}
@@ -187,7 +211,26 @@
       {%- else -%}
         <ul class="ycb-grid{% if cb_handmade %} ycb-grid--handmade{% endif %}" role="list" data-ycb-grid>
           {%- for product in collection.products -%}
-            <li class="ycb-grid__item">
+            {%- liquid
+              assign cb_item_image = product.metafields.yarn.card_image.value | default: product.featured_image
+              capture cb_item_cats
+                for param in cb_cat_params
+                  assign cb_item_parts = param | remove: 'filter.p.m.' | split: '.'
+                  assign cb_item_field = product.metafields[cb_item_parts[0]][cb_item_parts[1]]
+                  if cb_item_field == blank
+                    continue
+                  endif
+                  if cb_item_field.type contains 'list'
+                    for cb_ref in cb_item_field.value
+                      echo ' ' | append: cb_ref.system.handle
+                    endfor
+                  else
+                    echo ' ' | append: cb_item_field.value.system.handle
+                  endif
+                endfor
+              endcapture
+            -%}
+            <li class="ycb-grid__item" data-ycb-item="{{ product.handle }}" data-ycb-spec="{{ product.metafields.yarn.spec_line.value | escape }}" data-ycb-cats="{{ cb_item_cats | strip }}"{% if cb_item_image != blank %} data-ycb-img="{{ cb_item_image | image_url: width: 160 }}"{% endif %}>
               {%- comment -%}#189：第一行（手机 2 张、桌面 4 张）是首屏 LCP 候选，不懒加载。{%- endcomment -%}
               {%- assign cb_eager = false -%}
               {%- if forloop.index <= 4 -%}{%- assign cb_eager = true -%}{%- endif -%}
@@ -200,6 +243,7 @@
           {%- endfor -%}
         </ul>
         {%- assign cb_shown = paginate.current_offset | plus: collection.products.size -%}
+        {%- unless cb_handmade -%}{%- render 'yarn-collection-map', section_id: section.id, pages: paginate.pages -%}{%- endunless -%}
         <div class="ycb-more" data-ycb-more>
           <p class="ycb-more__status" data-ycb-status>{{ 'yarn_collection.shown' | t: shown: cb_shown, total: paginate.items }}</p>
           {%- if paginate.next -%}
