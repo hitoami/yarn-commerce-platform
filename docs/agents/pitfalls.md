@@ -29,10 +29,23 @@
 ## 自查与截图
 
 - **用 `npm run proof`**：`--pages` 写页面名（如 `yarn-collection`、`yarn-pdp`，见 `scripts/proof.config.cjs`），不是网址。它会清空 `.proof/` 下的子文件夹，自己的截图别放那里。
-- **自己写浏览器脚本要设语言**：无头浏览器默认英文，打开 `/zh` 会被转到 `/en`，看起来像语言泄漏。Playwright 用 `browser.newContext({ locale: 'ja-JP' | 'zh-CN' })`。
+- **点击流程写进 `proof`，不要临时写浏览器脚本**：在 `scripts/proof.config.cjs` 给页面加 `flows`（点哪里、等什么、数几个，写法见 `scripts/proof.cjs` 开头），`npm run proof` 首屏截图后逐个跑，截图进报告。`proof` 已经按语言设好浏览器、过滤了本地预览固有的平台报错；临时脚本两样都没有，曾把语言转址误判成泄漏。
+  - 断言只写「有」和「变了」（如「选细后仍有商品」「有商品被筛掉」），不写死款数，商品会变。
+  - 先等页面给出「载入完」的信号再点（如面板里的款数出现），否则会和异步载入抢跑，结果时过时不过。
+- **万一要自己写浏览器脚本**：设语言（Playwright `browser.newContext({ locale: 'ja-JP' | 'zh-CN' })`，无头浏览器默认英文，打开 `/zh` 会被转到 `/en`），并忽略 shop.app、shopifycloud 这类平台报错。
+- **截图前确认预览已同步**：`shopify theme dev` 的日志出现这个文件的 `Synced » update <文件>` 才截，否则截到旧样式。
+- **Safari 引擎**：`npm run proof -- --browser webkit`。第一次要下载 WebKit（`node node_modules/playwright-core/cli.js install webkit`，约百 MB），下载前先问锦晨。它只模拟 Safari 的渲染，不等于真机。
+- **看截图省 token**：多张缩小拼成一张看，只放大可疑处。
 - 本地预览（`shopify theme dev`）的语言路径是日 `/ja`、中 `/`、英 `/en`；线上是日 `/`、中 `/zh`、英 `/en`。本地预览不一定同步模板 JSON 的改动。
+
+## 交付说明
+
+- **依赖商品数据的功能要报覆盖率**：如手感地图「41 / 60 款有米数」，并列出缺数据的商品或数量，写进 Issue 交给运营补。
+- **PR 写明没验的项**：除了做过的检查，也写清这次没验的——真机、Safari、无障碍（键盘 / 读屏 / 减少动态）、性能、主题编辑器里能否修改。没写就等于默认验过。
 
 ## 御书房插件
 
 - 插件源码在 `tools/zouzhe/`，仓库根目录的 `.claude-plugin/marketplace.json` 把它列为插件。每台电脑装一次（见 `tools/zouzhe/README.md`），之后每个新会话都有 `/zouzhe`。改了插件要提交、推送，各自 `claude plugin update zouzhe` 后生效。
 - 面板跟随 app 的深浅主题：不要写死浅色底，原生按钮和输入框在深色主题下是浅色字，放在浅底上看不见。
+- `claude plugin test` 只检查结构，看不到真实配色和悬停效果：改了面板样子，第一次载入后请锦晨截图确认。
+- 手机（远程控制）上没有鼠标悬停：关键操作不能只放在悬停里，展阅页要能做全部操作。

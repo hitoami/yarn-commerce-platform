@@ -68,7 +68,7 @@
 |---|---|
 | 纯文档 / AGENTS / skill 指令 | 检查事实、引用、触发条件和规则冲突；运行 `git diff --check`；修改 skill 时校验 frontmatter |
 | Theme 代码、依赖或验证脚本 | `npm run verify`，补充与行为风险相关的检查 |
-| 页面、视觉或购买流程 | 上述代码检查 + 本地预览上 `npm run proof`（语言泄漏、390 / 1440 首屏截图、溢出 / 图片 / 脚本断言），按 `docs/agents/visual-review.md` 自查 |
+| 页面、视觉或购买流程 | 上述代码检查 + 本地预览上 `npm run proof`（语言泄漏、390 / 1440 首屏截图、溢出 / 图片 / 脚本断言；新交互在 `scripts/proof.config.cjs` 给页面加 `flows`），按 `docs/agents/visual-review.md` 自查 |
 
 完成必要检查后，只因新修改、失败或尚未解决的问题扩大或重复验证；不为低风险文案改动添加镜像测试。
 
