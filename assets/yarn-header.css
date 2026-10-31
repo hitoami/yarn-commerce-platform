@@ -537,6 +537,9 @@
   font-family: var(--yarn-body);
 }
 .yarn-lang[open] .yarn-lang__panel { display: block; }
+/* Issue 305: the sticky header section is its own layer (z-index 3), so the sheet's 30 cannot escape it; page bars such as
+   the product page's bottom buy bar (also 3, later in the DOM) would paint over it. Lift the whole header while the menu is open. */
+.section-header:has(.yarn-lang[open]) { z-index: 40; }
 .yarn-lang__grab { display: none; }
 .yarn-lang__title { margin: 0 8px 6px; color: var(--yarn-text-muted); font-size: 1.3rem; line-height: 1.5; }
 .yarn-lang__list { margin: 0; padding: 0; }
