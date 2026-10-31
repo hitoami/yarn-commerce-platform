@@ -149,3 +149,12 @@ test('desktop yarn strand draws on hover / focus / open; the current page yields
   assert.match(headerCss, /\.yarn-main-menu details\[open\]:hover > \.header__menu-item,[\s\S]*?\{ text-decoration: none; \}/);
   assert.match(headerCss, /transform: translateY\(-14%\);/, 'logo lifted so letters align with the menu');
 });
+
+test('open language sheet lifts the sticky header above page bottom bars (Issue 305)', () => {
+  // 页头 section 吸顶时自成一层（z-index 3），语言弹层再高也出不去；商品页底部价格栏同为 3 且在后面，会盖住弹层。
+  const lift = headerCss.match(/\.section-header:has\(\.yarn-lang\[open\]\) \{ z-index: (\d+); \}/);
+  assert.ok(lift, 'header lifts while the language menu is open');
+  const pdpCss = fs.readFileSync('assets/yarn-pdp.css', 'utf8');
+  const bar = Number(pdpCss.match(/\.yp-sticky \{[^}]*z-index: (\d+)/)[1]);
+  assert.ok(Number(lift[1]) > bar, `header ${lift[1]} must sit above the product bottom bar ${bar}`);
+});
