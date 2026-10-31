@@ -24,7 +24,7 @@
 
 /* Issue 232（用户 2026-10-30 准奏）：手机 150、平板 190、桌面 230，与各端页头高度相称。 */
 @media screen and (max-width: 749px) {
-  .header-wrapper .header__heading-link > .yarn-wordmark { width: min(150px, calc(100vw - 208px)); }
+  .header-wrapper .header__heading-link > .yarn-wordmark { width: min(150px, calc(100vw - 232px)); }
 }
 @media screen and (min-width: 990px) {
   .header__heading-link > .yarn-wordmark { width: 230px; }
@@ -89,9 +89,6 @@
   background: var(--yarn-action-subtle-bg);
   color: var(--yarn-action);
 }
-
-.yarn-account-drawer { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--yarn-border-subtle); }
-.header-wrapper .yarn-account-drawer-link { display: flex; justify-content: flex-start; width: 100%; }
 
 .header-wrapper .header__icon .svg-wrapper,
 .header-wrapper .header__icon > span:not(.visually-hidden) {
@@ -167,57 +164,12 @@
   color: var(--yarn-action);
 }
 
-.header-wrapper .menu-drawer__localization {
-  padding: 16px 28px;
-  border-top: 1px solid var(--yarn-border-subtle);
-}
-
-/* Drawer language options sit side by side; the current one uses the nav selected state (Issue 107). */
-.header-wrapper .yarn-drawer-language__list {
-  display: grid;
-  grid-auto-columns: minmax(0, 1fr);
-  grid-auto-flow: column;
-  gap: var(--yarn-space-2);
-  margin: 0;
-  padding: 0;
-}
-
-.header-wrapper .yarn-drawer-language__option {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: var(--yarn-touch);
-  padding: var(--yarn-space-2) var(--yarn-space-3);
-  border: 1px solid var(--yarn-border-subtle);
-  border-radius: var(--yarn-radius-pill);
-  color: var(--yarn-text-primary);
-  font-family: var(--yarn-body);
-  font-size: var(--yarn-type-control);
-  line-height: 1.2;
-  letter-spacing: 0;
-  text-align: center;
-  text-decoration: none;
-}
-
-@media (hover: hover) {
-  .header-wrapper .yarn-drawer-language__option:hover {
-    background: var(--yarn-action-subtle-hover);
-    color: var(--yarn-action);
-  }
-}
-
-.header-wrapper .yarn-drawer-language__option[aria-current='true'] {
-  border-color: var(--yarn-action);
-  background: var(--yarn-action-subtle-bg);
-  color: var(--yarn-action);
-}
-
 @media screen and (max-width: 1339px) {
   /* Override Rise's four-column account layout as one coherent mobile row. */
   /* Issue 131 mobile: menu + search on the left, logo centred, account + cart on the right. */
   #YarnHeader {
     grid-template-areas: 'left-icons search heading icons';
-    grid-template-columns: 44px 44px minmax(0, 1fr) 88px;
+    grid-template-columns: 44px 44px minmax(0, 1fr) auto;
     column-gap: 0;
     min-height: 72px;
     padding: 10px 24px;
@@ -251,9 +203,12 @@
   }
 
   .header-wrapper .header__icons {
-    width: 88px;
+    width: auto;
     gap: 0;
   }
+
+  /* Issue 258：手机 / 平板页头的账户图标让给语言按钮，账户在抽屉最上面。 */
+  .header-wrapper .header__icon--account { display: none; }
 
   #YarnHeader .header__icons > .header__search {
     display: none;
@@ -337,26 +292,9 @@
   font-weight: 600;
 }
 
-/* Issue 131 mobile drawer: season banner, yarn category tiles, rows with a coming-soon badge. */
+/* Issue 131 / Issue 258 mobile drawer: account and quick actions first, then plain shop rows; yarn tiles open on demand. */
 .header-wrapper .menu-drawer__navigation { padding: 16px; }
 
-.yarn-drawer-feature {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  margin-bottom: var(--yarn-space-5);
-  overflow: hidden;
-  border-radius: var(--yarn-radius-panel);
-  background: var(--yarn-tint-butter);
-  color: var(--yarn-text-heading);
-  text-decoration: none;
-}
-.yarn-drawer-feature__media { grid-column: 1 / -1; aspect-ratio: 358 / 128; overflow: hidden; }
-.yarn-drawer-feature__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.yarn-drawer-feature__text { display: flex; flex-direction: column; gap: 2px; padding: 12px 16px 14px; }
-.yarn-drawer-feature__label { color: var(--yarn-action); font-size: var(--yarn-type-meta); font-weight: 700; }
-.yarn-drawer-feature__title { font-family: var(--yarn-display); font-size: 1.8rem; line-height: 1.4; }
-.yarn-drawer-feature .svg-wrapper { width: 20px; height: 20px; margin-right: 16px; color: var(--yarn-action); }
 
 .header-wrapper .yarn-drawer-yarn__toggle {
   display: flex;
@@ -377,7 +315,7 @@
 /* Rise absolutely positions drawer item icons and hides carets; these arrows sit in the row instead. */
 .header-wrapper .menu-drawer__menu-item > .yarn-drawer-chevron,
 .header-wrapper .menu-drawer__menu-item > .yarn-drawer-row__arrow,
-.header-wrapper .yarn-account-drawer-link > .svg-wrapper {
+.header-wrapper .yarn-drawer-language > .yarn-drawer-row__arrow {
   position: static;
   flex: 0 0 20px;
   width: 20px;
@@ -444,7 +382,6 @@
   font-weight: 700;
   line-height: 1.6;
 }
-.header-wrapper .yarn-account-drawer-link { gap: var(--yarn-space-3); align-items: center; }
 
 /* Issue 131 desktop: a yarn strand marks the hovered, open or current item; the yarn link opens a six-tile panel. */
 @media screen and (min-width: 1340px) {
@@ -590,3 +527,125 @@
   .yarn-main-menu details[open] > :is(.yarn-mega__content, .header__submenu) { animation: yarn-menu-fade 0.15s ease both; }
   .yarn-mega[open] :is(.yarn-mega__head, .yarn-mega__tiles > li) { animation: none; }
 }
+
+/* Issue 258 language pill: same control at every width; phones get a bottom sheet, wider screens a popover. */
+.yarn-lang { position: relative; margin: 0 2px; }
+.yarn-lang__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--yarn-border-subtle);
+  border-radius: var(--yarn-radius-pill);
+  background: var(--yarn-bg-surface);
+  color: var(--yarn-text-primary);
+  font-family: var(--yarn-body);
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  list-style: none;
+  cursor: pointer;
+  position: relative;
+}
+.yarn-lang__button::-webkit-details-marker { display: none; }
+.yarn-lang__button::after { content: ''; position: absolute; inset: -4px 0; }
+.yarn-lang__button:hover, .yarn-lang[open] .yarn-lang__button { border-color: var(--yarn-action); color: var(--yarn-action); }
+.yarn-lang__globe { flex: none; }
+.yarn-lang__name { display: none; }
+.yarn-lang__scrim { display: none; }
+.yarn-lang__panel {
+  display: none;
+  z-index: 30;
+  background: var(--yarn-bg-surface);
+  color: var(--yarn-text-primary);
+  font-family: var(--yarn-body);
+}
+.yarn-lang[open] .yarn-lang__panel { display: block; }
+.yarn-lang__grab { display: none; }
+.yarn-lang__title { margin: 0 8px 6px; color: var(--yarn-text-muted); font-size: 1.3rem; line-height: 1.5; }
+.yarn-lang__list { margin: 0; padding: 0; }
+.yarn-lang__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 16px;
+  border-radius: 14px;
+  color: var(--yarn-text-primary);
+  font-size: 1.6rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+.yarn-lang__option small { color: var(--yarn-text-muted); font-size: 1.2rem; font-weight: 400; }
+.yarn-lang__option:hover { background: var(--yarn-action-subtle-hover); }
+.yarn-lang__option[aria-current='true'] { background: var(--yarn-action-subtle-bg); color: var(--yarn-action); }
+.yarn-lang__check { margin-left: auto; }
+
+@media screen and (max-width: 749px) {
+  .yarn-lang[open] .yarn-lang__scrim { display: block; position: fixed; inset: 0; z-index: 29; background: var(--yarn-overlay); }
+  .yarn-lang__panel { position: fixed; right: 0; bottom: 0; left: 0; padding: 10px 16px calc(24px + env(safe-area-inset-bottom)); border-radius: 20px 20px 0 0; box-shadow: 0 -8px 24px var(--yarn-shadow-soft); }
+  .yarn-lang__grab { display: block; width: 36px; height: 4px; margin: 0 auto 14px; border-radius: 2px; background: var(--yarn-border-card); }
+}
+
+@media screen and (min-width: 750px) {
+  .yarn-lang__panel { position: absolute; top: calc(100% + 8px); right: 0; width: 240px; padding: 8px; border: 1px solid var(--yarn-border-subtle); border-radius: 16px; box-shadow: 0 12px 32px var(--yarn-shadow-soft); }
+  .yarn-lang__option { min-height: 48px; font-size: 1.5rem; }
+}
+
+@media screen and (min-width: 1340px) {
+  .yarn-lang { margin-right: 12px; }
+  .yarn-lang__button { height: 38px; padding: 0 14px; }
+  .yarn-lang__name { display: inline; }
+}
+
+/* Issue 258 drawer top: account card and four quick actions. */
+.yarn-drawer-account {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--yarn-cta-border);
+  border-radius: var(--yarn-radius-panel);
+  background: var(--yarn-action-subtle-bg);
+  color: var(--yarn-text-primary);
+  text-decoration: none;
+}
+.yarn-drawer-account__head { display: flex; flex: 1; align-items: center; gap: 12px; color: inherit; text-decoration: none; }
+.yarn-drawer-account__avatar { display: flex; flex: none; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--yarn-bg-surface); color: var(--yarn-action); }
+.yarn-drawer-account__avatar svg { width: 22px; height: 22px; }
+.yarn-drawer-account__text { display: flex; flex: 1; flex-direction: column; min-width: 0; gap: 2px; }
+.yarn-drawer-account__text b { color: var(--yarn-text-heading); font-size: 1.6rem; font-weight: 600; }
+.yarn-drawer-account__text small { color: var(--yarn-text-muted); font-size: 1.2rem; line-height: 1.5; }
+.yarn-drawer-account__cta { flex: none; padding: 9px 16px; border-radius: var(--yarn-radius-pill); background: var(--yarn-cta-bg); color: var(--yarn-text-on-cta); font-size: 1.4rem; font-weight: 700; }
+.yarn-drawer-account__links { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; }
+.yarn-drawer-account__links a { display: flex; align-items: center; justify-content: center; min-height: var(--yarn-touch); border: 1px solid var(--yarn-border-subtle); border-radius: 12px; background: var(--yarn-bg-surface); color: var(--yarn-text-primary); font-size: 1.4rem; text-decoration: none; }
+
+.yarn-drawer-quick { display: grid; grid-auto-columns: minmax(0, 1fr); grid-auto-flow: column; gap: 6px; margin: 12px 0 4px; padding: 0; }
+.yarn-drawer-quick a { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 0; color: var(--yarn-text-secondary); font-size: 1.2rem; line-height: 1.3; text-align: center; text-decoration: none; }
+.yarn-drawer-quick__icon { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid var(--yarn-border-subtle); border-radius: 50%; background: var(--yarn-bg-surface); color: var(--yarn-text-primary); }
+.yarn-drawer-quick__icon svg { width: 22px; height: 22px; }
+.yarn-drawer-quick a:hover .yarn-drawer-quick__icon { border-color: var(--yarn-action); color: var(--yarn-action); }
+.yarn-drawer-heading { margin: 16px 4px 4px; color: var(--yarn-text-muted); font-size: 1.2rem; font-weight: 700; letter-spacing: 0.04em; }
+
+.header-wrapper .yarn-drawer-language {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: calc(100% - 32px);
+  min-height: 48px;
+  margin: 8px 16px 24px;
+  padding: 0 14px;
+  border: 1px solid var(--yarn-border-subtle);
+  border-radius: var(--yarn-radius-pill);
+  background: var(--yarn-bg-surface);
+  color: var(--yarn-text-primary);
+  font-family: var(--yarn-body);
+  font-size: 1.45rem;
+  cursor: pointer;
+}
+.header-wrapper .yarn-drawer-language b { font-weight: 600; }
+.header-wrapper .yarn-drawer-language > .yarn-drawer-row__arrow { margin-left: auto; }
+.js .header-wrapper .yarn-drawer-language .icon-caret { display: block; width: 14px; height: 14px; margin: auto; }

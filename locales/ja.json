@@ -283,6 +283,17 @@
       "announcement": "告知",
       "menu": "メニュー",
       "coming_soon": "準備中",
+      "language_note": "このページのまま切り替え",
+      "language_short": "日",
+      "drawer_login_title": "ログイン / 新規登録",
+      "drawer_login_note": "注文の確認や住所の保存ができます",
+      "drawer_welcome": "おかえりなさい",
+      "drawer_welcome_note": "注文と住所を確認",
+      "drawer_orders": "注文履歴",
+      "drawer_addresses": "お届け先",
+      "drawer_shipping": "配送・返品",
+      "drawer_contact": "お問い合わせ",
+      "drawer_shop": "ショップ",
       "cart_count": {
         "one": "{{ count }}個のアイテム",
         "other": "{{ count }}個のアイテム"
