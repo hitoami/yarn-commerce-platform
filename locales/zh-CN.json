@@ -975,7 +975,12 @@
     "categories": "按商品分类浏览",
     "yarn": "毛线",
     "kit": "编织包",
-    "finished": "成品"
+    "finished": "成品",
+    "hero_tabs": "选择幻灯片",
+    "hero_tab_yarn": "毛线",
+    "hero_tab_kit": "作品用线",
+    "hero_tab_season": "本季",
+    "hero_tab_finished": "成品"
   },
   "yarn_collection": {
     "breadcrumb": "面包屑",
