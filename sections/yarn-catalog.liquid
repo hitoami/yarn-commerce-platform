@@ -7,7 +7,8 @@
     <style>@media (max-width: 749px) { #shopify-section-{{ section.id }} .yarn-home-catalog__grid > :nth-child(n + {{ section.settings.products_to_show_mobile | plus: 1 }}) { display: none; } }</style>
   {%- endif -%}
   <div class="yarn-home-catalog__head">
-    <h2 id="Catalog-{{ section.id }}">{{ heading | escape }}</h2>
+    <div><p class="yarn-section-eyebrow">{{ 'yarn_project.eyebrow_catalog' | t }}</p>
+    <h2 id="Catalog-{{ section.id }}">{{ heading | escape }}</h2></div>
     {%- if section.settings.products != blank and collections['yarn'] != blank -%}
       <a class="yx-picks__all" href="{{ collections['yarn'].url }}">{{ 'yarn_project.card_view_all' | t }} <span aria-hidden="true">→</span></a>
     {%- endif -%}
