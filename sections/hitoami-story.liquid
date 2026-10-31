@@ -6,7 +6,6 @@
   三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
 {% endcomment %}
 {{ 'hitoami-story.css' | asset_url | stylesheet_tag }}
-{%- capture story_eyebrow -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'story_eyebrow' -%}{%- endcapture -%}
 {%- capture story_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'story_heading' -%}{%- endcapture -%}
 {%- capture story_text -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'story_text' -%}{%- endcapture -%}
 {%- capture line_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'line_heading' -%}{%- endcapture -%}
@@ -23,7 +22,6 @@
     {%- endif -%}
   </div>
   {% endif %}<div class="hitoami-story__body">
-    {%- if story_eyebrow != blank -%}<p class="hitoami-story__eyebrow">{{ story_eyebrow | escape }}</p>{%- endif -%}
     {%- if story_heading != blank -%}<h2 id="HitoamiStory-{{ section.id }}">{{ story_heading | escape | newline_to_br }}</h2>{%- endif -%}
     {%- if story_text != blank -%}<div class="rte">{{ story_text }}</div>{%- endif -%}
     {%- if line_cta != blank -%}
@@ -87,9 +85,6 @@
   "class": "section hitoami-story-section",
   "settings": [{"type":"checkbox","id":"use_brand_scene","label":"使用编织与猫的品牌氛围图","default":false},{"type":"text","id":"line_fallback","label":"未配置 LINE · 日文","default":"毛糸選びについてお問い合わせ"},{"type":"text","id":"line_fallback_zh","label":"未配置 LINE · 中文","default":"选线遇到问题？联系我们"},{"type":"text","id":"line_fallback_en","label":"未配置 LINE · 英文","default":"Need help choosing yarn? Contact us"},
     { "type": "image_picker", "id": "image", "label": "品牌图", "info": "上传图优先；未上传时可启用本轮品牌氛围图。" },
-    { "type": "text", "id": "story_eyebrow", "label": "日文 · 小标题", "default": "ブランドについて" },
-    { "type": "text", "id": "story_eyebrow_zh", "label": "中文 · 小标题", "default": "关于品牌" },
-    { "type": "text", "id": "story_eyebrow_en", "label": "英文 · 小标题", "default": "About hitoami" },
     {
       "type": "textarea",
       "id": "story_heading",

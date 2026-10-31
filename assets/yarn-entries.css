@@ -3,7 +3,6 @@
 .yarn-entries { padding: 40px 0; background: var(--yarn-bg-band); color: var(--yarn-text-primary); }
 .yarn-entries__inner { width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter))); margin: 0 auto; }
 .yarn-entries__head { text-align: center; }
-.yarn-entries__eyebrow { margin: 0; color: var(--yarn-text-muted); font-size: 12px; letter-spacing: 0.5em; text-indent: 0.5em; }
 .yarn-entries__heading { margin: 4px 0 0; color: var(--yarn-text-primary); font: 500 24px/1.35 var(--yarn-display); letter-spacing: 0; }
 .yarn-entries__flourish { display: block; width: 220px; height: auto; margin: 4px auto 16px; mix-blend-mode: multiply; }
 .yarn-entries__bar { display: flex; justify-content: center; margin-bottom: 22px; }
