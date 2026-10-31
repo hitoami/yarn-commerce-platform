@@ -9,6 +9,14 @@
 .yarn-home-catalog__note { margin: 0 0 12px; }
 .yarn-home-catalog__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; }
 .yarn-home-catalog__grid .yx-product-card__media img { object-fit: contain; }
+.yarn-home-catalog__more { display: none; }
+@media (max-width: 749px) {
+  /* Issue 263（用户 2026-10-30 准奏）：首页毛线卡与毛线目录同一套——照片铺满、不放「毛线」小标签、色数并进规格行。 */
+  .yarn-home-catalog__grid .yx-product-card__media img { object-fit: cover; }
+  .yarn-home-catalog__grid .yx-card-meta { display: none; }
+  .yarn-home-catalog__grid .yx-product-card__spec-colors { display: inline; }
+  .yarn-home-catalog__more { display: flex; align-items: center; justify-content: center; gap: 0.3em; min-height: var(--yarn-touch); margin-top: 20px; border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-radius-pill); color: var(--yarn-action); font-size: 14px; font-weight: 700; text-decoration: none; }
+}
 .yarn-home-catalog__empty { padding: 24px 0; border-top: 1px solid var(--yarn-border-subtle); }
 .yarn-home-guide__intro > * { margin-top: 0; }
 .yarn-home-guide .yarn-home-guide__eyebrow { margin: 0 0 6px; color: var(--yarn-action); font-size: 13px; font-weight: 700; line-height: 1.2; }

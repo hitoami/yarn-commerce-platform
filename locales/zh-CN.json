@@ -888,6 +888,7 @@
     "browse_search": "搜索毛线、编织包、成品",
     "option_default": "选项",
     "catalog_preparing": "毛线资料正在整理，核实后将在这里展示。",
+    "catalog_view_all_count": "看全部 {{ count }} 款毛线",
     "collection_preparing_title": "正在准备中",
     "collection_preparing_text": "正在一件件准备，上架前可以先看看毛线。",
     "collection_preparing_link": "查看毛线",
