@@ -13,6 +13,8 @@ const PANE = 'zouzhe'
 const REPO = 'hitoami/yarn-commerce-platform'
 const LABEL = '每日提案'
 const APPROVED = '已准奏'
+// 缓议（#294）：锦晨觉得不错、暂时没空做的奏折。只是 Issue 上的一个标签：不关闭、不进不做清单，每晚补足待批时不计入。
+const SHELVED = '缓议'
 
 const memorials = atom({ plugin: 'zouzhe', key: 'memorials' } as const, [], { shape: 'memorials-8' })
 // 刚点过、GitHub 还没跟上的状态：按下准奏即进「承办中」，驳回即进「留中」。
@@ -46,10 +48,11 @@ const COLUMNS: Column[] = [
   { status: 'doing', title: '承办中', strip: VERMILION, empty: '暂无', limit: 20 },
 ]
 const ARCHIVE: Column[] = [
+  { status: 'shelved', title: '缓议', strip: '#7d8fa3', empty: '暂无', limit: 30 },
   { status: 'done', title: '已颁行', strip: '#3e7c6b', empty: '暂无', limit: 12 },
   { status: 'rejected', title: '留中', strip: '#9a9187', empty: '暂无', limit: 12 },
 ]
-const STATUS_LABEL: Record<Status, string> = { pending: '待朱批', drafted: '原型待批', doing: '承办中', done: '已颁行', rejected: '留中' }
+const STATUS_LABEL: Record<Status, string> = { pending: '待朱批', drafted: '原型待批', doing: '承办中', done: '已颁行', rejected: '留中', shelved: '缓议' }
 
 
 const seal = (mark: string, color: string) =>
@@ -128,6 +131,7 @@ const roundsOf = (issue: Issue) =>
 const statusOf = (issue: Issue): Status => {
   if (issue.state === 'CLOSED') return issue.stateReason === 'NOT_PLANNED' ? 'rejected' : 'done'
   if (issue.labels.some(label => label.name === APPROVED)) return 'doing'
+  if (issue.labels.some(label => label.name === SHELVED)) return 'shelved'
   return issue.title.includes('原型待批') || /\*\*原型\*\*[：:]/.test(issue.body) ? 'drafted' : 'pending'
 }
 
@@ -191,9 +195,26 @@ async function approveMemorial($: EngineInterface, m: Memorial) {
   await update($, opened, () => null)
   void $.prompt.submit({
     text: `【朱批·准奏】#${m.number}「${m.title}」（${m.kind || '提案'}）。这是锦晨在御书房面板上亲手点的「准奏」，等于在对话里对这个每日提案说「要」。${NEW_SESSION}` +
-      `要求：在仓库 ${REPO}，先给 Issue #${m.number} 加「${APPROVED}」标签并评论「朱批：准（御书房）」，再按 .agents/skills/daily-proposal/SKILL.md 的「收到批阅」和「实现」处理：小改直接实现并上线，大改先出 Figma 原型重新呈上。`,
+      `要求：在仓库 ${REPO}，先给 Issue #${m.number} 加「${APPROVED}」标签（有「${SHELVED}」标签就一并去掉）并评论「朱批：准（御书房）」，再按 .agents/skills/daily-proposal/SKILL.md 的「收到批阅」和「实现」处理：小改直接实现并上线，大改先出 Figma 原型重新呈上。`,
   })
   $.ui.toast(`#${m.number} 准奏，臣遵旨`)
+}
+
+// 缓议 / 取回：插件自己改 Issue 标签，不经过会话，点了立刻生效；GitHub 改失败就撤回本地暂记。
+async function shelveMemorial($: EngineInterface, m: Memorial, shelve: boolean) {
+  const at = new Date(await $.clock.now()).toISOString()
+  const back: Status = m.kind.includes('原型待批') || m.prototype ? 'drafted' : 'pending'
+  await update($, pressed, all => ({ ...all, [m.number]: { status: shelve ? 'shelved' : back, at } }))
+  const { exitCode, stderr } = await $.process.run([
+    'gh', 'issue', 'edit', String(m.number), '--repo', REPO, shelve ? '--add-label' : '--remove-label', SHELVED,
+  ])
+  if (exitCode !== 0) {
+    await update($, pressed, all => Object.fromEntries(Object.entries(all).filter(([n]) => n !== String(m.number))))
+    $.ui.toast(`#${m.number} 没改成：${stderr.trim().slice(0, 100)}`)
+    return
+  }
+  $.ui.toast(shelve ? `#${m.number} 缓议，以后再办` : `#${m.number} 取回待批`)
+  await refresh($)
 }
 
 async function rejectMemorial($: EngineInterface, m: Memorial, reason: string) {
@@ -281,6 +302,8 @@ export const register: Register = on => {
     const count = (s: Status) => list.filter(m => status(m) === s).length
     const waitingOf = (m: Memorial) => askedMap[String(m.number)]?.split('\u0000')[0]
     const isOpenStatus = (s: Status) => s === 'pending' || s === 'drafted'
+    // 能批的：待批两种，加上缓议（缓议的也能直接准奏、驳回或取回）。
+    const isActionable = (s: Status) => isOpenStatus(s) || s === 'shelved'
 
     const draft = async (idea: string) => {
       await update($, drafting, () => false)
@@ -306,10 +329,15 @@ export const register: Register = on => {
     // 朱批按钮：准奏是主按钮，其余是原生次要按钮（跟随主题，不再自己垫底色）。
     const actions = (m: Memorial, where: string) => {
       const now = status(m)
-      if (!isOpenStatus(now)) return null
+      if (!isActionable(now)) return null
       return (
         <Box flexDirection="row" gap={1} flexWrap="wrap">
           <Button key={`yes-${where}-${m.number}`} label="准奏" variant="primary" onPress={() => approveMemorial($, m)} />
+          {now === 'shelved' ? (
+            <Button key={`back-${where}-${m.number}`} label="取回待批" variant="secondary" onPress={() => shelveMemorial($, m, false)} />
+          ) : (
+            <Button key={`shelve-${where}-${m.number}`} label="缓议" variant="secondary" onPress={() => shelveMemorial($, m, true)} />
+          )}
           <Button
             key={`no-${where}-${m.number}`}
             label="驳回"
@@ -370,7 +398,7 @@ export const register: Register = on => {
               {Svg && STAMPS[now] && <Svg source={seal(STAMPS[now].mark, STAMPS[now].color)} alt={`朱批：${STAMPS[now].mark}`} width={40} height={40} />}
             </Box>
           </Box>
-          {isOpenStatus(now) &&
+          {isActionable(now) &&
             (noting === m.number && Input ? (
               <Input
                 key={`note-detail-${m.number}`}
@@ -480,12 +508,12 @@ export const register: Register = on => {
       )
     }
 
-    // 已颁行、留中：折叠成一行，展开是一列紧凑清单（印章 + 编号 + 标题 + 日期），点标题展阅。
+    // 缓议、已颁行、留中：折叠成一行，展开是一列紧凑清单（编号 + 标题 + 日期），点标题展阅；缓议的每行可直接取回。
     const archive = (column: Column) => {
       const rows = list.filter(m => status(m) === column.status)
       const expanded = open[column.status] === true
       return (
-        <Box key={`arch-${column.status}`} flexDirection="column" gap={0} flexGrow={1} flexShrink={1} width="50%" minWidth={30}>
+        <Box key={`arch-${column.status}`} flexDirection="column" gap={0} flexGrow={1} flexShrink={1} width={`${Math.floor(100 / ARCHIVE.length)}%`} minWidth={30}>
           <Button
             key={`fold-${column.status}`}
             plain
@@ -507,7 +535,11 @@ export const register: Register = on => {
                     </Text>
                   </Button>
                 </Box>
-                <Text size="caption" color="inactive" tabular>{m.updatedAt.slice(5, 10)}</Text>
+                {column.status === 'shelved' ? (
+                  <Button key={`row-back-${m.number}`} label="取回" variant="secondary" onPress={() => shelveMemorial($, m, false)} />
+                ) : (
+                  <Text size="caption" color="inactive" tabular>{m.updatedAt.slice(5, 10)}</Text>
+                )}
               </Box>
             ))}
           {expanded && rows.length > column.limit && (

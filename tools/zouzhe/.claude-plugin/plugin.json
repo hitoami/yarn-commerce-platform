@@ -1,1 +1,1 @@
-{ "name": "zouzhe", "version": "0.2.0", "description": "御书房：在 Claude Code 旁批阅 hitoami 每日提案（GitHub Issue），准奏即实现上线，驳回即记入不做清单", "types": "./types/index.d.ts" }
+{ "name": "zouzhe", "version": "0.3.0", "description": "御书房：在 Claude Code 旁批阅 hitoami 每日提案（GitHub Issue），准奏即实现上线，驳回即记入不做清单", "types": "./types/index.d.ts" }
