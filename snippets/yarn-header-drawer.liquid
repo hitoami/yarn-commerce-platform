@@ -131,6 +131,9 @@
                       {%- endif -%}
                       <span class="svg-wrapper yarn-drawer-row__arrow" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
                     </a>
+                    {%- if first_time != blank and link.type == 'collection_link' and link.object.handle == section.settings.drawer_yarn_collection.handle -%}
+                      <a class="yarn-drawer-sub focus-inset" href="{{ link.url | escape }}?ycb_beginner=1">{{ 'yarn_collection.first_time' | t }}<span aria-hidden="true"> →</span></a>
+                    {%- endif -%}
                   {%- endif -%}
                 </li>
               {%- endfor -%}
