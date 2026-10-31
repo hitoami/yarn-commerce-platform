@@ -151,7 +151,11 @@
         if (tab.disabled) return;
         this.setState({ ...this.state, group: tab.dataset.searchTab, browse: this.state.browse });
       }));
-      listen(this.showAll, 'click', () => this.setState({ ...this.state, group: 'yarn' }));
+      listen(this.showAll, 'click', () => {
+        this.setState({ ...this.state, group: 'yarn' });
+        // The more button disappears in this view; keep keyboard users before the results.
+        this.tabs.find((tab) => tab.dataset.searchTab === 'yarn')?.focus();
+      });
       listen(this.querySelector('[data-favorites-login-button]'), 'click', () => window.YarnFavorites?.showLogin());
       listen(window, 'popstate', () => { this.state = stateFromSearch(window.location.search); this.present(); });
       listen(document, 'yarn:favorites-changed', () => { if (this.state.browse === 'favorites' && this.presentationReady) this.render(); });
