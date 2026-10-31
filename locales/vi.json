@@ -90,7 +90,8 @@
     "total_reviews": "tổng số lượt đánh giá",
     "star_reviews_info": "{{ rating_value }}/{{ rating_max }} sao",
     "collapsible_content_title": "Nội dung có thể thu gọn",
-    "complementary_products": "Sản phẩm bổ sung"
+    "complementary_products": "Sản phẩm bổ sung",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

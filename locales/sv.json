@@ -90,7 +90,8 @@
     "total_reviews": "totalt antal recensioner",
     "star_reviews_info": "{{ rating_value }} av {{ rating_max }} stjärnor",
     "collapsible_content_title": "Innehåll som kan döljas",
-    "complementary_products": "Kompletterande produkter"
+    "complementary_products": "Kompletterande produkter",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

@@ -90,7 +90,8 @@
     "total_reviews": "iš viso apžvalgų",
     "star_reviews_info": "{{ rating_value }} iš {{ rating_max }} žvaigždučių",
     "collapsible_content_title": "Suskleidžiamas turinys",
-    "complementary_products": "Papildomi produktai"
+    "complementary_products": "Papildomi produktai",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

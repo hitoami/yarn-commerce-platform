@@ -90,7 +90,8 @@
     "total_reviews": "recensioni totali",
     "star_reviews_info": "{{ rating_value }} stelle su {{ rating_max }}",
     "collapsible_content_title": "Contenuto comprimibile",
-    "complementary_products": "Prodotti complementari"
+    "complementary_products": "Prodotti complementari",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

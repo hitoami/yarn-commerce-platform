@@ -90,7 +90,8 @@
     "total_reviews": "total recenzii",
     "star_reviews_info": "{{ rating_value }} din {{ rating_max }} stele",
     "collapsible_content_title": "Conținut care poate fi restrâns",
-    "complementary_products": "Produse complementare"
+    "complementary_products": "Produse complementare",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

@@ -90,7 +90,8 @@
     "total_reviews": "評論總次數",
     "star_reviews_info": "{{ rating_value }} 顆星 (最高 {{ rating_max }} 顆星)",
     "collapsible_content_title": "可摺疊的內容",
-    "complementary_products": "配套商品"
+    "complementary_products": "配套商品",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

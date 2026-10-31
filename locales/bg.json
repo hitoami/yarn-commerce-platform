@@ -90,7 +90,8 @@
     "total_reviews": "общ брой мнения",
     "star_reviews_info": "{{ rating_value }} от {{ rating_max }} звезди",
     "collapsible_content_title": "Съдържание, което може да се свива",
-    "complementary_products": "Допълващи продукти"
+    "complementary_products": "Допълващи продукти",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

@@ -90,7 +90,8 @@
     "total_reviews": "총 리뷰",
     "star_reviews_info": "별점: {{ rating_value }}/{{ rating_max }}",
     "collapsible_content_title": "축소 가능한 콘텐츠",
-    "complementary_products": "보완 제품"
+    "complementary_products": "보완 제품",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

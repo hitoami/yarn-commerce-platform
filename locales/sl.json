@@ -90,7 +90,8 @@
     "total_reviews": "skupno število pregledov",
     "star_reviews_info": "{{ rating_value }} od {{ rating_max }} zvezdic",
     "collapsible_content_title": "Vsebina, ki jo je mogoče strniti",
-    "complementary_products": "Dopolnilni izdelki"
+    "complementary_products": "Dopolnilni izdelki",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {
