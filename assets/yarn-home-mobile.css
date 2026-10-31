@@ -65,7 +65,6 @@
   body:has(.hitoami-hero--catalog) .yarn-entries__all { background: none; font-size: 12px; min-height: 44px; margin-top: 12px; }
   .yarn-home-catalog, .yarn-home-guide { padding-inline: 24px; }
   body:has(.hitoami-hero--catalog) .yx-season { margin: 0; width: auto; padding: 12px 24px 36px; gap: 23px; background: none; }
-  body:has(.hitoami-hero--catalog) .yx-season__heading { font-size: 27px; font-weight: 400; }
 }
 
 /* The supplied desktop reference uses compact circles and a shared content axis. */
@@ -152,14 +151,5 @@ body:has(.hitoami-hero--catalog) :is(.yarn-section-eyebrow, .hitoami-story__eyeb
 body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2 { margin: 0; color: var(--yarn-text-heading); font: 500 24px/1.45 var(--yarn-display); letter-spacing: 0; }
 @media (min-width: 750px) {
   body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-entries), :has(.yarn-home-catalog), :has(.yx-season), :has(.yx-picks), :has(.yarn-home-guide--faq)) { padding-block: 80px; }
-  body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2 { font-size: 32px; font-weight: 600; line-height: 1.25; }
-}
-@media (max-width: 749px) {
-  /* 手机上 .yx-picks__titles 是 display: contents，眉题单独占一行、排在标题前。 */
-  body:has(.hitoami-hero--catalog) .yx-picks__head .yarn-section-eyebrow { order: -1; flex-basis: 100%; }
-  /* 引导式作品区的标题是网格：眉题占第一行，标题、查看全部、说明依次下移。 */
-  body:has(.hitoami-hero--catalog) .yx-picks--guided .yx-picks__head .yarn-section-eyebrow { grid-column: 1 / -1; grid-row: 1; margin: 0; }
-  body:has(.hitoami-hero--catalog) .yx-picks--guided .yx-picks__head:has(.yarn-section-eyebrow) h2 { grid-row: 2; }
-  body:has(.hitoami-hero--catalog) .yx-picks--guided .yx-picks__head:has(.yarn-section-eyebrow) .yx-picks__all { grid-row: 2; }
-  body:has(.hitoami-hero--catalog) .yx-picks--guided .yx-picks__head:has(.yarn-section-eyebrow) .yx-picks__note { grid-row: 3; }
+  body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2 { font-size: 32px; font-weight: 500; line-height: 1.25; }
 }

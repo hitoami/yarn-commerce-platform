@@ -1,7 +1,7 @@
 {%- comment -%}
   材料包卡(#131;原作品卡):首页「用我们的毛线可以织」与毛线详情页「用这款线能织」共用。
   封面 + 「材料包」角标 + 标题 + 所需毛线(配件里类型为「毛线」且关联了 Variant 的条目:商品名 × 团数)+ 参考价(各 Variant 价格 × 团数之和)+ 教程在 LINE。
-  show_steps 仅首页传入，编号随对应信息显示。
+  show_steps 仅首页传入（Issue 311 方案 F）：三步只在区块标题下的面板里讲，卡上不出编号与教程行；毛线名去掉【】前缀和｜后的规格。
   eager(#189):材料包列表首屏的卡片不懒加载。
   教程段包在 __tutorial 里(#211):材料包列表手机版顶部已统一说明,隐藏卡上的重复。
   内容卡,不能直接加购;没有关联毛线的作品只显示封面与标题。调用方负责只传入可公开且有封面的 project。
@@ -27,6 +27,9 @@
       assign kit_yarn_kinds = kit_yarn_kinds | plus: 1
       if kit_yarn_name == blank
         assign kit_yarn_name = kit_variant.product.title
+        if show_steps
+          assign kit_yarn_name = kit_yarn_name | split: '】' | last | split: '｜' | first | strip
+        endif
         assign kit_yarn_count = kit_qty
       endif
       assign kit_line = kit_variant.price | times: kit_qty
@@ -55,13 +58,12 @@
     {%- else -%}
       {{ project.cover.value | image_url: width: 800 | image_tag: widths: '300, 450, 600, 800', sizes: '(min-width: 750px) 300px, 45vw', loading: 'lazy', alt: '' }}
     {%- endif -%}
-    <span class="yx-project-pick__badge">{% if show_steps %}<span class="yx-picks__number">1</span> {% endif %}{{ 'yarn_project.kit_badge' | t }}</span>
+    <span class="yx-project-pick__badge">{{ 'yarn_project.kit_badge' | t }}</span>
     {%- if kit_state == 'blocked' -%}<span class="yx-project-pick__stock">{{ 'yarn_project.kit_sold_out' | t }}</span>{%- elsif kit_state == 'partial' -%}<span class="yx-project-pick__stock yx-project-pick__stock--partial">{{ 'yarn_project.kit_partial_tag' | t }}</span>{%- endif -%}
   </span>
   <span class="yx-project-pick__title">{{ project.title.value | escape }}</span>
   {%- if kit_yarn_name != blank -%}
     <span class="yx-project-pick__yarn">
-      {%- if show_steps -%}<span class="yx-picks__number">2</span> {% endif -%}
       {{- 'yarn_project.kit_yarn_line' | t: name: kit_yarn_name, count: kit_yarn_count -}}
       {%- if kit_yarn_kinds > 1 %} · {{ 'yarn_project.kit_yarn_more' | t: count: kit_yarn_kinds }}{% endif -%}
     </span>
@@ -72,10 +74,12 @@
     <span class="yx-project-pick__meta yx-project-pick__meta--muted">{{ 'yarn_project.kit_card_pending' | t }}</span>
   {%- elsif kit_state == 'partial' -%}
     <span class="yx-project-pick__meta">{{ 'yarn_project.kit_card_partial' | t }}</span>
+  {%- elsif show_steps -%}
+    {%- if kit_total > 0 -%}<span class="yx-project-pick__meta">{{ 'yarn_project.kit_price_about' | t: price: kit_price }}</span>{%- endif -%}
   {%- elsif kit_total > 0 or project.tutorial_url.value != blank -%}
     <span class="yx-project-pick__meta">
       {%- if kit_total > 0 -%}{{ 'yarn_project.kit_price_about' | t: price: kit_price }}{%- endif -%}
-      {%- if project.tutorial_url.value != blank -%}<span class="yx-project-pick__tutorial">{% if kit_total > 0 %} · {% endif %}{% if show_steps %}<span class="yx-picks__number">3</span> {% endif %}{{ 'yarn_project.kit_tutorial_line' | t }}</span>{%- endif -%}
+      {%- if project.tutorial_url.value != blank -%}<span class="yx-project-pick__tutorial">{% if kit_total > 0 %} · {% endif %}{{ 'yarn_project.kit_tutorial_line' | t }}</span>{%- endif -%}
     </span>
   {%- endif -%}
 </a>

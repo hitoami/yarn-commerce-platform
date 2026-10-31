@@ -321,27 +321,13 @@
   .yx-card-cart::before { content: ''; position: absolute; inset: -2px; }
 }
 
-/* #180: homepage steps share their numbers with the project cards. */
-.yx-picks__number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-  width: 18px;
-  height: 18px;
-  border-radius: var(--yarn-radius-pill);
-  background: var(--yarn-cta-bg);
-  color: var(--yarn-action);
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1;
-  vertical-align: middle;
-}
-.yx-picks__steps { display: flex; gap: 8px; margin: 0 0 16px; padding: 0; list-style: none; }
-.yx-picks__step { display: flex; align-items: center; gap: 6px; padding: 4px 10px 4px 6px; border: 1px solid var(--yarn-border-subtle); border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); color: var(--yarn-text-heading); font-size: 12px; line-height: 1.5; }
-.yx-picks--guided .yx-project-pick__badge { display: inline-flex; align-items: center; gap: 6px; background: var(--yarn-cta-bg); }
-.yx-picks--guided .yx-project-pick__yarn > .yx-picks__number,
-.yx-picks--guided .yx-project-pick__meta > .yx-picks__number { margin-inline-end: 6px; }
+/* Issue 311（方案 F）：首页三步是标题下一块平铺色带，不可点；编号只在这里出现，作品卡不再带编号。 */
+.yx-picks__steps { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 10px; margin: 0 0 20px; padding: 14px; list-style: none; border-radius: var(--yarn-radius-panel); background: var(--yarn-bg-band); }
+.yx-picks__step { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.yx-picks__number { color: var(--yarn-action); font-size: 12px; font-weight: 700; line-height: 1.3; letter-spacing: 0.04em; }
+.yx-picks__step-title { color: var(--yarn-text-heading); font-size: 14px; font-weight: 500; line-height: 1.4; }
+.yx-picks__step-note { color: var(--yarn-text-muted); font-size: 12px; line-height: 1.4; }
+.yx-picks--guided .yx-project-pick__badge { background: var(--yarn-cta-bg); }
 @media screen and (max-width: 749px) {
   .yx-picks--guided .yx-picks__head:has(.yx-picks__titles) { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; row-gap: 6px; margin-bottom: 16px; }
   .yx-picks--guided .yx-picks__head h2 { grid-column: 1; grid-row: 1; }
@@ -349,25 +335,23 @@
   .yx-picks--guided .yx-picks__titles .yx-picks__note { grid-column: 1 / -1; grid-row: 2; margin: 0; }
   .yx-picks--guided .yx-project-picks { grid-auto-columns: 220px; gap: 12px; padding-bottom: 4px; }
   .yx-picks--guided .yx-project-pick__media { aspect-ratio: 220 / 250; border-radius: var(--yarn-radius-media); }
-  .yx-picks--guided .yx-project-pick__badge { left: 10px; top: 10px; padding: 3px 10px 3px 6px; }
-  .yx-picks--guided .yx-picks__step { min-width: 0; }
+  .yx-picks--guided .yx-project-pick__badge { left: 10px; top: 10px; padding: 3px 10px; }
 }
-
-/* Desktop approved in Figma 7:3; hidden additions leave the phone rail unchanged. */
-.yx-picks__step-note, .yx-picks__thread { display: none; }
+/* 桌面按 Figma 31:2：步骤横排，衬线大编号在左、名称与说明在右，步间陶土箭头。 */
 @media screen and (min-width: 750px) {
   .yx-picks--guided .yx-picks__head:has(.yx-picks__titles) { margin-bottom: 20px; }
   .yx-picks--guided .yx-picks__head h2 { font-size: 32px; line-height: 1.5; font-weight: 500; }
   .yx-picks--guided .yx-picks__titles .yx-picks__note { margin-top: 8px; font-size: 16px; line-height: 1.5; }
-  .yx-picks--guided .yx-picks__steps { align-items: center; gap: 48px; margin-bottom: 28px; }
-  .yx-picks--guided .yx-picks__step { position: relative; min-width: 0; gap: 10px; padding: 8px 16px 8px 8px; font-size: 14px; font-weight: 500; }
-  .yx-picks__step-note { display: inline; min-width: 0; color: var(--yarn-text-muted); font-size: 13px; font-weight: 400; }
-  .yx-picks__thread { display: block; position: absolute; right: 100%; top: calc(50% - 6px); width: 48px; height: 12px; background: var(--yarn-decor-thread); mask: url('yarn-project-step-thread.svg') center / 48px 12px no-repeat; pointer-events: none; }
-  .yx-picks--guided .yx-picks__number { width: 20px; height: 20px; font-size: 12px; }
-  .yx-picks__step > .yx-picks__number { width: 24px; height: 24px; font-size: 14px; }
+  .yx-picks--guided .yx-picks__steps { gap: 0; align-items: center; margin-bottom: 28px; padding: 22px 32px; }
+  .yx-picks--guided .yx-picks__step { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; align-items: center; padding-inline: 32px 24px; }
+  .yx-picks--guided .yx-picks__step:first-child { padding-inline-start: 0; }
+  .yx-picks--guided .yx-picks__step + .yx-picks__step::before { content: '→' / ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); color: var(--yarn-action); font-size: 18px; line-height: 1; }
+  .yx-picks--guided .yx-picks__number { grid-row: 1 / span 2; font: 500 28px/1 var(--yarn-display); letter-spacing: 0; }
+  .yx-picks__step-title { grid-column: 2; font-size: 16px; }
+  .yx-picks__step-note { grid-column: 2; font-size: 14px; }
   .yx-picks--guided .yx-project-pick { min-width: 0; gap: 10px; }
   .yx-picks.yx-picks--guided .yx-project-pick__media { aspect-ratio: 282 / 350; border-radius: 12px; }
-  .yx-picks--guided .yx-project-pick__badge { left: 14px; top: 14px; padding: 4px 12px 4px 6px; font-size: 13px; }
+  .yx-picks--guided .yx-project-pick__badge { left: 14px; top: 14px; padding: 4px 12px; font-size: 13px; }
   .yx-picks--guided .yx-project-pick__title { font-size: 18px; }
   .yx-picks--guided .yx-project-pick__yarn { font-size: 14px; }
   .yx-picks--guided .yx-project-pick__meta { font-size: 15px; }
