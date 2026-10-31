@@ -47,3 +47,25 @@ test('catalogue section reuses the shared yarn card, hides empty categories and 
   assert.doesNotMatch(placeholder, /product\.|price|money/);
   assert.doesNotMatch(liquid.split('{% schema %}')[0], /\| t: count:/, 'count triggers Shopify plural keys');
 });
+
+const { metresPer100g, weightBand, readState, writeState } = require('../assets/yarn-collection-browse.js');
+
+test('243: weight comes only from grams and metres in the localized spec line', () => {
+  assert.equal(metresPer100g('50g · 約75m'), 150);
+  assert.equal(metresPer100g('100g · 约160m'), 160);
+  assert.equal(metresPer100g('50g · Approx. 330m'), 660);
+  assert.equal(metresPer100g('50g｜约120m/团（±2m）'), 240);
+  assert.equal(metresPer100g('200g · 约458±20m'), 229);
+  assert.equal(metresPer100g('350g｜6股｜约1750米；500g｜6股｜约2500米'), 500);
+  for (const missing of ['50g', '50g（±2g）', '330～350g/筒', '规格见商品详情', '', undefined]) assert.equal(metresPer100g(missing), null);
+  assert.deepEqual([68, 100, 101, 200, 350, 351, 800, 1040, null].map(weightBand), [0, 0, 1, 1, 2, 3, 3, 4, null]);
+});
+
+test('243: view and weight survive category links; compare and "you are here" do not', () => {
+  const state = readState(new URLSearchParams('ycb_view=map&ycb_weight=3&ycb_cmp=fluffy,loop-fancy&ycb_here=mvp-yarn-01'));
+  assert.deepEqual(state, { view: 'map', weight: 3, cmp: ['fluffy', 'loop-fancy'], here: 'mvp-yarn-01' });
+  const link = writeState(new URLSearchParams('filter.p.m.yarn.texture=gid%3A1'), state, { keepVisit: false });
+  assert.equal(link.toString(), 'filter.p.m.yarn.texture=gid%3A1&ycb_view=map&ycb_weight=3');
+  assert.equal(readState(new URLSearchParams('ycb_weight=9')).weight, null);
+  assert.equal(readState(new URLSearchParams('ycb_weight=0')).weight, 0);
+});

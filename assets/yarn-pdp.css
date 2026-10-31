@@ -304,3 +304,7 @@ product-info.yarn-product-page--yarn .product__info-container > .yp-yarn-intro {
   .yp-yarn-works .yp-yarn-block__title--section { font-size: 20px; }
   .yp-yarn-works .yp-yarn-block__head p { display: none; }
 }
+
+/* Issue 243：「在手感地图上看」，规格行有米数的毛线才出现。 */
+.yp-map-link { display: inline-flex; align-items: center; gap: 8px; min-height: var(--yarn-touch); margin-top: 10px; color: var(--yarn-action); font-size: 14px; font-weight: 700; text-decoration: none; }
+.yp-map-link:hover span:first-of-type { text-decoration: underline; text-underline-offset: 3px; }
