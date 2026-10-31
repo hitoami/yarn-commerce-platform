@@ -8,6 +8,7 @@
 
 - 先确认用户目标、当前 GitHub Issue 的范围与验收标准，并检查 `git status`。实施变更前如无对应 Issue，建立一个；只读咨询无需新建 Issue。
 - 从当前 Issue 与目标文件开始；按任务读取 `PRODUCT.md` 的相关产品边界和 `CONTEXT.md` 的相关领域定义。纯文档 / 流程维护不默认加载整份产品与设计资料；会话中已读且未变的内容不重复加载。领域名称以 `CONTEXT.md` 为准。
+- 动 Theme、发布或每日提案前先扫 `docs/agents/pitfalls.md`（前面会话踩过的坑）。
 - 按需追加上下文：UI / UX → `docs/agents/visual-review.md`、`.agents/skills/impeccable/SKILL.md`、`DESIGN.md` 相关章节和对应 surface brief；派工或选模型 → `.agents/skills/dispatch/SKILL.md`；架构或数据边界 → `docs/ARCHITECTURE.md` 与相关 ADR。默认不扫描整套 skill references、`.impeccable/` 本地产物或二进制素材；仅在当前任务确需追溯某项决定或来源时定向读取。
 - 首次修改 Theme 代码、依赖或验证脚本前运行 `./init.sh` 确认基线；纯文档和指令修改检查内容与引用即可。
 - 每个工作区一次实现一个 Issue。任何工具、任何类型的改动（含脚本与文档）都用分支 `codex/<issue>-<slug>`。已有无关修改时使用独立工作区，保留用户工作。
