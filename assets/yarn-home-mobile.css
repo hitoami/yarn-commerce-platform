@@ -9,6 +9,14 @@
 .yarn-home-catalog__note { margin: 0 0 12px; }
 .yarn-home-catalog__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; }
 .yarn-home-catalog__grid .yx-product-card__media img { object-fit: contain; }
+.yarn-home-catalog__more { display: none; }
+@media (max-width: 749px) {
+  /* Issue 263（用户 2026-10-30 准奏）：首页毛线卡与毛线目录同一套——照片铺满、不放「毛线」小标签、色数并进规格行。 */
+  .yarn-home-catalog__grid .yx-product-card__media img { object-fit: cover; }
+  .yarn-home-catalog__grid .yx-card-meta { display: none; }
+  .yarn-home-catalog__grid .yx-product-card__spec-colors { display: inline; }
+  .yarn-home-catalog__more { display: flex; align-items: center; justify-content: center; gap: 0.3em; min-height: var(--yarn-touch); margin-top: 20px; border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-radius-pill); color: var(--yarn-action); font-size: 14px; font-weight: 700; text-decoration: none; }
+}
 .yarn-home-catalog__empty { padding: 24px 0; border-top: 1px solid var(--yarn-border-subtle); }
 .yarn-home-guide__intro > * { margin-top: 0; }
 .yarn-home-guide .yarn-home-guide__eyebrow { margin: 0 0 6px; color: var(--yarn-action); font-size: 13px; font-weight: 700; line-height: 1.2; }
@@ -133,4 +141,26 @@ body:has(.hitoami-hero--catalog) .yarn-entries__flourish { display: none; } /* n
 }
 @media (prefers-reduced-motion: reduce) {
   .yarn-home-guide summary::after, .yarn-home-guide__help-cta { transition: none; }
+}
+
+/* Issue 265（用户 2026-10-30 准奏）：首页分区节奏——挑毛线、本季主推、常见问题为暖米整宽底，其余奶白；
+   每块上下留白统一（手机 48、桌面 80），标题统一为「陶土小眉题 + 衬线标题」。 */
+body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-home-catalog), :has(.yx-picks)) { background: var(--yarn-bg-page); }
+body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.yarn-entries), :has(.yx-season), :has(.yarn-home-guide--faq)) { background: var(--yarn-bg-warm); }
+body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-entries), :has(.yarn-home-catalog), :has(.yx-season), :has(.yx-picks), :has(.yarn-home-guide--faq)) { padding-block: 48px; }
+body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) { padding-block: 0; background: none; }
+body:has(.hitoami-hero--catalog) :is(.yarn-section-eyebrow, .hitoami-story__eyebrow, .yarn-entries__eyebrow, .yarn-home-guide__eyebrow) { display: block; margin: 0 0 8px; color: var(--yarn-action); font: 700 13px/1.3 var(--yarn-body); letter-spacing: 0.04em; text-indent: 0; }
+body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2 { margin: 0; color: var(--yarn-text-heading); font: 500 24px/1.45 var(--yarn-display); letter-spacing: 0; }
+@media (min-width: 750px) {
+  body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-entries), :has(.yarn-home-catalog), :has(.yx-season), :has(.yx-picks), :has(.yarn-home-guide--faq)) { padding-block: 80px; }
+  body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2 { font-size: 32px; font-weight: 600; line-height: 1.25; }
+}
+@media (max-width: 749px) {
+  /* 手机上 .yx-picks__titles 是 display: contents，眉题单独占一行、排在标题前。 */
+  body:has(.hitoami-hero--catalog) .yx-picks__head .yarn-section-eyebrow { order: -1; flex-basis: 100%; }
+  /* 引导式作品区的标题是网格：眉题占第一行，标题、查看全部、说明依次下移。 */
+  body:has(.hitoami-hero--catalog) .yx-picks--guided .yx-picks__head .yarn-section-eyebrow { grid-column: 1 / -1; grid-row: 1; margin: 0; }
+  body:has(.hitoami-hero--catalog) .yx-picks--guided .yx-picks__head:has(.yarn-section-eyebrow) h2 { grid-row: 2; }
+  body:has(.hitoami-hero--catalog) .yx-picks--guided .yx-picks__head:has(.yarn-section-eyebrow) .yx-picks__all { grid-row: 2; }
+  body:has(.hitoami-hero--catalog) .yx-picks--guided .yx-picks__head:has(.yarn-section-eyebrow) .yx-picks__note { grid-row: 3; }
 }

@@ -2,8 +2,13 @@
 {%- capture heading -%}{% render 'yarn-setting-text', settings: section.settings, key: 'heading' %}{%- endcapture -%}
 {%- capture note -%}{% render 'yarn-setting-text', settings: section.settings, key: 'note' %}{%- endcapture -%}
 <section class="yarn-home-catalog page-width" aria-labelledby="Catalog-{{ section.id }}">
+  {%- comment -%}#263：手机只显示前几张（默认 4），其余在毛线目录里看。{%- endcomment -%}
+  {%- if section.settings.products.size > section.settings.products_to_show_mobile -%}
+    <style>@media (max-width: 749px) { #shopify-section-{{ section.id }} .yarn-home-catalog__grid > :nth-child(n + {{ section.settings.products_to_show_mobile | plus: 1 }}) { display: none; } }</style>
+  {%- endif -%}
   <div class="yarn-home-catalog__head">
-    <h2 id="Catalog-{{ section.id }}">{{ heading | escape }}</h2>
+    <div><p class="yarn-section-eyebrow">{{ 'yarn_project.eyebrow_catalog' | t }}</p>
+    <h2 id="Catalog-{{ section.id }}">{{ heading | escape }}</h2></div>
     {%- if section.settings.products != blank and collections['yarn'] != blank -%}
       <a class="yx-picks__all" href="{{ collections['yarn'].url }}">{{ 'yarn_project.card_view_all' | t }} <span aria-hidden="true">→</span></a>
     {%- endif -%}
@@ -15,6 +20,9 @@
         {%- if item.featured_image != blank -%}{% render 'yarn-pick-card', card_product: item %}{%- endif -%}
       {%- endfor -%}
     </div>
+    {%- if collections['yarn'] != blank -%}
+      <a class="yarn-home-catalog__more" href="{{ collections['yarn'].url }}">{{ 'yarn_project.catalog_view_all_count' | t: count: collections['yarn'].all_products_count }} <span aria-hidden="true">→</span></a>
+    {%- endif -%}
   {%- else -%}
     <p class="yarn-home-catalog__empty">{{ 'yarn_project.catalog_preparing' | t }}</p>
   {%- endif -%}
@@ -24,6 +32,7 @@
  "name":"毛线资料精选",
  "settings":[
   {"type":"product_list","id":"products","label":"已逐款核对图片和资料的毛线","limit":30,"info":"只选已核实商品；不会自动补入旧目录。售价未确认时显示暂未开售。"},
+  {"type":"range","id":"products_to_show_mobile","min":2,"max":12,"step":2,"default":4,"label":"手机最多显示","info":"手机上只显示前几件，下面接「看全部」链接（#263）"},
   {"type":"text","id":"heading","label":"日文 · 标题","default":"毛糸を知る"},
   {"type":"text","id":"heading_zh","label":"中文 · 标题","default":"认识这些毛线"},
   {"type":"text","id":"heading_en","label":"英文 · 标题","default":"Meet our yarns"},
