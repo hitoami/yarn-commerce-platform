@@ -283,6 +283,17 @@
       "announcement": "공지",
       "menu": "메뉴",
       "coming_soon": "Coming soon",
+      "language_note": "switch this page",
+      "language_short": "EN",
+      "drawer_login_title": "Log in / Sign up",
+      "drawer_login_note": "Check orders and save addresses",
+      "drawer_welcome": "Welcome back",
+      "drawer_welcome_note": "Orders and addresses",
+      "drawer_orders": "Orders",
+      "drawer_addresses": "Addresses",
+      "drawer_shipping": "Shipping & returns",
+      "drawer_contact": "Contact",
+      "drawer_shop": "Shop",
       "cart_count": {
         "one": "{{ count }}개 품목",
         "other": "{{ count }}개 품목"

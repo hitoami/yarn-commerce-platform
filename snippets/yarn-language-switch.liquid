@@ -1,0 +1,79 @@
+{%- comment -%}
+  Header language switch (#258): one pill for every width. Phones open a bottom sheet, desktop a popover;
+  every option opens the same page in that language. The drawer's language row opens this same panel.
+{%- endcomment -%}
+{%- liquid
+  assign current_language_root = localization.language.root_url
+  assign path_without_language = request.path
+  if current_language_root != '/'
+    assign path_without_language = path_without_language | remove_first: current_language_root
+  endif
+  if path_without_language == blank
+    assign path_without_language = '/'
+  endif
+-%}
+<details class="yarn-lang" id="YarnLang">
+  <summary class="yarn-lang__button focus-inset" aria-label="{{ 'localization.language_label' | t }}: {{ localization.language.endonym_name | capitalize }}">
+    <svg class="yarn-lang__globe" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.8 3.8 5.8 3.8 9s-1.2 6.2-3.8 9c-2.6-2.8-3.8-5.8-3.8-9S9.4 5.8 12 3z"/></svg>
+    <span class="yarn-lang__code">{{ 'sections.header.language_short' | t }}</span>
+    <span class="yarn-lang__name">· {{ localization.language.endonym_name | capitalize }}</span>
+  </summary>
+  <div class="yarn-lang__scrim" data-lang-close></div>
+  <div class="yarn-lang__panel" role="dialog" aria-labelledby="YarnLangTitle">
+    <span class="yarn-lang__grab" aria-hidden="true"></span>
+    <p class="yarn-lang__title" id="YarnLangTitle">{{ 'localization.language_label' | t }} · {{ 'sections.header.language_note' | t }}</p>
+    <ul class="yarn-lang__list list-unstyled" role="list">
+      {%- for language in localization.available_languages -%}
+        {%- liquid
+          assign language_url = language.root_url
+          if path_without_language != '/'
+            if language.root_url == '/'
+              assign language_url = path_without_language
+            else
+              assign language_url = language.root_url | append: path_without_language
+            endif
+          endif
+          assign is_current = false
+          if language.iso_code == localization.language.iso_code
+            assign is_current = true
+          endif
+        -%}
+        <li>
+          <a class="yarn-lang__option" href="{{ language_url }}" hreflang="{{ language.iso_code }}" lang="{{ language.iso_code }}"{% if is_current %} aria-current="true"{% endif %}>
+            <span>{{ language.endonym_name | capitalize }}</span>
+            {%- if is_current -%}
+              <svg class="yarn-lang__check" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+            {%- elsif language.name != language.endonym_name -%}
+              <small lang="{{ localization.language.iso_code }}">{{ language.name }}</small>
+            {%- endif -%}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</details>
+<script>
+  (() => {
+    {%- comment -%}点面板外、按 Esc 关闭；抽屉里的「语言」行先关抽屉再打开同一个面板。{%- endcomment -%}
+    const lang = document.getElementById('YarnLang');
+    if (!lang || lang.dataset.ready) return;
+    lang.dataset.ready = '1';
+    document.addEventListener('click', (event) => {
+      if (event.target.closest('[data-lang-open]')) {
+        event.preventDefault();
+        const drawer = document.querySelector('header-drawer');
+        if (drawer && typeof drawer.closeMenuDrawer === 'function') drawer.closeMenuDrawer(event);
+        lang.open = true;
+        lang.querySelector('.yarn-lang__option')?.focus();
+        return;
+      }
+      if (lang.open && (event.target.closest('[data-lang-close]') || !lang.contains(event.target))) lang.open = false;
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && lang.open) {
+        lang.open = false;
+        lang.querySelector('summary').focus();
+      }
+    });
+  })();
+</script>
