@@ -45,16 +45,15 @@ test('prototype navigation contains no locale, product-copy or tag-search overri
 
 test('mobile drawer leads with account and quick actions, then plain shop rows (#258)', () => {
   const nav = drawer.slice(drawer.indexOf('menu-drawer__navigation'));
-  // 账户与常用功能排在菜单前；本季主推不再是大图横条，毛线分类图块默认收起。
+  // 账户与常用功能排在菜单前；本季主推不再是大图横条，毛线行直达毛线目录。
   assert.ok(nav.indexOf('yarn-drawer-account') < nav.indexOf('menu-drawer__menu has-submenu'));
   assert.ok(nav.indexOf('yarn-drawer-quick') < nav.indexOf('menu-drawer__menu has-submenu'));
   assert.match(drawer, /routes\.account_login_url/);
   assert.match(drawer, /routes\.account_addresses_url/);
   assert.doesNotMatch(drawer, /yarn-drawer-feature|drawer_season_text/);
-  assert.match(drawer, /link\.object\.handle == section\.settings\.drawer_yarn_collection\.handle and nav_tiles != blank/);
-  assert.match(drawer, /\{\{ nav_tiles \}\}/);
-  assert.match(drawer, /aria-expanded="false"[\s\S]*aria-controls="YarnDrawerTiles"/);
-  assert.match(drawer, /id="YarnDrawerTiles" role="list" hidden/);
+  // #299：手机上毛线行是直达目录的普通链接，不在抽屉里展开分类图块。
+  assert.doesNotMatch(drawer, /nav_tiles|YarnDrawerTiles|yarn-drawer-yarn/);
+  assert.match(drawer, /drawer_yarn_collection\.handle and link\.object\.all_products_count > 0[\s\S]*yarn-drawer-row__total/);
   assert.match(drawer, /link\.object\.all_products_count == 0[\s\S]*'sections\.header\.coming_soon' \| t/);
   for (const key of ['drawer_login_title', 'drawer_welcome', 'drawer_orders', 'drawer_addresses', 'drawer_shipping', 'drawer_contact', 'drawer_shop']) {
     assert.match(drawer, new RegExp(`'sections\\.header\\.${key}' \\| t`), key);
@@ -106,7 +105,7 @@ test('one language switch serves header and drawer, opening the same page in eac
 
 test('header computes the yarn tiles once and the desktop yarn link opens them in a mega panel (#131)', () => {
   assert.equal((header.match(/render 'yarn-nav-tiles'/g) || []).length, 1);
-  assert.match(header, /render 'yarn-header-drawer', navigation_menu: navigation_menu, nav_tiles: nav_tiles/);
+  assert.match(header, /render 'yarn-header-drawer', navigation_menu: navigation_menu, show_country_selector/);
   assert.match(header, /render 'yarn-header-menu', navigation_menu: navigation_menu, nav_tiles: nav_tiles/);
   assert.match(desktop, /link\.object\.handle == section\.settings\.drawer_yarn_collection\.handle and nav_tiles != blank/);
   assert.match(desktop, /<header-menu>\s*<details[^>]*class="mega-menu yarn-mega"/);

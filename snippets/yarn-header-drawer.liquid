@@ -114,24 +114,6 @@
                         </div>
                       </div>
                     </details>
-                  {%- elsif link.type == 'collection_link' and link.object.handle == section.settings.drawer_yarn_collection.handle and nav_tiles != blank -%}
-                    {%- comment -%}毛线：标题行默认收起，点开再看分类图块（#258）；图块由页头统一计算（yarn-nav-tiles）。{%- endcomment -%}
-                    <div class="yarn-drawer-yarn" data-drawer-group>
-                      <button
-                        type="button"
-                        id="YarnHeaderDrawer-{{ link.handle }}"
-                        class="yarn-drawer-yarn__toggle menu-drawer__menu-item list-menu__item link link--text focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"
-                        aria-expanded="false"
-                        aria-controls="YarnDrawerTiles"
-                      >
-                        <span class="yarn-drawer-yarn__title">{{ link.title | escape }}</span>
-                        <span class="yarn-drawer-yarn__total">{{ 'yarn_project.entry_count' | t: count: link.object.all_products_count }}</span>
-                        <span class="svg-wrapper yarn-drawer-chevron" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
-                      </button>
-                      <ul class="yarn-drawer-tiles list-unstyled" id="YarnDrawerTiles" role="list" hidden>
-                        {{ nav_tiles }}
-                      </ul>
-                    </div>
                   {%- else -%}
                     <a
                       id="YarnHeaderDrawer-{{ link.handle }}"
@@ -140,6 +122,10 @@
                       {% if link.current %}aria-current="page"{% endif %}
                     >
                       <span>{{ link.title | escape }}</span>
+                      {%- comment -%}#299：手机上毛线行直接进毛线目录，只多一个「N 款」；分类大图面板只留给桌面。{%- endcomment -%}
+                      {%- if link.type == 'collection_link' and link.object.handle == section.settings.drawer_yarn_collection.handle and link.object.all_products_count > 0 -%}
+                        <span class="yarn-drawer-row__total">{{ 'yarn_project.entry_count' | t: count: link.object.all_products_count }}</span>
+                      {%- endif -%}
                       {%- if link.type == 'collection_link' and link.object.all_products_count == 0 -%}
                         <span class="yarn-nav-badge">{{ 'sections.header.coming_soon' | t }}</span>
                       {%- endif -%}
@@ -164,15 +150,3 @@
     </div>
   </details>
 </header-drawer>
-{%- if nav_tiles != blank -%}
-  <script>
-    {%- comment -%}毛线标题行收起 / 展开分类图块。不用 details，避免触发 Rise 抽屉的子菜单滑动。{%- endcomment -%}
-    document.addEventListener('click', (event) => {
-      const toggle = event.target.closest('.yarn-drawer-yarn__toggle');
-      if (!toggle) return;
-      const open = toggle.getAttribute('aria-expanded') !== 'true';
-      toggle.setAttribute('aria-expanded', String(open));
-      document.getElementById(toggle.getAttribute('aria-controls')).hidden = !open;
-    });
-  </script>
-{%- endif -%}

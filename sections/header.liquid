@@ -184,7 +184,7 @@
           render 'yarn-nav-tiles', blocks: section.blocks, collection: section.settings.drawer_yarn_collection, all_image: section.settings.drawer_all_image
         endcapture
         assign nav_tiles = nav_tiles | strip
-        render 'yarn-header-drawer', navigation_menu: navigation_menu, nav_tiles: nav_tiles, show_country_selector: country_selector, show_language_selector: language_selector, show_social_links: social_links
+        render 'yarn-header-drawer', navigation_menu: navigation_menu, show_country_selector: country_selector, show_language_selector: language_selector, show_social_links: social_links
       endif
 
       if render_search_left
@@ -725,7 +725,7 @@
     { "type": "text", "id": "drawer_season_text", "label": "本季主推横条文案（日文）", "default": "この季節、編みたい色。" },
     { "type": "text", "id": "drawer_season_text_zh", "label": "本季主推横条文案（中文）", "default": "这一季，想织的颜色。" },
     { "type": "text", "id": "drawer_season_text_en", "label": "本季主推横条文案（英文）", "default": "This season, colours to knit." },
-    { "type": "collection", "id": "drawer_yarn_collection", "label": "毛线集合", "info": "菜单里指向这个集合的项：手机菜单展开为分类图块，桌面点开为大图面板。" },
+    { "type": "collection", "id": "drawer_yarn_collection", "label": "毛线集合", "info": "菜单里指向这个集合的项：手机菜单直接打开集合并显示款数，桌面点开为大图面板。" },
     { "type": "image_picker", "id": "drawer_all_image", "label": "「全部毛线」图块图片", "info": "留空时拼集合前四件商品主图。" },
     { "type": "text", "id": "nav_yarn_eyebrow", "label": "桌面毛线面板小标题（日文）", "default": "毛糸をえらぶ" },
     { "type": "text", "id": "nav_yarn_eyebrow_zh", "label": "桌面毛线面板小标题（中文）", "default": "挑毛线" },
