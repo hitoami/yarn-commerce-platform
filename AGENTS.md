@@ -8,6 +8,7 @@
 
 - 先确认用户目标、当前 GitHub Issue 的范围与验收标准，并检查 `git status`。实施变更前如无对应 Issue，建立一个；只读咨询无需新建 Issue。
 - 从当前 Issue 与目标文件开始；按任务读取 `PRODUCT.md` 的相关产品边界和 `CONTEXT.md` 的相关领域定义。纯文档 / 流程维护不默认加载整份产品与设计资料；会话中已读且未变的内容不重复加载。领域名称以 `CONTEXT.md` 为准。
+- 动 Theme、发布或每日提案前先扫 `docs/agents/pitfalls.md`（前面会话踩过的坑）。
 - 按需追加上下文：UI / UX → `docs/agents/visual-review.md`、`.agents/skills/impeccable/SKILL.md`、`DESIGN.md` 相关章节和对应 surface brief；派工或选模型 → `.agents/skills/dispatch/SKILL.md`；架构或数据边界 → `docs/ARCHITECTURE.md` 与相关 ADR。默认不扫描整套 skill references、`.impeccable/` 本地产物或二进制素材；仅在当前任务确需追溯某项决定或来源时定向读取。
 - 首次修改 Theme 代码、依赖或验证脚本前运行 `./init.sh` 确认基线；纯文档和指令修改检查内容与引用即可。
 - 每个工作区一次实现一个 Issue。任何工具、任何类型的改动（含脚本与文档）都用分支 `codex/<issue>-<slug>`。已有无关修改时使用独立工作区，保留用户工作。
@@ -67,7 +68,7 @@
 |---|---|
 | 纯文档 / AGENTS / skill 指令 | 检查事实、引用、触发条件和规则冲突；运行 `git diff --check`；修改 skill 时校验 frontmatter |
 | Theme 代码、依赖或验证脚本 | `npm run verify`，补充与行为风险相关的检查 |
-| 页面、视觉或购买流程 | 上述代码检查 + 本地预览上 `npm run proof`（语言泄漏、390 / 1440 首屏截图、溢出 / 图片 / 脚本断言），按 `docs/agents/visual-review.md` 自查 |
+| 页面、视觉或购买流程 | 上述代码检查 + 本地预览上 `npm run proof`（语言泄漏、390 / 1440 首屏截图、溢出 / 图片 / 脚本断言；新交互在 `scripts/proof.config.cjs` 给页面加 `flows`），按 `docs/agents/visual-review.md` 自查 |
 
 完成必要检查后，只因新修改、失败或尚未解决的问题扩大或重复验证；不为低风险文案改动添加镜像测试。
 

@@ -1,9 +1,10 @@
 {% comment %}
-  首页首屏:整幅场景轮播,标题、说明与文字链压在左侧留白处(桌面对齐 1200 内容轴);圆点居中在底部的白色胶囊里(#126 Claude Design 1a);底边是一道波浪。
+  首页首屏:整幅场景轮播,标题、说明与文字链压在左侧留白处(桌面对齐 1200 内容轴);底部居中是一条胶囊切换,写出每张的名字和「01 / 03」(#274,取代圆点);底边是一道波浪。
   #131 活动图:标题、说明与按钮都留空时只显示图片(不加遮罩),填了链接则整张图可点;选「浅色占位」时未上传图片显示浅色占位块。
   作为首页第一个 section 时,页头透明地叠在图上(规则在 hitoami-hero.css)。
   与首屏下方的导览条互不关联:切换幻灯片不影响导览条,导览条也不控制幻灯片。
-  场景图可在每张幻灯片上传(桌面 / 手机),未上传时用内置氛围图;#167 起毛线、作品用线、本季主推三张换成 v4(来源见同名 .source.json 与 docs/design/approved/167-hero-v4.source.md)。
+  场景图可在每张幻灯片上传(桌面 / 手机),未上传时用内置氛围图;#274 起毛线、作品用线、本季主推三张换成同一个窗边角落的系列照(来源见同名 .source.json 与 docs/design/approved/274-hero-window.source.md)。
+  胶囊上的名字取本张的「切换名称」设置,留空时按场景用 Theme locales(毛线 / 作品用线 / 本季 / 成品),再不行显示序号。
   三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
 {% endcomment %}
 {{ 'hitoami-hero.css' | asset_url | stylesheet_tag }}
@@ -75,7 +76,7 @@
               {% if desktop_image != blank %}
                 <img src="{{ desktop_image | image_url: width: 2560 }}" srcset="{{ desktop_image | image_url: width: 900 }} 900w, {{ desktop_image | image_url: width: 1600 }} 1600w, {{ desktop_image | image_url: width: 2560 }} 2560w, {{ desktop_image | image_url: width: 3840 }} 3840w" sizes="100vw" width="{{ desktop_image.width }}" height="{{ desktop_image.height }}" alt="" {% if forloop.first %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}>
               {% else %}
-                <img src="{{ desktop_asset | asset_url }}" width="1672" height="941" alt="" {% if forloop.first %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}>
+                <img src="{{ desktop_asset | asset_url }}" width="1536" height="1024" alt="" {% if forloop.first %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}>
               {% endif %}
             </picture>
             {%- endif -%}
@@ -92,8 +93,25 @@
       </div>
       {% if section.blocks.size > 1 %}
         <div class="hitoami-controls" hidden>
-          <div class="hitoami-dots">
-            {% for block in section.blocks %}<button type="button" data-page="{{ forloop.index0 }}" aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }}" aria-controls="HitoamiSlide-{{ block.id }}" {% if forloop.first %}aria-current="true"{% endif %}><span></span></button>{% endfor %}
+          <div class="hitoami-tabs" role="group" aria-label="{{ 'hitoami_home.hero_tabs' | t }}">
+            {%- for block in section.blocks -%}
+              {%- liquid
+                capture tab
+                  render 'yarn-setting-text', settings: block.settings, key: 'label', allow_blank: true
+                endcapture
+                if tab == blank
+                  case block.settings.scene
+                    when 'yarn', 'kit', 'season', 'finished'
+                      assign tab_key = 'hitoami_home.hero_tab_' | append: block.settings.scene
+                      assign tab = tab_key | t
+                    else
+                      assign tab = forloop.index
+                  endcase
+                endif
+              -%}
+              <button type="button" class="hitoami-tab" data-page="{{ forloop.index0 }}" aria-controls="HitoamiSlide-{{ block.id }}" {% if forloop.first %}aria-current="true"{% endif %}>{{ tab | strip | escape }}</button>
+            {%- endfor -%}
+            <span class="hitoami-count" aria-hidden="true"><span data-slide-number>01</span> / {{ section.blocks.size | prepend: '0' | slice: -2, 2 }}</span>
           </div>
         </div>
       {% endif %}
@@ -236,6 +254,22 @@
           "id": "cta_en",
           "label": "英文 · 文字链",
           "default": "Explore the kits"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "日文 · 切换名称",
+          "info": "首屏底部胶囊上这张的名字。留空时按默认氛围图显示：毛糸 / 作品と糸 / 今季 / 完成品（中文：毛线 / 作品用线 / 本季 / 成品）。"
+        },
+        {
+          "type": "text",
+          "id": "label_zh",
+          "label": "中文 · 切换名称"
+        },
+        {
+          "type": "text",
+          "id": "label_en",
+          "label": "英文 · 切换名称"
         },
         {
           "type": "url",

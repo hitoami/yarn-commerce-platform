@@ -1,0 +1,11 @@
+{
+  "name": "hitoami",
+  "owner": { "name": "hitoami" },
+  "plugins": [
+    {
+      "name": "zouzhe",
+      "source": "./tools/zouzhe",
+      "description": "御书房：在 Claude Code 旁批阅 hitoami 每日提案（GitHub Issue）"
+    }
+  ]
+}

@@ -987,7 +987,12 @@
     "categories": "Shop by category",
     "yarn": "Yarn",
     "kit": "Kits",
-    "finished": "Finished pieces"
+    "finished": "Finished pieces",
+    "hero_tabs": "Choose a slide",
+    "hero_tab_yarn": "Yarn",
+    "hero_tab_kit": "Projects",
+    "hero_tab_season": "This season",
+    "hero_tab_finished": "Handmade"
   },
   "yarn_collection": {
     "breadcrumb": "Breadcrumb",

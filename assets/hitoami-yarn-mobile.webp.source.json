@@ -1,19 +1,17 @@
 {
-  "kind": "AI-generated hero image (style C overhead still life)",
-  "date": "2026-10-18",
-  "issue": "#167",
-  "tool": "Codex image generation (gpt-6-astra)",
+  "kind": "AI-generated hero image (window-corner series)",
+  "date": "2026-10-30",
+  "issue": "#274",
+  "tool": "Codex image generation (gpt-6-astra, reasoning high)",
+  "scope": "首页首屏氛围图，不作为商品图、色号或用量凭据。毛线按目录里真实商品主图的款式由 AI 重绘（PRODUCT.md 例外）；小猫玩偶是计划中的作品，文案标明准备中。",
+  "approval": "2026-10-30 用户在 #274 会话里选定「织到一半」窗边系列与 N1 胶囊指示器（Figma hitoami · #274 首屏头脑风暴）",
   "slide": "① 毛线",
-  "format": "mobile 2:3 (separately composed from the desktop image)",
+  "format": "mobile 2:3, generated 1024×1536 then resized to 900×1350; separately composed",
   "references": {
     "products": [
-      "圈圈纱",
-      "幼马海毛",
-      "莫兰迪8 澳洲美利奴羊毛线"
+      "同桌面图"
     ],
-    "note": "Shopify 商品主图只作毛线外观参考，画面去掉吊牌",
-    "palette": "Logo clay #AB5631 与 design tokens"
+    "note": "Shopify 商品主图（公开 products.json）只作毛线外观参考，画面去掉纸腰封与吊牌"
   },
-  "scope": "首页首屏氛围图，不作为商品图、色号或用量凭据。毛线按真实商品款式由 AI 重绘（PRODUCT.md 例外）。",
-  "prompt": "Use case: photorealistic-natural\nCreate a separately composed MOBILE hero photograph for hitoami, portrait 2:3, 1024 x 1536. Input image C1.png is the visual identity reference: recreate exactly the same four yarn balls, fibers, colors and single blank pale butter-yellow paper rectangle, on the same cream #F9F6F0 matte subtly textured paper surface. This must be a newly arranged portrait still life, NOT a crop of the landscape.\nTrue perpendicular 90-degree overhead editorial magazine photograph. Even diffuse soft light, delicate short contact shadows matching the reference. Natural realistic wool: warm apricot tan curly boucle ball, dusty blush pink fine fuzzy mohair ball, ivory plied wool ball, muted blue-gray plied wool ball. Preserve their distinct yarn textures.\nPrecise composition in normalized canvas coordinates: top 0–14% ONLY empty paper. Entire upper 0–52% should be uninterrupted clean paper; specifically x=8–85%, y=16–50% must contain absolutely no objects, shadows, stray fibers, leaf tips or decoration. All four balls, paper prop and their shadows entirely within y=54–94%, with generous side breathing room. A loose irregular staggered arrangement in the lower area, not a symmetrical grid. Suggested centers: tan at (32%,64%), pink at (69%,67%), ivory at (30%,83%), blue at (66%,85%). Ball diameters about 26–28% of canvas width, natural modest size, all completely visible. The small blank yellow paper peeks from beneath the blue ball, fully contained within x=8–92%, y=54–94%. Keep at least 6% empty paper below all objects and shadows.\nReference-matched restrained warm pastel colors, matte organic tactile fibers, high photographic detail and quiet negative space. No text, letters, logo, watermark, labels, tags, additional props or leaves. No plastic sheen, glowing edges, oversized objects, mechanical symmetry, cropping, horizon or perspective tilt. Output exactly one portrait 2:3 image.\nCRITICAL CORRECTION: the entire upper 54% of the portrait canvas must be EMPTY PAPER. Yarn must NOT begin at 43% height. Use smaller balls, each only 24% of image WIDTH (16% of image HEIGHT). Arrange tan bounding box x=19–43%, y=56–72%; pink x=57–81%, y=59–75%; ivory x=16–40%, y=76–92%; blue x=54–78%, y=77–93%. Yellow paper within x=60–88%, y=81–94%. Absolutely no object or shadow above y=54%. Respect these boxes strictly; prioritize empty upper area. These are composition instructions only, never draw boxes or coordinates."
+  "prompt": "你是生图执行者。为日本毛线店 hitoami 首页首屏生成 **3 张手机竖图**，每张 1 次。只生图、保存文件，不改仓库其他文件，不提交。\n\n附图是已经选定的 3 张桌面横图（同一个窗边角落系列）：\n- `tmp/274-hero/R2-2-wip.png` → ① 毛线：木椅上织到一半的奶白织片 + 几团线\n- `tmp/274-hero/R3-kit.png` → ② 作品用线：木椅上钩好的赤陶色小猫抱黄油色小线团 + 钩到一半的第二只 + 钩针 + 棉线团\n- `tmp/274-hero/R3-season.png` → ③ 本季：秋阳下木椅上织到一半的油画圈圈线围巾 + 段染线团 + 驼色线团 + 橡果 + 格子毯\n\n## 要求\n- 竖图 **1024×1536（2:3）**，为手机**重新构图、重新拍**，不要从横图裁切。同样的物件、同样的毛线、同样的窗、白纱帘、旧木椅、燕麦色亚麻、同样的光线和色调；一眼看出是对应横图的同一场景。\n- 构图：**上方 42%** 是明亮安静的白纱帘 / 墙面（会叠页头和标题文案），不放任何主体；主体（椅面上的物件）放在 **y 46–88%**，水平居中偏右；**最下方 10%** 安静一些（会放一条切换按钮）。主体要大，占画面宽度 70–85%，近一点拍，让毛线纹理看得清。\n- 真实感：Real documentary-style interior photograph, not CGI, not a 3D render. 35mm lens, f/2.8, ISO 400, natural light only, very subtle film grain. Yarn: slightly squashed uneven balls, visible stray fibers and fuzz, loose ends, not perfect spheres. Crocheted cat: countable single-crochet stitches, matte cotton, handmade slight asymmetry, not cartoon.\n- 负面提示：no text, no letters, no labels, no paper bands, no hang tags, no logos, no watermark, no packaging, no people, no hands, no perfect smooth spheres, no glossy plastic look, no CGI render, no cartoon look, no oversaturated colors, no orange color cast, no HDR, no vignette\n\n## 保存\n- `tmp/274-hero/M-wip.png`\n- `tmp/274-hero/M-kit.png`\n- `tmp/274-hero/M-season.png`\n\n最后用中文简短回报：每个文件路径、尺寸、是否守住上方 42% 留空，有无失败或重试。"
 }
