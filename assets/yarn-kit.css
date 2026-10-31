@@ -14,7 +14,7 @@
 .yk-summary { margin: 0; color: var(--yarn-text-secondary); font-size: 1.4rem; line-height: 1.75; }
 .yk-facts { display: flex; flex-wrap: wrap; gap: var(--yarn-space-2); margin: 0; padding: 0; list-style: none; }
 .yk-facts li { padding: 3px 10px; border: 1px solid var(--yarn-border-subtle); border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); font-size: 1.2rem; }
-.yk-h2 { margin: 0 0 var(--yarn-space-3); color: var(--yarn-text-heading); font-size: 1.8rem; font-weight: 700; }
+.yk-h2 { margin: 0 0 var(--yarn-space-3); color: var(--yarn-text-heading); font-size: 1.8rem; font-weight: 500; }
 
 /* #177 R2：一个购买框——每种线一行（图 / 名称 / 状态 / 单价 + 团数步进器），底部合计与唯一主按钮；买不了时换成说明面板。 */
 .yk-buy { display: grid; gap: var(--yarn-space-3); padding: 14px var(--yarn-space-4) var(--yarn-space-4); border: 1px solid var(--yarn-border-card); border-radius: 14px; background: var(--yarn-bg-surface); }
@@ -116,7 +116,7 @@
 .yk-get__box { display: grid; align-content: start; gap: var(--yarn-space-3); padding: 14px; border-radius: 14px; }
 .yk-get__box--in { background: var(--yarn-action-subtle-bg); }
 .yk-get__box--bring { border: 1px dashed var(--yarn-border-card); }
-.yk-get__title { margin: 0; color: var(--yarn-text-primary); font-size: 1.4rem; font-weight: 600; }
+.yk-get__title { margin: 0; color: var(--yarn-text-primary); font-size: 1.4rem; font-weight: 500; }
 .yk-get__box--bring .yk-get__title { color: var(--yarn-text-muted); }
 .yk-get__list { display: flex; flex-wrap: wrap; gap: var(--yarn-space-3); margin: 0; padding: 0; list-style: none; }
 .yk-get__list li { display: grid; justify-items: center; gap: 6px; width: 72px; color: var(--yarn-text-primary); font-size: 1.2rem; line-height: 1.4; text-align: center; }
