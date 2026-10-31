@@ -90,7 +90,8 @@
     "total_reviews": "σύνολο κριτικών",
     "star_reviews_info": "{{ rating_value }} από {{ rating_max }} αστέρια",
     "collapsible_content_title": "Περιεχόμενο με δυνατότητα σύμπτυξης",
-    "complementary_products": "Συμπληρωματικά προϊόντα"
+    "complementary_products": "Συμπληρωματικά προϊόντα",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

@@ -90,7 +90,8 @@
     "total_reviews": "totale omtaler",
     "star_reviews_info": "{{ rating_value }} av {{ rating_max }} stjerner",
     "collapsible_content_title": "Sammenleggbart innhold",
-    "complementary_products": "Komplimentære produkter"
+    "complementary_products": "Komplimentære produkter",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

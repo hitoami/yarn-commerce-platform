@@ -90,7 +90,8 @@
     "total_reviews": "análises totais",
     "star_reviews_info": "{{ rating_value }} de {{ rating_max }} estrelas",
     "collapsible_content_title": "Conteúdo recolhível",
-    "complementary_products": "Produtos complementares"
+    "complementary_products": "Produtos complementares",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

@@ -90,7 +90,8 @@
     "total_reviews": "totaal aantal recensies",
     "star_reviews_info": "{{ rating_value }} van de {{ rating_max }} sterren",
     "collapsible_content_title": "Inklapbare content",
-    "complementary_products": "Aanvullende producten"
+    "complementary_products": "Aanvullende producten",
+    "scan_line_qr": "Scan with your phone"
   },
   "blogs": {
     "article": {

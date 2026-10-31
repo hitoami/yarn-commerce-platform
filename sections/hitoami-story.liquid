@@ -1,7 +1,8 @@
 {% comment %}
   首页品牌介绍:品牌图 + 小标题 + 品牌标语 + 品牌故事,下方附一张 LINE 卡片(#131,取代首页底部的 LINE 帮助条)。
   手机上下排列(图 → 文字 → LINE 卡片);桌面左图右文。品牌图优先用上传素材，也可启用本轮生成的编织与猫氛围图；两者都没有时不渲染媒体。
-  LINE 链接留空时回退联系页；#196 手机使用获批极简横栏与原生二维码展开，桌面保留原卡片布局。
+  有 LINE 链接时桌面与手机同一行（#292 方案 A，无箭头）：图标 + 添加好友 + 说明；桌面右侧直接显示二维码，手机用原生 details 展开。
+  LINE 链接留空时回退为联系页卡片。
   三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置。
 {% endcomment %}
 {{ 'hitoami-story.css' | asset_url | stylesheet_tag }}
@@ -29,30 +30,41 @@
       {%- assign line_href = section.settings.line_link | default: pages.contact.url -%}
       {% if section.settings.line_link == blank %}{% capture line_cta %}{% render 'yarn-setting-text', settings: section.settings, key: 'line_fallback' %}{% endcapture %}{% endif %}
       {%- if section.settings.line_link != blank -%}
-        <div class="hitoami-story__line-mobile">
+        {%- assign has_line_qr = false -%}
+        {%- if section.settings.line_qr != blank or section.settings.line_link == 'https://lin.ee/p5xrDGo' -%}{%- assign has_line_qr = true -%}{%- endif -%}
+        {%- assign line_qr_alt = 'accessibility.line_qr_alt' | t -%}
+        {%- capture line_qr_image -%}
+          {%- if section.settings.line_qr != blank -%}
+            {{ section.settings.line_qr | image_url: width: 480 | image_tag: class: 'hitoami-story__qr-image', loading: 'lazy', alt: line_qr_alt }}
+          {%- else -%}
+            <img class="hitoami-story__qr-image" src="{{ 'hitoami-line-qr.png' | asset_url }}" width="184" height="194" loading="lazy" alt="{{ line_qr_alt | escape }}">
+          {%- endif -%}
+        {%- endcapture -%}
+        <div class="hitoami-story__line-row">
           <a class="hitoami-story__line-link" href="{{ line_href | escape }}" target="_blank" rel="noopener">
             <img class="hitoami-story__line-icon" src="{{ 'line-brand-icon.png' | asset_url }}" width="40" height="40" loading="lazy" alt="">
-            <span>{{ line_cta | escape }}</span>
-            <span class="hitoami-story__line-arrow" aria-hidden="true">{{ 'icon-arrow.svg' | inline_asset_content }}</span>
+            <span class="hitoami-story__line-label">
+              <span class="hitoami-story__line-name">{{ line_cta | escape }}</span>
+              {%- if line_text != blank -%}<span class="hitoami-story__line-sub">{{ line_text | escape }}</span>{%- endif -%}
+            </span>
           </a>
-          {%- if section.settings.line_qr != blank or section.settings.line_link == 'https://lin.ee/p5xrDGo' -%}
+          {%- if has_line_qr -%}
+            <figure class="hitoami-story__line-qr">
+              <span class="hitoami-story__line-qr-frame">{{ line_qr_image }}</span>
+              <figcaption>{{ 'accessibility.scan_line_qr' | t }}</figcaption>
+            </figure>
             <details class="hitoami-story__line-details">
               <summary>
                 <span class="hitoami-story__qr-show">{{ 'accessibility.show_line_qr' | t }}</span>
                 <span class="hitoami-story__qr-hide">{{ 'accessibility.hide_line_qr' | t }}</span>
                 <span class="hitoami-story__qr-chevron" aria-hidden="true">{{ 'icon-caret.svg' | inline_asset_content }}</span>
               </summary>
-              {%- assign line_qr_alt = 'accessibility.line_qr_alt' | t -%}
-              {%- if section.settings.line_qr != blank -%}
-                {{ section.settings.line_qr | image_url: width: 480 | image_tag: class: 'hitoami-story__qr-image', loading: 'lazy', alt: line_qr_alt }}
-              {%- else -%}
-                <img class="hitoami-story__qr-image" src="{{ 'hitoami-line-qr.png' | asset_url }}" width="184" height="194" loading="lazy" alt="{{ line_qr_alt | escape }}">
-              {%- endif -%}
+              {{ line_qr_image }}
             </details>
           {%- endif -%}
         </div>
-      {%- endif -%}
-      <div class="hitoami-story__line{% if section.settings.line_link != blank %} hitoami-story__line--has-mobile{% endif %}">
+      {%- else -%}
+      <div class="hitoami-story__line">
         {%- if section.settings.line_qr != blank -%}
           <div class="hitoami-story__qr">{{ section.settings.line_qr | image_url: width: 240 | image_tag: width: 96, height: 96, loading: 'lazy', alt: '' }}</div>
         {%- endif -%}
@@ -60,8 +72,9 @@
           {%- if line_heading != blank -%}<p class="hitoami-story__line-title">{{ line_heading | escape }}</p>{%- endif -%}
           {%- if line_text != blank -%}<p class="hitoami-story__line-text">{{ line_text | escape }}</p>{%- endif -%}
         </div>
-        <a class="hitoami-story__line-cta" href="{{ line_href }}"{% if section.settings.line_link != blank %} target="_blank" rel="noopener"{% endif %}>{{ line_cta | escape }}</a>
+        <a class="hitoami-story__line-cta" href="{{ line_href }}">{{ line_cta | escape }}</a>
       </div>
+      {%- endif -%}
     {%- endif -%}
   </div>
 </div>
@@ -115,7 +128,7 @@
     },
     { "type": "header", "content": "LINE 卡片" },
     { "type": "url", "id": "line_link", "label": "LINE 链接", "info": "官方 LINE 加好友链接；留空时按钮链到联系页。" },
-    { "type": "image_picker", "id": "line_qr", "label": "LINE 二维码", "info": "手机点击展开，桌面沿用原卡片。留空且链接为当前 hitoami 账号时，手机使用随主题提供的二维码；更换账号请同时上传对应二维码。" },
+    { "type": "image_picker", "id": "line_qr", "label": "LINE 二维码", "info": "桌面直接显示，手机点击展开。留空且链接为当前 hitoami 账号时，手机使用随主题提供的二维码；更换账号请同时上传对应二维码。" },
     { "type": "text", "id": "line_heading", "label": "日文 · LINE 标题", "default": "hitoami 公式 LINE" },
     { "type": "text", "id": "line_heading_zh", "label": "中文 · LINE 标题", "default": "hitoami 官方 LINE" },
     { "type": "text", "id": "line_heading_en", "label": "英文 · LINE 标题", "default": "hitoami on LINE" },
