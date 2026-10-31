@@ -975,7 +975,12 @@
     "categories": "商品カテゴリー",
     "yarn": "毛糸",
     "kit": "編みキット",
-    "finished": "完成品"
+    "finished": "完成品",
+    "hero_tabs": "スライドを選ぶ",
+    "hero_tab_yarn": "毛糸",
+    "hero_tab_kit": "作品と糸",
+    "hero_tab_season": "今季",
+    "hero_tab_finished": "完成品"
   },
   "yarn_collection": {
     "breadcrumb": "パンくずリスト",

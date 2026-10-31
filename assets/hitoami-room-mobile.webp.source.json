@@ -1,15 +1,17 @@
 {
-  "kind": "AI-generated hero image (style C overhead still life)",
-  "date": "2026-10-18",
-  "issue": "#167",
-  "tool": "Codex image generation (gpt-6-astra)",
+  "kind": "AI-generated hero image (window-corner series)",
+  "date": "2026-10-30",
+  "issue": "#274",
+  "tool": "Codex image generation (gpt-6-astra, reasoning high)",
+  "scope": "首页首屏氛围图，不作为商品图、色号或用量凭据。毛线按目录里真实商品主图的款式由 AI 重绘（PRODUCT.md 例外）；小猫玩偶是计划中的作品，文案标明准备中。",
+  "approval": "2026-10-30 用户在 #274 会话里选定「织到一半」窗边系列与 N1 胶囊指示器（Figma hitoami · #274 首屏头脑风暴）",
   "slide": "② 作品用线",
-  "format": "mobile 2:3 (separately composed from the desktop image)",
+  "format": "mobile 2:3, generated 1024×1536 then resized to 900×1350; separately composed",
   "references": {
-    "products": [],
-    "note": "原创钩针小猫玩偶：计划中的 hitoami 作品，不对应任何现有商品或作品页",
-    "palette": "Logo clay #AB5631 与 design tokens"
+    "products": [
+      "同桌面图"
+    ],
+    "note": "Shopify 商品主图（公开 products.json）只作毛线外观参考，画面去掉纸腰封与吊牌"
   },
-  "scope": "首页首屏氛围图，不作为商品图、色号或用量凭据。小猫玩偶是计划中的作品，文案标明准备中（PRODUCT.md）。",
-  "prompt": "Use case: photorealistic-natural\nAsset: hitoami mobile hero photograph, portrait 2:3 aspect ratio, 1024 by 1536.\nReference image: out/C2_Q.png is the selected desktop photograph. Create a separately arranged mobile companion photograph of precisely the same craft objects, NOT a crop of the landscape photograph. Preserve recognizable identity, yarn fibers, colors, handmade stitches and photographic style.\nBackdrop: uninterrupted matte cream #F9F6F0 paper with extremely subtle natural paper texture, exactly like reference. True 90-degree overhead flat lay, uniform soft diffuse light, short delicate shadows.\nObjects: the same plump burnt-orange crochet cat with cream belly and muzzle, cream inner ears, black bead eyes, brown embroidered nose, smile and whiskers, holding a small pale yellow yarn ball; one burnt-orange yarn ball; one cream yarn ball; the same gold crochet hook with wood handle; one small peach stitch marker. No extra objects.\nComposition is critical: top 14 percent is ONLY empty paper for navigation. Entire upper half must be empty paper; in particular rectangle x=8–85%, y=16–50% must have absolutely no objects, shadows, tips, leaves or decoration. Arrange ALL objects and their shadows in the lower region y=54–94%, with generous side margins. The cat is fully visible, including both ears and every paw, moderately sized rather than oversized. Suggested natural asymmetric compact lower arrangement: cat occupies approximately x=18–57%, y=55–82%; orange yarn ball near x=25%, y=88%; cream yarn ball near x=69%, y=86%; gently diagonal crochet hook to the right of cat, and peach marker beside it. Keep physically plausible relative object sizes, same as reference, and avoid crowding. All objects fit fully within the canvas with at least 6 percent bottom clearance. Prioritize clean upper half and faithful subject identity.\nStyle: premium tactile editorial still-life photograph, real soft cotton yarn with fine fibers, cozy warm restrained palette.\nNo typography, letters, labels, tags, watermark, leaves, plastic-looking yarn, luminous outlines, gigantic proportions, mechanically symmetrical arrangement, hard or long shadows. Generate only the finished portrait photograph.\nSTRICT LAYOUT CORRECTION: The first attempt made the objects too large and the cat ears started at y=44%. This is unacceptable. For this final image the topmost cat ear MUST start at y=55% (pixel 845 in a 1536 high image), not higher. The entire area from pixel y=0 through y=820 must be completely bare cream paper across the FULL width. Make the entire still-life group substantially smaller to fit y=845 through y=1430. Cat bounding box about x=250–580,y=845–1200; orange yarn ball x=210–440,y=1210–1420; cream yarn ball x=590–805,y=1200–1410; hook x=710–850,y=960–1230; marker x=720–790,y=880–950. Preserve original object proportions by scaling all objects consistently. Do not fill the upper negative space. More than half of this portrait image is deliberately empty paper."
+  "prompt": "你是生图执行者。为日本毛线店 hitoami 首页首屏生成 **3 张手机竖图**，每张 1 次。只生图、保存文件，不改仓库其他文件，不提交。\n\n附图是已经选定的 3 张桌面横图（同一个窗边角落系列）：\n- `tmp/274-hero/R2-2-wip.png` → ① 毛线：木椅上织到一半的奶白织片 + 几团线\n- `tmp/274-hero/R3-kit.png` → ② 作品用线：木椅上钩好的赤陶色小猫抱黄油色小线团 + 钩到一半的第二只 + 钩针 + 棉线团\n- `tmp/274-hero/R3-season.png` → ③ 本季：秋阳下木椅上织到一半的油画圈圈线围巾 + 段染线团 + 驼色线团 + 橡果 + 格子毯\n\n## 要求\n- 竖图 **1024×1536（2:3）**，为手机**重新构图、重新拍**，不要从横图裁切。同样的物件、同样的毛线、同样的窗、白纱帘、旧木椅、燕麦色亚麻、同样的光线和色调；一眼看出是对应横图的同一场景。\n- 构图：**上方 42%** 是明亮安静的白纱帘 / 墙面（会叠页头和标题文案），不放任何主体；主体（椅面上的物件）放在 **y 46–88%**，水平居中偏右；**最下方 10%** 安静一些（会放一条切换按钮）。主体要大，占画面宽度 70–85%，近一点拍，让毛线纹理看得清。\n- 真实感：Real documentary-style interior photograph, not CGI, not a 3D render. 35mm lens, f/2.8, ISO 400, natural light only, very subtle film grain. Yarn: slightly squashed uneven balls, visible stray fibers and fuzz, loose ends, not perfect spheres. Crocheted cat: countable single-crochet stitches, matte cotton, handmade slight asymmetry, not cartoon.\n- 负面提示：no text, no letters, no labels, no paper bands, no hang tags, no logos, no watermark, no packaging, no people, no hands, no perfect smooth spheres, no glossy plastic look, no CGI render, no cartoon look, no oversaturated colors, no orange color cast, no HDR, no vignette\n\n## 保存\n- `tmp/274-hero/M-wip.png`\n- `tmp/274-hero/M-kit.png`\n- `tmp/274-hero/M-season.png`\n\n最后用中文简短回报：每个文件路径、尺寸、是否守住上方 42% 留空，有无失败或重试。"
 }
