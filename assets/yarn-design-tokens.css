@@ -29,6 +29,9 @@
   --yarn-display: 'Noto Serif SC', 'Noto Sans SC', serif;
   --yarn-body: 'Noto Sans SC', sans-serif;
 }
+/* Issue 311：衬线标题字体只加载 500 一档；禁止浏览器把 600 / 700 伪加粗（会发糊、发硬），没加载的字重回落到最接近的真实字重。 */
+html { font-synthesis-weight: none; }
+
 /* Japanese: proportional kana and punctuation. Set on every element because the `font` shorthand resets it. */
 :root:lang(ja),
 :root:lang(ja) * {

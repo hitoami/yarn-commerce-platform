@@ -309,7 +309,7 @@ export const register: Register = on => {
       await update($, drafting, () => false)
       const ask = idea
         ? `按这个想法拟一本：${idea}`
-        : '自拟一本：按 skill「找想法」轮流挑一个页面找问题，避开已有奏折和「不做清单」'
+        : '自拟一本：按 skill 的「锦晨喜欢的方向」和「找想法」，先从商品数据出发，出一本像手感地图那样过五条自查的大方向，避开已有奏折和「不做清单」'
       void $.prompt.submit({
         text: `【圣旨·拟奏】${ask}。${NEW_SESSION}要求：在仓库 ${REPO}，按 .agents/skills/daily-proposal/SKILL.md 的「找想法」「分大小」和「Issue 格式」开一个「每日提案」Issue，只呈奏折，不实现。`,
       })
