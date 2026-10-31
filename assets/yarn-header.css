@@ -292,28 +292,12 @@
   font-weight: 600;
 }
 
-/* Issue 131 / Issue 258 mobile drawer: account and quick actions first, then plain shop rows; yarn tiles open on demand. */
+/* Issue 131 / Issue 258 mobile drawer: account and quick actions first, then plain shop rows; yarn links straight to its collection (Issue 299). */
 .header-wrapper .menu-drawer__navigation { padding: 16px; }
 
 
-.header-wrapper .yarn-drawer-yarn__toggle {
-  display: flex;
-  align-items: center;
-  gap: var(--yarn-space-2);
-  width: 100%;
-  min-height: var(--yarn-touch);
-  padding: 8px 0;
-  border: 0;
-  border-radius: 0;
-  background: none;
-  color: var(--yarn-text-heading);
-  font-size: 1.7rem;
-  text-align: left;
-  cursor: pointer;
-}
-.yarn-drawer-yarn__total { flex: 1; color: var(--yarn-text-muted); font-family: var(--yarn-body); font-size: 1.3rem; }
+.header-wrapper .yarn-drawer-row__total { color: var(--yarn-text-muted); font-family: var(--yarn-body); font-size: 1.3rem; }
 /* Rise absolutely positions drawer item icons and hides carets; these arrows sit in the row instead. */
-.header-wrapper .menu-drawer__menu-item > .yarn-drawer-chevron,
 .header-wrapper .menu-drawer__menu-item > .yarn-drawer-row__arrow,
 .header-wrapper .yarn-drawer-language > .yarn-drawer-row__arrow {
   position: static;
@@ -322,19 +306,9 @@
   height: 20px;
   transform: none;
 }
-.js .header-wrapper .menu-drawer__menu-item :is(.yarn-drawer-chevron, .yarn-drawer-row__arrow) .icon-caret { display: block; width: 14px; height: 14px; margin: auto; }
-.yarn-drawer-chevron svg { transition: transform 0.2s ease; }
-.yarn-drawer-yarn__toggle[aria-expanded='true'] .yarn-drawer-chevron svg { transform: rotate(180deg); }
+.js .header-wrapper .menu-drawer__menu-item .yarn-drawer-row__arrow .icon-caret { display: block; width: 14px; height: 14px; margin: auto; }
 .yarn-drawer-row__arrow svg { transform: rotate(-90deg); }
 
-.yarn-drawer-tiles {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin: var(--yarn-space-2) 0 var(--yarn-space-4);
-  padding: 0;
-}
-.yarn-drawer-tiles[hidden] { display: none; }
 .yarn-nav-tile {
   display: flex;
   flex-direction: column;
@@ -346,11 +320,11 @@
   color: var(--yarn-text-heading);
   text-decoration: none;
 }
-:is(.yarn-drawer-tiles, .yarn-mega__tiles) > li:nth-child(1) .yarn-nav-tile { background: var(--yarn-tint-blush); }
-:is(.yarn-drawer-tiles, .yarn-mega__tiles) > li:nth-child(2) .yarn-nav-tile { background: var(--yarn-tint-butter); }
-:is(.yarn-drawer-tiles, .yarn-mega__tiles) > li:nth-child(3) .yarn-nav-tile { background: var(--yarn-tint-sage); }
-:is(.yarn-drawer-tiles, .yarn-mega__tiles) > li:nth-child(5) .yarn-nav-tile { background: var(--yarn-bg-band); }
-:is(.yarn-drawer-tiles, .yarn-mega__tiles) .yarn-nav-tile--all { background: var(--yarn-action-subtle-bg); }
+.yarn-mega__tiles > li:nth-child(1) .yarn-nav-tile { background: var(--yarn-tint-blush); }
+.yarn-mega__tiles > li:nth-child(2) .yarn-nav-tile { background: var(--yarn-tint-butter); }
+.yarn-mega__tiles > li:nth-child(3) .yarn-nav-tile { background: var(--yarn-tint-sage); }
+.yarn-mega__tiles > li:nth-child(5) .yarn-nav-tile { background: var(--yarn-bg-band); }
+.yarn-mega__tiles .yarn-nav-tile--all { background: var(--yarn-action-subtle-bg); }
 .yarn-nav-tile__photo { display: block; margin-bottom: 8px; aspect-ratio: 151 / 104; overflow: hidden; border-radius: var(--yarn-radius-media); background: var(--yarn-bg-surface); }
 .yarn-nav-tile__photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .yarn-nav-tile__photo--mosaic { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; }
