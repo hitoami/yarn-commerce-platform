@@ -7,6 +7,8 @@ description: Use for the nightly 每日提案 run, or when 锦晨 approves or re
 
 用户 2026-10-29 确认（#218）：提案队列 = 带 `每日提案` 标签的开放 GitHub Issue，始终保持至少 3 个待批；每晚 18:00 在本机补足。每次呈奏一批 5 本：3 本大方向、2 本稳定性或小修小补（用户 2026-10-30 决定）。批阅在 Claude Code 里做：御书房面板（`/zouzhe`）的「准奏 / 驳回」按钮，或在对话里说「要 #N」「不要 #N + 原因」。不用 Slack。
 
+动手前先扫 `docs/agents/pitfalls.md`：发布授权口径、开不了新会话时在本会话做、模板 JSON 会挡住发布等。
+
 固定值：仓库 `hitoami/yarn-commerce-platform`；标签 `每日提案`、`已准奏`；店铺 `tutaka-54.myshopify.com`。
 
 ## 收到批阅
