@@ -25,3 +25,11 @@ test('mobile quantity stepper cannot collapse and line total has its own row', (
   assert.match(mobileRule, /\.cart-drawer \.cart-item__quantity \.quantity-popover-container[\s\S]*\.cart-drawer \.cart-item__quantity \.quantity\s*\{[\s\S]*flex:\s*0 0 14rem[\s\S]*min-width:\s*14rem[\s\S]*width:\s*14rem/);
   assert.match(mobileRule, /\.cart-drawer \.cart-item__totals\s*\{[\s\S]*display:\s*flex[\s\S]*grid-column:\s*2[\s\S]*grid-row:\s*3[\s\S]*justify-content:\s*flex-end/);
 });
+
+test('mobile cart drawer only scrolls vertically (Issue 297)', () => {
+  const yarnCartCss = fs.readFileSync('assets/yarn-cart.css', 'utf8');
+  const addonList = yarnCartCss.match(/^\.yarn-cart-addons__list\s*\{([^}]*)\}/m)?.[1] || '';
+  assert.match(addonList, /overflow-x:\s*auto/);
+  assert.doesNotMatch(addonList, /margin[^;]*-/);
+  assert.match(yarnCartCss, /\.cart-drawer cart-drawer-items, \.cart-drawer \.drawer__inner\s*\{\s*overflow-x:\s*clip/);
+});
