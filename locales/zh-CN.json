@@ -283,6 +283,17 @@
       "announcement": "公告",
       "menu": "菜单",
       "coming_soon": "准备中",
+      "language_note": "当前页面直接切换",
+      "language_short": "中",
+      "drawer_login_title": "登录 / 注册",
+      "drawer_login_note": "查看订单、保存收货地址",
+      "drawer_welcome": "欢迎回来",
+      "drawer_welcome_note": "查看订单和地址",
+      "drawer_orders": "订单",
+      "drawer_addresses": "收货地址",
+      "drawer_shipping": "配送退换",
+      "drawer_contact": "联系我们",
+      "drawer_shop": "逛店",
       "cart_count": {
         "one": "{{ count }} 件产品",
         "other": "{{ count }} 件产品"

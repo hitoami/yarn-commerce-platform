@@ -43,13 +43,22 @@ test('prototype navigation contains no locale, product-copy or tag-search overri
   assert.deepEqual(drawer.match(/routes\.search_url[^"]*/g), ['routes.search_url }}?browse=favorites']);
 });
 
-test('mobile drawer follows the #131 nav comp: season banner, yarn tiles, coming-soon rows', () => {
-  assert.match(drawer, /link\.type == 'page_link' and link\.object\.handle == 'season'/);
-  assert.match(drawer, /yarn-setting-text', settings: section\.settings, key: 'drawer_season_text'/);
+test('mobile drawer leads with account and quick actions, then plain shop rows (#258)', () => {
+  const nav = drawer.slice(drawer.indexOf('menu-drawer__navigation'));
+  // 账户与常用功能排在菜单前；本季主推不再是大图横条，毛线分类图块默认收起。
+  assert.ok(nav.indexOf('yarn-drawer-account') < nav.indexOf('menu-drawer__menu has-submenu'));
+  assert.ok(nav.indexOf('yarn-drawer-quick') < nav.indexOf('menu-drawer__menu has-submenu'));
+  assert.match(drawer, /routes\.account_login_url/);
+  assert.match(drawer, /routes\.account_addresses_url/);
+  assert.doesNotMatch(drawer, /yarn-drawer-feature|drawer_season_text/);
   assert.match(drawer, /link\.object\.handle == section\.settings\.drawer_yarn_collection\.handle and nav_tiles != blank/);
   assert.match(drawer, /\{\{ nav_tiles \}\}/);
-  assert.match(drawer, /aria-expanded="true"[\s\S]*aria-controls="YarnDrawerTiles"/);
+  assert.match(drawer, /aria-expanded="false"[\s\S]*aria-controls="YarnDrawerTiles"/);
+  assert.match(drawer, /id="YarnDrawerTiles" role="list" hidden/);
   assert.match(drawer, /link\.object\.all_products_count == 0[\s\S]*'sections\.header\.coming_soon' \| t/);
+  for (const key of ['drawer_login_title', 'drawer_welcome', 'drawer_orders', 'drawer_addresses', 'drawer_shipping', 'drawer_contact', 'drawer_shop']) {
+    assert.match(drawer, new RegExp(`'sections\\.header\\.${key}' \\| t`), key);
+  }
   const entry = fs.readFileSync('snippets/yarn-nav-tiles.liquid', 'utf8');
   assert.match(entry, /block\.type != 'yarn_entry'/);
   assert.match(entry, /metaobjects\.yarn_entry\[block\.settings\.entry\]/);
@@ -57,11 +66,15 @@ test('mobile drawer follows the #131 nav comp: season banner, yarn tiles, coming
   assert.match(entry, /de_entry\.name\.value \| escape/);
   const blockTypes = schema.blocks.map(block => block.type);
   assert.deepEqual(blockTypes, ['@app', 'yarn_entry']);
+  // 本季文案设置保留在 schema 里，旧的 header-group 数据仍能通过校验。
   for (const key of ['drawer_season_text', 'drawer_season_text_zh', 'drawer_season_text_en', 'drawer_yarn_collection']) {
     assert.ok(schema.settings.some(setting => setting.id === key), key);
   }
   for (const locale of ['ja', 'zh-CN', 'en.default']) {
-    assert.match(fs.readFileSync(`locales/${locale}.json`, 'utf8'), /"coming_soon": "[^"]+"/, locale);
+    const copy = fs.readFileSync(`locales/${locale}.json`, 'utf8');
+    for (const key of ['coming_soon', 'language_short', 'language_note', 'drawer_login_title', 'drawer_shop']) {
+      assert.match(copy, new RegExp(`"${key}": "[^"]+"`), `${locale} ${key}`);
+    }
   }
 });
 
@@ -75,18 +88,20 @@ test('hitoami uses the supplied wordmark image with an accessible name', () => {
   assert.match(header, /"name": \{\{ yarn_brand_name \| json \}\}/);
 });
 
-test('drawer lists every shop language inline for one-tap switching (#107)', () => {
-  const switcher = drawer.slice(drawer.indexOf('yarn-drawer-language'));
-  assert.match(switcher, /for language in localization\.available_languages/);
-  assert.match(switcher, /href="\{\{ language_url \}\}"/);
-  assert.match(switcher, /hreflang="\{\{ language\.iso_code \}\}"/);
-  assert.match(switcher, /language\.iso_code == localization\.language\.iso_code[\s\S]*aria-current="true"/);
-  assert.doesNotMatch(switcher, /render 'language-localization'|disclosure__/);
-  const optionCss = headerCss.match(/\.yarn-drawer-language__option \{([\s\S]*?)\}/)[1];
-  assert.match(optionCss, /min-height: var\(--yarn-touch\)/);
-  assert.match(optionCss, /padding: var\(--yarn-space-2\) var\(--yarn-space-3\)/);
-  assert.match(optionCss, /text-decoration: none/);
-  assert.match(headerCss, /\.yarn-drawer-language__option\[aria-current='true'\]/);
+test('one language switch serves header and drawer, opening the same page in each language (#258)', () => {
+  const sw = fs.readFileSync('snippets/yarn-language-switch.liquid', 'utf8');
+  assert.match(header, /render 'yarn-language-switch'/);
+  assert.doesNotMatch(header, /render 'language-localization', localPosition: 'HeaderLanguage'/);
+  assert.match(sw, /for language in localization\.available_languages/);
+  assert.match(sw, /href="\{\{ language_url \}\}"/);
+  assert.match(sw, /hreflang="\{\{ language\.iso_code \}\}"/);
+  assert.match(sw, /aria-current="true"/);
+  assert.match(sw, /'sections\.header\.language_short' \| t/);
+  // 抽屉里的语言是一行按钮，打开页头同一个面板，不再并排放语言胶囊。
+  assert.match(drawer, /data-lang-open aria-controls="YarnLang"/);
+  assert.doesNotMatch(drawer, /for language in localization\.available_languages/);
+  assert.match(headerCss, /\.header-wrapper \.header__icon--account \{ display: none; \}/);
+  assert.match(headerCss, /\.yarn-lang__option\[aria-current='true'\]/);
 });
 
 test('header computes the yarn tiles once and the desktop yarn link opens them in a mega panel (#131)', () => {
