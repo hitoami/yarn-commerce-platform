@@ -26,15 +26,20 @@ test('hero shows three clickable intent nodes using real raster assets (Issue #5
 
 test('homepage hero v4: yarn, project yarn and season scenes, each with a browsing text link (#167)', () => {
   // #167：三张对应网站真实入口（毛线集合 / 作品页 / 本季主推），成品「准备中」不再占首屏；
-  // 每张三语都有文字链，样式是浏览链接而不是购买按钮。活动图模式（全部留空 / 浅色占位）仍由 section 支持。
+  // 每张三语都有标题和文字链，样式是浏览链接而不是购买按钮。活动图模式（全部留空 / 浅色占位）仍由 section 支持。
+  // #331：首屏极简，说明文字可留空；小猫作品（kit）仍须三语写明「准备中」。
   const home = index.sections.hero;
   assert.equal(home.type, 'hitoami-hero');
   assert.deepEqual(home.block_order.map(id => home.blocks[id].settings.scene), ['yarn', 'kit', 'season']);
   for (const id of home.block_order) {
     const settings = home.blocks[id].settings;
-    for (const key of ['heading', 'heading_zh', 'heading_en', 'text', 'text_zh', 'text_en', 'cta', 'cta_zh', 'cta_en']) assert.ok(settings[key], `${id}.${key}`);
+    for (const key of ['heading', 'heading_zh', 'heading_en', 'cta', 'cta_zh', 'cta_en']) assert.ok(settings[key], `${id}.${key}`);
     assert.equal(settings.link || '', '', `${id}.link falls back to the localized page route`);
   }
+  const kit = home.blocks[home.block_order[1]].settings;
+  assert.match(kit.text, /準備中/);
+  assert.match(kit.text_zh, /准备中/);
+  assert.match(kit.text_en, /coming soon/i);
   const section = fs.readFileSync('sections/hitoami-hero.liquid', 'utf8');
   const css = fs.readFileSync('assets/hitoami-hero.css', 'utf8');
   assert.match(section, /pages\['kits'\]\.url/);
