@@ -56,7 +56,7 @@
 .yarn-work__link { color: inherit; text-decoration: none; display: block; }
 .yarn-work__image { aspect-ratio: 0.93; border-radius: 14px; overflow: hidden; background: var(--yarn-bg-page); }
 .yarn-work__image img { display: block; width: 100%; height: 100%; object-fit: contain; }
-.yarn-work h3 { margin: 12px 0 8px; min-height: 2.9em; color: var(--yarn-text-primary); font-family: var(--yarn-display); font-size: 1.65rem; font-weight: 500; line-height: 1.45; overflow-wrap: anywhere; }
+.yarn-work h3 { margin: 12px 0 8px; min-height: 2.9em; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 1.65rem; font-weight: 500; line-height: 1.45; overflow-wrap: anywhere; }
 .yarn-work__meta { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 8px; color: var(--yarn-text-muted); font-size: 1.2rem; }
 .yarn-work__kit-label { padding: 3px 6px; border: 1px solid var(--yarn-border-subtle); border-radius: 5px; background: var(--yarn-tint-blush); color: var(--yarn-selected-text); }
 .yarn-work__action { display: inline-flex; align-items: center; gap: 10px; min-height: 30px; color: var(--yarn-text-primary); font-size: 1.4rem; }

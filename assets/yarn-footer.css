@@ -1,7 +1,7 @@
 /* Shopify owns all footer content and form behavior; this file owns presentation. */
 .footer.yarn-footer {
-  border-top: 1px solid var(--yarn-border-subtle);
-  background: var(--yarn-bg-sunken);
+  /* Issue 326 抹茶晨雾：从页面底渐变到抹茶，顶部不再画分隔线。 */
+  background: linear-gradient(180deg, var(--yarn-bg-page) 0%, var(--yarn-bg-wash-sage) 40%, var(--yarn-bg-footer) 100%);
   color: var(--yarn-text-primary);
 }
 .yarn-footer .page-width {
@@ -25,7 +25,7 @@
 .yarn-footer .footer-block__newsletter { width: 100%; min-width: 0; flex: 1 1 100%; text-align: left; }
 .yarn-footer .footer-block__heading {
   margin: 0 0 var(--yarn-space-4);
-  color: var(--yarn-text-primary);
+  color: var(--yarn-text-heading);
   font-family: var(--yarn-display);
   font-size: 2.2rem;
   font-weight: 500;

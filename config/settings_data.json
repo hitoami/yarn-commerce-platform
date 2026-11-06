@@ -144,22 +144,22 @@
     "color_schemes": {
       "scheme-1": {
         "settings": {
-          "background": "#f9f6f0",
+          "background": "#f8f7f4",
           "background_gradient": "",
-          "text": "#2f302f",
+          "text": "#4a3426",
           "button": "#ab5631",
-          "button_label": "#fffefa",
+          "button_label": "#ffffff",
           "secondary_button_label": "#a6472e",
           "shadow": "#d8d4cc"
         }
       },
       "scheme-2": {
         "settings": {
-          "background": "#ebe5dc",
+          "background": "#efeeea",
           "background_gradient": "",
-          "text": "#2f302f",
+          "text": "#4a3426",
           "button": "#ab5631",
-          "button_label": "#fffefa",
+          "button_label": "#ffffff",
           "secondary_button_label": "#a6472e",
           "shadow": "#d9d1c4"
         }
@@ -168,10 +168,10 @@
         "settings": {
           "background": "#8f3c26",
           "background_gradient": "",
-          "text": "#fffefa",
-          "button": "#fffefa",
+          "text": "#ffffff",
+          "button": "#ffffff",
           "button_label": "#8f3c26",
-          "secondary_button_label": "#fffefa",
+          "secondary_button_label": "#ffffff",
           "shadow": "#6d2c1b"
         }
       },
@@ -179,20 +179,20 @@
         "settings": {
           "background": "#fff9e9",
           "background_gradient": "",
-          "text": "#2f302f",
+          "text": "#4a3426",
           "button": "#ab5631",
-          "button_label": "#fffefa",
+          "button_label": "#ffffff",
           "secondary_button_label": "#a6472e",
           "shadow": "#eadfc4"
         }
       },
       "scheme-5": {
         "settings": {
-          "background": "#ece8dc",
+          "background": "#f8f7f4",
           "background_gradient": "",
           "text": "#3d3931",
           "button": "#ab5631",
-          "button_label": "#fffefa",
+          "button_label": "#ffffff",
           "secondary_button_label": "#a6472e",
           "shadow": "#d8d1bd"
         }

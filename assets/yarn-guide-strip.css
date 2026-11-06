@@ -235,7 +235,7 @@
 .yarn-guide__starter-icon { flex: none; width: 52px; height: 52px; color: var(--yarn-action); }
 .yarn-guide__starter-icon .yarn-guide__icon { width: 100%; height: 100%; }
 .yarn-guide__starter-text { flex: 1; min-width: 0; }
-.yarn-guide__starter-title { display: block; color: var(--yarn-text-primary); font: 500 20px/1.35 var(--yarn-display); letter-spacing: 0.02em; }
+.yarn-guide__starter-title { display: block; color: var(--yarn-text-heading); font: 500 20px/1.35 var(--yarn-display); letter-spacing: 0.02em; }
 .yarn-guide__starter-sub { display: block; margin-top: 2px; color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.5; }
 
 .yarn-guide__starter-cta {
