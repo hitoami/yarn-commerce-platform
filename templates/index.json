@@ -138,12 +138,12 @@
       "settings": {
         "use_brand_scene": true,
         "line_link": "https://lin.ee/p5xrDGo",
-        "story_heading": "最初のひと目から、\n編みもので、人と暮らしをやさしくつなぐ。",
-        "story_heading_zh": "从第一针开始，\n用编织，温柔连接人与生活。",
-        "story_heading_en": "From the first stitch,\nweaving warmth into everyday connections.",
-        "story_text": "<p>hitoami は、「一」と「編む」という想いから生まれました。初めて毛糸に触れる人も、手づくりが好きな人も、自分のペースで編みものを楽しめる場所に。</p>",
-        "story_text_zh": "<p>hitoami，取意于「一」与「编织」。无论初次拿起毛线，还是早已钟情手作，都能在这里按自己的节奏享受编织。</p>",
-        "story_text_en": "<p>hitoami brings together the ideas of “one” and “knitting”. Whether you are picking up yarn for the first time or have always loved making, this is a place to enjoy knitting at your own pace.</p>"
+        "story_heading": "hitoami のこと",
+        "story_heading_zh": "关于 hitoami",
+        "story_heading_en": "About hitoami",
+        "story_text": "<p>hitoami は、「ひと」と「編む」を合わせた名前です。ひと玉の毛糸を選んで、ひと目ずつ編んでいく。はじめての人も、編みものが好きな人も、自分のペースでどうぞ。</p>",
+        "story_text_zh": "<p>hitoami 由日文「ひと」（一）与「編む」（编织）组成。挑一团线，一针一针地织。初学者也好，老手也好，按自己的节奏来就好。</p>",
+        "story_text_en": "<p>hitoami joins the Japanese words “hito” (one) and “ami” (knitting). Pick a ball of yarn and knit it one stitch at a time, at your own pace, whether it is your first project or your hundredth.</p>"
       }
     },
     "yarn-entries": {
@@ -541,13 +541,13 @@
   },
   "order": [
     "hero",
-    "story",
     "yarn-entries",
     "catalog",
     "season",
     "guide",
     "project-picks",
     "picks-finished",
+    "story",
     "faq",
     "guide-strip",
     "sale-picks",

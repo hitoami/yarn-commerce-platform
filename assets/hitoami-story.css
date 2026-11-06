@@ -8,6 +8,8 @@
 .hitoami-story h2 { margin: 0 0 var(--yarn-space-4); color: var(--yarn-text-heading); font: 500 2.4rem/1.45 var(--yarn-display); }
 .hitoami-story .rte { color: var(--yarn-text-secondary); font-size: 1.5rem; line-height: 1.85; }
 .hitoami-story .rte p { margin: 0 0 var(--yarn-space-2); }
+.hitoami-story__more { display: inline-flex; align-items: center; min-height: var(--yarn-touch); color: var(--yarn-action); font-size: 15px; font-weight: 600; text-decoration: none; text-underline-offset: 4px; }
+.hitoami-story__more:hover { text-decoration: underline; }
 .hitoami-story a:focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 4px; }
 
 .hitoami-story__line { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--yarn-space-3); margin-top: var(--yarn-space-5); padding: var(--yarn-space-4); border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-card-radius); background: var(--yarn-bg-surface); }
