@@ -96,12 +96,12 @@ typography:
   commerce-hero-max:
     fontSize: "56px"
   shared-section:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "clamp(2.5rem, 2.5vw, 3.2rem)"
     fontWeight: 500
     lineHeight: 1.4
   discovery-card-title:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "1.8rem"
     fontWeight: 500
     lineHeight: 1.5
@@ -120,42 +120,42 @@ typography:
   shell-input:
     fontSize: "16px"
   display:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "clamp(3.4rem, 4.75vw, 5.4rem)"
     fontWeight: 500
     lineHeight: 1.32
-    letterSpacing: "0"
+    letterSpacing: "-0.05em"
   display-mobile:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "2.6rem"
     fontWeight: 500
     lineHeight: 1.35
-    letterSpacing: "0"
+    letterSpacing: "-0.05em"
   headline-discovery:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "clamp(2.4rem, 3.7vw, 3.2rem)"
     fontWeight: 500
     lineHeight: 1.3
-    letterSpacing: "-0.01em"
+    letterSpacing: "-0.05em"
   title-work:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "1.65rem"
     fontWeight: 500
     lineHeight: 1.45
-    letterSpacing: "-0.01em"
+    letterSpacing: "-0.05em"
   title-project-mobile:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "1.9rem"
     fontWeight: 500
     lineHeight: 1.3
-    letterSpacing: "0"
+    letterSpacing: "-0.05em"
   project-yarn-title:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "2.1rem"
     fontWeight: 500
     lineHeight: 1.35
   project-yarn-title-mobile:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "1.75rem"
     fontWeight: 500
     lineHeight: 1.35
@@ -175,7 +175,7 @@ typography:
     lineHeight: 1.65
     letterSpacing: "0"
   label-flow:
-    fontFamily: "'Noto Sans JP', sans-serif"
+    fontFamily: "'Zen Maru Gothic', sans-serif"
     fontSize: "1.6rem"
     fontWeight: 400
     lineHeight: 1.45
@@ -362,7 +362,7 @@ components:
 
 ## Typography
 
-- **字体（#168，2026-10-17 用户按 Figma 三语对比板确认，取代方案 G）**：标题统一用宋体 / 明朝 / 衬线，字重 500——中文 Noto Serif SC、日文 Noto Serif JP、英文 Source Serif 4。正文、导航、按钮、标签与小序号用无衬线——中文 Noto Sans SC、日文 Noto Sans JP、英文 Figtree（日文回退 Noto Sans JP）。日文页整页开启 `palt`（假名与标点紧排）。`--yarn-display` / `--yarn-body` 按 `:lang()` 切换，并覆盖 Rise 的 `--font-heading-family` / `--font-body-family` / `--font-heading-weight`；控件直接用 `--yarn-body`，不再用 `--yarn-display`。字体暂由 Google Fonts 按语言加载（衬线只载 500），正式托管方式待定。衬线文字只写 500；全站 `font-synthesis-weight: none`，写成 600 / 700 也不会被浏览器伪加粗（#311：线上首页标题曾用 600，被伪加粗后发硬发糊）。
+- **字体（#168，2026-10-17 用户按 Figma 三语对比板确认，取代方案 G；日文部分由 #326 于 2026-11-05 用户在对照页确认改为圆润方案）**：标题统一用衬线骨架，字重 500——中文 Noto Serif SC、日文 Kiwi Maru（圆润明朝）、英文 Source Serif 4。正文、导航、按钮、标签与小序号用无衬线——中文 Noto Sans SC、日文 Zen Maru Gothic（圆黑体，只载 400 / 500：该字体没有 600，用户嫌 700 太粗，写 600 / 700 的强调都落到 500）、英文 Figtree（日文回退 Noto Sans JP）。日文页整页开启 `palt`，但 Kiwi Maru / Zen Maru Gothic 的 Google Fonts 版不带该特性、假名等宽，所以日文标题统一 `letter-spacing: -0.05em`（集中写在 `yarn-design-tokens.css`，新增标题字体规则须同步加入该选择器列表），正文不调。`--yarn-display` / `--yarn-body` 按 `:lang()` 切换，并覆盖 Rise 的 `--font-heading-family` / `--font-body-family` / `--font-heading-weight`；控件直接用 `--yarn-body`，不再用 `--yarn-display`。字体暂由 Google Fonts 按语言加载（衬线只载 500），正式托管方式待定。衬线文字只写 500；全站 `font-synthesis-weight: none`，写成 600 / 700 也不会被浏览器伪加粗（#311：线上首页标题曾用 600，被伪加粗后发硬发糊）。
 - 商品家族采用显式 px 尺寸，避免旧根字号放大构图：卡片标题 16px、规格 14px、价格 21px、角标 12px；目录标题桌面 40px / 手机 28px，商品标题 36px / 26px，阅读正文 16px。Hero 按容器流式，日英手机扩展画布保留按钮净空。前言 `commerce-*` 为该家族已实现的局部字号，不用于覆盖其他页面。
 - 说明页（#86）的阅读标题桌面 36px、手机 28–36px；字段和值桌面 16px、手机 15px。它们是该页面已实现的局部字号，不扩成全站令牌；构图与内容来源见 [说明页 brief](docs/design/approved/86-policy-support.md)。
 - 新增文案必须检查三语断行与字体回退;菜单、集合描述等运营文案的原文与译文只维护在 Shopify(Navigation / Translate & Adapt),不在 Liquid 写死。
