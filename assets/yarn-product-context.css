@@ -17,7 +17,7 @@
   --color-button-text: 41, 42, 40;          /* --yarn-primary-ink */
   --alpha-button-background: 1;
   --color-secondary-button: 255, 254, 250;  /* --yarn-surface */
-  --color-secondary-button-text: 47, 48, 47;/* --yarn-ink */
+  --color-secondary-button-text: 74, 52, 38;/* --yarn-text-primary */
   --buttons-radius: var(--yarn-radius-pill);
   --buttons-radius-outset: var(--yarn-radius-pill);
 }

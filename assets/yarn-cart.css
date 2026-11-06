@@ -47,7 +47,7 @@
 .yarn-cart-spare__price { color: var(--yarn-accent); font-size: 1.3rem; font-weight: 600; }
 .yarn-cart-spare__add { min-height: var(--yarn-touch); padding: 0 14px; border: 0; border-radius: var(--yarn-radius-pill); background: var(--yarn-home-action); color: var(--yarn-text-on-action); font-size: 1.3rem; font-weight: 600; white-space: nowrap; cursor: pointer; }
 .yarn-cart-addons { display: grid; gap: 10px; margin: 16px 0 0; }
-.yarn-cart-addons__title { margin: 0; color: var(--yarn-text-primary); font: 500 1.7rem/1.4 var(--yarn-display); }
+.yarn-cart-addons__title { margin: 0; color: var(--yarn-text-heading); font: 500 1.7rem/1.4 var(--yarn-display); }
 /* Issue 297：凑单行只在自己行内横滑，不再用负外边距伸出抽屉，否则整个抽屉内容能左右拖动。 */
 .yarn-cart-addons__list { display: flex; gap: 10px; margin: 0; padding: 0 0 4px; overflow-x: auto; list-style: none; scroll-snap-type: x mandatory; }
 .yarn-cart-addon { display: flex; flex: none; align-items: center; gap: 10px; padding: 8px 10px 8px 8px; border: 1px solid var(--yarn-border-card); border-radius: 12px; background: var(--yarn-bg-surface); scroll-snap-align: start; }

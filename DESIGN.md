@@ -6,20 +6,23 @@ colors:
   home-thread: "#8c8880"
   home-rope: "#b8b1a4"
   home-logo: "#ab5631"
-  bg-page: "#f9f6f0"
-  bg-surface: "#fffefa"
-  bg-sunken: "#ebe5dc"
-  bg-warm: "#ece8dc"
-  bg-band: "#f5f1e8"
+  bg-page: "#f8f7f4"
+  bg-surface: "#ffffff"
+  bg-sunken: "#efeeea"
+  bg-warm: "#f8f7f4"
+  bg-wash-sage: "#ecf0e4"
+  bg-wash-mist: "#eef1f3"
+  bg-footer: "#e6eadf"
+  bg-band: "#efeeea"
   bg-inverse: "#8f3c26"
-  text-primary: "#2f302f"
-  text-heading: "#13202d"
+  text-primary: "#4a3426"
+  text-heading: "#573d2c"
   text-warm: "#3d3931"
   text-secondary: "#4a4b48"
   text-muted: "#686762"
   text-disabled: "#8c8880"
-  text-inverse: "#fffefa"
-  text-on-action: "#fffefa"
+  text-inverse: "#ffffff"
+  text-on-action: "#ffffff"
   text-on-cta: "#292a28"
   action: "#a6472e"
   accent: "#ab5631"
@@ -29,8 +32,8 @@ colors:
   cta-bg: "#f8e5a9"
   cta-hover: "#f6dfa0"
   cta-border: "#efd68d"
-  border-subtle: "#e4dfd7"
-  border-card: "#dedbd5"
+  border-subtle: "#e6e4df"
+  border-card: "#e3e1dc"
   border-control: "#686762"
   border-disabled: "#d3cfc7"
   tint-butter: "#f8e5a9"
@@ -327,7 +330,7 @@ components:
 
 ## Creative North Star:编织图解图谱
 
-暖白纸面承接真实织物照片,柔色面区分内容角色,炭黑文字给出阅读重心;手作插画、细线图标与线团花枝保留温度,文字与操作保持克制。深度靠浅面差和细线,不靠重阴影。
+近中性的暖白纸面承接真实织物照片（#326 方案 C：背景去黄、去掉暖米交替色带，暖感只留给照片、陶土与奶油黄；其后改为「抹茶晨雾」：首页挑毛线 / 常见问题区块中段带雾灰蓝 `bg-wash-mist`、本季主推中段带抹茶 `bg-wash-sage`，上下两端都回到页面底，区块之间不出现分块接缝；页脚从页面底渐变到抹茶、去掉顶部分隔线，取色自小猫插画；抹茶 / 雾蓝只做背景渐变不做实心块，陶土按钮与价格只放在白或近白底上）,浅面区分内容角色,深褐文字给出阅读重心（#326：正文深褐 `text-primary`、标题栗褐 `text-heading`，比正文浅一级）;手作插画、细线图标与线团花枝保留温度,文字与操作保持克制。深度靠浅面差和细线,不靠重阴影。
 
 ## Colors
 
@@ -356,7 +359,7 @@ components:
 - `npm run verify` 检查：生成物与源一致、token 文件外无颜色字面量、`--yarn-*` 引用均有定义、`contrast.pairs` 声明的文字/背景搭配达标（正文 4.5、大字与控件 3）、无未使用角色、基础色板无未登记近似色（ΔE < 5）、本文 components 只引用角色。
 - 颜色只表达分类、选中和动作层级，不构成价格、热度、难度或库存的事实证明。禁止把参照站（Woobles 青绿等）的品牌色带进来。
 
-**待选色（P3，需用户决定）**：`text-heading`（藏青黑，商品家族标题）与 `text-primary` 二选一；`accent` 与 `action` 合并或拉开层级；`border-card` 并入 `border-subtle`；`text-on-cta` / `text-warm` 并入 `text-primary`；`bg-warm` 与配色方案 5 的去留；`selected-text` 是否并入 `action`；`colors.json` 的 `nearDuplicates.allow` 列出其余 23 对近似色。选色只改基础色板与角色映射，页面无需改动。
+**待选色（P3，需用户决定）**：`accent` 与 `action` 合并或拉开层级；`border-card` 并入 `border-subtle`；`text-on-cta` / `text-warm` 并入 `text-primary`；`bg-warm` 与配色方案 5 的去留；`selected-text` 是否并入 `action`；`colors.json` 的 `nearDuplicates.allow` 列出其余 23 对近似色。选色只改基础色板与角色映射，页面无需改动。
 
 **Shopify 配色方案**（Rise 原生组件与可选配色的 section 使用）：scheme-1 默认页面 / scheme-2 暖砂次级 / scheme-3 深色反白 / scheme-4 柔和奶油 / scheme-5 暖米，均由角色生成；主题编辑器中改色值会在下次 `npm run tokens` 被覆盖，发布前应拉取线上主题比对。
 
@@ -392,7 +395,7 @@ components:
   - **首页作品卡三步指引**（#311，2026-10-31 用户选定 [Figma 手机方案 F](https://www.figma.com/design/xBdWJgV7u4hO50MpcLcfB2?node-id=26-87)，替换 #180 方案 C）：「用我们的毛线可以织」标题下是一块 `bg-band` 平铺色带（`radius-panel`，无边框、不可点），三列各写 `action` 色编号 01 / 02 / 03、步骤名和一句说明；三语 Section setting 可逐项留空隐藏。编号只在色带里出现：作品卡不再带编号，也不写「教程在 LINE」，只留照片 + 「材料包」标签、作品名、「毛线名 × N 团」（去掉商品名的【】前缀与｜后规格）和参考价；缺货时仍显示库存状态行。手机卡宽 220px、间距 12px、照片 220:250，横滑；桌面按同日批准的 [Figma 桌面 1440 · 方案 F](https://www.figma.com/design/xBdWJgV7u4hO50MpcLcfB2?node-id=31-2)：色带内三步横排，左侧 28px 衬线编号、右侧步骤名与说明，步间 `action` 色箭头（装饰）；作品四列、24px 间距、照片 282:350。
   - **帮助条**:`action-subtle-bg` 浅黄面、`cta-border` 细线、16px 圆角,不放图标;手机为标题 + 文字链接,桌面为标题 + 说明 + `home-action` 实心按钮。
 - **商品详情**:Shopify 图库、Variant、数量、加购与动态购买保留原生行为；陶土加购为主（A1，#177），动态购买描边为次。购买下方显示真实互链出口。Kit 六段描述在商品双栏下方顺读；手机内容物完整明细在内容物图前，关于与规格以正文阅读为主，保留全部 FAQ。成品描述在「尺寸与材质」独立区域渲染，不补造未录入的规格。当前边界见[商品详情 surface brief](docs/design/product-detail-surface.md)。
-- **毛线详情**(#120 手机；桌面以 #182 桌面 v2 为准):主图 1:1 完整显示、一行 4 张缩略图（无放大镜与箭头）、右上收藏；毛线角标 → 24px 中粗炭黑标题 → `home-action` 21px 价格（不带货币代码）与「/ 团」→ 说明 → 「颜色：奶油白」图例（标签为 muted）与 44px 圆形色块（有原生色板时）或编号圆钮（选中均为 2px `home-action` 环）。加入按钮、估算选中项与价格用 `home-action`（A1 起为陶土），不用奶油黄。只有默认 Variant 时颜色位显示「颜色 · 暂未开放选色」灰底标签与 `bg-band` 说明面板（询问入口读主题设置「官方 LINE 链接」，留空为联系页）；已定价但缺货时显示「这款线暂时缺货」面板：询问到货描边按钮 + 「看同类的其他毛线」（按第一个 yarn.texture 筛选毛线集合）（#177）。下方依次为两列规格细线表（成分、重量 / 长度、粗细、密度、推荐棒针、推荐钩针）、`bg-band` 圆角「要买几团？」面板、作品卡、编织包卡（价格为 `home-action`）、洗涤行（按内容配洗涤 / 禁止 / 勾 / 熨斗图标），没有数据的块不渲染（无编织包配对时不显示入口）。手机不显示页内数量 / 加购 / 立即购买，底部常驻购买栏（色号、数量、加入 · 合计）始终显示，只驱动原生表单（#122）。
+- **毛线详情**(#120 手机；桌面以 #182 桌面 v2 为准):主图 1:1 完整显示、一行 4 张缩略图（无放大镜与箭头）、右上收藏；毛线角标 → 24px 中粗栗褐标题 → `home-action` 21px 价格（不带货币代码）与「/ 团」→ 说明 → 「颜色：奶油白」图例（标签为 muted）与 44px 圆形色块（有原生色板时）或编号圆钮（选中均为 2px `home-action` 环）。加入按钮、估算选中项与价格用 `home-action`（A1 起为陶土），不用奶油黄。只有默认 Variant 时颜色位显示「颜色 · 暂未开放选色」灰底标签与 `bg-band` 说明面板（询问入口读主题设置「官方 LINE 链接」，留空为联系页）；已定价但缺货时显示「这款线暂时缺货」面板：询问到货描边按钮 + 「看同类的其他毛线」（按第一个 yarn.texture 筛选毛线集合）（#177）。下方依次为两列规格细线表（成分、重量 / 长度、粗细、密度、推荐棒针、推荐钩针）、`bg-band` 圆角「要买几团？」面板、作品卡、编织包卡（价格为 `home-action`）、洗涤行（按内容配洗涤 / 禁止 / 勾 / 熨斗图标），没有数据的块不渲染（无编织包配对时不显示入口）。手机不显示页内数量 / 加购 / 立即购买，底部常驻购买栏（色号、数量、加入 · 合计）始终显示，只驱动原生表单（#122）。
   - **手机 v2**(#182,借鉴 Woobles,取代上文手机的缩略图行、价格位置与规格表排法):图库横滑并露出下一张,不显示缩略图行;标签与标题在左、价格在右;标题下 ✓ 清单(克重 · 成分 / 可以织:引用本线的材料包 / 参考团数 / 只有默认 Variant 时「暂未开放选色」+ 询问入口,只渲染有数据的行)与 `action-subtle-bg` 保障条(免运费门槛 / 选线咨询 / 全国配送);「用这款线能织」提前为横向卡;关于这款线(商品介绍,手机从首屏移入)、线的规格、要买几团、新手能用吗(`yarn.beginner_reason`)、怎么洗收为带奶油圆底插画图标的折叠行,首行展开;商品页「购买须知」行首图标换成对应插画;常驻栏前加商品缩略图。
   - **桌面 v2**(#182 D1,用户 2026-10-17 确认):左图库(1:1 + 缩略图行)/ 右栏依次为标签与标题 + 右侧价格 → ✓ 清单 → 数量与「添加到购物车」同一行(不显示动态结账、库存行与购物说明文字行)→ 三格插画保障(免运费 + 全国配送 / 选线咨询 / 退换:7 日内联系)→ 横向作品卡 → 插画折叠行。商品页「购买须知」改为 main-product 的 `collapsible_tab` block(三语设置 `heading_zh/_en`、`content_zh/_en`),毛线页并入同一折叠行列表末尾(手机同),页面下方只留相关商品。
 - **作品内容页**:保留 Metaobject 标题、摘要、封面、准备与教程；缺少站内教程正文时，可呈现已关联 Kit 的既有介绍和开始步骤，再提供来源入口。商品关系只来自已存关系；不复制购买表单，不把外部商品页标为直接教程。
@@ -415,7 +418,7 @@ components:
 
 ## Do / Don't
 
-**Do**:延续暖纸+细线+炭黑的世界;新增文案查三语断行与手机可读;运营内容一律映射到 Shopify 可编辑层;每轮实现后把规范变化蒸馏回本文。
+**Do**:延续暖纸+细线+深褐文字的世界;新增文案查三语断行与手机可读;运营内容一律映射到 Shopify 可编辑层;每轮实现后把规范变化蒸馏回本文。
 
 **Don't**:不虚构评价、销量、折扣或品牌证明;不把参照站配色、构图稿小字或生成素材当真值;不以参照站样式替换当前批准的三节点首页与商品卡片家族;不把局部字号、比例升级成全站令牌;不把本文当作发布、授权或验收凭据。
 
