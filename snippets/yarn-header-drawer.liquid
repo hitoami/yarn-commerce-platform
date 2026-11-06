@@ -9,6 +9,13 @@
         <div class="menu-drawer__navigation-container">
           <nav class="menu-drawer__navigation" aria-label="{{ 'sections.header.menu' | t }}">
             {%- comment -%}#258：抽屉先放账户和常用功能，再放逛店菜单；手机页头的账户图标让给了语言按钮。{%- endcomment -%}
+            {%- comment -%}#329：最上方是一只小猫的欢迎区（页头设置里选猫，不选则不显示）。{%- endcomment -%}
+            {%- if welcome_illustration != blank -%}
+              <div class="yarn-drawer-hello">
+                <img src="{{ welcome_illustration | asset_url }}" width="160" height="153" loading="lazy" decoding="async" alt="">
+                <p><b>{{ 'sections.header.drawer_hello' | t }}</b><small>{{ 'sections.header.drawer_hello_note' | t }}</small></p>
+              </div>
+            {%- endif -%}
             {%- if shop.customer_accounts_enabled -%}
               {%- if customer -%}
                 <div class="yarn-drawer-account yarn-drawer-account--in">

@@ -308,7 +308,9 @@
         "one": "{{ count }} artikl",
         "other": "Broj artikala: {{ count }}",
         "few": "Broj artikala: {{ count }}"
-      }
+      },
+      "drawer_hello": "Welcome in",
+      "drawer_hello_note": "What yarn are you looking for today?"
     },
     "cart": {
       "title": "Vaša košarica",
