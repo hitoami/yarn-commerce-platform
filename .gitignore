@@ -35,3 +35,7 @@
 
 # npm run proof 证据包（本地生成，不提交）
 /.proof/
+
+# #244 Shopify App 的依赖与 CLI 本地状态
+/shopify-app/node_modules/
+/shopify-app/extensions/*/dist/
