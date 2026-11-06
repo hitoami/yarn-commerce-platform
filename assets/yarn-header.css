@@ -687,8 +687,23 @@
   margin: 10px auto 0;
   border: 0;
   border-radius: var(--yarn-radius-pill);
-  background: var(--yarn-bg-surface);
+  background: transparent;
   box-shadow: 0 10px 28px -14px var(--yarn-shadow-soft);
+  isolation: isolate;
+}
+/* 磨砂玻璃（用户 2026-11-06 选定）：72% 白 + 背景模糊 + 一圈半透明白边，透出下面的首屏与页面颜色。
+   画在伪元素上：backdrop-filter 写在外层会让它成为 fixed 子元素的定位基准，手机语言面板会被钉在页头里（Issue 290）。 */
+.section-header .header-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--yarn-bg-surface) 72%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--yarn-bg-surface) 70%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  pointer-events: none;
 }
 /* 里层页头透明，圆角由外层胶囊画；不裁切外层，下拉浮层才能伸出胶囊。 */
 .section-header #YarnHeader { padding-inline: 12px; background: transparent; }

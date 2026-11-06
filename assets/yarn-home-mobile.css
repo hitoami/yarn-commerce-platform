@@ -46,43 +46,43 @@
 .yarn-home-guide__help-cta:hover { background: var(--yarn-action-strong); color: var(--yarn-text-on-action); }
 .yarn-home-guide :is(a):focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 4px; }
 @media (max-width: 749px) {
-  body:has(.hitoami-hero--catalog) .hitoami-story { width: auto; margin: 0; padding: 34px 24px 32px; }
-  body:has(.hitoami-hero--catalog) .hitoami-story h2 { font-weight: 400; }
-  body:has(.hitoami-hero--catalog) .hitoami-story .rte { font-size: 12px; line-height: 1.9; }
-  body:has(.hitoami-hero--catalog) .hitoami-story__line { display: block; margin-top: 10px; padding: 0; border: 0; background: none; }
-  body:has(.hitoami-hero--catalog) .hitoami-story__line-copy { display: none; }
-  body:has(.hitoami-hero--catalog) .hitoami-story__line-cta { justify-content: start; padding: 0; background: none; color: var(--yarn-action); font-size: 12px; }
-  body:has(.hitoami-hero--catalog) .yarn-entries { padding: 26px 0 22px; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__inner { width: calc(100% - 48px); }
-  body:has(.hitoami-hero--catalog) .yarn-entries__head { text-align: left; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__heading { font-size: 21px; font-weight: 400; margin-top: 9px; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__flourish, body:has(.hitoami-hero--catalog) .yarn-entries__hint { display: none; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__track { grid-template-rows: auto; grid-auto-columns: 85px; gap: 16px; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__photo { border-radius: 50%; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__name { font-size: 12px; text-align: center; font-weight: 400; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__all { background: none; font-size: 12px; min-height: 44px; margin-top: 12px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .hitoami-story { width: auto; margin: 0; padding: 34px 24px 32px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .hitoami-story h2 { font-weight: 400; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .hitoami-story .rte { font-size: 12px; line-height: 1.9; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .hitoami-story__line { display: block; margin-top: 10px; padding: 0; border: 0; background: none; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .hitoami-story__line-copy { display: none; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .hitoami-story__line-cta { justify-content: start; padding: 0; background: none; color: var(--yarn-action); font-size: 12px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries { padding: 26px 0 22px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__inner { width: calc(100% - 48px); }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__head { text-align: left; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__heading { font-size: 21px; font-weight: 400; margin-top: 9px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__flourish, body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__hint { display: none; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__track { grid-template-rows: auto; grid-auto-columns: 85px; gap: 16px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__photo { border-radius: 50%; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__name { font-size: 12px; text-align: center; font-weight: 400; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__all { background: none; font-size: 12px; min-height: 44px; margin-top: 12px; }
   .yarn-home-catalog, .yarn-home-guide { padding-inline: 24px; }
-  body:has(.hitoami-hero--catalog) .yx-season { margin: 0; width: auto; padding: 12px 24px 36px; gap: 23px; background: none; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yx-season { margin: 0; width: auto; padding: 12px 24px 36px; gap: 23px; background: none; }
 }
 
 /* The supplied desktop reference uses compact circles and a shared content axis. */
-body:has(.hitoami-hero--catalog) .yarn-entries__photo { border-radius: 50%; }
-body:has(.hitoami-hero--catalog) .yarn-entries__head { text-align: left; position: relative; }
-body:has(.hitoami-hero--catalog) .yarn-entries__flourish { display: none; } /* no decoration beside the heading (#151) */
+body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__photo { border-radius: 50%; }
+body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__head { text-align: left; position: relative; }
+body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__flourish { display: none; } /* no decoration beside the heading (#151) */
 .yarn-home-catalog.page-width, .yarn-home-guide.page-width { width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter))); max-width: none; margin-inline: auto; padding-inline: 0; }
 @media (min-width: 750px) {
   /* Brand and categories share one warm band; the categories continue it without a top gap. */
-  body:has(.hitoami-hero--catalog) .yarn-entries { padding: 0 0 56px; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__head { display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; min-height: 68px; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__heading { margin: 0; color: var(--yarn-text-heading); font-size: 28px; font-weight: 600; line-height: 1.25; letter-spacing: 0; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__bar:not(:has(.yarn-entries__tabs)) { display: none; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__scroller { margin-top: 32px; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__track { width: 100%; grid-auto-columns: minmax(0, 1fr); gap: 24px; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__card { align-items: center; gap: 10px; color: var(--yarn-text-heading); }
-  body:has(.hitoami-hero--catalog) .yarn-entries__photo { width: 100%; max-width: 200px; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__name { text-align: center; font: 500 15px/1.3 var(--yarn-body); }
-  body:has(.hitoami-hero--catalog) .yarn-entries__hint { text-align: center; color: var(--yarn-text-muted); font-size: 12px; line-height: 1.2; }
-  body:has(.hitoami-hero--catalog) .yarn-entries__all { display: none; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries { padding: 0 0 56px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__head { display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; min-height: 68px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__heading { margin: 0; color: var(--yarn-text-heading); font-size: 28px; font-weight: 600; line-height: 1.25; letter-spacing: 0; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__bar:not(:has(.yarn-entries__tabs)) { display: none; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__scroller { margin-top: 32px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__track { width: 100%; grid-auto-columns: minmax(0, 1fr); gap: 24px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__card { align-items: center; gap: 10px; color: var(--yarn-text-heading); }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__photo { width: 100%; max-width: 200px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__name { text-align: center; font: 500 15px/1.3 var(--yarn-body); }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__hint { text-align: center; color: var(--yarn-text-muted); font-size: 12px; line-height: 1.2; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__all { display: none; }
   .yarn-home-catalog, .yarn-home-guide { padding-block: 72px; }
   .yarn-home-catalog h2, .yarn-home-guide h2 { color: var(--yarn-text-heading); font-size: 32px; font-weight: 600; line-height: 1.25; letter-spacing: 0; }
   .yarn-home-catalog__head { align-items: center; margin-bottom: 24px; }
@@ -117,19 +117,19 @@ body:has(.hitoami-hero--catalog) .yarn-entries__flourish { display: none; } /* n
   .yarn-home-guide details > p { padding: 0 32px 20px 42px; color: var(--yarn-text-secondary); font-size: 14px; line-height: 1.8; }
   .yarn-home-guide__all { min-height: 0; padding: 20px 0; font-size: 15px; }
   /* Yarn-set picks (shown only once a project passes the public gate). */
-  body:has(.hitoami-hero--catalog) .yx-picks { padding-block: 72px; }
-  body:has(.hitoami-hero--catalog) .yx-project-pick { gap: 10px; }
-  body:has(.hitoami-hero--catalog) .yx-project-pick__media { aspect-ratio: 282 / 352; border-radius: var(--yarn-radius-media); }
-  body:has(.hitoami-hero--catalog) .yx-project-pick__badge { left: 12px; top: 12px; padding: 4px 10px; font-weight: 500; }
-  body:has(.hitoami-hero--catalog) .yx-project-pick__title { font-weight: 500; line-height: 1.5; }
-  body:has(.hitoami-hero--catalog) .yx-project-pick__meta { font-weight: 700; }
-  body:has(.hitoami-hero--catalog) .hitoami-story:not(:has(.hitoami-story__media)) { grid-template-columns: 1fr; max-width: 800px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yx-picks { padding-block: 72px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yx-project-pick { gap: 10px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yx-project-pick__media { aspect-ratio: 282 / 352; border-radius: var(--yarn-radius-media); }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yx-project-pick__badge { left: 12px; top: 12px; padding: 4px 10px; font-weight: 500; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yx-project-pick__title { font-weight: 500; line-height: 1.5; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yx-project-pick__meta { font-weight: 700; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .hitoami-story:not(:has(.hitoami-story__media)) { grid-template-columns: 1fr; max-width: 800px; }
 }
 @media (min-width: 990px) {
   .yarn-home-guide--faq { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); }
 }
 @media (min-width: 750px) and (max-width: 989px) {
-  body:has(.hitoami-hero--catalog) .yarn-entries__track { gap: 16px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) .yarn-entries__track { gap: 16px; }
   .yarn-home-guide--steps ol { gap: 12px; }
   .yarn-home-guide--steps li { padding: 16px; }
 }
@@ -139,14 +139,14 @@ body:has(.hitoami-hero--catalog) .yarn-entries__flourish { display: none; } /* n
 
 /* Issue 265（用户 2026-10-30 准奏）：首页分区节奏——挑毛线、本季主推、常见问题为暖米整宽底，其余奶白；
    每块上下留白统一（手机 48、桌面 80），标题统一为「陶土小眉题 + 衬线标题」。 */
-body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-home-catalog), :has(.yx-picks)) { background: var(--yarn-bg-page); }
+body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-home-catalog), :has(.yx-picks)) { background: var(--yarn-bg-page); }
 /* #326 抹茶晨雾（用户 2026-11-05 按小猫配色选定）：原暖米整宽底改为两头回到页面底、中间带色的竖向渐变（区块之间无接缝）；抹茶 / 雾蓝只做背景渐变，不做实心块——挑毛线、常见问题用雾灰蓝，本季主推用抹茶。 */
-body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.yarn-entries), :has(.yarn-home-guide--faq)) { background: linear-gradient(180deg, var(--yarn-bg-page) 0%, var(--yarn-bg-wash-mist) 50%, var(--yarn-bg-page) 100%); }
-body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:has(.yx-season) { background: linear-gradient(180deg, var(--yarn-bg-page) 0%, var(--yarn-bg-wash-sage) 50%, var(--yarn-bg-page) 100%); }
-body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-entries), :has(.yarn-home-catalog), :has(.yx-season), :has(.yx-picks), :has(.yarn-home-guide--faq)) { padding-block: 48px; }
-body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) { padding-block: 0; background: none; }
-body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2 { margin: 0; color: var(--yarn-text-heading); font: 500 24px/1.45 var(--yarn-display); letter-spacing: 0; }
+body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) #MainContent > .shopify-section:is(:has(.yarn-entries), :has(.yarn-home-guide--faq)) { background: linear-gradient(180deg, var(--yarn-bg-page) 0%, var(--yarn-bg-wash-mist) 50%, var(--yarn-bg-page) 100%); }
+body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) #MainContent > .shopify-section:has(.yx-season) { background: linear-gradient(180deg, var(--yarn-bg-page) 0%, var(--yarn-bg-wash-sage) 50%, var(--yarn-bg-page) 100%); }
+body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-entries), :has(.yarn-home-catalog), :has(.yx-season), :has(.yx-picks), :has(.yarn-home-guide--faq)) { padding-block: 48px; }
+body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) { padding-block: 0; background: none; }
+body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2 { margin: 0; color: var(--yarn-text-heading); font: 500 24px/1.45 var(--yarn-display); letter-spacing: 0; }
 @media (min-width: 750px) {
-  body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-entries), :has(.yarn-home-catalog), :has(.yx-season), :has(.yx-picks), :has(.yarn-home-guide--faq)) { padding-block: 80px; }
-  body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2 { font-size: 32px; font-weight: 500; line-height: 1.25; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-entries), :has(.yarn-home-catalog), :has(.yx-season), :has(.yx-picks), :has(.yarn-home-guide--faq)) { padding-block: 80px; }
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2 { font-size: 32px; font-weight: 500; line-height: 1.25; }
 }

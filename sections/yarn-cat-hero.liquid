@@ -1,0 +1,102 @@
+{% comment %}
+  首页首屏「小猫波浪圆角框」（#332，用户 2026-11-05 在首屏原型先选 F6 椭圆、后改 F7 圆角框）：页面底色上，一根陶土色毛线带着柔和的小波浪围着标题绕成圆角框，
+  六只小猫（#329 入库的 hitoami-cat-*.webp）坐在这圈线上（--t 为在框上的位置，0 = 正下方，顺时针）。
+  线与猫的位置由 yarn-cat-hero.js 按实际尺寸算（CSS 只按椭圆兜底）；入场时线从织毛衣的猫出发绕一圈，经过谁谁就跳出来，标题逐字出现。
+  每次打开都播；减少动态效果或脚本没加载时直接显示完整画面（脚本没加载时只有猫与文字，没有线）。
+  三语文案经 yarn-setting-text 取：纯键名为日文默认，_zh / _en 为中英设置。
+  取代照片轮播后，首页后续区块的整宽底与节奏仍沿用 yarn-home-mobile.css（选择器同时认 .hitoami-hero--catalog 与 .yarn-cat-hero）。
+{% endcomment %}
+{{ 'yarn-cat-hero.css' | asset_url | stylesheet_tag }}
+{{ 'yarn-home-mobile.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'yarn-cat-hero.js' | asset_url }}" defer="defer"></script>
+{%- liquid
+  capture heading
+    render 'yarn-setting-text', settings: section.settings, key: 'heading'
+  endcapture
+  capture lead
+    render 'yarn-setting-text', settings: section.settings, key: 'lead', allow_blank: true
+  endcapture
+  capture cta
+    render 'yarn-setting-text', settings: section.settings, key: 'cta'
+  endcapture
+-%}
+<section class="yarn-cat-hero" aria-labelledby="YarnCatHero-{{ section.id }}">
+  {%- comment -%}
+    #332 背景三层（用户 2026-11-05 在背景对照页选 A + C + E）：水彩光斑慢漂、框外的猫爪印 / 小爱心 / 小线头轻浮、
+    彩色小圆点在有鼠标的设备上被鼠标轻轻推开。位置按序号算，框内用遮罩挖空；减少动态效果时全部静止。
+  {%- endcomment -%}
+  <div class="yarn-cat-hero__bg" aria-hidden="true">
+    <div class="yarn-cat-hero__blobs"><span></span><span></span><span></span><span></span></div>
+    <div class="yarn-cat-hero__scatter">
+      {%- assign deco_spots = '6,12|14,30|4,52|10,74|20,90|30,8|44,94|58,6|70,92|84,10|92,30|96,56|88,78|78,96|50,96|24,60|76,60|36,30|64,28' | split: '|' -%}
+      {%- for spot in deco_spots -%}
+        {%- liquid
+          assign xy = spot | split: ','
+          assign i = forloop.index0
+          assign kind = i | modulo: 3
+          assign tone = i | modulo: 4
+          assign spin = i | times: 37 | modulo: 50 | minus: 25
+          assign twinkle = i | modulo: 5
+        -%}
+        <span class="yarn-cat-hero__deco yarn-cat-hero__deco--{{ kind }} yarn-cat-hero__tone--{{ tone }}{% if twinkle == 0 %} is-twinkle{% endif %}" style="left: {{ xy[0] }}%; top: {{ xy[1] }}%; --r: {{ spin }}deg; animation-delay: -{{ i | times: 0.9 }}s">
+          {%- case kind -%}
+            {%- when 0 -%}<svg viewBox="0 0 24 24"><ellipse cx="12" cy="15.5" rx="5.2" ry="4.4"/><circle cx="6" cy="9.5" r="2.2"/><circle cx="10" cy="6.2" r="2.3"/><circle cx="14.2" cy="6.2" r="2.3"/><circle cx="18" cy="9.5" r="2.2"/></svg>
+            {%- when 1 -%}<svg viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.4 4.4 0 0 1 8-2.5A4.4 4.4 0 0 1 20 10c0 6-8 11-8 11z"/></svg>
+            {%- else -%}<svg viewBox="0 0 40 16"><path class="is-line" d="M2 10c5-8 9 6 14-1s9 5 13-2 6 2 9 1"/></svg>
+          {%- endcase -%}
+        </span>
+      {%- endfor -%}
+      {%- for i in (0..45) -%}
+        {%- liquid
+          assign x = i | times: 37 | plus: 11 | modulo: 100
+          assign y = i | times: 53 | plus: 7 | modulo: 100
+          assign size = i | times: 5 | modulo: 10 | plus: 6
+          assign tone = i | modulo: 5
+        -%}
+        <span class="yarn-cat-hero__dot yarn-cat-hero__tone--{{ tone }}" style="left: {{ x }}%; top: {{ y }}%; width: {{ size }}px; height: {{ size }}px"></span>
+      {%- endfor -%}
+    </div>
+  </div>
+  <div class="yarn-cat-hero__stage">
+    <div class="yarn-cat-hero__ring" aria-hidden="true"></div>
+    <svg class="yarn-cat-hero__thread" aria-hidden="true" focusable="false"></svg>
+    <ul class="yarn-cat-hero__cats" role="list" aria-hidden="true">
+      {%- comment -%}--t：框上的位置；--w / --wm：桌面 / 手机猫宽占首屏高度的比例。顺序即线经过的先后。{%- endcomment -%}
+      <li style="--t: .12; --w: .227; --wm: .15"><img src="{{ 'hitoami-cat-knitting.webp' | asset_url }}" width="320" height="314" alt="" fetchpriority="high"></li>
+      <li style="--t: .25; --w: .169; --wm: .117"><img src="{{ 'hitoami-cat-spools.webp' | asset_url }}" width="276" height="320" alt=""></li>
+      <li style="--t: .375; --w: .188; --wm: .12"><img src="{{ 'hitoami-cat-curly.webp' | asset_url }}" width="320" height="298" alt=""></li>
+      <li style="--t: .625; --w: .184; --wm: .123"><img src="{{ 'hitoami-cat-beret.webp' | asset_url }}" width="320" height="311" alt=""></li>
+      <li style="--t: .75; --w: .175; --wm: .117"><img src="{{ 'hitoami-cat-lying.webp' | asset_url }}" width="320" height="236" alt=""></li>
+      <li style="--t: .88; --w: .219; --wm: .15"><img src="{{ 'hitoami-cat-basket.webp' | asset_url }}" width="320" height="305" alt=""></li>
+    </ul>
+    <div class="yarn-cat-hero__copy">
+      <h1 class="yarn-cat-hero__heading" id="YarnCatHero-{{ section.id }}">{{ heading | escape | newline_to_br }}</h1>
+      {%- if lead != blank -%}<p class="yarn-cat-hero__lead">{{ lead | escape }}</p>{%- endif -%}
+      {%- if cta != blank and section.settings.link != blank -%}
+        <a class="yarn-cat-hero__cta" href="{{ section.settings.link }}">{{ cta | escape }}<span aria-hidden="true">→</span></a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+<script>document.currentScript.previousElementSibling.classList.add('is-armed');</script>
+
+{% schema %}
+{
+  "name": "首屏：小猫波浪圆角框",
+  "tag": "div",
+  "class": "yarn-cat-hero-section",
+  "settings": [
+    { "type": "textarea", "id": "heading", "label": "标题（日文）", "default": "ひと玉ずつ、\n選ぶ楽しみ。" },
+    { "type": "textarea", "id": "heading_zh", "label": "标题（中文）", "default": "一团一团，\n慢慢挑。" },
+    { "type": "textarea", "id": "heading_en", "label": "标题（英文）", "default": "Choose yarn,\none ball at a time." },
+    { "type": "text", "id": "lead", "label": "说明（日文）", "default": "一本の糸から、すべてがはじまる。" },
+    { "type": "text", "id": "lead_zh", "label": "说明（中文）", "default": "一切，从一根线开始。" },
+    { "type": "text", "id": "lead_en", "label": "说明（英文）", "default": "Everything begins with a single strand." },
+    { "type": "text", "id": "cta", "label": "按钮（日文）", "default": "毛糸を見る" },
+    { "type": "text", "id": "cta_zh", "label": "按钮（中文）", "default": "浏览毛线" },
+    { "type": "text", "id": "cta_en", "label": "按钮（英文）", "default": "Browse yarn" },
+    { "type": "url", "id": "link", "label": "按钮链接" }
+  ],
+  "presets": [{ "name": "首屏：小猫波浪圆角框" }]
+}
+{% endschema %}

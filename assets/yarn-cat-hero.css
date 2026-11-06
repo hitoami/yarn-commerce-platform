@@ -1,0 +1,156 @@
+/* Issue 332 首页首屏「小猫波浪圆角框」。--rx / --ry 是框的半宽 / 半高，脚本按它画线并摆猫；CSS 的椭圆摆法只在脚本没加载时兜底。
+   高度跟屏幕走（用户 2026-11-06 同意）：一屏减去通知条与胶囊导航（约 110px）、底部再露约 40px 下一区块，桌面限 600–780px；
+   框、猫与标题都按 --hero-h 等比缩放，屏幕变高时一起变大，而不是只多出空白。 */
+.yarn-cat-hero {
+  --hero-h: clamp(600px, calc(100svh - 150px), 780px);
+  --rx: min(34vw, calc(var(--hero-h) * 0.78));
+  --ry: calc(var(--hero-h) * 0.34);
+  position: relative;
+  overflow: hidden;
+  /* 底部 15% 渐变回页面底色，和下一区块无缝衔接（用户不要分块的接缝）。 */
+  background:
+    linear-gradient(180deg, transparent 85%, var(--yarn-bg-page) 100%),
+    radial-gradient(ellipse at 50% 50%, var(--yarn-bg-surface) 0, var(--yarn-bg-page) 55%, var(--yarn-bg-wash-sage) 100%);
+}
+.yarn-cat-hero__stage { position: relative; height: var(--hero-h); }
+/* 只用来量椭圆尺寸；Rise 会隐藏空 div（div:empty），这里要显式显示。 */
+.yarn-cat-hero .yarn-cat-hero__ring {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(2 * var(--rx));
+  height: calc(2 * var(--ry));
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.yarn-cat-hero__thread { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.yarn-cat-hero__thread .yarn-cat-hero__line { fill: none; stroke: var(--yarn-home-logo); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+/* 猫坐在线上：落点在图片底部略靠上，--t 从正下方顺时针走一圈。 */
+.yarn-cat-hero__cats { margin: 0; padding: 0; list-style: none; }
+.yarn-cat-hero__cats li {
+  --a: calc(90deg + var(--t) * 360deg);
+  position: absolute;
+  left: calc(50% + cos(var(--a)) * var(--rx));
+  top: calc(50% + sin(var(--a)) * var(--ry));
+  /* --w 是猫宽占首屏高度的比例。 */
+  width: calc(var(--w) * var(--hero-h));
+  transform: translate(-50%, -86%);
+  transform-origin: 50% 100%;
+}
+.yarn-cat-hero__cats img { display: block; width: 100%; height: auto; }
+
+.yarn-cat-hero__copy {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  width: min(560px, calc(2 * var(--rx) - 120px));
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.yarn-cat-hero__heading {
+  margin: 0;
+  color: var(--yarn-text-heading);
+  font: 500 clamp(3.4rem, min(3.8vw, calc(var(--hero-h) * 0.085)), 6rem) / 1.3 var(--yarn-display);
+}
+.yarn-cat-hero__lead { margin: 14px 0 0; color: var(--yarn-text-primary); font-size: 1.5rem; line-height: 1.8; }
+.yarn-cat-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--yarn-touch);
+  margin-top: 20px;
+  padding: 0 24px;
+  border-radius: var(--yarn-radius-pill);
+  background: var(--yarn-home-action);
+  color: var(--yarn-text-on-action);
+  font: 500 1.5rem / 1 var(--yarn-body);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.yarn-cat-hero__cta:hover { background: var(--yarn-action-strong); }
+
+@media screen and (max-width: 749px) {
+  /* 手机：一屏减去通知条与胶囊（约 100px）再露约 32px，限 560–720px；框收到 36vw，右侧的猫不再超出屏幕。 */
+  .yarn-cat-hero { --hero-h: clamp(560px, calc(100svh - 132px), 720px); --rx: 36vw; --ry: calc(var(--hero-h) * 0.37); }
+  .yarn-cat-hero__cats li { width: calc(var(--wm) * var(--hero-h)); }
+  .yarn-cat-hero__copy { width: calc(2 * var(--rx) - 24px); }
+  .yarn-cat-hero__heading { font-size: clamp(2.6rem, calc(var(--hero-h) * 0.047), 3.2rem); }
+  .yarn-cat-hero__lead { font-size: 1.3rem; }
+  .yarn-cat-hero__thread .yarn-cat-hero__line { stroke-width: 2.4; }
+}
+
+/* 入场：脚本在画线前加 is-armed，按线的进度给每只猫加 is-in；播完加 is-done。 */
+.yarn-cat-hero.is-armed:not(.is-done) .yarn-cat-hero__cats li { opacity: 0; transform: translate(-50%, -86%) scale(0.6); }
+.yarn-cat-hero.is-armed .yarn-cat-hero__cats li.is-in {
+  opacity: 1;
+  transform: translate(-50%, -86%) scale(1);
+  transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+.yarn-cat-hero.is-armed:not(.is-done) :is(.yarn-cat-hero__lead, .yarn-cat-hero__cta) { opacity: 0; }
+.yarn-cat-hero.is-copy :is(.yarn-cat-hero__lead, .yarn-cat-hero__cta) { opacity: 1; transition: opacity 0.8s ease; }
+.yarn-cat-hero__char { display: inline-block; opacity: 0; transform: translateY(10px); animation: yarn-cat-hero-rise 0.6s forwards; }
+@keyframes yarn-cat-hero-rise { to { opacity: 1; transform: none; } }
+.yarn-cat-hero.is-done .yarn-cat-hero__cats li { animation: yarn-cat-hero-breathe 3.6s ease-in-out infinite alternate; }
+.yarn-cat-hero.is-done .yarn-cat-hero__cats li:nth-child(2n) { animation-delay: -1.8s; }
+@keyframes yarn-cat-hero-breathe { to { transform: translate(-50%, -86%) scale(1.02, 1.035); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .yarn-cat-hero.is-armed .yarn-cat-hero__cats li,
+  .yarn-cat-hero.is-armed :is(.yarn-cat-hero__lead, .yarn-cat-hero__cta) { opacity: 1; transform: translate(-50%, -86%); transition: none; }
+  .yarn-cat-hero.is-armed :is(.yarn-cat-hero__lead, .yarn-cat-hero__cta) { transform: none; }
+  .yarn-cat-hero.is-done .yarn-cat-hero__cats li { animation: none; }
+  .yarn-cat-hero__char { animation: none; opacity: 1; transform: none; }
+}
+
+/* Issue 332 背景三层（A 水彩光斑 + C 猫爪印 / 小爱心 / 小线头 + E 鼠标推开的小圆点）。都比小猫淡一档、动得很慢。 */
+.yarn-cat-hero { --tone-sage: color-mix(in srgb, var(--yarn-dot-sage) 62%, var(--yarn-bg-surface)); --tone-mist: color-mix(in srgb, var(--yarn-bg-wash-mist) 80%, var(--yarn-text-muted)); --tone-blush: color-mix(in srgb, var(--yarn-tint-blush) 70%, var(--yarn-home-logo) 12%); --tone-clay: color-mix(in srgb, var(--yarn-home-logo) 42%, var(--yarn-bg-surface)); --tone-butter: color-mix(in srgb, var(--yarn-cta-bg) 85%, var(--yarn-home-logo) 6%); }
+.yarn-cat-hero__stage { z-index: 1; }
+.yarn-cat-hero__bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; -webkit-mask-image: linear-gradient(180deg, #000 82%, transparent 100%); mask-image: linear-gradient(180deg, #000 82%, transparent 100%); }
+.yarn-cat-hero__tone--0 { color: var(--tone-sage); }
+.yarn-cat-hero__tone--1 { color: var(--tone-blush); }
+.yarn-cat-hero__tone--2 { color: var(--tone-mist); }
+.yarn-cat-hero__tone--3 { color: var(--tone-clay); }
+.yarn-cat-hero__tone--4 { color: var(--tone-butter); }
+
+/* A 水彩光斑：四团大光晕各自 16–25 秒慢漂、胀缩。 */
+.yarn-cat-hero__blobs span { position: absolute; width: min(34vw, 520px); aspect-ratio: 1; border-radius: 50%; filter: blur(60px); opacity: 0.42; animation: yarn-cat-hero-drift 18s ease-in-out infinite alternate; }
+.yarn-cat-hero__blobs span:nth-child(1) { left: 4%; top: 22%; background: var(--tone-sage); animation-duration: 16s; }
+.yarn-cat-hero__blobs span:nth-child(2) { left: 66%; top: 6%; width: min(30vw, 460px); background: var(--tone-mist); animation-duration: 19s; animation-delay: -4.5s; }
+.yarn-cat-hero__blobs span:nth-child(3) { left: 70%; top: 60%; width: min(32vw, 480px); background: var(--tone-blush); animation-duration: 22s; animation-delay: -9s; }
+.yarn-cat-hero__blobs span:nth-child(4) { left: 22%; top: 66%; width: min(26vw, 400px); background: var(--tone-sage); animation-duration: 25s; animation-delay: -13.5s; }
+@keyframes yarn-cat-hero-drift { 0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(4%, -6%) scale(1.12); } 100% { transform: translate(-5%, 4%) scale(0.94); } }
+
+/* C + E 只在框外：中间按椭圆挖空，标题与按钮后面保持干净。 */
+.yarn-cat-hero__scatter { position: absolute; inset: 0; -webkit-mask-image: radial-gradient(ellipse 34% 30% at 50% 50%, transparent 70%, #000 100%); mask-image: radial-gradient(ellipse 34% 30% at 50% 50%, transparent 70%, #000 100%); }
+.yarn-cat-hero__deco { position: absolute; width: 30px; height: 30px; opacity: 0.8; animation: yarn-cat-hero-bob 7s ease-in-out infinite; }
+.yarn-cat-hero__deco--1 { width: 22px; height: 22px; }
+.yarn-cat-hero__deco--2 { width: 42px; height: 17px; }
+.yarn-cat-hero__deco svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+.yarn-cat-hero__deco .is-line { fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+.yarn-cat-hero__deco.is-twinkle { animation: yarn-cat-hero-twinkle 9s ease-in-out infinite; }
+@keyframes yarn-cat-hero-bob { 0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); } 50% { transform: translateY(-6px) rotate(calc(var(--r, 0deg) + 6deg)); } }
+@keyframes yarn-cat-hero-twinkle { 0%, 70%, 100% { transform: scale(1) rotate(var(--r, 0deg)); opacity: 0.6; } 80% { transform: scale(1.25) rotate(var(--r, 0deg)); opacity: 0.95; } }
+.yarn-cat-hero__dot { position: absolute; border-radius: 50%; background: currentColor; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+@media screen and (max-width: 749px) {
+  .yarn-cat-hero__blobs span { width: 70vw; filter: blur(40px); }
+  .yarn-cat-hero__scatter { -webkit-mask-image: radial-gradient(ellipse 40% 26% at 50% 50%, transparent 70%, #000 100%); mask-image: radial-gradient(ellipse 40% 26% at 50% 50%, transparent 70%, #000 100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .yarn-cat-hero__bg * { animation: none !important; transition: none !important; }
+}
+
+/* 首屏背景延伸到通知条和胶囊导航下面（用户 2026-11-06：顶部要和首屏融为一体）。
+   上移的距离 = 通知条 + 胶囊上方留白 + 胶囊高（桌面约 108px、手机约 100px），再用同样的内边距把内容推回原位。 */
+body:has(.yarn-cat-hero) .announcement-bar-section { position: relative; z-index: 4; }
+body:has(.yarn-cat-hero) .section-header { z-index: 4; }
+body:has(.yarn-cat-hero) .section-header:not(.shopify-section-header-sticky) { position: relative; }
+body:has(.yarn-cat-hero) .announcement-bar-section .utility-bar,
+body:has(.yarn-cat-hero) .section-header { background: transparent; }
+.yarn-cat-hero { --hero-under: 108px; margin-top: calc(-1 * var(--hero-under)); padding-top: var(--hero-under); }
+@media screen and (max-width: 749px) {
+  .yarn-cat-hero { --hero-under: 100px; }
+}

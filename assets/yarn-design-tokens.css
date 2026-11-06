@@ -52,14 +52,14 @@ html { font-synthesis-weight: none; }
   .yarn-footer .footer-block__heading, .yarn-guide__heading, .yarn-guide__title, .yarn-guide__starter-title,
   .header--project .yarn-project-nav-title, .yarn-nav-tile__name, .yarn-mega__title,
   .yarn-hero--connected .yarn-hero__heading, .yarn-home-catalog h2, .yarn-home-guide h2,
-  body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2,
+  body:has(:is(.hitoami-hero--catalog, .yarn-cat-hero)) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2,
   .yk-title, .yk-buy__head .yk-h2, .yk-tutorial .yk-h2,
   product-info.yarn-product-page.yarn-product-page--yarn .product__title h1, .yp-yarn-block__title,
   .yarn-project-discovery__heading h2, .yarn-work h3,
   .yp-detail--modes :is(h1, h2, h3), .yp-mode-option strong, .yp-shell :is(h1, h2, h3),
   .yp-component--yarn .yp-component__heading h4, .yd-search h2, .yd-search__bar h1,
   .yx-season__heading, .yx-season-page__heading, .yx-season-page__toc-num, .yx-season-page__num,
-  .yx-season-page__name, .yx-season-page__lead, .yarn-support-page .main-page-title, .header-wrapper .yarn-drawer-hello b
+  .yx-season-page__name, .yx-season-page__lead, .yarn-support-page .main-page-title, .header-wrapper .yarn-drawer-hello b, .yarn-cat-hero__heading
 ) {
   letter-spacing: -0.05em;
 }

@@ -2,7 +2,24 @@
   "sections": {
     "scroll-cat": {
       "type": "yarn-scroll-cat",
+      "disabled": true,
       "settings": {}
+    },
+    "cat-hero": {
+      "type": "yarn-cat-hero",
+      "disabled": true,
+      "settings": {
+        "heading": "ひと玉ずつ、\n選ぶ楽しみ。",
+        "heading_zh": "一团一团，\n慢慢挑。",
+        "heading_en": "Choose yarn,\none ball at a time.",
+        "lead": "一本の糸から、すべてがはじまる。",
+        "lead_zh": "一切，从一根线开始。",
+        "lead_en": "Everything begins with a single strand.",
+        "cta": "毛糸を見る",
+        "cta_zh": "浏览毛线",
+        "cta_en": "Browse yarn",
+        "link": "shopify://collections/yarn"
+      }
     },
     "hero": {
       "type": "hitoami-hero",
@@ -540,6 +557,7 @@
     }
   },
   "order": [
+    "cat-hero",
     "hero",
     "story",
     "yarn-entries",
