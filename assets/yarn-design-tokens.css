@@ -16,8 +16,9 @@
 
 :root {
   /* Fonts. Colors live in the generated block below. */
-  --yarn-display: 'Noto Serif JP', 'Noto Sans JP', serif;
-  --yarn-body: 'Noto Sans JP', sans-serif;
+  /* #326：日文换圆润方案——Kiwi Maru 标题（500）＋ Zen Maru Gothic 正文（只载 400 / 500；写 600 / 700 的强调落到 500，相当于 semi-bold）。 */
+  --yarn-display: 'Kiwi Maru', 'Zen Maru Gothic', serif;
+  --yarn-body: 'Zen Maru Gothic', sans-serif;
 }
 
 /* #168: serif headings (weight 500) + sans body and controls in all three languages, per the Figma prototype. */
@@ -36,6 +37,31 @@ html { font-synthesis-weight: none; }
 :root:lang(ja),
 :root:lang(ja) * {
   font-feature-settings: "palt";
+}
+
+/* #326：Kiwi Maru / Zen Maru Gothic 的 Google Fonts 版不带 palt，假名等宽排列；日文标题统一收紧 −0.05em（实测区块标题宽度与原 Noto + palt 一致）。
+   选择器 = 所有用标题字体的规则；:is() 取其中最高的优先级，盖过各组件为 Noto 调的字距。新增标题字体规则时同步加到这里。正文不调。 */
+:root:lang(ja) :is(
+  h1, h2, h3, h4, h5, .h0, .h1, .h2, .h3, .h4, .h5,
+  .cart-disclosure-modal__title, .hitoami-heading, .hitoami-story h2,
+  .yx-product-card__title, .yx-catalog-card .card__heading, .yx-content-card__title, .yx-exit__title,
+  .yx-picks__head h2, .yx-picks--guided .yx-picks__number, .yarn-cart-addons__title,
+  .ycb-head__title, .ycb-empty h2, .ycb-drawer__head h2,
+  .collection-hero__title, .yx-collection-preparing__title, .yp-library--rows .yp-card__title, .yarn-favorites-dialog h2,
+  .yarn-entries__heading, .yarn-entries__name, .yarn-fswitch__head h2, .yarn-fswitch__name,
+  .yarn-footer .footer-block__heading, .yarn-guide__heading, .yarn-guide__title, .yarn-guide__starter-title,
+  .header--project .yarn-project-nav-title, .yarn-nav-tile__name, .yarn-mega__title,
+  .yarn-hero--connected .yarn-hero__heading, .yarn-home-catalog h2, .yarn-home-guide h2,
+  body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2,
+  .yk-title, .yk-buy__head .yk-h2, .yk-tutorial .yk-h2,
+  product-info.yarn-product-page.yarn-product-page--yarn .product__title h1, .yp-yarn-block__title,
+  .yarn-project-discovery__heading h2, .yarn-work h3,
+  .yp-detail--modes :is(h1, h2, h3), .yp-mode-option strong, .yp-shell :is(h1, h2, h3),
+  .yp-component--yarn .yp-component__heading h4, .yd-search h2, .yd-search__bar h1,
+  .yx-season__heading, .yx-season-page__heading, .yx-season-page__toc-num, .yx-season-page__num,
+  .yx-season-page__name, .yx-season-page__lead, .yarn-support-page .main-page-title
+) {
+  letter-spacing: -0.05em;
 }
 html[lang]:root {
   --font-body-family: var(--yarn-body);
