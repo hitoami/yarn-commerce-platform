@@ -318,7 +318,9 @@
         "other": "{{ count }} prekės (-ių)",
         "few": "{{ count }} prekės (-ių)",
         "many": "{{ count }} prekės (-ių)"
-      }
+      },
+      "drawer_hello": "Welcome in",
+      "drawer_hello_note": "What yarn are you looking for today?"
     },
     "cart": {
       "title": "Jūsų krepšelis",

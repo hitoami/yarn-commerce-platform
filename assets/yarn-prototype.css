@@ -119,11 +119,22 @@ html {
   border-top: 0;
 }
 
+/* Issue 329：通知条去黄——页面底色上的一行小字，前面一个抹茶小圆点；不再是奶油黄色带。 */
 .announcement-bar-section .utility-bar {
-  min-height: 38px;
+  min-height: 34px;
   border: 0;
-  background: var(--yarn-action-subtle-bg);
-  color: var(--yarn-text-primary);
+  background: transparent;
+  color: var(--yarn-text-muted);
+}
+.announcement-bar__message::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--yarn-dot-sage);
+  vertical-align: 2px;
 }
 
 .announcement-bar__message {
@@ -135,7 +146,7 @@ html {
 }
 
 .header-wrapper {
-  border-bottom: 1px solid var(--yarn-border-subtle);
+  border-bottom: 0;
 }
 
 body:has(.yarn-hero) .announcement-bar-section {

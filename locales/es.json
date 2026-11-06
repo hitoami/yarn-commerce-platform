@@ -308,7 +308,9 @@
         "one": "{{ count }} artículo",
         "other": "{{ count }} artículos",
         "many": "{{ count }} artículos"
-      }
+      },
+      "drawer_hello": "Welcome in",
+      "drawer_hello_note": "What yarn are you looking for today?"
     },
     "cart": {
       "title": "Tu carrito",

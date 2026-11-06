@@ -318,7 +318,9 @@
         "other": "{{ count }} pozycje(-i)",
         "few": "{{ count }} pozycje(-i)",
         "many": "{{ count }} pozycje(-i)"
-      }
+      },
+      "drawer_hello": "Welcome in",
+      "drawer_hello_note": "What yarn are you looking for today?"
     },
     "cart": {
       "title": "Twój koszyk",

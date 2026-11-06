@@ -6,7 +6,9 @@
   最后一格「查看全部毛线」：用 all_image，未设时拼集合前四件商品主图。
   没有任何入口时不输出，导航按普通链接显示。
 
-  用法：{%- capture nav_tiles -%}{%- render 'yarn-nav-tiles', blocks: section.blocks, collection: collection, all_image: image -%}{%- endcapture -%}
+  #329：入口设了小猫插画（block.settings.illustration / all_illustration）时，这一格显示小猫和白 → 淡色渐变底，不显示照片。
+
+  用法：{%- capture nav_tiles -%}{%- render 'yarn-nav-tiles', blocks: section.blocks, collection: collection, all_image: image, all_illustration: name -%}{%- endcapture -%}
 {%- endcomment -%}
 {%- assign nt_count = 0 -%}
 {%- capture nt_entries -%}
@@ -49,12 +51,16 @@
 {%- if de_count > 0 -%}
 {%- assign nt_count = nt_count | plus: 1 -%}
 <li>
-  <a class="yarn-nav-tile" href="{{ collection.url }}?filter.p.m.{{ block.settings.field }}={{ de_gid | url_encode }}" {{ block.shopify_attributes }}>
+  <a class="yarn-nav-tile{% if block.settings.illustration != blank %} yarn-nav-tile--cat{% endif %}" href="{{ collection.url }}?filter.p.m.{{ block.settings.field }}={{ de_gid | url_encode }}" {{ block.shopify_attributes }}>
+    {%- if block.settings.illustration != blank -%}
+    <span class="yarn-nav-tile__cat"><img src="{{ block.settings.illustration | asset_url }}" width="160" height="156" loading="lazy" decoding="async" alt=""></span>
+    {%- else -%}
     <span class="yarn-nav-tile__photo">
       {%- if block.settings.image != blank -%}{{ block.settings.image | image_url: width: 400 | image_tag: widths: '200, 400', sizes: '160px', loading: 'lazy', alt: '' }}
       {%- elsif block.settings.source_photo != blank -%}<img src="{{ block.settings.source_photo | asset_url }}" width="166" height="166" loading="lazy" alt="">
       {%- elsif de_image != blank -%}{{ de_image | image_url: width: 400 | image_tag: widths: '200, 400', sizes: '160px', loading: 'lazy', alt: '' }}{%- endif -%}
     </span>
+    {%- endif -%}
     <span class="yarn-nav-tile__text">
       <span class="yarn-nav-tile__name">{{ de_entry.name.value | escape }}</span>
       <span class="yarn-nav-tile__count">{{ 'yarn_project.entry_count' | t: count: de_count }}</span>
@@ -67,8 +73,10 @@
 {%- if nt_count > 0 -%}
   {{ nt_entries }}
   <li>
-    <a class="yarn-nav-tile yarn-nav-tile--all" href="{{ collection.url }}">
-      {%- if all_image != blank -%}
+    <a class="yarn-nav-tile yarn-nav-tile--all{% if all_illustration != blank %} yarn-nav-tile--cat{% endif %}" href="{{ collection.url }}">
+      {%- if all_illustration != blank -%}
+        <span class="yarn-nav-tile__cat"><img src="{{ all_illustration | asset_url }}" width="160" height="156" loading="lazy" decoding="async" alt=""></span>
+      {%- elsif all_image != blank -%}
         <span class="yarn-nav-tile__photo">{{ all_image | image_url: width: 400 | image_tag: widths: '200, 400', sizes: '160px', loading: 'lazy', alt: '' }}</span>
       {%- else -%}
         {%- comment -%}未设图片时拼四件商品主图，避免与分类图块重复。{%- endcomment -%}

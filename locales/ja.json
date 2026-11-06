@@ -288,6 +288,8 @@
       "language_short": "日",
       "drawer_login_title": "ログイン / 新規登録",
       "drawer_login_note": "注文の確認や住所の保存ができます",
+      "drawer_hello": "いらっしゃいませ",
+      "drawer_hello_note": "今日はどんな毛糸を探しますか？",
       "drawer_welcome": "おかえりなさい",
       "drawer_welcome_note": "注文と住所を確認",
       "drawer_orders": "注文履歴",

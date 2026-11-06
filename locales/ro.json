@@ -308,7 +308,9 @@
         "one": "{{ count }} articol",
         "other": "{{ count }} articole",
         "few": "{{ count }} articole"
-      }
+      },
+      "drawer_hello": "Welcome in",
+      "drawer_hello_note": "What yarn are you looking for today?"
     },
     "cart": {
       "title": "Coșul dvs.",

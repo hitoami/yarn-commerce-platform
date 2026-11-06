@@ -288,6 +288,8 @@
       "language_short": "EN",
       "drawer_login_title": "Log in / Sign up",
       "drawer_login_note": "Check orders and save addresses",
+      "drawer_hello": "歡迎光臨",
+      "drawer_hello_note": "今天想找什麼樣的毛線？",
       "drawer_welcome": "Welcome back",
       "drawer_welcome_note": "Orders and addresses",
       "drawer_orders": "Orders",

@@ -298,7 +298,9 @@
       "cart_count": {
         "one": "{{ count }} артикул",
         "other": "{{ count }} артикула"
-      }
+      },
+      "drawer_hello": "Welcome in",
+      "drawer_hello_note": "What yarn are you looking for today?"
     },
     "cart": {
       "title": "Вашата количка",

@@ -59,7 +59,7 @@ html { font-synthesis-weight: none; }
   .yp-detail--modes :is(h1, h2, h3), .yp-mode-option strong, .yp-shell :is(h1, h2, h3),
   .yp-component--yarn .yp-component__heading h4, .yd-search h2, .yd-search__bar h1,
   .yx-season__heading, .yx-season-page__heading, .yx-season-page__toc-num, .yx-season-page__num,
-  .yx-season-page__name, .yx-season-page__lead, .yarn-support-page .main-page-title
+  .yx-season-page__name, .yx-season-page__lead, .yarn-support-page .main-page-title, .header-wrapper .yarn-drawer-hello b
 ) {
   letter-spacing: -0.05em;
 }
@@ -81,6 +81,7 @@ html[lang]:root {
   --yarn-bg-warm: #f8f7f4; /* paper-50 · 原暖米区块（配色方案 5）；#326 方案 C 起与页面底同色，去掉交替色带 */
   --yarn-bg-wash-sage: #ecf0e4; /* wash-sage-100 · #326 抹茶晨雾：区块竖向渐变的底端（从页面底渐变到它） */
   --yarn-bg-wash-mist: #eef1f3; /* wash-mist-100 · #326 抹茶晨雾：区块竖向渐变的底端（雾灰蓝，取自小猫线轴） */
+  --yarn-dot-sage: #a9b897; /* sage-500 · #329 装饰小圆点（通知条前），取自小猫的抹茶毛线；不得用于文字 */
   --yarn-bg-footer: #e6eadf; /* wash-sage-200 · #326 抹茶晨雾：页脚渐变底端 */
   --yarn-bg-band: #efeeea; /* paper-150 · 浅灰面板：毛线详情「要买几团？」估算面板 */
   --yarn-bg-inverse: #8f3c26; /* clay-700 · 深色反白区块 */

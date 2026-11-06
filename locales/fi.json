@@ -298,7 +298,9 @@
       "cart_count": {
         "one": "{{ count }} tuote",
         "other": "{{ count }} tuotetta"
-      }
+      },
+      "drawer_hello": "Welcome in",
+      "drawer_hello_note": "What yarn are you looking for today?"
     },
     "cart": {
       "title": "Ostoskorisi",

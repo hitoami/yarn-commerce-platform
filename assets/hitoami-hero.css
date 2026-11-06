@@ -86,3 +86,9 @@ body:has(#MainContent > .shopify-section:first-child hitoami-hero) .announcement
 @media (min-width: 1340px) {
   body:has(#MainContent > .shopify-section:first-child hitoami-hero) .section-header { margin-bottom: -84px; }
 }
+/* Issue 329：胶囊条本身全站共用（yarn-header.css）；首页只多两件事——胶囊叠在首屏大图上用磨砂底（见上），
+   首屏上移「胶囊高 + 上方留白」的距离：手机 68 + 10、平板 72 + 10、桌面 60 + 14。 */
+body:has(#MainContent > .shopify-section:first-child hitoami-hero) .header-wrapper::before { border-radius: inherit; }
+body:has(#MainContent > .shopify-section:first-child hitoami-hero) .section-header { margin-bottom: -78px; }
+@media (min-width: 600px) { body:has(#MainContent > .shopify-section:first-child hitoami-hero) .section-header { margin-bottom: -82px; } }
+@media (min-width: 990px) { body:has(#MainContent > .shopify-section:first-child hitoami-hero) .section-header { margin-bottom: -74px; } }
