@@ -1,6 +1,6 @@
 /* Project intent cards extend the homepage's paper, thread and butter roles. */
 .yp-detail--modes { width: 100%; max-width: calc(var(--yarn-content-max) + var(--yarn-gutter) * 2); padding: var(--yarn-space-6) var(--yarn-gutter) var(--yarn-space-7); color: var(--yarn-text-primary); }
-.yp-detail--modes :is(h1,h2,h3) { font-family: var(--yarn-display); color: var(--yarn-text-primary); }
+.yp-detail--modes :is(h1,h2,h3) { font-family: var(--yarn-display); color: var(--yarn-text-heading); }
 .yp-detail--modes h1 { font-size: clamp(2.7rem,5.9vw,4rem); line-height: 1.25; margin: var(--yarn-space-4) 0 var(--yarn-space-5); }
 .yp-detail--modes h2 { font-size: 2.2rem; line-height: 1.4; margin: 0 0 var(--yarn-space-3); }
 .yp-detail--modes h3 { font-size: 1.7rem; line-height: 1.5; margin: 0; }

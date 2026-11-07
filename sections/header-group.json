@@ -53,7 +53,9 @@
         "margin_bottom": 0,
         "padding_top": 16,
         "padding_bottom": 16,
-        "drawer_yarn_collection": "yarn"
+        "drawer_yarn_collection": "yarn",
+        "drawer_all_illustration": "hitoami-cat-knitting.webp",
+        "drawer_welcome_illustration": "hitoami-cat-basket.webp"
       },
       "blocks": {
         "entry-1": {
@@ -61,7 +63,8 @@
           "settings": {
             "field": "yarn.texture",
             "entry": "gradient",
-            "source_photo": "hitoami-source-texture-7.jpeg"
+            "source_photo": "hitoami-source-texture-7.jpeg",
+            "illustration": "hitoami-cat-lying.webp"
           }
         },
         "entry-2": {
@@ -69,7 +72,8 @@
           "settings": {
             "field": "yarn.texture",
             "entry": "fluffy",
-            "source_photo": "hitoami-source-texture-14.jpeg"
+            "source_photo": "hitoami-source-texture-14.jpeg",
+            "illustration": "hitoami-cat-curly.webp"
           }
         },
         "entry-3": {
@@ -77,7 +81,8 @@
           "settings": {
             "field": "yarn.texture",
             "entry": "loop-fancy",
-            "source_photo": "hitoami-source-texture-23.jpeg"
+            "source_photo": "hitoami-source-texture-23.jpeg",
+            "illustration": "hitoami-cat-beret.webp"
           }
         },
         "entry-4": {
@@ -85,7 +90,8 @@
           "settings": {
             "field": "yarn.texture",
             "entry": "fine-airy",
-            "source_photo": "hitoami-source-texture-8.jpeg"
+            "source_photo": "hitoami-source-texture-8.jpeg",
+            "illustration": "hitoami-cat-spools.webp"
           }
         },
         "entry-5": {
@@ -93,7 +99,8 @@
           "settings": {
             "field": "yarn.texture",
             "entry": "basic-solid",
-            "source_photo": "hitoami-source-texture-5.jpeg"
+            "source_photo": "hitoami-source-texture-5.jpeg",
+            "illustration": "hitoami-cat-basket.webp"
           }
         }
       },

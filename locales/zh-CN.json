@@ -288,6 +288,8 @@
       "language_short": "中",
       "drawer_login_title": "登录 / 注册",
       "drawer_login_note": "查看订单、保存收货地址",
+      "drawer_hello": "欢迎光临",
+      "drawer_hello_note": "今天想找什么样的毛线？",
       "drawer_welcome": "欢迎回来",
       "drawer_welcome_note": "查看订单和地址",
       "drawer_orders": "订单",

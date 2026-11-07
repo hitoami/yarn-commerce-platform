@@ -140,7 +140,9 @@ body:has(.hitoami-hero--catalog) .yarn-entries__flourish { display: none; } /* n
 /* Issue 265（用户 2026-10-30 准奏）：首页分区节奏——挑毛线、本季主推、常见问题为暖米整宽底，其余奶白；
    每块上下留白统一（手机 48、桌面 80），标题统一为「陶土小眉题 + 衬线标题」。 */
 body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-home-catalog), :has(.yx-picks)) { background: var(--yarn-bg-page); }
-body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.yarn-entries), :has(.yx-season), :has(.yarn-home-guide--faq)) { background: var(--yarn-bg-warm); }
+/* #326 抹茶晨雾（用户 2026-11-05 按小猫配色选定）：原暖米整宽底改为两头回到页面底、中间带色的竖向渐变（区块之间无接缝）；抹茶 / 雾蓝只做背景渐变，不做实心块——挑毛线、常见问题用雾灰蓝，本季主推用抹茶。 */
+body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.yarn-entries), :has(.yarn-home-guide--faq)) { background: linear-gradient(180deg, var(--yarn-bg-page) 0%, var(--yarn-bg-wash-mist) 50%, var(--yarn-bg-page) 100%); }
+body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:has(.yx-season) { background: linear-gradient(180deg, var(--yarn-bg-page) 0%, var(--yarn-bg-wash-sage) 50%, var(--yarn-bg-page) 100%); }
 body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-entries), :has(.yarn-home-catalog), :has(.yx-season), :has(.yx-picks), :has(.yarn-home-guide--faq)) { padding-block: 48px; }
 body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) { padding-block: 0; background: none; }
 body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2 { margin: 0; color: var(--yarn-text-heading); font: 500 24px/1.45 var(--yarn-display); letter-spacing: 0; }

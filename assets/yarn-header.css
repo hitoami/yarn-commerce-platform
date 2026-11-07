@@ -22,7 +22,7 @@
   overflow: hidden;
 }
 
-/* Issue 232（用户 2026-10-30 准奏）：手机 150、平板 190、桌面 230，与各端页头高度相称。 */
+/* Issue 232：手机 150、平板 190；桌面原为 230，Issue 329 胶囊条收紧后桌面改为 150（见文件末尾）。 */
 @media screen and (max-width: 749px) {
   .header-wrapper .header__heading-link > .yarn-wordmark { width: min(150px, calc(100vw - 232px)); }
 }
@@ -275,7 +275,7 @@
   .header-wrapper .header.header--project { grid-template-columns: 44px minmax(0,1fr) 132px; grid-template-areas: "left-icons heading icons"; column-gap: 0; padding: 6px var(--yarn-gutter); min-height: 56px; }
   .header--project > :is(header-drawer,.header__heading-link) { display: none; }
   .header--project .yarn-project-nav-back { display: flex; grid-area: left-icons; align-items: center; justify-content: center; width: var(--yarn-touch); height: var(--yarn-touch); color: var(--yarn-text-primary); font-size: 2.4rem; text-decoration: none; }
-  .header--project .yarn-project-nav-title { display: block; grid-area: heading; text-align: center; font-family: var(--yarn-display); font-size: 1.6rem; color: var(--yarn-text-primary); }
+  .header--project .yarn-project-nav-title { display: block; grid-area: heading; text-align: center; font-family: var(--yarn-display); font-size: 1.6rem; color: var(--yarn-text-heading); }
 }
 
 .yarn-project-nav-back svg { width: 24px; height: 24px; transform: rotate(180deg); }
@@ -334,6 +334,44 @@
 .yarn-nav-tile__text { display: flex; flex-direction: column; gap: 2px; padding-inline: 4px; }
 .yarn-nav-tile__name { font-family: var(--yarn-display); font-size: 1.5rem; line-height: 1.4; }
 .yarn-nav-tile__count { color: var(--yarn-text-muted); font-size: 1.2rem; }
+/* Issue 329：设了小猫的格子——左猫右字，白 → 淡色竖向渐变底（不用实心色块），淡色按格轮换 blush / sage / mist。 */
+.yarn-mega__tiles > li { --tile-tint: var(--yarn-bg-wash-sage); }
+.yarn-mega__tiles > li:nth-child(3n + 1) { --tile-tint: var(--yarn-tint-blush); }
+.yarn-mega__tiles > li:nth-child(3n) { --tile-tint: var(--yarn-bg-wash-mist); }
+.yarn-mega__tiles > li > .yarn-nav-tile.yarn-nav-tile--cat {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  min-height: 76px;
+  padding: 8px 14px 8px 8px;
+  border-radius: 16px;
+  /* 只在格子下半带一点淡色：淡色再和白混一半，避免糖果感。 */
+  background: linear-gradient(180deg, var(--yarn-bg-surface) 40%, color-mix(in srgb, var(--tile-tint) 55%, var(--yarn-bg-surface)) 100%);
+  box-shadow: inset 0 0 0 1px var(--yarn-border-subtle);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.yarn-mega__tiles > li > .yarn-nav-tile.yarn-nav-tile--cat:hover { box-shadow: inset 0 0 0 1px var(--yarn-border-card), 0 8px 18px -12px var(--yarn-shadow-soft); }
+.yarn-nav-tile--cat .yarn-nav-tile__text { flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; padding: 0; }
+.yarn-mega .yarn-nav-tile--cat .yarn-nav-tile__name { font: 500 1.5rem/1.4 var(--yarn-body); color: var(--yarn-text-heading); }
+.yarn-mega .yarn-nav-tile--cat .yarn-nav-tile__count { font-size: 1.2rem; }
+.yarn-nav-tile--cat:hover { transform: translateY(-2px); }
+.yarn-nav-tile__cat { flex: none; display: block; width: 60px; aspect-ratio: 1; }
+.yarn-nav-tile__cat img { display: block; width: 100%; height: 100%; object-fit: contain; }
+@media (prefers-reduced-motion: reduce) { .yarn-nav-tile--cat:hover { transform: none; } }
+/* Issue 329：手机抽屉顶部的小猫欢迎区，与下拉格子同一种白 → 抹茶渐变底。 */
+.header-wrapper .yarn-drawer-hello {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: var(--yarn-space-4);
+  padding: 8px 14px 8px 8px;
+  border-radius: var(--yarn-radius-panel);
+  background: linear-gradient(180deg, var(--yarn-bg-surface) 0%, var(--yarn-bg-wash-sage) 100%);
+}
+.header-wrapper .yarn-drawer-hello img { flex: none; width: 76px; height: auto; }
+.header-wrapper .yarn-drawer-hello p { display: flex; flex-direction: column; gap: 2px; margin: 0; color: var(--yarn-text-primary); line-height: 1.4; }
+.header-wrapper .yarn-drawer-hello b { color: var(--yarn-text-heading); font: 500 1.7rem/1.4 var(--yarn-display); }
+.header-wrapper .yarn-drawer-hello small { color: var(--yarn-text-muted); font-size: 1.3rem; }
 
 .header-wrapper .yarn-drawer-row {
   display: flex;
@@ -409,11 +447,17 @@
   .yarn-main-menu summary.header__menu-item .icon-caret { position: static; flex: 0 0 10px; width: 10px; height: 6px; transition: transform 0.2s ease; }
   .yarn-main-menu details[open] > .header__menu-item .icon-caret { transform: rotate(180deg); }
 
-  .yarn-mega__content {
-    padding: var(--yarn-space-6) var(--yarn-gutter) var(--yarn-space-7);
-    border-top: 1px solid var(--yarn-border-subtle);
+  /* Issue 329：下拉是离开页头 8px 的圆角白色浮层，宽度与首页胶囊对齐（最宽 1100），不再是贴边的整块方板。 */
+  .yarn-main-menu .mega-menu__content.yarn-mega__content {
+    width: min(calc(100vw - 48px), 1100px);
+    max-height: none;
+    overflow: visible;
+    margin: 8px auto 0;
+    padding: 18px 20px 20px;
+    border: 0;
+    border-radius: 24px;
     background: var(--yarn-bg-surface);
-    box-shadow: 0 12px 32px var(--yarn-shadow-soft);
+    box-shadow: 0 18px 44px -18px var(--yarn-shadow-soft), 0 2px 8px -4px var(--yarn-shadow-soft);
   }
   .yarn-mega[open]::before {
     content: '';
@@ -421,18 +465,20 @@
     inset: var(--header-bottom-position-desktop, 0) 0 0;
     z-index: -1;
     background: var(--yarn-overlay);
+    opacity: 0.45;
     pointer-events: none;
   }
   .yarn-mega__inner { max-width: var(--yarn-content-max); margin: 0 auto; }
-  .yarn-mega__head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--yarn-space-4); margin-bottom: var(--yarn-space-5); }
-  .yarn-mega__eyebrow { margin: 0 0 4px; color: var(--yarn-action); font-size: var(--yarn-type-meta); font-weight: 700; }
-  .yarn-mega__title { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 2.2rem; line-height: 1.4; }
-  .yarn-mega__all { color: var(--yarn-action); font-size: 1.5rem; text-decoration: none; white-space: nowrap; }
+  /* 标题区压成一行：去掉小眉题，标题 17px，右侧两个链接 13px。 */
+  .yarn-mega__head { display: flex; align-items: center; justify-content: space-between; gap: var(--yarn-space-4); margin: 0 4px 14px; }
+  .yarn-mega__eyebrow { display: none; }
+  .yarn-mega__title { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 1.7rem; line-height: 1.4; }
+  .yarn-mega__all { color: var(--yarn-action); font-size: 1.3rem; text-decoration: none; white-space: nowrap; }
   .yarn-mega__all:hover { text-decoration: underline; }
   .yarn-mega__links { display: flex; align-items: center; gap: var(--yarn-space-5); }
-  .yarn-mega__first { padding: 6px 14px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: 1.5rem; font-weight: 700; text-decoration: none; white-space: nowrap; }
+  .yarn-mega__first { padding: 4px 12px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: 1.3rem; font-weight: 500; text-decoration: none; white-space: nowrap; }
   .yarn-mega__first:hover { text-decoration: underline; }
-  .yarn-mega__tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 24px; margin: 0; padding: 0; }
+  .yarn-mega__tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 12px; margin: 0; padding: 0; }
   .yarn-mega .yarn-nav-tile { flex-direction: row; align-items: center; gap: 20px; min-height: 128px; padding: 16px; }
   .yarn-mega .yarn-nav-tile:hover { box-shadow: inset 0 0 0 1px var(--yarn-border-card); }
   .yarn-mega .yarn-nav-tile__photo { flex: 0 0 96px; width: 96px; margin: 0; aspect-ratio: 1; }
@@ -632,3 +678,30 @@
 .header-wrapper .yarn-drawer-language b { font-weight: 600; }
 .header-wrapper .yarn-drawer-language > .yarn-drawer-row__arrow { margin-left: auto; }
 .js .header-wrapper .yarn-drawer-language .icon-caret { display: block; width: 14px; height: 14px; margin: auto; }
+
+/* Issue 329（用户 2026-11-05 选定并要求全站统一）：所有页面的页头都是离开页面边缘悬浮的胶囊条，吸顶后仍是胶囊。
+   手机左右留 12px、顶部 10px；≥990px 收紧为高 60、最宽 1100 居中、顶部 14px，Logo 150、菜单 15px / 500、图标按钮 40。
+   首页叠在首屏大图上的磨砂底与首屏上移距离在 hitoami-hero.css。 */
+.section-header .header-wrapper {
+  width: min(calc(100% - 24px), 1360px);
+  margin: 10px auto 0;
+  border: 0;
+  border-radius: var(--yarn-radius-pill);
+  background: var(--yarn-bg-surface);
+  box-shadow: 0 10px 28px -14px var(--yarn-shadow-soft);
+}
+/* 里层页头透明，圆角由外层胶囊画；不裁切外层，下拉浮层才能伸出胶囊。 */
+.section-header #YarnHeader { padding-inline: 12px; background: transparent; }
+/* 手机胶囊左右各让出 12px，Logo 再收窄，免得压到语言按钮。 */
+@media screen and (max-width: 749px) {
+  .section-header .header__heading-link > .yarn-wordmark { width: min(124px, calc(100vw - 266px)); }
+}
+@media screen and (min-width: 990px) {
+  .section-header .header-wrapper { width: min(calc(100% - 48px), 1100px); margin-top: 14px; }
+  .section-header #YarnHeader { min-height: 60px; padding: 0 12px 0 24px; }
+  .section-header .header__heading-link > .yarn-wordmark { width: 150px; }
+  .section-header .yarn-main-menu .header__menu-item { font-size: 1.5rem; font-weight: 500; }
+  .section-header .header-wrapper .header__icon { width: 40px; height: 40px; }
+  .section-header.yarn-header-docked .header-wrapper { margin-top: 10px; }
+  .section-header.yarn-header-docked #YarnHeader { min-height: 56px; padding-block: 0; }
+}

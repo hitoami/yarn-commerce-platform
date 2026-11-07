@@ -318,7 +318,9 @@
         "other": "Элементов: {{ count }}",
         "few": "Элементов: {{ count }}",
         "many": "Элементов: {{ count }}"
-      }
+      },
+      "drawer_hello": "Welcome in",
+      "drawer_hello_note": "What yarn are you looking for today?"
     },
     "cart": {
       "title": "Корзина",

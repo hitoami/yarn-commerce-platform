@@ -318,7 +318,9 @@
         "other": "Počet položiek: {{ count }}",
         "few": "Počet položiek: {{ count }}",
         "many": "Počet položiek: {{ count }}"
-      }
+      },
+      "drawer_hello": "Welcome in",
+      "drawer_hello_note": "What yarn are you looking for today?"
     },
     "cart": {
       "title": "Váš košík",

@@ -6,20 +6,24 @@ colors:
   home-thread: "#8c8880"
   home-rope: "#b8b1a4"
   home-logo: "#ab5631"
-  bg-page: "#f9f6f0"
-  bg-surface: "#fffefa"
-  bg-sunken: "#ebe5dc"
-  bg-warm: "#ece8dc"
-  bg-band: "#f5f1e8"
+  bg-page: "#f8f7f4"
+  bg-surface: "#ffffff"
+  bg-sunken: "#efeeea"
+  bg-warm: "#f8f7f4"
+  bg-wash-sage: "#ecf0e4"
+  bg-wash-mist: "#eef1f3"
+  dot-sage: "#a9b897"
+  bg-footer: "#e6eadf"
+  bg-band: "#efeeea"
   bg-inverse: "#8f3c26"
-  text-primary: "#2f302f"
-  text-heading: "#13202d"
+  text-primary: "#4a3426"
+  text-heading: "#573d2c"
   text-warm: "#3d3931"
   text-secondary: "#4a4b48"
   text-muted: "#686762"
   text-disabled: "#8c8880"
-  text-inverse: "#fffefa"
-  text-on-action: "#fffefa"
+  text-inverse: "#ffffff"
+  text-on-action: "#ffffff"
   text-on-cta: "#292a28"
   action: "#a6472e"
   accent: "#ab5631"
@@ -29,8 +33,8 @@ colors:
   cta-bg: "#f8e5a9"
   cta-hover: "#f6dfa0"
   cta-border: "#efd68d"
-  border-subtle: "#e4dfd7"
-  border-card: "#dedbd5"
+  border-subtle: "#e6e4df"
+  border-card: "#e3e1dc"
   border-control: "#686762"
   border-disabled: "#d3cfc7"
   tint-butter: "#f8e5a9"
@@ -96,12 +100,12 @@ typography:
   commerce-hero-max:
     fontSize: "56px"
   shared-section:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "clamp(2.5rem, 2.5vw, 3.2rem)"
     fontWeight: 500
     lineHeight: 1.4
   discovery-card-title:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "1.8rem"
     fontWeight: 500
     lineHeight: 1.5
@@ -120,42 +124,42 @@ typography:
   shell-input:
     fontSize: "16px"
   display:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "clamp(3.4rem, 4.75vw, 5.4rem)"
     fontWeight: 500
     lineHeight: 1.32
-    letterSpacing: "0"
+    letterSpacing: "-0.05em"
   display-mobile:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "2.6rem"
     fontWeight: 500
     lineHeight: 1.35
-    letterSpacing: "0"
+    letterSpacing: "-0.05em"
   headline-discovery:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "clamp(2.4rem, 3.7vw, 3.2rem)"
     fontWeight: 500
     lineHeight: 1.3
-    letterSpacing: "-0.01em"
+    letterSpacing: "-0.05em"
   title-work:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "1.65rem"
     fontWeight: 500
     lineHeight: 1.45
-    letterSpacing: "-0.01em"
+    letterSpacing: "-0.05em"
   title-project-mobile:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "1.9rem"
     fontWeight: 500
     lineHeight: 1.3
-    letterSpacing: "0"
+    letterSpacing: "-0.05em"
   project-yarn-title:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "2.1rem"
     fontWeight: 500
     lineHeight: 1.35
   project-yarn-title-mobile:
-    fontFamily: "'Noto Serif JP', 'Noto Sans JP', serif"
+    fontFamily: "'Kiwi Maru', 'Zen Maru Gothic', serif"
     fontSize: "1.75rem"
     fontWeight: 500
     lineHeight: 1.35
@@ -175,7 +179,7 @@ typography:
     lineHeight: 1.65
     letterSpacing: "0"
   label-flow:
-    fontFamily: "'Noto Sans JP', sans-serif"
+    fontFamily: "'Zen Maru Gothic', sans-serif"
     fontSize: "1.6rem"
     fontWeight: 400
     lineHeight: 1.45
@@ -327,7 +331,7 @@ components:
 
 ## Creative North Star:编织图解图谱
 
-暖白纸面承接真实织物照片,柔色面区分内容角色,炭黑文字给出阅读重心;手作插画、细线图标与线团花枝保留温度,文字与操作保持克制。深度靠浅面差和细线,不靠重阴影。
+近中性的暖白纸面承接真实织物照片（#326 方案 C：背景去黄、去掉暖米交替色带，暖感只留给照片、陶土与奶油黄；其后改为「抹茶晨雾」：首页挑毛线 / 常见问题区块中段带雾灰蓝 `bg-wash-mist`、本季主推中段带抹茶 `bg-wash-sage`，上下两端都回到页面底，区块之间不出现分块接缝；页脚从页面底渐变到抹茶、去掉顶部分隔线，取色自小猫插画；抹茶 / 雾蓝只做背景渐变不做实心块，陶土按钮与价格只放在白或近白底上）,浅面区分内容角色,深褐文字给出阅读重心（#326：正文深褐 `text-primary`、标题栗褐 `text-heading`，比正文浅一级）;手作插画、细线图标与线团花枝保留温度,文字与操作保持克制。深度靠浅面差和细线,不靠重阴影。
 
 ## Colors
 
@@ -356,13 +360,13 @@ components:
 - `npm run verify` 检查：生成物与源一致、token 文件外无颜色字面量、`--yarn-*` 引用均有定义、`contrast.pairs` 声明的文字/背景搭配达标（正文 4.5、大字与控件 3）、无未使用角色、基础色板无未登记近似色（ΔE < 5）、本文 components 只引用角色。
 - 颜色只表达分类、选中和动作层级，不构成价格、热度、难度或库存的事实证明。禁止把参照站（Woobles 青绿等）的品牌色带进来。
 
-**待选色（P3，需用户决定）**：`text-heading`（藏青黑，商品家族标题）与 `text-primary` 二选一；`accent` 与 `action` 合并或拉开层级；`border-card` 并入 `border-subtle`；`text-on-cta` / `text-warm` 并入 `text-primary`；`bg-warm` 与配色方案 5 的去留；`selected-text` 是否并入 `action`；`colors.json` 的 `nearDuplicates.allow` 列出其余 23 对近似色。选色只改基础色板与角色映射，页面无需改动。
+**待选色（P3，需用户决定）**：`accent` 与 `action` 合并或拉开层级；`border-card` 并入 `border-subtle`；`text-on-cta` / `text-warm` 并入 `text-primary`；`bg-warm` 与配色方案 5 的去留；`selected-text` 是否并入 `action`；`colors.json` 的 `nearDuplicates.allow` 列出其余 23 对近似色。选色只改基础色板与角色映射，页面无需改动。
 
 **Shopify 配色方案**（Rise 原生组件与可选配色的 section 使用）：scheme-1 默认页面 / scheme-2 暖砂次级 / scheme-3 深色反白 / scheme-4 柔和奶油 / scheme-5 暖米，均由角色生成；主题编辑器中改色值会在下次 `npm run tokens` 被覆盖，发布前应拉取线上主题比对。
 
 ## Typography
 
-- **字体（#168，2026-10-17 用户按 Figma 三语对比板确认，取代方案 G）**：标题统一用宋体 / 明朝 / 衬线，字重 500——中文 Noto Serif SC、日文 Noto Serif JP、英文 Source Serif 4。正文、导航、按钮、标签与小序号用无衬线——中文 Noto Sans SC、日文 Noto Sans JP、英文 Figtree（日文回退 Noto Sans JP）。日文页整页开启 `palt`（假名与标点紧排）。`--yarn-display` / `--yarn-body` 按 `:lang()` 切换，并覆盖 Rise 的 `--font-heading-family` / `--font-body-family` / `--font-heading-weight`；控件直接用 `--yarn-body`，不再用 `--yarn-display`。字体暂由 Google Fonts 按语言加载（衬线只载 500），正式托管方式待定。衬线文字只写 500；全站 `font-synthesis-weight: none`，写成 600 / 700 也不会被浏览器伪加粗（#311：线上首页标题曾用 600，被伪加粗后发硬发糊）。
+- **字体（#168，2026-10-17 用户按 Figma 三语对比板确认，取代方案 G；日文部分由 #326 于 2026-11-05 用户在对照页确认改为圆润方案）**：标题统一用衬线骨架，字重 500——中文 Noto Serif SC、日文 Kiwi Maru（圆润明朝）、英文 Source Serif 4。正文、导航、按钮、标签与小序号用无衬线——中文 Noto Sans SC、日文 Zen Maru Gothic（圆黑体，只载 400 / 500：该字体没有 600，用户嫌 700 太粗，写 600 / 700 的强调都落到 500）、英文 Figtree（日文回退 Noto Sans JP）。日文页整页开启 `palt`，但 Kiwi Maru / Zen Maru Gothic 的 Google Fonts 版不带该特性、假名等宽，所以日文标题统一 `letter-spacing: -0.05em`（集中写在 `yarn-design-tokens.css`，新增标题字体规则须同步加入该选择器列表），正文不调。`--yarn-display` / `--yarn-body` 按 `:lang()` 切换，并覆盖 Rise 的 `--font-heading-family` / `--font-body-family` / `--font-heading-weight`；控件直接用 `--yarn-body`，不再用 `--yarn-display`。字体暂由 Google Fonts 按语言加载（衬线只载 500），正式托管方式待定。衬线文字只写 500；全站 `font-synthesis-weight: none`，写成 600 / 700 也不会被浏览器伪加粗（#311：线上首页标题曾用 600，被伪加粗后发硬发糊）。
 - 商品家族采用显式 px 尺寸，避免旧根字号放大构图：卡片标题 16px、规格 14px、价格 21px、角标 12px；目录标题桌面 40px / 手机 28px，商品标题 36px / 26px，阅读正文 16px。Hero 按容器流式，日英手机扩展画布保留按钮净空。前言 `commerce-*` 为该家族已实现的局部字号，不用于覆盖其他页面。
 - 说明页（#86）的阅读标题桌面 36px、手机 28–36px；字段和值桌面 16px、手机 15px。它们是该页面已实现的局部字号，不扩成全站令牌；构图与内容来源见 [说明页 brief](docs/design/approved/86-policy-support.md)。
 - 新增文案必须检查三语断行与字体回退;菜单、集合描述等运营文案的原文与译文只维护在 Shopify(Navigation / Translate & Adapt),不在 Liquid 写死。
@@ -383,7 +387,7 @@ components:
 
 ## Components(现行规则)
 
-- **导航**(#131,2026-10-16 手机与桌面稿确认):暖白底细线;菜单项来自 Shopify Navigation(本季主推 / 毛线 / 材料包 / 手工成品)。桌面(≥1340px)文字下方是一段带卷尾的合股毛线(Logo 色 3px 圆头、斜向股纹,#190 借鉴 Woobles):悬停、键盘焦点或展开时从卷尾向右划出(约 0.5s),移开时更快收回;当前页静态保留,指向或展开其他项时让位,同一时刻只有一项被标出,不用胶囊。下拉面板打开时从页头下方向下展开并淡入,大图分两排依次落定,遮罩淡入;Logo 图上方是猫耳,整体上移(桌面 20%、手机 14% 图高)让字母与菜单文字对齐;「毛线」点开为 3×2 大图面板(5 个 `yarn_entry` 分类 + 全部毛线,浅色底轮换 blush / butter / sage / sunken / band / action-subtle,下方页面加 `--yarn-overlay` 遮罩)。手机页头左菜单+搜索、中 Logo、右语言按钮+购物车(#258,用户 2026-10-30 准奏原型第 2 版:账户图标移进抽屉)。语言按钮各宽度同一个:地球图标+当前语言简写(日/中/EN,桌面另显示语言名),点开手机为底部面板、平板与桌面为按钮下方浮层,三行语言、当前语言打勾,点选打开同一页的对应语言。抽屉依次为账户卡(未登录:登录/注册;已登录:订单、收货地址)、四个常用圆钮(收藏、订单、配送退换、联系我们)、「逛店」文字行(本季主推不再用带图横条;毛线行直接进毛线目录并显示款数,分类大图面板只在桌面(#299))、语言行(打开同一个语言面板)。没有商品的集合入口旁标「准备中」浅黄胶囊。所有页面 Logo 统一 190px 宽(手机按宽度收窄),页头高度一致;首页页头叠在首屏上时用 80% 暖白磨砂底保证可读。桌面滚过页头后页头从顶部弹性落下并吸顶,收紧为 64px 磨砂条(不加滚动进度装饰,2026-10-17 用户决定);回到顶部还原;遵守减少动态效果设置。44px 触控、24px 图标。
+- **导航**(#131,2026-10-16 手机与桌面稿确认):暖白底细线;菜单项来自 Shopify Navigation(本季主推 / 毛线 / 材料包 / 手工成品)。桌面(≥1340px)文字下方是一段带卷尾的合股毛线(Logo 色 3px 圆头、斜向股纹,#190 借鉴 Woobles):悬停、键盘焦点或展开时从卷尾向右划出(约 0.5s),移开时更快收回;当前页静态保留,指向或展开其他项时让位,同一时刻只有一项被标出,不用胶囊。下拉面板打开时从页头下方向下展开并淡入,大图分两排依次落定,遮罩淡入;Logo 图上方是猫耳,整体上移(桌面 20%、手机 14% 图高)让字母与菜单文字对齐;「毛线」点开为 3×2 面板(5 个 `yarn_entry` 分类 + 全部毛线,下方页面加 `--yarn-overlay` 遮罩);#329(2026-11-05 用户在导航对照页选定)起每格配一只小猫插画(页头设置逐格选猫,素材 `assets/hitoami-cat-*.webp`,来源见同名 `.source.json`),左猫右字,底色为白 → 淡色竖向渐变(blush / 抹茶 / 雾蓝轮换,淡色只在格子下半、再与白各半混合),不再用实心色块;猫只在展开后出现,不放进页头本身。下拉面板为离开页头 8px 的白色浮层:最宽 1100px 居中、24px 圆角、柔和阴影,标题区压成一行(去眉题,标题 17px、链接 13px),格子高 76px、猫 60px、名称 15px / 500 圆体并在后面跟款数;下方遮罩减到 45% 不透明度。手机页头左菜单+搜索、中 Logo、右语言按钮+购物车(#258,用户 2026-10-30 准奏原型第 2 版:账户图标移进抽屉)。语言按钮各宽度同一个:地球图标+当前语言简写(日/中/EN,桌面另显示语言名),点开手机为底部面板、平板与桌面为按钮下方浮层,三行语言、当前语言打勾,点选打开同一页的对应语言。抽屉最上方是一只小猫的欢迎区(#329,白 → 抹茶渐变底,「いらっしゃいませ」等三语欢迎语),其后依次为账户卡(未登录:登录/注册;已登录:订单、收货地址)、四个常用圆钮(收藏、订单、配送退换、联系我们)、「逛店」文字行(本季主推不再用带图横条;毛线行直接进毛线目录并显示款数,分类大图面板只在桌面(#299))、语言行(打开同一个语言面板)。没有商品的集合入口旁标「准备中」浅黄胶囊。页头高度与 Logo 尺寸全站一致;所有页面的页头都是离开页面边缘悬浮的白色胶囊条(#329,2026-11-05 用户要求全站统一:手机左右各留 12px、顶部 10px,Logo 124px;≥990px 收紧为高 60px、最宽 1100px 居中、顶部 14px,Logo 150px、菜单 15px / 500、图标按钮 40px;圆角为胶囊,带极淡阴影,不画底线),吸顶后仍保持胶囊;首页胶囊叠在首屏大图上时改用 80% 磨砂底。通知条(首页隐藏)不再是奶油黄色带,而是页面底色上的一行 muted 小字,前面一个 `dot-sage` 抹茶小圆点。桌面滚过页头后页头从顶部弹性落下并吸顶,收紧为 64px 磨砂条(不加滚动进度装饰,2026-10-17 用户决定);回到顶部还原;遵守减少动态效果设置。44px 触控、24px 图标。
 - **首页**（#131；#180 合并新手指引）：首屏轮播 → 品牌介绍 → 挑毛线分类 → 毛线商品区 → 本季主推 → 用我们的毛线可以织（含新手三步）→ 手工成品 → 常见问题 → 页脚；滚动进度小猫只在桌面显示。独立新手指引、旧导览条、新手友好编织包与帮助条在首页停用。每块是独立 section,没有真实数据的模块整块不渲染。区块节奏(#131 统一):页面底为暖纸色 `bg-page`,商品 / 材料包 / 成品区不另铺底色,只有「挑毛线」`bg-band` 色带与本季主推奶油卡作分区;区块上下间距桌面 72px、手机 40px;区块标题用标题衬线字体 500,桌面 32px、手机 24px(本季主推同规格);首页各区块都不加红字眉题(#311 / #317,眉题与标题重复),「查看全部 →」为 `action` 色 15px 粗体文字链(悬停下划线)。内容轴 1200px。
 - **本季主推专题页**(#131 版式;#181 手机,2026-10-17 用户确认 Figma「02 本季主推专题 · 手机重设计 · 390」):每款 3 张成品图 + 毛线名、引言、介绍 + 横排商品卡(整卡进商品页,不直接加购)。手机封面满屏、目录为竖排列表(28px 圆图 + 编号 + 名称 + ↓);成品图满屏宽 260px 高,大图约 60% 宽、小图 2 张上下叠,间距 3px、无圆角,大图逐款左右交替,大图右下角半透明「放大 · 1/3」提示;文字与商品卡保留 16px 边距,偶数款铺 `bg-band`。桌面维持 1 大 2 小 680:520 与图文左右交替。每张成品图可点开全屏看大图:`text-heading` 深色底、图片完整显示,顶部张数与关闭,左右滑动 / ‹ ›(仅有鼠标时显示)/ 方向键 / 缩略图切换,✕、Esc、下滑或点空白处关闭,关闭后焦点回到原图。
   - **挑毛线**:`bg-band` 色带;标题(手机 24 / 桌面 30px)+ 花饰图;按商品字段分段的胶囊切换(白底,选中 `home-action`);方卡 1:1、10px 圆角,名称 16 / 18px 中粗、说明 12 / 14px(未填说明时显示款数);一段超过 4 个(手机)/ 6 个(桌面)排两行,横向滑动,手机露出下一列并在下方写「共 N 类 · 左右滑动查看更多」,桌面左侧「共 N 类」、右侧圆形翻页箭头;底部 `bg-sunken` 次级按钮「查看全部毛线」。
@@ -392,7 +396,7 @@ components:
   - **首页作品卡三步指引**（#311，2026-10-31 用户选定 [Figma 手机方案 F](https://www.figma.com/design/xBdWJgV7u4hO50MpcLcfB2?node-id=26-87)，替换 #180 方案 C）：「用我们的毛线可以织」标题下是一块 `bg-band` 平铺色带（`radius-panel`，无边框、不可点），三列各写 `action` 色编号 01 / 02 / 03、步骤名和一句说明；三语 Section setting 可逐项留空隐藏。编号只在色带里出现：作品卡不再带编号，也不写「教程在 LINE」，只留照片 + 「材料包」标签、作品名、「毛线名 × N 团」（去掉商品名的【】前缀与｜后规格）和参考价；缺货时仍显示库存状态行。手机卡宽 220px、间距 12px、照片 220:250，横滑；桌面按同日批准的 [Figma 桌面 1440 · 方案 F](https://www.figma.com/design/xBdWJgV7u4hO50MpcLcfB2?node-id=31-2)：色带内三步横排，左侧 28px 衬线编号、右侧步骤名与说明，步间 `action` 色箭头（装饰）；作品四列、24px 间距、照片 282:350。
   - **帮助条**:`action-subtle-bg` 浅黄面、`cta-border` 细线、16px 圆角,不放图标;手机为标题 + 文字链接,桌面为标题 + 说明 + `home-action` 实心按钮。
 - **商品详情**:Shopify 图库、Variant、数量、加购与动态购买保留原生行为；陶土加购为主（A1，#177），动态购买描边为次。购买下方显示真实互链出口。Kit 六段描述在商品双栏下方顺读；手机内容物完整明细在内容物图前，关于与规格以正文阅读为主，保留全部 FAQ。成品描述在「尺寸与材质」独立区域渲染，不补造未录入的规格。当前边界见[商品详情 surface brief](docs/design/product-detail-surface.md)。
-- **毛线详情**(#120 手机；桌面以 #182 桌面 v2 为准):主图 1:1 完整显示、一行 4 张缩略图（无放大镜与箭头）、右上收藏；毛线角标 → 24px 中粗炭黑标题 → `home-action` 21px 价格（不带货币代码）与「/ 团」→ 说明 → 「颜色：奶油白」图例（标签为 muted）与 44px 圆形色块（有原生色板时）或编号圆钮（选中均为 2px `home-action` 环）。加入按钮、估算选中项与价格用 `home-action`（A1 起为陶土），不用奶油黄。只有默认 Variant 时颜色位显示「颜色 · 暂未开放选色」灰底标签与 `bg-band` 说明面板（询问入口读主题设置「官方 LINE 链接」，留空为联系页）；已定价但缺货时显示「这款线暂时缺货」面板：询问到货描边按钮 + 「看同类的其他毛线」（按第一个 yarn.texture 筛选毛线集合）（#177）。下方依次为两列规格细线表（成分、重量 / 长度、粗细、密度、推荐棒针、推荐钩针）、`bg-band` 圆角「要买几团？」面板、作品卡、编织包卡（价格为 `home-action`）、洗涤行（按内容配洗涤 / 禁止 / 勾 / 熨斗图标），没有数据的块不渲染（无编织包配对时不显示入口）。手机不显示页内数量 / 加购 / 立即购买，底部常驻购买栏（色号、数量、加入 · 合计）始终显示，只驱动原生表单（#122）。
+- **毛线详情**(#120 手机；桌面以 #182 桌面 v2 为准):主图 1:1 完整显示、一行 4 张缩略图（无放大镜与箭头）、右上收藏；毛线角标 → 24px 中粗栗褐标题 → `home-action` 21px 价格（不带货币代码）与「/ 团」→ 说明 → 「颜色：奶油白」图例（标签为 muted）与 44px 圆形色块（有原生色板时）或编号圆钮（选中均为 2px `home-action` 环）。加入按钮、估算选中项与价格用 `home-action`（A1 起为陶土），不用奶油黄。只有默认 Variant 时颜色位显示「颜色 · 暂未开放选色」灰底标签与 `bg-band` 说明面板（询问入口读主题设置「官方 LINE 链接」，留空为联系页）；已定价但缺货时显示「这款线暂时缺货」面板：询问到货描边按钮 + 「看同类的其他毛线」（按第一个 yarn.texture 筛选毛线集合）（#177）。下方依次为两列规格细线表（成分、重量 / 长度、粗细、密度、推荐棒针、推荐钩针）、`bg-band` 圆角「要买几团？」面板、作品卡、编织包卡（价格为 `home-action`）、洗涤行（按内容配洗涤 / 禁止 / 勾 / 熨斗图标），没有数据的块不渲染（无编织包配对时不显示入口）。手机不显示页内数量 / 加购 / 立即购买，底部常驻购买栏（色号、数量、加入 · 合计）始终显示，只驱动原生表单（#122）。
   - **手机 v2**(#182,借鉴 Woobles,取代上文手机的缩略图行、价格位置与规格表排法):图库横滑并露出下一张,不显示缩略图行;标签与标题在左、价格在右;标题下 ✓ 清单(克重 · 成分 / 可以织:引用本线的材料包 / 参考团数 / 只有默认 Variant 时「暂未开放选色」+ 询问入口,只渲染有数据的行)与 `action-subtle-bg` 保障条(免运费门槛 / 选线咨询 / 全国配送);「用这款线能织」提前为横向卡;关于这款线(商品介绍,手机从首屏移入)、线的规格、要买几团、新手能用吗(`yarn.beginner_reason`)、怎么洗收为带奶油圆底插画图标的折叠行,首行展开;商品页「购买须知」行首图标换成对应插画;常驻栏前加商品缩略图。
   - **桌面 v2**(#182 D1,用户 2026-10-17 确认):左图库(1:1 + 缩略图行)/ 右栏依次为标签与标题 + 右侧价格 → ✓ 清单 → 数量与「添加到购物车」同一行(不显示动态结账、库存行与购物说明文字行)→ 三格插画保障(免运费 + 全国配送 / 选线咨询 / 退换:7 日内联系)→ 横向作品卡 → 插画折叠行。商品页「购买须知」改为 main-product 的 `collapsible_tab` block(三语设置 `heading_zh/_en`、`content_zh/_en`),毛线页并入同一折叠行列表末尾(手机同),页面下方只留相关商品。
 - **作品内容页**:保留 Metaobject 标题、摘要、封面、准备与教程；缺少站内教程正文时，可呈现已关联 Kit 的既有介绍和开始步骤，再提供来源入口。商品关系只来自已存关系；不复制购买表单，不把外部商品页标为直接教程。
@@ -415,7 +419,7 @@ components:
 
 ## Do / Don't
 
-**Do**:延续暖纸+细线+炭黑的世界;新增文案查三语断行与手机可读;运营内容一律映射到 Shopify 可编辑层;每轮实现后把规范变化蒸馏回本文。
+**Do**:延续暖纸+细线+深褐文字的世界;新增文案查三语断行与手机可读;运营内容一律映射到 Shopify 可编辑层;每轮实现后把规范变化蒸馏回本文。
 
 **Don't**:不虚构评价、销量、折扣或品牌证明;不把参照站配色、构图稿小字或生成素材当真值;不以参照站样式替换当前批准的三节点首页与商品卡片家族;不把局部字号、比例升级成全站令牌;不把本文当作发布、授权或验收凭据。
 

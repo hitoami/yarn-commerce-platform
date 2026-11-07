@@ -318,7 +318,9 @@
         "other": "Št. elementov: {{ count }}",
         "few": "Št. elementov: {{ count }}",
         "two": "Št. elementov: {{ count }}"
-      }
+      },
+      "drawer_hello": "Welcome in",
+      "drawer_hello_note": "What yarn are you looking for today?"
     },
     "cart": {
       "title": "Vaša košarica",
