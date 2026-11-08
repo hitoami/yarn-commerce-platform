@@ -96,8 +96,8 @@ test('one language switch serves header and drawer, opening the same page in eac
   assert.match(sw, /hreflang="\{\{ language\.iso_code \}\}"/);
   assert.match(sw, /aria-current="true"/);
   assert.match(sw, /'sections\.header\.language_short' \| t/);
-  // 抽屉里的语言是一行按钮，打开页头同一个面板，不再并排放语言胶囊。
-  assert.match(drawer, /data-lang-open aria-controls="YarnLang"/);
+  // #337：抽屉不再重复语言行，语言只用页头始终可见的同一个按钮；抽屉里也不放语言胶囊。
+  assert.doesNotMatch(drawer, /data-lang-open/);
   assert.doesNotMatch(drawer, /for language in localization\.available_languages/);
   assert.match(headerCss, /\.header-wrapper \.header__icon--account \{ display: none; \}/);
   assert.match(headerCss, /\.yarn-lang__option\[aria-current='true'\]/);
@@ -147,7 +147,9 @@ test('desktop yarn strand draws on hover / focus / open; the current page yields
   assert.match(headerCss, /details\[open\] > :is\(\.yarn-mega__content, \.header__submenu\) \{\s*animation: yarn-menu-unroll/);
   assert.match(headerCss, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*\.yarn-nav-strand path \{ transition: none !important; \}/);
   assert.match(headerCss, /\.yarn-main-menu details\[open\]:hover > \.header__menu-item,[\s\S]*?\{ text-decoration: none; \}/);
-  assert.match(headerCss, /transform: translateY\(-14%\);/, 'logo lifted so letters align with the menu');
+  // Issue 337: the logo sits vertically centred in the capsule; the old Issue 131 lift pushed the cat ears to the edge.
+  assert.doesNotMatch(headerCss, /yarn-wordmark[^}]*translateY/, 'logo is not lifted inside the capsule');
+  assert.match(headerCss, /\.header-wrapper \.header__heading-link \{[^}]*display: inline-flex;\s*align-items: center;/);
 });
 
 test('open language sheet lifts the sticky header above page bottom bars (Issue 305)', () => {

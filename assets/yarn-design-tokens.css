@@ -59,7 +59,7 @@ html { font-synthesis-weight: none; }
   .yp-detail--modes :is(h1, h2, h3), .yp-mode-option strong, .yp-shell :is(h1, h2, h3),
   .yp-component--yarn .yp-component__heading h4, .yd-search h2, .yd-search__bar h1,
   .yx-season__heading, .yx-season-page__heading, .yx-season-page__toc-num, .yx-season-page__num,
-  .yx-season-page__name, .yx-season-page__lead, .yarn-support-page .main-page-title, .header-wrapper .yarn-drawer-hello b
+  .yx-season-page__name, .yx-season-page__lead, .yarn-support-page .main-page-title
 ) {
   letter-spacing: -0.05em;
 }
