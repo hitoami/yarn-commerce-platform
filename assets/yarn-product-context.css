@@ -1,4 +1,4 @@
-.yp-product-context { display: block; padding-block: 12px; margin-bottom: 20px; border-block: 1px solid var(--yarn-border-subtle); color: var(--yarn-text-primary); font-size: 1.4rem; }
+.yp-product-context { display: block; padding-block: 12px; margin-bottom: 20px; border-block: 1px solid var(--yarn-border-subtle); color: var(--yarn-text-primary); font-size: var(--yarn-fs-14); }
 .yp-product-context[hidden], .yp-product-context [hidden] { display: none; }
 .yp-product-context p { margin: 6px 0; line-height: 1.6; }
 .yp-product-context a { color: inherit; text-underline-offset: 4px; overflow-wrap: anywhere; }
@@ -8,8 +8,8 @@
 .related-products__heading { margin-top: 0; margin-bottom: 2rem; }
 
 /* 描述内元信息降权:参考行与内部来源行不与规格/购买争夺空间 */
-.product__description .yarn-spec-echo { font-size: 1.25rem; color: var(--yarn-text-muted); line-height: 1.6; }
-.product__description .yarn-demo-source { font-size: 1.2rem; color: var(--yarn-text-muted); line-height: 1.6; overflow-wrap: anywhere; }
+.product__description .yarn-spec-echo { font-size: var(--yarn-fs-13); color: var(--yarn-text-muted); line-height: 1.6; }
+.product__description .yarn-demo-source { font-size: var(--yarn-fs-12); color: var(--yarn-text-muted); line-height: 1.6; overflow-wrap: anywhere; }
 
 /* 购买按钮:对齐 DESIGN.md 层级——主 CTA 奶油胶囊,加购为暖纸底墨字描边;覆盖旧 scheme 灰蓝 */
 .product-form__buttons {
@@ -27,29 +27,29 @@
 
 /* Issue 55 product family: a compact gallery and a clear purchase column. */
 product-info.yarn-product-page > product-component > .page-width { max-width: 1296px; padding-inline: 48px; }
-product-info.yarn-product-page .product__title h1 { color: var(--yarn-text-heading); font-size: 36px; font-weight: 700; line-height: 1.25; }
-product-info.yarn-product-page .price { color: var(--yarn-accent); font-size: 28px; font-weight: 700; }
-product-info.yarn-product-page .product__tax, product-info.yarn-product-page .product__text { color: var(--yarn-text-muted); font-size: 14px; line-height: 1.5; }
+product-info.yarn-product-page .product__title h1 { color: var(--yarn-text-heading); font-size: var(--yarn-fs-40); font-weight: 500; line-height: 1.25; }
+product-info.yarn-product-page .price { color: var(--yarn-accent); font-size: var(--yarn-fs-24); font-weight: 500; }
+product-info.yarn-product-page .product__tax, product-info.yarn-product-page .product__text { color: var(--yarn-text-muted); font-size: var(--yarn-fs-14); line-height: 1.5; }
 product-info.yarn-product-page .product__media { border-radius: var(--yarn-card-radius); }
 product-info.yarn-product-page .product__media-list { margin-bottom: 12px; }
 product-info.yarn-product-page .thumbnail { border-radius: 8px; }
 product-info.yarn-product-page .product-form__buttons { max-width: none; }
-product-info.yarn-product-page .product-form__submit { background: var(--yarn-cta-bg); color: var(--yarn-text-heading); border-radius: var(--yarn-radius-pill); font-weight: 700; font-size: 18px; }
+product-info.yarn-product-page .product-form__submit { background: var(--yarn-cta-bg); color: var(--yarn-text-heading); border-radius: var(--yarn-radius-pill); font-weight: 500; font-size: var(--yarn-fs-18); }
 product-info.yarn-product-page .product-form__submit::after { box-shadow: none; }
-product-info.yarn-product-page .shopify-payment-button__button--unbranded { background: var(--yarn-bg-surface); border: 1px solid var(--yarn-border-control); border-radius: var(--yarn-radius-pill); color: var(--yarn-text-heading); font-size: 16px; }
+product-info.yarn-product-page .shopify-payment-button__button--unbranded { background: var(--yarn-bg-surface); border: 1px solid var(--yarn-border-control); border-radius: var(--yarn-radius-pill); color: var(--yarn-text-heading); font-size: var(--yarn-fs-16); }
 product-info.yarn-product-page .product__description:empty { display: none; }
-product-info.yarn-product-page .product__description { font-size: 16px; line-height: 1.7; }
-product-info.yarn-product-page .product__description h2 { font-size: 24px; font-weight: 700; }
+product-info.yarn-product-page .product__description { font-size: var(--yarn-fs-16); line-height: 1.7; }
+product-info.yarn-product-page .product__description h2 { font-size: var(--yarn-fs-24); font-weight: 500; }
 product-info.yarn-product-page .yarn-kit-story-full { max-width: 960px; margin-top: 48px; }
 product-info.yarn-product-page .yp-kitstory { margin-top: 32px; }
-product-info.yarn-product-page .yp-kitstory > h2 { font-size: 28px; font-weight: 700; color: var(--yarn-text-heading); }
-product-info.yarn-product-page .yp-kitstory__copy p { font-size: 16px; }
+product-info.yarn-product-page .yp-kitstory > h2 { font-size: var(--yarn-fs-32); font-weight: 500; color: var(--yarn-text-heading); }
+product-info.yarn-product-page .yp-kitstory__copy p { font-size: var(--yarn-fs-16); }
 product-info.yarn-product-page .yp-kitstory__fact-icon { display: none; }
 @media (min-width: 990px) {
   product-info.yarn-product-page .product { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); column-gap: var(--yarn-space-7); max-width: 1104px; margin-inline: auto; }
   product-info.yarn-product-page .product > .grid__item { width: 100%; max-width: none; padding: 0; }
   product-info.yarn-product-page .product__info-container > * + * { margin-block: 16px; }
-  product-info.yarn-product-page .product__title h1 { font-size: clamp(28px, 2.5vw, 36px); }
+  product-info.yarn-product-page .product__title h1 { font-size: var(--yarn-fs-section); }
   product-info.yarn-product-page .product__media-wrapper { align-self: start; }
   product-info.yarn-product-page .product-media-container.constrain-height {
     --constrained-min-height: 360px;
@@ -65,7 +65,7 @@ product-info.yarn-product-page .yp-kitstory__fact-icon { display: none; }
     padding: var(--yarn-space-4);
     border-color: var(--yarn-border-card);
   }
-  product-info.yarn-product-page .product__info-container > .yx-exit .yx-exit__title { font-size: 18px; }
+  product-info.yarn-product-page .product__info-container > .yx-exit .yx-exit__title { font-size: var(--yarn-fs-18); }
   product-info.yarn-product-page .product__info-container > .yx-exit .yx-exit__media--row img { height: auto; }
   product-info.yarn-product-page .product__info-container > .yx-exit .yx-exit__cta {
     justify-content: flex-start;
@@ -99,9 +99,9 @@ product-info.yarn-product-page .yp-kitstory__fact-icon { display: none; }
   product-info.yarn-product-page .yp-kitstory--contents > h2 { margin-bottom: 0; }
   product-info.yarn-product-page .yp-kitstory__hero img { max-height: 560px; object-fit: contain; }
   product-info.yarn-product-page .yp-kitstory__list ul { columns: 2; column-gap: 0; column-rule: 1px solid var(--yarn-border-subtle); }
-  product-info.yarn-product-page .yp-kitstory__list li { break-inside: avoid; padding: var(--yarn-space-3) var(--yarn-space-3) var(--yarn-space-3) 52px; font-size: 14px; line-height: 1.7; }
+  product-info.yarn-product-page .yp-kitstory__list li { break-inside: avoid; padding: var(--yarn-space-3) var(--yarn-space-3) var(--yarn-space-3) 52px; font-size: var(--yarn-fs-14); line-height: 1.7; }
   product-info.yarn-product-page .yp-kitstory__list li::before { left: var(--yarn-space-3); }
-  product-info.yarn-product-page .yp-kitstory__list li strong { font-size: 15px; overflow-wrap: anywhere; }
+  product-info.yarn-product-page .yp-kitstory__list li strong { font-size: var(--yarn-fs-15); overflow-wrap: anywhere; }
 
   product-info.yarn-product-page .yp-kitstory__steps ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--yarn-space-4); }
   product-info.yarn-product-page .yp-kitstory__steps li {
@@ -109,27 +109,27 @@ product-info.yarn-product-page .yp-kitstory__fact-icon { display: none; }
     padding: var(--yarn-space-5);
     border: 1px solid var(--yarn-border-card);
     border-radius: var(--yarn-card-radius);
-    font-size: 16px;
+    font-size: var(--yarn-fs-16);
     line-height: 1.7;
   }
-  product-info.yarn-product-page .yp-kitstory__steps li::before { width: 36px; height: 36px; color: var(--yarn-text-on-cta); background: var(--yarn-cta-bg); font-size: 16px; }
+  product-info.yarn-product-page .yp-kitstory__steps li::before { width: 36px; height: 36px; color: var(--yarn-text-on-cta); background: var(--yarn-cta-bg); font-size: var(--yarn-fs-16); }
   product-info.yarn-product-page .yarn-kit-story-full > .yp-kitstory--facts { border: 0; padding-top: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--yarn-space-5); }
   product-info.yarn-product-page .yp-kitstory__fact { display: grid; grid-template-columns: 56px minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: var(--yarn-space-4); padding: var(--yarn-space-5); border-radius: var(--yarn-card-radius); }
   product-info.yarn-product-page .yp-kitstory__fact > :not(.yp-kitstory__fact-icon) { grid-column: 2; }
   product-info.yarn-product-page .yp-kitstory__fact-icon { display: grid; place-items: center; grid-row: 1 / -1; width: 56px; height: 56px; border-radius: var(--yarn-radius-pill); background: var(--yarn-action-subtle-bg); color: var(--yarn-text-heading); }
   product-info.yarn-product-page .yp-kitstory__fact-icon svg { width: 28px; height: 28px; }
-  product-info.yarn-product-page .yp-kitstory__fact > h2 { font-size: 24px; color: var(--yarn-text-heading); }
-  product-info.yarn-product-page .yp-kitstory__fact p, product-info.yarn-product-page .yp-kitstory__answer p { font-size: 16px; line-height: 1.8; }
+  product-info.yarn-product-page .yp-kitstory__fact > h2 { font-size: var(--yarn-fs-24); color: var(--yarn-text-heading); }
+  product-info.yarn-product-page .yp-kitstory__fact p, product-info.yarn-product-page .yp-kitstory__answer p { font-size: var(--yarn-fs-16); line-height: 1.8; }
   product-info.yarn-product-page .yp-kitstory--faq > h2 { padding-top: 0; }
   product-info.yarn-product-page .yp-kitstory__questions { padding-inline: var(--yarn-space-5); border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-card-radius); }
   product-info.yarn-product-page .yp-kitstory__faq:last-child { border-bottom: 0; }
-  product-info.yarn-product-page .yp-kitstory__faq > summary { min-height: 56px; font-size: 16px; }
+  product-info.yarn-product-page .yp-kitstory__faq > summary { min-height: 56px; font-size: var(--yarn-fs-16); }
   product-info.yarn-product-page .yp-kitstory__answer { max-width: 75ch; padding-bottom: var(--yarn-space-5); }
 }
 @media (max-width: 749px) {
   product-info.yarn-product-page > product-component > .page-width { padding-inline: 16px; }
-  product-info.yarn-product-page .product__title h1 { font-size: 26px; }
-  product-info.yarn-product-page .price { font-size: 26px; }
+  product-info.yarn-product-page .product__title h1 { font-size: var(--yarn-fs-24); }
+  product-info.yarn-product-page .price { font-size: var(--yarn-fs-24); }
   product-info.yarn-product-page .product__info-wrapper { padding-top: 16px; }
   product-info.yarn-product-page .product__info-container > * + * { margin-block: 12px; }
   product-info.yarn-product-page .product__media-wrapper .product__media-list { margin-inline: 0; width: 100%; }
@@ -141,7 +141,7 @@ product-info.yarn-product-page .yp-kitstory__fact-icon { display: none; }
   product-info.yarn-product-page .thumbnail-list { padding: 0; margin: 0; gap: 8px; }
   product-info.yarn-product-page .thumbnail-list__item.slider__slide { width: calc((100% - 16px) / 3); }
   product-info.yarn-product-page .yarn-kit-story-full { margin-top: 28px; }
-  product-info.yarn-product-page .yp-kitstory > h2 { font-size: 23px; }
+  product-info.yarn-product-page .yp-kitstory > h2 { font-size: var(--yarn-fs-24); }
 }
 
 body:has(product-info.yarn-product-page), product-info.yarn-product-page { background: var(--yarn-bg-surface); }
@@ -150,11 +150,11 @@ product-info.yarn-product-page .product-form__quantity .quantity__label { margin
 product-info.yarn-product-page .quantity { min-height: 44px; height: 44px; width: 152px; }
 
 product-info.yarn-product-page .yarn-product-details-full { max-width: 960px; margin: 40px auto 0; padding-top: 24px; border-top: 1px solid var(--yarn-border-card); }
-product-info.yarn-product-page .yarn-product-details-full > h2 { color: var(--yarn-text-heading); font-size: 28px; font-weight: 700; margin: 0 0 20px; }
+product-info.yarn-product-page .yarn-product-details-full > h2 { color: var(--yarn-text-heading); font-size: var(--yarn-fs-32); font-weight: 500; margin: 0 0 20px; }
 product-info.yarn-product-page .yarn-product-details-full ul { padding-left: 1.25em; }
 @media (max-width: 749px) {
   product-info.yarn-product-page .yarn-product-details-full { margin-top: 28px; }
-  product-info.yarn-product-page .yarn-product-details-full > h2 { font-size: 23px; }
+  product-info.yarn-product-page .yarn-product-details-full > h2 { font-size: var(--yarn-fs-24); }
 }
 
 /* Kit PDP: let the existing product description carry the reading experience on phones. */
@@ -169,7 +169,7 @@ product-info.yarn-product-page .yarn-product-details-full ul { padding-left: 1.2
   product-info.yarn-product-page .yarn-kit-story-full .yp-kitstory > h2,
   product-info.yarn-product-page .yarn-kit-story-full .yp-kitstory__fact > h2 {
     margin-bottom: var(--yarn-space-3);
-    font-size: 23px;
+    font-size: var(--yarn-fs-24);
     line-height: 1.35;
   }
   product-info.yarn-product-page .yarn-kit-story-full .yp-kitstory__about {
@@ -179,7 +179,7 @@ product-info.yarn-product-page .yarn-product-details-full ul { padding-left: 1.2
     display: none;
   }
   product-info.yarn-product-page .yarn-kit-story-full .yp-kitstory__copy p {
-    font-size: 15px;
+    font-size: var(--yarn-fs-15);
     line-height: 1.8;
   }
   product-info.yarn-product-page .yarn-kit-story-full .yp-kitstory--contents {
@@ -198,12 +198,12 @@ product-info.yarn-product-page .yarn-product-details-full ul { padding-left: 1.2
   }
   product-info.yarn-product-page .yarn-kit-story-full .yp-kitstory__list li {
     padding-block: var(--yarn-space-3);
-    font-size: 14px;
+    font-size: var(--yarn-fs-14);
     line-height: 1.65;
   }
   product-info.yarn-product-page .yarn-kit-story-full .yp-kitstory__steps li {
     align-items: start;
-    font-size: 15px;
+    font-size: var(--yarn-fs-15);
     line-height: 1.7;
   }
   product-info.yarn-product-page .yarn-kit-story-full .yp-kitstory--facts {
@@ -217,7 +217,7 @@ product-info.yarn-product-page .yarn-product-details-full ul { padding-left: 1.2
   }
   product-info.yarn-product-page .yarn-kit-story-full .yp-kitstory__fact p,
   product-info.yarn-product-page .yarn-kit-story-full .yp-kitstory__answer p {
-    font-size: 15px;
+    font-size: var(--yarn-fs-15);
     line-height: 1.75;
   }
 }

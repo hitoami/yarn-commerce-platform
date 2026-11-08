@@ -118,8 +118,8 @@
   .yarn-starter__eyebrow {
     margin: 0 0 20px;
     color: var(--yarn-action);
-    font-size: 1.3rem;
-    font-weight: 600;
+    font-size: var(--yarn-fs-13);
+    font-weight: 500;
     letter-spacing: 0.18em;
   }
 
@@ -127,7 +127,7 @@
     max-width: 10em;
     margin: 0;
     color: var(--yarn-text-on-cta);
-    font-size: clamp(3.6rem, 4.4vw, 6.2rem);
+    font-size: var(--yarn-fs-display);
     font-weight: 500;
     line-height: 1.22;
     letter-spacing: 0.02em;
@@ -137,7 +137,7 @@
     max-width: 39rem;
     margin-top: 22px;
     color: var(--yarn-text-muted);
-    font-size: 1.55rem;
+    font-size: var(--yarn-fs-16);
     line-height: 1.85;
   }
 
@@ -159,12 +159,12 @@
     min-height: 48px;
     border-bottom: 1px solid var(--yarn-border-subtle);
     color: var(--yarn-text-primary);
-    font-size: 1.35rem;
+    font-size: var(--yarn-fs-14);
   }
 
   .yarn-starter__facts li span {
     color: var(--yarn-text-muted);
-    font-size: 1.1rem;
+    font-size: var(--yarn-fs-12);
     letter-spacing: 0.08em;
   }
 
@@ -185,20 +185,20 @@
     border-radius: 999px;
     background: var(--yarn-cta-bg);
     color: var(--yarn-text-on-cta);
-    font-size: 1.4rem;
-    font-weight: 600;
+    font-size: var(--yarn-fs-14);
+    font-weight: 500;
     text-decoration: none;
     transition: background-color 180ms ease, transform 260ms cubic-bezier(.16, 1, .3, 1);
   }
 
   .yarn-starter__action a:hover { background: var(--yarn-cta-hover); transform: translateY(-2px); }
-  .yarn-starter__action > span { color: var(--yarn-text-secondary); font-size: 1.45rem; }
+  .yarn-starter__action > span { color: var(--yarn-text-secondary); font-size: var(--yarn-fs-15); }
 
   @media screen and (max-width: 989px) {
     .yarn-starter__card { grid-template-columns: minmax(0, 0.94fr) minmax(330px, 1.06fr); }
     .yarn-starter__media { min-height: 610px; }
     .yarn-starter__copy { padding: clamp(34px, 4.8vw, 46px); }
-    .yarn-starter__copy h2 { max-width: 11em; font-size: clamp(3.2rem, 5vw, 4.3rem); }
+    .yarn-starter__copy h2 { max-width: 11em; font-size: var(--yarn-fs-section); }
   }
 
   @media screen and (max-width: 749px) {
