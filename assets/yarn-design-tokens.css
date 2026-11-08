@@ -43,7 +43,7 @@ html { font-synthesis-weight: none; }
   .yp-detail--modes :is(h1, h2, h3), .yp-mode-option strong, .yp-shell :is(h1, h2, h3),
   .yp-component--yarn .yp-component__heading h4, .yd-search h2, .yd-search__bar h1,
   .yx-season__heading, .yx-season-page__heading, .yx-season-page__toc-num, .yx-season-page__num,
-  .yx-season-page__name, .yx-season-page__lead, .yarn-support-page .main-page-title, .header-wrapper .yarn-drawer-hello b
+  .yx-season-page__name, .yx-season-page__lead, .yarn-support-page .main-page-title
 ) {
   letter-spacing: -0.05em;
 }
@@ -74,15 +74,15 @@ h5, .h5 { font-size: var(--yarn-fs-14); }
   --yarn-home-thread: #8c8880; /* sand-600 · hitoami 小猫展开的装饰毛线 */
   --yarn-home-rope: #b8b1a4; /* sand-400 · 首页导览条挂线的线芯（线纹用 home-thread）；不得用于文字 */
   --yarn-home-logo: #ab5631; /* clay-580 · Logo 品牌色（取自 hitoami-logo.webp）；首页滚动小猫的毛线与毛线球（#151）；不得用于文字 */
-  --yarn-bg-page: #f8f7f4; /* paper-50 · 页面底（#326 方案 C：近中性暖白） */
+  --yarn-bg-page: #fffdfa; /* cream-0 · 页面底（#336 暖 1：奶白，带一丝暖意；取代 #326 的近中性浅灰） */
   --yarn-bg-surface: #ffffff; /* paper-0 · 卡片、导航、横幅、输入框面 */
-  --yarn-bg-sunken: #efeeea; /* paper-150 · 次级区块、页脚、图片占位（#326 浅灰） */
-  --yarn-bg-warm: #f8f7f4; /* paper-50 · 原暖米区块（配色方案 5）；#326 方案 C 起与页面底同色，去掉交替色带 */
+  --yarn-bg-sunken: #f2e5db; /* clay-100 · 次级面、图片占位、分段控件底（#336 暖 1：淡陶土深一档） */
+  --yarn-bg-warm: #fffdfa; /* cream-0 · 原暖米区块（配色方案 5）；与页面底同色 */
   --yarn-bg-wash-sage: #ecf0e4; /* wash-sage-100 · #326 抹茶晨雾：区块竖向渐变的底端（从页面底渐变到它） */
   --yarn-bg-wash-mist: #eef1f3; /* wash-mist-100 · #326 抹茶晨雾：区块竖向渐变的底端（雾灰蓝，取自小猫线轴） */
   --yarn-dot-sage: #a9b897; /* sage-500 · #329 装饰小圆点（通知条前），取自小猫的抹茶毛线；不得用于文字 */
-  --yarn-bg-footer: #e6eadf; /* wash-sage-200 · #326 抹茶晨雾：页脚渐变底端 */
-  --yarn-bg-band: #efeeea; /* paper-150 · 浅灰面板：毛线详情「要买几团？」估算面板 */
+  --yarn-bg-footer: #f2e5db; /* clay-100 · 页脚纯色（#336：去掉渐变，与次级面同色） */
+  --yarn-bg-band: #f8eee7; /* clay-50 · 浅色面板与首页交替色带（#336 暖 1 淡陶土）：首页第 2、4… 个区块、毛线详情估算面板等 */
   --yarn-bg-inverse: #8f3c26; /* clay-700 · 深色反白区块 */
   --yarn-text-primary: #4a3426; /* brown-800 · 正文、通用标题、Rise 原生文字（#326 深褐） */
   --yarn-text-heading: #573d2c; /* brown-700 · 标题（#326 栗褐，比正文浅一级） */
@@ -102,7 +102,7 @@ h5, .h5 { font-size: var(--yarn-fs-14); }
   --yarn-cta-hover: #f6dfa0; /* butter-300 · 奶油主按钮悬停 */
   --yarn-cta-border: #efd68d; /* butter-400 · 奶油按钮与浅色胶囊边线 */
   --yarn-border-subtle: #e6e4df; /* paper-200 · 分组细线、区块分隔 */
-  --yarn-border-card: #e3e1dc; /* paper-250 · 商品与内容卡片边线 */
+  --yarn-border-card: #d6d2ca; /* paper-300 · 商品与内容卡片边线（#336 加深一档，卡片从中性底里分出来） */
   --yarn-border-control: #686762; /* charcoal-500 · 输入框、筛选与数量控件边线 */
   --yarn-border-disabled: #d3cfc7; /* sand-300 · 不可用控件边线 */
   --yarn-tint-butter: #f8e5a9; /* butter-200 · 柔色面：编织包角标、信息卡 */
