@@ -1,7 +1,7 @@
 /* Shopify owns all footer content and form behavior; this file owns presentation. */
 .footer.yarn-footer {
-  /* Issue 326 抹茶晨雾：从页面底渐变到抹茶，顶部不再画分隔线。 */
-  background: linear-gradient(180deg, var(--yarn-bg-page) 0%, var(--yarn-bg-wash-sage) 40%, var(--yarn-bg-footer) 100%);
+  /* Issue 336：页脚为纯色（去掉 Issue 326 的渐变），与最后一个区块有清楚分界，顶部不画分隔线。 */
+  background: var(--yarn-bg-footer);
   color: var(--yarn-text-primary);
 }
 .yarn-footer .page-width {
