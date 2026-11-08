@@ -18,10 +18,10 @@ hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus)
 .hitoami-slide__link { position: absolute; inset: 0; display: block; }
 .hitoami-scene--placeholder { background: var(--yarn-bg-sunken); }
 .hitoami-copy { position: relative; z-index: 1; padding: 106px 24px 0; max-width: 600px; }
-.hitoami-heading { color: var(--yarn-text-warm); font-family: var(--yarn-display); font-size: clamp(2.8rem, 7.8vw, 3.4rem); font-weight: 500; line-height: 1.35; letter-spacing: 0; margin: 0 0 12px; }
-.hitoami-subtitle { color: var(--yarn-text-warm); font-size: 1.5rem; line-height: 1.65; margin: 0 0 20px; max-width: 32ch; }
+.hitoami-heading { color: var(--yarn-text-warm); font-family: var(--yarn-display); font-size: var(--yarn-fs-display); font-weight: 500; line-height: 1.35; letter-spacing: 0; margin: 0 0 12px; }
+.hitoami-subtitle { color: var(--yarn-text-warm); font-size: var(--yarn-fs-15); line-height: 1.65; margin: 0 0 20px; max-width: 32ch; }
 /* #167: a browsing text link, not a purchase button; the 44px row keeps the touch target. */
-.hitoami-cta { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--yarn-home-action); font-size: 1.5rem; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.hitoami-cta { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--yarn-home-action); font-size: var(--yarn-fs-15); font-weight: 500; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 .hitoami-cta:hover { color: var(--yarn-text-warm); }
 .hitoami-cta span, .hitoami-cta svg { display: block; width: 16px; height: 16px; }
 /* Japanese wraps at phrase boundaries so katakana words such as ループヤーン stay whole (#167). */
@@ -32,10 +32,10 @@ hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus)
 .hitoami-controls { position: absolute; left: 0; right: 0; bottom: 40px; z-index: 2; display: flex; justify-content: center; padding: 0 16px; pointer-events: none; }
 /* Issue 274 (N1, after Mobbin · Givingli): a frosted capsule names every slide, the current one filled clay, with "01 / 03" at the end. */
 .hitoami-tabs { display: flex; align-items: center; gap: 2px; max-width: 100%; padding: 4px; border-radius: var(--yarn-radius-pill); background: color-mix(in srgb, var(--yarn-bg-surface) 92%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 4px 16px var(--yarn-shadow-soft); pointer-events: auto; }
-.hitoami-tab { min-height: 44px; padding: 0 16px; border: 0; border-radius: var(--yarn-radius-pill); background: transparent; color: var(--yarn-text-warm); font: inherit; font-size: 1.4rem; font-weight: 500; line-height: 1.2; white-space: nowrap; cursor: pointer; transition: background-color .25s ease, color .25s ease; }
+.hitoami-tab { min-height: 44px; padding: 0 16px; border: 0; border-radius: var(--yarn-radius-pill); background: transparent; color: var(--yarn-text-warm); font: inherit; font-size: var(--yarn-fs-14); font-weight: 500; line-height: 1.2; white-space: nowrap; cursor: pointer; transition: background-color .25s ease, color .25s ease; }
 .hitoami-tab:hover { background: color-mix(in srgb, var(--yarn-home-action) 10%, transparent); }
-.hitoami-tab[aria-current] { background: var(--yarn-home-action); color: var(--yarn-text-on-action); font-weight: 700; }
-.hitoami-count { flex: none; margin-left: 4px; padding: 0 10px 0 12px; border-left: 1px solid var(--yarn-border-subtle); color: var(--yarn-text-muted); font-size: 1.2rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hitoami-tab[aria-current] { background: var(--yarn-home-action); color: var(--yarn-text-on-action); font-weight: 500; }
+.hitoami-count { flex: none; margin-left: 4px; padding: 0 10px 0 12px; border-left: 1px solid var(--yarn-border-subtle); color: var(--yarn-text-muted); font-size: var(--yarn-fs-12); font-variant-numeric: tabular-nums; white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) { .hitoami-tab { transition: none; } }
 /* Built-in phone scenes: the subject sits right of centre, so the crop keeps it whole. */
 .hitoami-slide--default-scene .hitoami-scene img { object-position: 72% 50%; }
@@ -57,15 +57,15 @@ hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus)
   .hitoami-slide--light::after { background: linear-gradient(90deg, color-mix(in srgb, var(--yarn-text-warm) 88%, transparent), color-mix(in srgb, var(--yarn-text-warm) 55%, transparent) 34%, transparent 60%); }
   .hitoami-copy { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; box-sizing: border-box; width: min(var(--yarn-commerce-max), calc(100% - 64px)); max-width: none; height: 100%; margin: 0 auto; padding: 0 0 40px; }
   .hitoami-copy > * { max-width: 640px; }
-  .hitoami-heading { margin-bottom: 16px; font-size: clamp(3.6rem, 3.6vw, 5.2rem); line-height: 1.3; }
+  .hitoami-heading { margin-bottom: 16px; font-size: var(--yarn-fs-display); line-height: 1.3; }
   /* The subject starts near the middle, so long subtitles wrap before reaching it at 990–1440px. */
   .hitoami-copy > .hitoami-subtitle { max-width: min(30em, 46vw); }
-  .hitoami-subtitle { margin-bottom: 28px; font-size: 1.8rem; line-height: 1.7; }
-  .hitoami-cta { font-size: 1.7rem; }
+  .hitoami-subtitle { margin-bottom: 28px; font-size: var(--yarn-fs-18); line-height: 1.7; }
+  .hitoami-cta { font-size: var(--yarn-fs-18); }
   .hitoami-controls { bottom: 56px; }
   .hitoami-tabs { padding: 5px; }
-  .hitoami-tab { padding: 0 20px; font-size: 1.5rem; }
-  .hitoami-count { font-size: 1.3rem; }
+  .hitoami-tab { padding: 0 20px; font-size: var(--yarn-fs-15); }
+  .hitoami-count { font-size: var(--yarn-fs-13); }
   .hitoami-wave { height: 44px; }
 }
 

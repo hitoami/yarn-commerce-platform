@@ -11,7 +11,7 @@
   border-bottom: 1px solid var(--yarn-border-subtle);
   color: var(--yarn-text-heading);
   font-family: var(--yarn-display);
-  font-size: 36px;
+  font-size: var(--yarn-fs-40);
   font-weight: 500;
   line-height: 1.3;
   overflow-wrap: anywhere;
@@ -33,7 +33,7 @@
   padding: var(--yarn-space-4) var(--yarn-space-5);
   border-bottom: 1px solid var(--yarn-border-subtle);
   font-family: var(--yarn-body);
-  font-size: 16px;
+  font-size: var(--yarn-fs-16);
   line-height: 1.6;
   align-content: center;
   overflow-wrap: anywhere;
@@ -54,7 +54,7 @@
 
 @media screen and (max-width: 749px) {
   .yarn-support-page .main-page-title {
-    font-size: clamp(28px, 8vw, 36px);
+    font-size: var(--yarn-fs-32);
   }
 
   .yarn-support-page .rte {
@@ -64,6 +64,6 @@
   .yarn-support-page .rte > :is(h2, p) {
     min-height: 0;
     padding: var(--yarn-space-4) var(--yarn-space-3);
-    font-size: 15px;
+    font-size: var(--yarn-fs-15);
   }
 }

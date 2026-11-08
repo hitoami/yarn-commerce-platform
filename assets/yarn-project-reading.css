@@ -4,28 +4,28 @@
 .yp-detail--reading .yp-cover { border-radius: var(--yarn-card-radius); }
 .yp-detail--reading .yp-cover img { aspect-ratio: 1.8; object-fit: contain; }
 .yp-detail--reading .yp-project-heading { margin: 20px 0 12px; }
-.yp-detail--reading h1 { font-size: 40px; line-height: 1.25; font-weight: 700; margin: 8px 0; }
-.yp-detail--reading h2 { font-size: 28px; line-height: 1.35; font-weight: 700; margin-bottom: 16px; }
-.yp-detail--reading .yp-demo-label { text-align: left; font-size: 14px; margin: 0; color: var(--yarn-text-muted); }
-.yp-detail--reading .yp-project-summary { margin: 0; font-size: 18px; max-width: none; }
-.yp-detail--reading .yp-reading { margin: 32px 0 0; max-width: none; font-size: 16px; }
+.yp-detail--reading h1 { font-size: var(--yarn-fs-40); line-height: 1.25; font-weight: 500; margin: 8px 0; }
+.yp-detail--reading h2 { font-size: var(--yarn-fs-32); line-height: 1.35; font-weight: 500; margin-bottom: 16px; }
+.yp-detail--reading .yp-demo-label { text-align: left; font-size: var(--yarn-fs-14); margin: 0; color: var(--yarn-text-muted); }
+.yp-detail--reading .yp-project-summary { margin: 0; font-size: var(--yarn-fs-18); max-width: none; }
+.yp-detail--reading .yp-reading { margin: 32px 0 0; max-width: none; font-size: var(--yarn-fs-16); }
 .yp-detail--reading .yp-section { padding-block: 24px; }
 .yp-detail--reading .yp-tutorial-body { border-top: 0; padding-top: 0; }
 .yp-detail--reading .yp-project-notes { margin-bottom: 28px; }
-.yp-detail--reading .yp-preparation-copy { font-size: 16px; }
+.yp-detail--reading .yp-preparation-copy { font-size: var(--yarn-fs-16); }
 .yp-detail--reading .rte img { max-width: 100%; height: auto; border-radius: var(--yarn-card-radius); }
 .yp-detail--reading .yp-mode-content { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--yarn-border-card); }
-.yp-detail--reading .yp-source { font-size: 14px; }
+.yp-detail--reading .yp-source { font-size: var(--yarn-fs-14); }
 @media (max-width: 749px) {
-  .yp-detail--reading h1 { font-size: 28px; }
-  .yp-detail--reading h2 { font-size: 23px; }
-  .yp-detail--reading .yp-project-summary { font-size: 16px; }
+  .yp-detail--reading h1 { font-size: var(--yarn-fs-32); }
+  .yp-detail--reading h2 { font-size: var(--yarn-fs-24); }
+  .yp-detail--reading .yp-project-summary { font-size: var(--yarn-fs-16); }
   .yp-detail--reading .yp-project-heading { margin-top: 16px; }
 }
 
 .yp-detail--reading .yp-kitstory { margin-top: 28px; }
 .yp-detail--reading .yp-kitstory__about { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
-.yp-detail--reading .yp-kitstory__copy p, .yp-detail--reading .yp-kitstory__steps li { font-size: 16px; }
+.yp-detail--reading .yp-kitstory__copy p, .yp-detail--reading .yp-kitstory__steps li { font-size: var(--yarn-fs-16); }
 .yp-detail--reading .yp-tutorial-body { margin-top: 28px; }
 @media (max-width: 749px) {
   .yp-detail--reading .yp-kitstory__about { grid-template-columns: 1fr; gap: 16px; }

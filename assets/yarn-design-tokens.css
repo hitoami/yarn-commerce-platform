@@ -1,34 +1,18 @@
-@font-face {
-  font-family: 'Yarn Display';
-  src: url('yarn-display-400.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Yarn Display';
-  src: url('yarn-display-600.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
+/* Issue 340（用户 2026-11-07 选定）：三语都用圆润风格——日文 Kiwi Maru 标题 + Zen Maru Gothic 正文（#326 原样），
+   中文 Huninn（标题正文同一款，只有 400 一档），英文 Nunito 标题 + Source Sans 3 正文。字体只在这里按语言指定，页面只引用 --yarn-display / --yarn-body。 */
 :root {
-  /* Fonts. Colors live in the generated block below. */
-  /* #326：日文换圆润方案——Kiwi Maru 标题（500）＋ Zen Maru Gothic 正文（只载 400 / 500；写 600 / 700 的强调落到 500，相当于 semi-bold）。 */
   --yarn-display: 'Kiwi Maru', 'Zen Maru Gothic', serif;
   --yarn-body: 'Zen Maru Gothic', sans-serif;
 }
-
-/* #168: serif headings (weight 500) + sans body and controls in all three languages, per the Figma prototype. */
 :root:lang(en) {
-  --yarn-display: 'Source Serif 4', serif;
-  --yarn-body: 'Figtree', 'Noto Sans JP', sans-serif;
+  /* 英文页里夹带的日文（商品名等）落到 Zen Maru Gothic，保持圆润。 */
+  --yarn-display: 'Nunito', 'Zen Maru Gothic', sans-serif;
+  --yarn-body: 'Source Sans 3', 'Zen Maru Gothic', sans-serif;
 }
 :root:lang(zh) {
-  --yarn-display: 'Noto Serif SC', 'Noto Sans SC', serif;
-  --yarn-body: 'Noto Sans SC', sans-serif;
+  /* Huninn 是台湾字形，逗号句号居中；theme.liquid 另载只含 ，。、：；！？ 的 Noto Sans SC 子集放在最前面，标点按简体习惯靠左下。 */
+  --yarn-display: 'Noto Sans SC', 'Huninn', sans-serif;
+  --yarn-body: 'Noto Sans SC', 'Huninn', sans-serif;
 }
 /* Issue 311：衬线标题字体只加载 500 一档；禁止浏览器把 600 / 700 伪加粗（会发糊、发硬），没加载的字重回落到最接近的真实字重。 */
 html { font-synthesis-weight: none; }
@@ -67,6 +51,21 @@ html[lang]:root {
   --font-body-family: var(--yarn-body);
   --font-heading-family: var(--yarn-display);
   --font-heading-weight: 500;
+}
+
+/* Issue 340：全站字号与字重的底层规则。表单控件不继承字体时浏览器会用 Arial；粗体标签统一为中粗 500。 */
+:where(button, input, select, textarea) { font-family: inherit; }
+b, strong { font-weight: 500; }
+h1, .h1 { font-size: var(--yarn-fs-32); }
+h2, .h2 { font-size: var(--yarn-fs-24); }
+h3, .h3 { font-size: var(--yarn-fs-18); }
+h4, .h4 { font-size: var(--yarn-fs-16); }
+h5, .h5 { font-size: var(--yarn-fs-14); }
+.h0 { font-size: var(--yarn-fs-display); }
+@media screen and (min-width: 750px) {
+  h1, .h1 { font-size: var(--yarn-fs-40); }
+  h2, .h2 { font-size: var(--yarn-fs-32); }
+  h3, .h3 { font-size: var(--yarn-fs-20); }
 }
 
 /* BEGIN generated colors — edit design/tokens/colors.json, then run npm run tokens */
@@ -144,18 +143,31 @@ html[lang]:root {
   --yarn-space-7: 48px;
   --yarn-content-max: 1320px;
   --yarn-gutter: 48px;
-  --yarn-type-control: 1.5rem;
-  --yarn-type-meta: 1.3rem;
-  --yarn-type-section: clamp(2.5rem, 2.5vw, 3.2rem);
+  /* Issue 340 字号阶梯：全站只用这 10 档 + 两档随屏宽缩放的大字；页面 CSS 只能写 var(--yarn-fs-*)，不写数字（tests/yarn-type-system.test.cjs 检查）。
+     12 角标、徽章 / 13 规格与辅助说明 / 14 小正文、控件 / 15 正文 / 16 卡片标题、按钮 / 18 小标题 / 20 卡片价格、手机小节标题 /
+     24 区块标题（手机）、详情价格 / 32 区块标题（桌面）、页面标题（手机）/ 40 页面标题（桌面）。最小 12px。 */
+  --yarn-fs-12: 12px;
+  --yarn-fs-13: 13px;
+  --yarn-fs-14: 14px;
+  --yarn-fs-15: 15px;
+  --yarn-fs-16: 16px;
+  --yarn-fs-18: 18px;
+  --yarn-fs-20: 20px;
+  --yarn-fs-24: 24px;
+  --yarn-fs-32: 32px;
+  --yarn-fs-40: 40px;
+  --yarn-fs-section: clamp(24px, 2.5vw, 32px);
+  --yarn-fs-display: clamp(32px, 4vw, 52px);
+  /* 字重只用两档：400 常规；500 强调、按钮、价格、标题。中文 Huninn 只有 400，500 也显示为 400。 */
+  --yarn-lh-heading: 1.35;
+  --yarn-lh-body: 1.8;
   --yarn-leading: 1.5;
   --yarn-focus-width: 2px;
   --yarn-focus-offset: 4px;
   /* Issue 55: commerce family sizing. */
   --yarn-card-radius: 10px;
-  --yarn-card-title: 16px;
-  --yarn-card-meta: 14px;
-  --yarn-card-price: 21px;
   --yarn-commerce-max: 1200px;
 }
 @media (max-width: 989px) { :root { --yarn-gutter: 24px; } }
+:root:lang(en) { --yarn-lh-body: 1.6; }
 @media (max-width: 749px) { :root { --yarn-gutter: 16px; } }
