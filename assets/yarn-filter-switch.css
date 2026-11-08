@@ -17,7 +17,7 @@
   min-width: 0;
   color: var(--yarn-text-heading);
   font-family: var(--yarn-display);
-  font-size: 30px;
+  font-size: var(--yarn-fs-32);
   font-weight: 500;
   line-height: 1.3;
   text-wrap: balance;
@@ -39,7 +39,7 @@
   border-radius: var(--yarn-radius-pill);
   background: transparent;
   color: var(--yarn-text-secondary);
-  font: 500 15px var(--yarn-body);
+  font: 500 var(--yarn-fs-15) var(--yarn-body);
   cursor: pointer;
 }
 
@@ -121,26 +121,26 @@
 .yarn-fswitch__card:hover .yarn-fswitch__name { text-decoration: underline; text-underline-offset: 4px; }
 
 .yarn-fswitch__name {
-  font: 500 19px/1.3 var(--yarn-display);
+  font: 500 var(--yarn-fs-20)/1.3 var(--yarn-display);
   letter-spacing: 0.06em;
 }
 
 .yarn-fswitch__needle {
   color: var(--yarn-text-muted);
-  font-size: 13px;
+  font-size: var(--yarn-fs-13);
   line-height: 1.4;
 }
 
 @media (max-width: 749px) {
   .yarn-fswitch { padding-block: 32px 40px; }
-  .yarn-fswitch__head h2 { font-size: 24px; }
-  .yarn-fswitch__tab { padding: 0 16px; font-size: 14px; }
+  .yarn-fswitch__head h2 { font-size: var(--yarn-fs-24); }
+  .yarn-fswitch__tab { padding: 0 16px; font-size: var(--yarn-fs-14); }
   .yarn-fswitch__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 12px; }
   .yarn-fswitch__ring { margin-bottom: 6px; padding: 5px; }
   .yarn-fswitch__go { right: -4px; bottom: 0; width: 32px; height: 32px; }
   .yarn-fswitch__go svg { width: 13px; height: 13px; }
-  .yarn-fswitch__name { font-size: 16px; letter-spacing: 0.04em; }
-  .yarn-fswitch__needle { font-size: 12px; }
+  .yarn-fswitch__name { font-size: var(--yarn-fs-16); letter-spacing: 0.04em; }
+  .yarn-fswitch__needle { font-size: var(--yarn-fs-12); }
 }
 
 @media (prefers-reduced-motion: reduce) {

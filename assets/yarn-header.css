@@ -56,7 +56,7 @@
   white-space: nowrap;
   min-height: var(--yarn-touch);
   padding: 10px 11px;
-  font-size: 1.4rem;
+  font-size: var(--yarn-fs-14);
   letter-spacing: 0;
   border-radius: var(--yarn-radius-pill);
 }
@@ -116,7 +116,7 @@
   min-width: 17px;
   height: 17px;
   background: var(--yarn-action);
-  font-size: 1rem;
+  font-size: var(--yarn-fs-12);
 }
 
 .header-wrapper .desktop-localization-wrapper {
@@ -132,7 +132,7 @@
   min-height: var(--yarn-touch);
   margin: 0;
   padding-left: 8px;
-  font-size: 1.3rem;
+  font-size: var(--yarn-fs-13);
 }
 
 .header-wrapper .disclosure__list-wrapper {
@@ -153,7 +153,7 @@
   min-height: 52px;
   padding: 12px 16px;
   border-radius: var(--yarn-radius-pill);
-  font-size: 1.6rem;
+  font-size: var(--yarn-fs-16);
 }
 
 .header-wrapper .menu-drawer__menu li + li {
@@ -239,7 +239,7 @@
   font-family: var(--yarn-body);
   letter-spacing: 0;
 }
-.yarn-main-menu .header__menu-item { font-size: var(--yarn-type-control); }
+.yarn-main-menu .header__menu-item { font-size: var(--yarn-fs-15); }
 .yarn-main-menu .header__menu-item:hover,
 .header-wrapper .menu-drawer__menu-item:hover,
 .header-wrapper .menu-drawer__menu-item--active,
@@ -271,8 +271,8 @@
   .yarn-project-page .announcement-bar-section { display: none; }
   .header-wrapper .header.header--project { grid-template-columns: 44px minmax(0,1fr) 132px; grid-template-areas: "left-icons heading icons"; column-gap: 0; padding: 6px var(--yarn-gutter); min-height: 56px; }
   .header--project > :is(header-drawer,.header__heading-link) { display: none; }
-  .header--project .yarn-project-nav-back { display: flex; grid-area: left-icons; align-items: center; justify-content: center; width: var(--yarn-touch); height: var(--yarn-touch); color: var(--yarn-text-primary); font-size: 2.4rem; text-decoration: none; }
-  .header--project .yarn-project-nav-title { display: block; grid-area: heading; text-align: center; font-family: var(--yarn-display); font-size: 1.6rem; color: var(--yarn-text-heading); }
+  .header--project .yarn-project-nav-back { display: flex; grid-area: left-icons; align-items: center; justify-content: center; width: var(--yarn-touch); height: var(--yarn-touch); color: var(--yarn-text-primary); font-size: var(--yarn-fs-24); text-decoration: none; }
+  .header--project .yarn-project-nav-title { display: block; grid-area: heading; text-align: center; font-family: var(--yarn-display); font-size: var(--yarn-fs-16); color: var(--yarn-text-heading); }
 }
 
 .yarn-project-nav-back svg { width: 24px; height: 24px; transform: rotate(180deg); }
@@ -286,16 +286,16 @@
   border-radius: var(--yarn-radius-pill);
   background: var(--yarn-tint-blush);
   color: var(--yarn-text-primary);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* Issue 131 / Issue 258 mobile drawer: account and quick actions first, then plain shop rows; yarn links straight to its collection (Issue 299). */
 .header-wrapper .menu-drawer__navigation { padding: 16px; }
 
 
-.header-wrapper .yarn-drawer-row__total { color: var(--yarn-text-muted); font-family: var(--yarn-body); font-size: 1.3rem; }
+.header-wrapper .yarn-drawer-row__total { color: var(--yarn-text-muted); font-family: var(--yarn-body); font-size: var(--yarn-fs-13); }
 /* Issue 284：毛线行下的「第一次织毛线」，缩进一级、比主行小一号。 */
-.header-wrapper .yarn-drawer-sub { display: flex; align-items: center; min-height: var(--yarn-touch); padding: 0 16px 0 28px; color: var(--yarn-action); font-family: var(--yarn-body); font-size: 1.4rem; font-weight: 700; text-decoration: none; }
+.header-wrapper .yarn-drawer-sub { display: flex; align-items: center; min-height: var(--yarn-touch); padding: 0 16px 0 28px; color: var(--yarn-action); font-family: var(--yarn-body); font-size: var(--yarn-fs-14); font-weight: 500; text-decoration: none; }
 /* Rise absolutely positions drawer item icons and hides carets; these arrows sit in the row instead. */
 .header-wrapper .menu-drawer__menu-item > .yarn-drawer-row__arrow,
 .header-wrapper :is(.yarn-drawer-account, .yarn-drawer-account__head) > .yarn-drawer-row__arrow {
@@ -329,8 +329,8 @@
 .yarn-nav-tile__photo--mosaic { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; }
 .yarn-nav-tile__photo--mosaic img { min-height: 0; }
 .yarn-nav-tile__text { display: flex; flex-direction: column; gap: 2px; padding-inline: 4px; }
-.yarn-nav-tile__name { font-family: var(--yarn-display); font-size: 1.5rem; line-height: 1.4; }
-.yarn-nav-tile__count { color: var(--yarn-text-muted); font-size: 1.2rem; }
+.yarn-nav-tile__name { font-family: var(--yarn-display); font-size: var(--yarn-fs-15); line-height: 1.4; }
+.yarn-nav-tile__count { color: var(--yarn-text-muted); font-size: var(--yarn-fs-12); }
 /* Issue 329：设了小猫的格子——左猫右字，白 → 淡色竖向渐变底（不用实心色块），淡色按格轮换 blush / sage / mist。 */
 .yarn-mega__tiles > li { --tile-tint: var(--yarn-bg-wash-sage); }
 .yarn-mega__tiles > li:nth-child(3n + 1) { --tile-tint: var(--yarn-tint-blush); }
@@ -349,8 +349,8 @@
 }
 .yarn-mega__tiles > li > .yarn-nav-tile.yarn-nav-tile--cat:hover { box-shadow: inset 0 0 0 1px var(--yarn-border-card), 0 8px 18px -12px var(--yarn-shadow-soft); }
 .yarn-nav-tile--cat .yarn-nav-tile__text { flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; padding: 0; }
-.yarn-mega .yarn-nav-tile--cat .yarn-nav-tile__name { font: 500 1.5rem/1.4 var(--yarn-body); color: var(--yarn-text-heading); }
-.yarn-mega .yarn-nav-tile--cat .yarn-nav-tile__count { font-size: 1.2rem; }
+.yarn-mega .yarn-nav-tile--cat .yarn-nav-tile__name { font: 500 var(--yarn-fs-15)/1.4 var(--yarn-body); color: var(--yarn-text-heading); }
+.yarn-mega .yarn-nav-tile--cat .yarn-nav-tile__count { font-size: var(--yarn-fs-12); }
 .yarn-nav-tile--cat:hover { transform: translateY(-2px); }
 .yarn-nav-tile__cat { flex: none; display: block; width: 60px; aspect-ratio: 1; }
 .yarn-nav-tile__cat img { display: block; width: 100%; height: 100%; object-fit: contain; }
@@ -363,7 +363,7 @@
   padding: 14px 0;
   border-top: 1px solid var(--yarn-border-subtle);
   border-radius: 0;
-  font-size: 1.7rem;
+  font-size: var(--yarn-fs-18);
 }
 .header-wrapper .yarn-drawer-row.menu-drawer__menu-item--active,
 .header-wrapper .yarn-drawer-row:hover { background: none; color: var(--yarn-action); }
@@ -374,8 +374,8 @@
   background: var(--yarn-tint-butter);
   color: var(--yarn-text-warm);
   font-family: var(--yarn-body);
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: var(--yarn-fs-12);
+  font-weight: 500;
   line-height: 1.6;
 }
 
@@ -454,19 +454,19 @@
   /* 标题区压成一行：去掉小眉题，标题 17px，右侧两个链接 13px。 */
   .yarn-mega__head { display: flex; align-items: center; justify-content: space-between; gap: var(--yarn-space-4); margin: 0 4px 14px; }
   .yarn-mega__eyebrow { display: none; }
-  .yarn-mega__title { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: 1.7rem; line-height: 1.4; }
-  .yarn-mega__all { color: var(--yarn-action); font-size: 1.3rem; text-decoration: none; white-space: nowrap; }
+  .yarn-mega__title { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: var(--yarn-fs-18); line-height: 1.4; }
+  .yarn-mega__all { color: var(--yarn-action); font-size: var(--yarn-fs-13); text-decoration: none; white-space: nowrap; }
   .yarn-mega__all:hover { text-decoration: underline; }
   .yarn-mega__links { display: flex; align-items: center; gap: var(--yarn-space-5); }
-  .yarn-mega__first { padding: 4px 12px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: 1.3rem; font-weight: 500; text-decoration: none; white-space: nowrap; }
+  .yarn-mega__first { padding: 4px 12px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: var(--yarn-fs-13); font-weight: 500; text-decoration: none; white-space: nowrap; }
   .yarn-mega__first:hover { text-decoration: underline; }
   .yarn-mega__tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 12px; margin: 0; padding: 0; }
   .yarn-mega .yarn-nav-tile { flex-direction: row; align-items: center; gap: 20px; min-height: 128px; padding: 16px; }
   .yarn-mega .yarn-nav-tile:hover { box-shadow: inset 0 0 0 1px var(--yarn-border-card); }
   .yarn-mega .yarn-nav-tile__photo { flex: 0 0 96px; width: 96px; margin: 0; aspect-ratio: 1; }
   .yarn-mega .yarn-nav-tile__text { gap: 4px; padding: 0; }
-  .yarn-mega .yarn-nav-tile__name { font-size: 2rem; }
-  .yarn-mega .yarn-nav-tile__count { font-size: 1.3rem; }
+  .yarn-mega .yarn-nav-tile__name { font-size: var(--yarn-fs-20); }
+  .yarn-mega .yarn-nav-tile__count { font-size: var(--yarn-fs-13); }
 }
 
 /* Issue 190 desktop: opened panels unroll downward from under the header while fading in, and the page dims behind them. */
@@ -548,7 +548,7 @@
   background: var(--yarn-bg-surface);
   color: var(--yarn-text-primary);
   font-family: var(--yarn-body);
-  font-size: 1.4rem;
+  font-size: var(--yarn-fs-14);
   font-weight: 500;
   line-height: 1;
   white-space: nowrap;
@@ -574,7 +574,7 @@
    the product page's bottom buy bar (also 3, later in the DOM) would paint over it. Lift the whole header while the menu is open. */
 .section-header:has(.yarn-lang[open]) { z-index: 40; }
 .yarn-lang__grab { display: none; }
-.yarn-lang__title { margin: 0 8px 6px; color: var(--yarn-text-muted); font-size: 1.3rem; line-height: 1.5; }
+.yarn-lang__title { margin: 0 8px 6px; color: var(--yarn-text-muted); font-size: var(--yarn-fs-13); line-height: 1.5; }
 .yarn-lang__list { margin: 0; padding: 0; }
 .yarn-lang__option {
   display: flex;
@@ -584,11 +584,11 @@
   padding: 0 16px;
   border-radius: 14px;
   color: var(--yarn-text-primary);
-  font-size: 1.6rem;
+  font-size: var(--yarn-fs-16);
   font-weight: 500;
   text-decoration: none;
 }
-.yarn-lang__option small { color: var(--yarn-text-muted); font-size: 1.2rem; font-weight: 400; }
+.yarn-lang__option small { color: var(--yarn-text-muted); font-size: var(--yarn-fs-12); font-weight: 400; }
 /* Issue 290: hover is a neutral sand tint so it never reads as the cream "current language" fill; touch screens skip it. */
 @media (hover: hover) { .yarn-lang__option:not([aria-current='true']):hover { background: var(--yarn-bg-band); } }
 .yarn-lang__option[aria-current='true'] { background: var(--yarn-action-subtle-bg); color: var(--yarn-action); }
@@ -602,7 +602,7 @@
 
 @media screen and (min-width: 750px) {
   .yarn-lang__panel { position: absolute; top: calc(100% + 8px); right: 0; width: 240px; padding: 8px; border: 1px solid var(--yarn-border-subtle); border-radius: 16px; box-shadow: 0 12px 32px var(--yarn-shadow-soft); }
-  .yarn-lang__option { min-height: 48px; font-size: 1.5rem; }
+  .yarn-lang__option { min-height: 48px; font-size: var(--yarn-fs-15); }
 }
 
 @media screen and (min-width: 1340px) {
@@ -628,17 +628,17 @@
 .yarn-drawer-account__avatar { display: flex; flex: none; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--yarn-bg-surface); color: var(--yarn-action); }
 .yarn-drawer-account__avatar svg { width: 22px; height: 22px; }
 .yarn-drawer-account__text { display: flex; flex: 1; flex-direction: column; min-width: 0; gap: 2px; }
-.yarn-drawer-account__text b { color: var(--yarn-text-heading); font-size: 1.6rem; font-weight: 600; }
-.yarn-drawer-account__text small { color: var(--yarn-text-muted); font-size: 1.2rem; line-height: 1.5; }
+.yarn-drawer-account__text b { color: var(--yarn-text-heading); font-size: var(--yarn-fs-16); font-weight: 500; }
+.yarn-drawer-account__text small { color: var(--yarn-text-muted); font-size: var(--yarn-fs-12); line-height: 1.5; }
 
 .yarn-drawer-account__links { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; }
-.yarn-drawer-account__links a { display: flex; align-items: center; justify-content: center; min-height: var(--yarn-touch); border: 1px solid var(--yarn-border-subtle); border-radius: 12px; background: var(--yarn-bg-surface); color: var(--yarn-text-primary); font-size: 1.4rem; text-decoration: none; }
+.yarn-drawer-account__links a { display: flex; align-items: center; justify-content: center; min-height: var(--yarn-touch); border: 1px solid var(--yarn-border-subtle); border-radius: 12px; background: var(--yarn-bg-surface); color: var(--yarn-text-primary); font-size: var(--yarn-fs-14); text-decoration: none; }
 .yarn-drawer-quick { display: grid; grid-auto-columns: minmax(0, 1fr); grid-auto-flow: column; gap: 6px; margin: 12px 0 4px; padding: 0; }
-.yarn-drawer-quick a { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 0; color: var(--yarn-text-secondary); font-size: 1.2rem; line-height: 1.3; text-align: center; text-decoration: none; }
+.yarn-drawer-quick a { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 0; color: var(--yarn-text-secondary); font-size: var(--yarn-fs-12); line-height: 1.3; text-align: center; text-decoration: none; }
 .yarn-drawer-quick__icon { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid var(--yarn-border-subtle); border-radius: 50%; background: var(--yarn-bg-surface); color: var(--yarn-text-primary); }
 .yarn-drawer-quick__icon svg { width: 22px; height: 22px; }
 .yarn-drawer-quick a:hover .yarn-drawer-quick__icon { border-color: var(--yarn-action); color: var(--yarn-action); }
-.yarn-drawer-heading { margin: 16px 4px 4px; color: var(--yarn-text-muted); font-size: 1.2rem; font-weight: 700; letter-spacing: 0.04em; }
+.yarn-drawer-heading { margin: 16px 4px 4px; color: var(--yarn-text-muted); font-size: var(--yarn-fs-12); font-weight: 500; letter-spacing: 0.04em; }
 
 /* Issue 329（用户 2026-11-05 选定并要求全站统一）：所有页面的页头都是离开页面边缘悬浮的胶囊条，吸顶后仍是胶囊。
    手机左右留 12px、顶部 10px；≥990px 收紧为高 60、最宽 1100 居中、顶部 14px，Logo 150、菜单 15px / 500、图标按钮 40。
@@ -676,7 +676,7 @@
   .section-header .header-wrapper { width: min(calc(100% - 48px), 1100px); margin-top: 14px; }
   .section-header #YarnHeader { min-height: 60px; padding: 0 12px 0 24px; }
   .section-header .header__heading-link > .yarn-wordmark { width: 150px; }
-  .section-header .yarn-main-menu .header__menu-item { font-size: 1.5rem; font-weight: 500; }
+  .section-header .yarn-main-menu .header__menu-item { font-size: var(--yarn-fs-15); font-weight: 500; }
   .section-header .header-wrapper .header__icon { width: 40px; height: 40px; }
   .section-header.yarn-header-docked .header-wrapper { margin-top: 10px; }
   .section-header.yarn-header-docked #YarnHeader { min-height: 56px; padding-block: 0; }
@@ -726,8 +726,8 @@
   .yarn-drawer-account__head { gap: 12px; }
   .yarn-drawer-account__avatar--cat { width: 52px; height: 52px; overflow: hidden; background: var(--yarn-bg-surface); }
   .yarn-drawer-account__avatar--cat img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
-  .yarn-drawer-account__text small { font-size: 1.2rem; }
-  .yarn-drawer-account__text b { font-size: 1.6rem; line-height: 1.4; }
+  .yarn-drawer-account__text small { font-size: var(--yarn-fs-12); }
+  .yarn-drawer-account__text b { font-size: var(--yarn-fs-16); line-height: 1.4; }
   .yarn-drawer-account--guest { border-color: var(--yarn-border-subtle); background: var(--yarn-bg-wash-sage); }
   .header-wrapper .yarn-drawer-account > .yarn-drawer-row__arrow,
   .header-wrapper .yarn-drawer-account__head > .yarn-drawer-row__arrow { margin-left: auto; color: var(--yarn-action); }

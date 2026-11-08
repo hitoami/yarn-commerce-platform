@@ -31,7 +31,7 @@
   border-radius: var(--yarn-radius-field);
   background: transparent;
   color: var(--yarn-text-primary);
-  font-size: 16px;
+  font-size: var(--yarn-fs-16);
   box-shadow: none;
 }
 :is(.header-wrapper, .yarn-footer) .field__label { color: var(--yarn-text-muted); }
@@ -45,7 +45,7 @@
 :is(.header-wrapper, .yarn-footer) .localization-form__select {
   min-height: var(--yarn-touch);
   padding-left: var(--yarn-space-4);
-  font-size: var(--yarn-type-meta);
+  font-size: var(--yarn-fs-13);
 }
 :is(.header-wrapper, .yarn-footer) .disclosure__list-wrapper {
   background: var(--yarn-bg-surface);
