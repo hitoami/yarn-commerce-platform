@@ -17,9 +17,9 @@
         "announcement-bar-0": {
           "type": "announcement",
           "settings": {
-            "text": "税込9,900円以上のご注文で送料無料 · 日本全国へお届け",
-            "text_zh": "订单含税满9,900日元免运费 · 日本全国配送",
-            "text_en": "Free shipping on orders over ¥9,900 · Shipping across Japan",
+            "text": "配送地域・送料は確認中です。ご購入前にお問い合わせください。",
+            "text_zh": "配送地区与费用确认中，购买前请先咨询。",
+            "text_en": "Delivery areas and fees are being confirmed. Please contact us before purchasing.",
             "link": ""
           }
         }
