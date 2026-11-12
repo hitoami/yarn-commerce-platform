@@ -36,6 +36,9 @@ async function quickAdd(page, selector) {
 async function cartChoice(page) {
   if (await page.locator('.yarn-cart-spare__add').count()) await quickAdd(page, '.yarn-cart-spare__add');
   const cards = page.locator('.yarn-cart-addon');
+  if (!await cards.count() && !await page.locator('.yarn-cart-ship').count()) {
+    return '免运费凑单未启用：已确认不显示；多规格/单规格规则由隔离 Liquid 回归覆盖。';
+  }
   assert.ok(await cards.count(), '前提不满足：没有凑单商品，未覆盖选规格路径');
   let choice = null;
   let single = null;

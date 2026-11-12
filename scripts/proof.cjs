@@ -77,7 +77,7 @@ async function runFlows(page, url, job, result) {
         await page.locator('cart-drawer.active').waitFor();
       }
       for (const [index, step] of flow.steps.entries()) {
-        if (step.run) await step.run(page);
+        if (step.run) { const note = await step.run(page); if (note) result.warnings.push(note); }
         else if (step.click) await page.locator(step.click).first().click({ timeout: 10000 });
         else if (step.waitFor) await page.locator(step.waitFor).first().waitFor({ state: 'visible', timeout: 15000 });
         else if (step.wait) await page.waitForTimeout(step.wait);
@@ -254,6 +254,15 @@ async function runJob(browser, job, baseUrl) {
     hasTouch: Boolean(viewport.hasTouch),
     locale: locale.browserLocale,
   });
+  if (['127.0.0.1', 'localhost'].includes(new URL(baseUrl).hostname)) {
+    // Shopify theme dev exposes /ja GET pages but not /ja/cart POST endpoints.
+    // Normalize transport only in the local harness; public PR checks use real routes.
+    await context.route('**/ja/cart/*.js', route => {
+      const url = new URL(route.request().url());
+      url.pathname = url.pathname.replace(/^\/ja/, '');
+      return route.continue({ url: url.href });
+    });
+  }
   const page = await context.newPage();
   const url = `${baseUrl}${locale.prefix}${target.path === '/' && locale.prefix ? '' : target.path}`;
   const result = { page: target.key, locale: locale.key, viewport: viewport.key, url, failures: [], warnings: [], leaks: [], contentLeaks: [], flowShots: [] };
