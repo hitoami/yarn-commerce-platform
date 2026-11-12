@@ -961,7 +961,13 @@
     "show_all_yarn": "查看全部 {{ count }} 款毛線",
     "all_kits": "全部材料包 →",
     "all_finished": "全部成品 →",
-    "finished_coming_soon": "手工成品還在準備中，上架後也會出現在搜尋結果裡。"
+    "finished_coming_soon": "手工成品還在準備中，上架後也會出現在搜尋結果裡。",
+    "account_navigation": "Account navigation",
+    "my_favorites": "My favorites",
+    "local_favorites_title": "Saved in this browser only",
+    "account_help": "Need a hand?",
+    "account_line_help": "Contact us on LINE",
+    "account_contact": "Contact us"
   },
   "yarn_cart_assurance": {
     "title_1": "Delivery across Japan",

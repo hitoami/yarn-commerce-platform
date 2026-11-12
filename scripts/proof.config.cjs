@@ -92,6 +92,32 @@ module.exports = {
     // #149：搜索按毛线 / 材料包 / 手工成品分组；「段染」覆盖毛线与材料包两组，另看一次无结果状态。
     { key: 'search', path: '/search?q=%E6%AE%B5%E6%9F%93' },
     { key: 'search-empty', path: '/search?q=zzqx' },
+    // Issue 344: fresh browser empty state and a real local save/filter/remove round trip.
+    { key: 'favorites', path: '/search?browse=favorites', requiredContent: [
+      { selector: '[data-favorites-local-note]', minimum: 1, label: '本机收藏说明' },
+      { selector: '[data-favorites-empty] .yarn-account-empty-cat', minimum: 1, label: '收藏空状态' },
+    ] },
+    { key: 'favorites-saved', path: '/search?group=yarn', flows: [
+      { key: 'save-filter-remove', label: '收藏、分类与取消收藏', steps: [
+        { waitFor: '[data-search-group="yarn"]:not([hidden]) [data-discovery-card]:not([hidden]) [data-favorite-button]' },
+        { click: '[data-search-group="yarn"] [data-discovery-card]:not([hidden]) [data-favorite-button]' },
+        { expect: '[data-search-group="yarn"] [data-discovery-card]:not([hidden]) [data-favorite-button][aria-pressed="true"]', minimum: 1, label: '本机已收藏毛线' },
+        { click: '[data-favorites-link]' },
+        { waitFor: '[data-search-group="yarn"]:not([hidden])' },
+        { click: '[data-search-tab="yarn"]' },
+        { expect: '[data-search-group="yarn"] [data-discovery-card]:not([hidden]) [data-favorite-button][aria-pressed="true"]', minimum: 1, label: '收藏页保留所存毛线' },
+        { noOverflow: true },
+        { shot: true },
+        { click: '[data-search-tab="kit"]' },
+        { waitFor: '[data-search-empty]:not([hidden])' },
+        { expect: '[data-search-empty]', minimum: 1, label: '没有材料包的分类空状态' },
+        { click: '[data-search-tab="yarn"]' },
+        { waitFor: '[data-search-group="yarn"]:not([hidden])' },
+        { click: '[data-search-group="yarn"] [data-discovery-card]:not([hidden]) [data-favorite-button]' },
+        { waitFor: '[data-favorites-empty]:not([hidden])' },
+        { noOverflow: true },
+      ] },
+    ] },
     { key: 'commercial-disclosure', path: '/pages/commercial-disclosure' },
     { key: 'returns-exchanges', path: '/pages/returns-exchanges' },
     { key: 'shipping', path: '/pages/shipping' },

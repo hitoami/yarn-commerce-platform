@@ -961,7 +961,13 @@
     "show_all_yarn": "毛糸 {{ count }} 点をすべて見る",
     "all_kits": "材料セット一覧 →",
     "all_finished": "作品一覧 →",
-    "finished_coming_soon": "ハンドメイド作品は準備中です。販売開始後は検索結果にも表示されます。"
+    "finished_coming_soon": "ハンドメイド作品は準備中です。販売開始後は検索結果にも表示されます。",
+    "account_navigation": "アカウントナビゲーション",
+    "my_favorites": "お気に入り",
+    "local_favorites_title": "このブラウザに保存されています",
+    "account_help": "お困りですか？",
+    "account_line_help": "LINEで相談する",
+    "account_contact": "お問い合わせ"
   },
   "yarn_cart_assurance": {
     "title_1": "日本全国へ配送",
