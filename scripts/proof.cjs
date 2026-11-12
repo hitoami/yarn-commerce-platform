@@ -223,18 +223,25 @@ function pickSoldOut(products) {
   return product ? `/products/${product.handle}` : null;
 }
 
-async function resolvePages(pages, baseUrl) {
+async function resolvePages(pages, baseUrl, request = fetch) {
   const skipped = [];
   const resolved = [];
   for (const page of pages) {
     if (page.path || page.find !== 'sold-out-yarn') { resolved.push(page); continue; }
     let found = null;
+    let prerequisite = '目录暂无已定价且全部规格缺货的商品';
     try {
-      const response = await fetch(`${baseUrl}/collections/yarn/products.json?limit=250`, { signal: AbortSignal.timeout(20000) });
+      const response = await request(`${baseUrl}/collections/yarn/products.json?limit=250`, { signal: AbortSignal.timeout(20000) });
+      if (!response.ok) throw new Error(`目录读取 HTTP ${response.status}`);
       found = pickSoldOut((await response.json()).products || []);
-    } catch {}
+    } catch (error) { prerequisite = `无法确认真实库存：${error.message}`; }
     if (found) resolved.push({ ...page, path: found });
-    else skipped.push(`${page.key}：真实库存前提不满足（目录暂无缺货商品）；缺货行为仍由 fixture-yarn-sold-out 覆盖`);
+    else {
+      skipped.push(`${page.key}：原生缺货页样例前提未满足（${prerequisite}）；本轮执行隔离 Liquid 缺货样例，不代表原生页面已验收`);
+      if (!pages.some(item => item.fixture === 'yarn-sold-out')) {
+        resolved.push(config.pages.find(item => item.fixture === 'yarn-sold-out'));
+      }
+    }
   }
   return { resolved, skipped };
 }
@@ -428,4 +435,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { cartAjaxUrl, pickSoldOut, validateFlows };
+module.exports = { cartAjaxUrl, pickSoldOut, resolvePages, validateFlows };
