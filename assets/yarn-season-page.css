@@ -14,9 +14,9 @@
 .yx-season-page__art--mosaic img:first-child { grid-row: 1 / -1; }
 .yx-season-page__art--mosaic img:only-child { grid-column: 1 / -1; }
 .yx-season-page__intro { display: grid; gap: var(--yarn-space-4); align-content: center; padding: var(--yarn-space-6) var(--yarn-gutter) var(--yarn-space-5); }
-.yx-season-page__eyebrow { margin: 0; color: var(--yarn-action); font-size: 1.3rem; font-weight: 600; letter-spacing: 0.04em; }
-.yx-season-page__heading { margin: 0; color: var(--yarn-text-heading); font: 500 3.6rem/1.15 var(--yarn-display); letter-spacing: 0.01em; text-wrap: balance; }
-.yx-season-page__text { max-width: 34em; margin: 0; color: var(--yarn-text-secondary); font-size: 1.5rem; line-height: 1.8; }
+.yx-season-page__eyebrow { margin: 0; color: var(--yarn-action); font-size: var(--yarn-fs-13); font-weight: 500; letter-spacing: 0.04em; }
+.yx-season-page__heading { margin: 0; color: var(--yarn-text-heading); font: 500 var(--yarn-fs-display)/1.15 var(--yarn-display); letter-spacing: 0.01em; text-wrap: balance; }
+.yx-season-page__text { max-width: 34em; margin: 0; color: var(--yarn-text-secondary); font-size: var(--yarn-fs-15); line-height: 1.8; }
 
 /* Contents: phones get a vertical list (thumb, number, name, arrow); desktop keeps the row of round thumbnails */
 .yx-season-page__toc { margin: 0 var(--yarn-gutter); padding-top: var(--yarn-space-2); }
@@ -28,8 +28,8 @@
 .yx-season-page__toc-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 .yx-season-page__toc a:hover .yx-season-page__toc-thumb img { transform: scale(1.06); }
 .yx-season-page__toc a:hover .yx-season-page__toc-name { color: var(--yarn-action); }
-.yx-season-page__toc-num { color: var(--yarn-action); font: 500 1.4rem/1 var(--yarn-display); font-variant-numeric: tabular-nums; }
-.yx-season-page__toc-name { font-size: 1.5rem; font-weight: 500; line-height: 1.4; }
+.yx-season-page__toc-num { color: var(--yarn-action); font: 500 var(--yarn-fs-14)/1 var(--yarn-display); font-variant-numeric: tabular-nums; }
+.yx-season-page__toc-name { font-size: var(--yarn-fs-15); font-weight: 500; line-height: 1.4; }
 .yx-season-page__toc-arrow { width: 16px; height: 16px; color: var(--yarn-text-muted); }
 
 /* Yarn spreads. Phones: the gallery runs edge to edge, copy keeps the gutter; even spreads sit on the warm band. */
@@ -47,15 +47,15 @@
 .yx-season-page__shot img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
 .yx-season-page__shot:hover img { transform: scale(1.03); }
 .yx-season-page__shot:focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: -4px; }
-.yx-season-page__zoom { position: absolute; right: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--yarn-radius-pill); background: color-mix(in srgb, var(--yarn-text-heading) 60%, transparent); color: var(--yarn-text-inverse); font-size: 1.1rem; font-weight: 500; line-height: 1.4; font-variant-numeric: tabular-nums; pointer-events: none; }
+.yx-season-page__zoom { position: absolute; right: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: var(--yarn-radius-pill); background: color-mix(in srgb, var(--yarn-text-heading) 60%, transparent); color: var(--yarn-text-inverse); font-size: var(--yarn-fs-12); font-weight: 500; line-height: 1.4; font-variant-numeric: tabular-nums; pointer-events: none; }
 .yx-season-page__zoom svg { width: 11px; height: 11px; }
 .yx-season-page__copy { display: grid; gap: var(--yarn-space-3); align-content: start; padding: 0 var(--yarn-gutter); }
-.yx-season-page__num { color: var(--yarn-action); font: 500 2.4rem/1 var(--yarn-display); font-variant-numeric: tabular-nums; }
-.yx-season-page__name { margin: 0; color: var(--yarn-text-heading); font: 500 2.6rem/1.25 var(--yarn-display); text-wrap: balance; }
+.yx-season-page__num { color: var(--yarn-action); font: 500 var(--yarn-fs-24)/1 var(--yarn-display); font-variant-numeric: tabular-nums; }
+.yx-season-page__name { margin: 0; color: var(--yarn-text-heading); font: 500 var(--yarn-fs-24)/1.25 var(--yarn-display); text-wrap: balance; }
 .yx-season-page__name a { color: inherit; text-decoration: none; }
 .yx-season-page__name a:hover { color: var(--yarn-action); }
-.yx-season-page__lead { margin: 0; color: var(--yarn-text-heading); font: 500 1.7rem/1.6 var(--yarn-display); }
-.yx-season-page__note { margin: 0; color: var(--yarn-text-secondary); font-size: 1.4rem; line-height: 1.8; }
+.yx-season-page__lead { margin: 0; color: var(--yarn-text-heading); font: 500 var(--yarn-fs-18)/1.6 var(--yarn-display); }
+.yx-season-page__note { margin: 0; color: var(--yarn-text-secondary); font-size: var(--yarn-fs-14); line-height: 1.8; }
 
 /* Product card: the homepage card family laid out as a row (yarn-pick-card, layout: 'row'), under the copy */
 .yx-season-page__card { margin-top: var(--yarn-space-2); }
@@ -68,15 +68,15 @@
   .yx-season-page__art--mosaic { gap: 6px; background: transparent; }
   .yx-season-page__art--mosaic img { border-radius: var(--yarn-radius-media); }
   .yx-season-page__intro { order: 1; padding: 0; }
-  .yx-season-page__heading { font-size: clamp(4.4rem, 4.4vw, 6rem); line-height: 1.2; }
-  .yx-season-page__text { font-size: 1.6rem; }
+  .yx-season-page__heading { font-size: var(--yarn-fs-display); line-height: 1.2; }
+  .yx-season-page__text { font-size: var(--yarn-fs-16); }
   .yx-season-page__toc { grid-column: 1 / -1; order: 3; margin: 48px 0 0; padding-top: 32px; border-top: 1px solid var(--yarn-border-subtle); }
   .yx-season-page__toc ol { display: flex; justify-content: space-between; gap: var(--yarn-space-2); }
   .yx-season-page__toc li, .yx-season-page__toc li:last-child { flex: 1 1 0; max-width: 140px; border: 0; }
   .yx-season-page__toc a { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 8px; min-height: 0; padding: 0; text-align: center; }
   .yx-season-page__toc-thumb { width: min(96px, 100%); }
-  .yx-season-page__toc-num { font: 600 1.3rem/1 var(--yarn-body); }
-  .yx-season-page__toc-name { font-size: 1.3rem; font-weight: 600; }
+  .yx-season-page__toc-num { font: 500 var(--yarn-fs-13)/1 var(--yarn-body); }
+  .yx-season-page__toc-name { font-size: var(--yarn-fs-13); font-weight: 500; }
   .yx-season-page__toc-arrow { display: none; }
 
   .yx-season-page__list { margin-top: 56px; }
@@ -90,8 +90,8 @@
   .yx-season-page__yarn--flip .yx-season-page__media .yx-season-page__shot:first-child { grid-column: 1; }
   .yx-season-page__shot { border-radius: var(--yarn-radius-media); }
   .yx-season-page__copy { max-width: 456px; padding: 0; }
-  .yx-season-page__num { font-size: 2.8rem; }
-  .yx-season-page__name { font-size: 3.4rem; }
+  .yx-season-page__num { font-size: var(--yarn-fs-32); }
+  .yx-season-page__name { font-size: var(--yarn-fs-32); }
 }
 
 /* Full-screen viewer (#181): dark backdrop, photo shown whole (contain), swipe track with snap, counter, ‹ ›, thumbnails */
@@ -102,7 +102,7 @@
 .yx-lightbox button { display: grid; place-items: center; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }
 .yx-lightbox button:focus-visible { outline: 2px solid var(--yarn-text-inverse); outline-offset: 2px; }
 .yx-lightbox__bar { position: relative; display: flex; align-items: center; justify-content: center; min-height: 56px; padding: env(safe-area-inset-top) var(--yarn-gutter) 0; }
-.yx-lightbox__count { font-size: 1.4rem; font-variant-numeric: tabular-nums; opacity: 0.85; }
+.yx-lightbox__count { font-size: var(--yarn-fs-14); font-variant-numeric: tabular-nums; opacity: 0.85; }
 .yx-lightbox__close { position: absolute; right: 8px; bottom: 6px; width: var(--yarn-touch); height: var(--yarn-touch); }
 .yx-lightbox__close svg { width: 24px; height: 24px; }
 .yx-lightbox__track { display: flex; min-height: 0; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior: contain; scrollbar-width: none; outline: none; }
@@ -119,7 +119,7 @@
 .yx-lightbox__thumbs button { overflow: hidden; width: 56px; height: 56px; border-radius: 6px; opacity: 0.55; outline-offset: 2px; }
 .yx-lightbox__thumbs button[aria-current] { opacity: 1; box-shadow: 0 0 0 2px var(--yarn-text-inverse); }
 .yx-lightbox__thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.yx-lightbox__caption { margin: 0; font-size: 1.3rem; opacity: 0.75; }
+.yx-lightbox__caption { margin: 0; font-size: var(--yarn-fs-13); opacity: 0.75; }
 yarn-season-lightbox[data-single] .yx-lightbox__step, yarn-season-lightbox[data-single] .yx-lightbox__thumbs { display: none; }
 @media (hover: none) { .yx-lightbox .yx-lightbox__step { display: none; } }
 

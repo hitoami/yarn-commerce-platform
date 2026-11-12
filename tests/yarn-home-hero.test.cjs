@@ -53,3 +53,36 @@ test('homepage hero v4: yarn, project yarn and season scenes, each with a browsi
   assert.equal(index.order[0], 'hero');
   assert.equal(index.sections['yarn-hero'].disabled, true);
 });
+
+test('hero capsule names every slide in the page language and swipes on phones (Issue 274)', () => {
+  // 2026-10-30 锦晨选定 N1：底部胶囊写出每张的名字（选中填陶土色）和「01 / 03」，取代圆点；手机可左右滑动，不自动轮播。
+  const section = fs.readFileSync('sections/hitoami-hero.liquid', 'utf8');
+  const css = fs.readFileSync('assets/hitoami-hero.css', 'utf8');
+  const js = fs.readFileSync('assets/hitoami-hero.js', 'utf8');
+  assert.match(section, /class="hitoami-tab" data-page=/);
+  assert.match(section, /render 'yarn-setting-text', settings: block\.settings, key: 'label', allow_blank: true/);
+  assert.match(section, /'hitoami_home\.hero_tab_' \| append: block\.settings\.scene/);
+  assert.match(section, /data-slide-number/);
+  for (const locale of ['ja', 'zh-CN', 'en.default']) {
+    const strings = JSON.parse(fs.readFileSync(`locales/${locale}.json`, 'utf8').replace(/^\/\*[\s\S]*?\*\//, '')).hitoami_home;
+    for (const key of ['hero_tabs', 'hero_tab_yarn', 'hero_tab_kit', 'hero_tab_season', 'hero_tab_finished']) assert.ok(strings[key]?.trim(), `${locale}.${key}`);
+  }
+  assert.match(css, /\.hitoami-tab\[aria-current\] \{[^}]*background: var\(--yarn-home-action\)/);
+  assert.match(css, /\.hitoami-tab \{[^}]*min-height: 44px/);
+  // 窗边系列满版铺图：不再保留 #167 的「桌面贴右、不裁切」。
+  assert.doesNotMatch(css, /object-fit: contain/);
+  assert.match(js, /pointermove/);
+  assert.doesNotMatch(js, /setInterval|setTimeout/);
+});
+
+test('home frosted header keeps the phone language sheet on screen (Issue 290)', () => {
+  // backdrop-filter / transform / filter on the header wrapper make it the containing block for position: fixed,
+  // which pinned the bottom language sheet above the screen on the home page. The blur lives on ::before instead.
+  const css = fs.readFileSync('assets/hitoami-hero.css', 'utf8');
+  for (const rule of css.match(/[^{}]*\.header-wrapper[^{}]*\{[^}]*\}/g) || []) {
+    const [selector, body] = rule.split('{');
+    if (/::before\s*$/.test(selector.trim())) continue;
+    assert.doesNotMatch(body, /backdrop-filter|transform|(^|[^-])filter:|contain:|will-change/, selector.trim());
+  }
+  assert.match(css, /\.header-wrapper:not\(\.scrolled-past-header \.header-wrapper\)::before \{[^}]*backdrop-filter: blur/);
+});

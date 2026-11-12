@@ -1,0 +1,6 @@
+{%- comment -%}#243 粗细示意：一段线，五档越往下越细（band 0 = 极粗 … 4 = 极细）。与 assets/yarn-collection-browse.js 的 STRAND 同一组线宽。{%- endcomment -%}
+{%- liquid
+  assign strand_widths = '7,5,3.5,2,1' | split: ','
+  assign strand_index = band | default: 2
+-%}
+<svg class="yarn-strand" width="34" height="14" viewBox="0 0 34 14" aria-hidden="true" focusable="false"><path d="M2 7 C 10 1, 24 13, 32 7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="{{ strand_widths[strand_index] }}"/></svg>

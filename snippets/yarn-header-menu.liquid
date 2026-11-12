@@ -83,7 +83,10 @@
                       {%- if mega_eyebrow != blank -%}<p class="yarn-mega__eyebrow">{{ mega_eyebrow | escape }}</p>{%- endif -%}
                       {%- if mega_title != blank -%}<p class="yarn-mega__title">{{ mega_title | escape }}</p>{%- endif -%}
                     </div>
-                    <a class="yarn-mega__all" href="{{ link.url | escape }}">{{ 'yarn_project.entries_view_all' | t }}<span aria-hidden="true"> →</span></a>
+                    <div class="yarn-mega__links">
+                      {%- if first_time != blank -%}<a class="yarn-mega__first" href="{{ link.url | escape }}?ycb_beginner=1">{{ 'yarn_collection.first_time' | t }}<span aria-hidden="true"> →</span></a>{%- endif -%}
+                      <a class="yarn-mega__all" href="{{ link.url | escape }}">{{ 'yarn_project.entries_view_all' | t }}<span aria-hidden="true"> →</span></a>
+                    </div>
                   </div>
                   <ul class="yarn-mega__tiles list-unstyled" role="list">{{ nav_tiles }}</ul>
                 </div>

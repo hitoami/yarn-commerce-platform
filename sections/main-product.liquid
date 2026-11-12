@@ -201,6 +201,7 @@
                   {%- if yarn_pdp -%}
                     {%- render 'yarn-pdp-checklist', product: product -%}
                     {%- render 'yarn-pdp-status', product: product -%}
+                    {%- render 'yarn-pdp-map-link', product: product -%}
                   {%- endif -%}
                 {%- when 'inventory' -%}
                   <p

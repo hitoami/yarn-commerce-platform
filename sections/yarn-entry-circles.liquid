@@ -8,7 +8,6 @@
   说明行优先用 block 里填写的说明，留空时显示款数；款数与默认照片来自所选集合里引用该入口的商品（前 50 件）；一件都没有的入口不渲染。
   一段超过 4 个（手机）/ 6 个（桌面）入口时排成两行，左右滑动或用桌面箭头翻页。
 {% endcomment %}
-{%- capture ec_eyebrow -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'eyebrow' -%}{%- endcapture -%}
 {%- capture ec_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'heading' -%}{%- endcapture -%}
 {%- assign ec_collection = collections[section.settings.collection] -%}
 {%- liquid
@@ -110,7 +109,6 @@
 <section class="yarn-entries" data-yarn-entries aria-labelledby="EntryCircles-{{ section.id }}">
   <div class="yarn-entries__inner">
     <div class="yarn-entries__head">
-      {%- if ec_eyebrow != blank -%}<p class="yarn-entries__eyebrow">{{ ec_eyebrow | escape }}</p>{%- endif -%}
       <h2 class="yarn-entries__heading" id="EntryCircles-{{ section.id }}">{{ ec_heading | escape }}</h2>
       <img class="yarn-entries__flourish" src="{{ 'impeccable-category-heading-flourish.png' | asset_url }}" alt="" width="1706" height="368" loading="lazy">
     </div>
@@ -138,9 +136,6 @@
   "tag": "div",
   "class": "section-yarn-entry-circles",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "日文 · 小标题", "default": "毛糸を選ぶ" },
-    { "type": "text", "id": "eyebrow_zh", "label": "中文 · 小标题", "default": "挑毛线" },
-    { "type": "text", "id": "eyebrow_en", "label": "英文 · 小标题", "default": "Pick yarn" },
     { "type": "text", "id": "heading", "label": "日文 · 标题", "default": "どんな毛糸をお探しですか？" },
     { "type": "text", "id": "heading_zh", "label": "中文 · 标题", "default": "今天想要什么样的线？" },
     { "type": "text", "id": "heading_en", "label": "英文 · 标题", "default": "What kind of yarn are you after?" },

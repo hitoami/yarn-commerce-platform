@@ -1,0 +1,9 @@
+{%- comment -%}
+  #284 新手友好：输出集合里第一款填了新手理由（yarn.beginner_reason）的毛线 handle，没有就什么都不输出。
+  毛线目录的「新手友好」胶囊和页头「第一次织毛线」入口用它决定显不显示：一款都没有时两处都不出现。
+  只看集合前 50 款（Liquid 在分页外最多取 50 个商品）；漏看的后果是入口不显示，不会出现空的筛选。
+  参数：beginner_collection
+{%- endcomment -%}
+{%- for beginner_product in beginner_collection.products limit: 50 -%}
+  {%- if beginner_product.metafields.yarn.beginner_reason.value != blank -%}{{ beginner_product.handle }}{%- break -%}{%- endif -%}
+{%- endfor -%}

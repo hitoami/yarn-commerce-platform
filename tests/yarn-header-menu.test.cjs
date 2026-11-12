@@ -43,13 +43,21 @@ test('prototype navigation contains no locale, product-copy or tag-search overri
   assert.deepEqual(drawer.match(/routes\.search_url[^"]*/g), ['routes.search_url }}?browse=favorites']);
 });
 
-test('mobile drawer follows the #131 nav comp: season banner, yarn tiles, coming-soon rows', () => {
-  assert.match(drawer, /link\.type == 'page_link' and link\.object\.handle == 'season'/);
-  assert.match(drawer, /yarn-setting-text', settings: section\.settings, key: 'drawer_season_text'/);
-  assert.match(drawer, /link\.object\.handle == section\.settings\.drawer_yarn_collection\.handle and nav_tiles != blank/);
-  assert.match(drawer, /\{\{ nav_tiles \}\}/);
-  assert.match(drawer, /aria-expanded="true"[\s\S]*aria-controls="YarnDrawerTiles"/);
+test('mobile drawer leads with account and quick actions, then plain shop rows (#258)', () => {
+  const nav = drawer.slice(drawer.indexOf('menu-drawer__navigation'));
+  // 账户与常用功能排在菜单前；本季主推不再是大图横条，毛线行直达毛线目录。
+  assert.ok(nav.indexOf('yarn-drawer-account') < nav.indexOf('menu-drawer__menu has-submenu'));
+  assert.ok(nav.indexOf('yarn-drawer-quick') < nav.indexOf('menu-drawer__menu has-submenu'));
+  assert.match(drawer, /routes\.account_login_url/);
+  assert.match(drawer, /routes\.account_addresses_url/);
+  assert.doesNotMatch(drawer, /yarn-drawer-feature|drawer_season_text/);
+  // #299：手机上毛线行是直达目录的普通链接，不在抽屉里展开分类图块。
+  assert.doesNotMatch(drawer, /nav_tiles|YarnDrawerTiles|yarn-drawer-yarn/);
+  assert.match(drawer, /drawer_yarn_collection\.handle and link\.object\.all_products_count > 0[\s\S]*yarn-drawer-row__total/);
   assert.match(drawer, /link\.object\.all_products_count == 0[\s\S]*'sections\.header\.coming_soon' \| t/);
+  for (const key of ['drawer_login_title', 'drawer_welcome', 'drawer_orders', 'drawer_addresses', 'drawer_shipping', 'drawer_contact', 'drawer_shop']) {
+    assert.match(drawer, new RegExp(`'sections\\.header\\.${key}' \\| t`), key);
+  }
   const entry = fs.readFileSync('snippets/yarn-nav-tiles.liquid', 'utf8');
   assert.match(entry, /block\.type != 'yarn_entry'/);
   assert.match(entry, /metaobjects\.yarn_entry\[block\.settings\.entry\]/);
@@ -57,11 +65,15 @@ test('mobile drawer follows the #131 nav comp: season banner, yarn tiles, coming
   assert.match(entry, /de_entry\.name\.value \| escape/);
   const blockTypes = schema.blocks.map(block => block.type);
   assert.deepEqual(blockTypes, ['@app', 'yarn_entry']);
+  // 本季文案设置保留在 schema 里，旧的 header-group 数据仍能通过校验。
   for (const key of ['drawer_season_text', 'drawer_season_text_zh', 'drawer_season_text_en', 'drawer_yarn_collection']) {
     assert.ok(schema.settings.some(setting => setting.id === key), key);
   }
   for (const locale of ['ja', 'zh-CN', 'en.default']) {
-    assert.match(fs.readFileSync(`locales/${locale}.json`, 'utf8'), /"coming_soon": "[^"]+"/, locale);
+    const copy = fs.readFileSync(`locales/${locale}.json`, 'utf8');
+    for (const key of ['coming_soon', 'language_short', 'language_note', 'drawer_login_title', 'drawer_shop']) {
+      assert.match(copy, new RegExp(`"${key}": "[^"]+"`), `${locale} ${key}`);
+    }
   }
 });
 
@@ -75,23 +87,25 @@ test('hitoami uses the supplied wordmark image with an accessible name', () => {
   assert.match(header, /"name": \{\{ yarn_brand_name \| json \}\}/);
 });
 
-test('drawer lists every shop language inline for one-tap switching (#107)', () => {
-  const switcher = drawer.slice(drawer.indexOf('yarn-drawer-language'));
-  assert.match(switcher, /for language in localization\.available_languages/);
-  assert.match(switcher, /href="\{\{ language_url \}\}"/);
-  assert.match(switcher, /hreflang="\{\{ language\.iso_code \}\}"/);
-  assert.match(switcher, /language\.iso_code == localization\.language\.iso_code[\s\S]*aria-current="true"/);
-  assert.doesNotMatch(switcher, /render 'language-localization'|disclosure__/);
-  const optionCss = headerCss.match(/\.yarn-drawer-language__option \{([\s\S]*?)\}/)[1];
-  assert.match(optionCss, /min-height: var\(--yarn-touch\)/);
-  assert.match(optionCss, /padding: var\(--yarn-space-2\) var\(--yarn-space-3\)/);
-  assert.match(optionCss, /text-decoration: none/);
-  assert.match(headerCss, /\.yarn-drawer-language__option\[aria-current='true'\]/);
+test('one language switch serves header and drawer, opening the same page in each language (#258)', () => {
+  const sw = fs.readFileSync('snippets/yarn-language-switch.liquid', 'utf8');
+  assert.match(header, /render 'yarn-language-switch'/);
+  assert.doesNotMatch(header, /render 'language-localization', localPosition: 'HeaderLanguage'/);
+  assert.match(sw, /for language in localization\.available_languages/);
+  assert.match(sw, /href="\{\{ language_url \}\}"/);
+  assert.match(sw, /hreflang="\{\{ language\.iso_code \}\}"/);
+  assert.match(sw, /aria-current="true"/);
+  assert.match(sw, /'sections\.header\.language_short' \| t/);
+  // #337：抽屉不再重复语言行，语言只用页头始终可见的同一个按钮；抽屉里也不放语言胶囊。
+  assert.doesNotMatch(drawer, /data-lang-open/);
+  assert.doesNotMatch(drawer, /for language in localization\.available_languages/);
+  assert.match(headerCss, /\.header-wrapper \.header__icon--account \{ display: none; \}/);
+  assert.match(headerCss, /\.yarn-lang__option\[aria-current='true'\]/);
 });
 
 test('header computes the yarn tiles once and the desktop yarn link opens them in a mega panel (#131)', () => {
   assert.equal((header.match(/render 'yarn-nav-tiles'/g) || []).length, 1);
-  assert.match(header, /render 'yarn-header-drawer', navigation_menu: navigation_menu, nav_tiles: nav_tiles/);
+  assert.match(header, /render 'yarn-header-drawer', navigation_menu: navigation_menu, show_country_selector/);
   assert.match(header, /render 'yarn-header-menu', navigation_menu: navigation_menu, nav_tiles: nav_tiles/);
   assert.match(desktop, /link\.object\.handle == section\.settings\.drawer_yarn_collection\.handle and nav_tiles != blank/);
   assert.match(desktop, /<header-menu>\s*<details[^>]*class="mega-menu yarn-mega"/);
@@ -133,5 +147,16 @@ test('desktop yarn strand draws on hover / focus / open; the current page yields
   assert.match(headerCss, /details\[open\] > :is\(\.yarn-mega__content, \.header__submenu\) \{\s*animation: yarn-menu-unroll/);
   assert.match(headerCss, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*\.yarn-nav-strand path \{ transition: none !important; \}/);
   assert.match(headerCss, /\.yarn-main-menu details\[open\]:hover > \.header__menu-item,[\s\S]*?\{ text-decoration: none; \}/);
-  assert.match(headerCss, /transform: translateY\(-14%\);/, 'logo lifted so letters align with the menu');
+  // Issue 337: the logo sits vertically centred in the capsule; the old Issue 131 lift pushed the cat ears to the edge.
+  assert.doesNotMatch(headerCss, /yarn-wordmark[^}]*translateY/, 'logo is not lifted inside the capsule');
+  assert.match(headerCss, /\.header-wrapper \.header__heading-link \{[^}]*display: inline-flex;\s*align-items: center;/);
+});
+
+test('open language sheet lifts the sticky header above page bottom bars (Issue 305)', () => {
+  // 页头 section 吸顶时自成一层（z-index 3），语言弹层再高也出不去；商品页底部价格栏同为 3 且在后面，会盖住弹层。
+  const lift = headerCss.match(/\.section-header:has\(\.yarn-lang\[open\]\) \{ z-index: (\d+); \}/);
+  assert.ok(lift, 'header lifts while the language menu is open');
+  const pdpCss = fs.readFileSync('assets/yarn-pdp.css', 'utf8');
+  const bar = Number(pdpCss.match(/\.yp-sticky \{[^}]*z-index: (\d+)/)[1]);
+  assert.ok(Number(lift[1]) > bar, `header ${lift[1]} must sit above the product bottom bar ${bar}`);
 });

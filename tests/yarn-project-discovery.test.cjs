@@ -147,10 +147,10 @@ test('filter updates preserve preview parameters and URL hash', () => {
   assert.equal(urls[0].hash, '#discover-products');
 });
 
-test('home follows Claude Design 1a: dot-only hero, switchable two-row yarn strip, 4-up finished picks (#126)', () => {
+test('home follows Claude Design 1a: capsule-tab hero (Issue 274), switchable two-row yarn strip, 4-up finished picks (#126)', () => {
   const heroSection = fs.readFileSync('sections/hitoami-hero.liquid', 'utf8');
   assert.doesNotMatch(heroSection, /data-previous|data-next|data-current/);
-  assert.match(heroSection, /class="hitoami-dots"/);
+  assert.match(heroSection, /class="hitoami-tabs"/);
   const circles = fs.readFileSync('sections/yarn-entry-circles.liquid', 'utf8');
   // 同一商品字段的入口归为一段；段名可编辑；只有一段时不出切换。
   assert.match(circles, /if block\.settings\.field != ec_group_field/);

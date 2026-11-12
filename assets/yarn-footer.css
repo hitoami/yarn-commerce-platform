@@ -1,7 +1,7 @@
 /* Shopify owns all footer content and form behavior; this file owns presentation. */
 .footer.yarn-footer {
-  border-top: 1px solid var(--yarn-border-subtle);
-  background: var(--yarn-bg-sunken);
+  /* Issue 336：页脚为纯色（去掉 Issue 326 的渐变），与最后一个区块有清楚分界，顶部不画分隔线。 */
+  background: var(--yarn-bg-footer);
   color: var(--yarn-text-primary);
 }
 .yarn-footer .page-width {
@@ -25,9 +25,9 @@
 .yarn-footer .footer-block__newsletter { width: 100%; min-width: 0; flex: 1 1 100%; text-align: left; }
 .yarn-footer .footer-block__heading {
   margin: 0 0 var(--yarn-space-4);
-  color: var(--yarn-text-primary);
+  color: var(--yarn-text-heading);
   font-family: var(--yarn-display);
-  font-size: 2.2rem;
+  font-size: var(--yarn-fs-24);
   font-weight: 500;
   line-height: var(--yarn-leading);
   overflow-wrap: anywhere;
@@ -40,10 +40,10 @@
 .yarn-footer .footer__column--info { padding: 0; }
 .yarn-footer .footer__localization { justify-content: flex-start; padding: 0; gap: var(--yarn-space-4); }
 .yarn-footer .localization-form { margin: 0; padding: 0; }
-.yarn-footer .localization-form h2 { color: var(--yarn-text-muted); font-size: var(--yarn-type-meta); }
+.yarn-footer .localization-form h2 { color: var(--yarn-text-muted); font-size: var(--yarn-fs-13); }
 .yarn-footer .localization-form__select { margin-bottom: 0; }
 .yarn-footer .footer__copyright { text-align: left; margin-top: var(--yarn-space-5); }
-.yarn-footer .copyright__content { font-size: var(--yarn-type-meta); color: var(--yarn-text-muted); }
+.yarn-footer .copyright__content { font-size: var(--yarn-fs-13); color: var(--yarn-text-muted); }
 .yarn-footer :is(.copyright__content a, .list-menu__item--link) { color: var(--yarn-action); }
 .yarn-footer :is(.copyright__content a, .list-menu__item--link, .list-social__link) {
   display: inline-flex;
@@ -56,7 +56,7 @@
 @media (max-width: 749px) {
   .yarn-footer .footer__content-top { grid-template-columns: minmax(0, 1fr); gap: var(--yarn-space-5); }
   .yarn-footer__brand > :is(img, .yarn-wordmark) { width: 200px; }
-  .yarn-footer .footer-block__heading { font-size: 2rem; }
+  .yarn-footer .footer-block__heading { font-size: var(--yarn-fs-20); }
   .yarn-footer .footer__content-bottom-wrapper { justify-content: flex-start; }
   .yarn-footer .footer__localization { width: 100%; }
   .yarn-footer .footer__copyright { margin-top: var(--yarn-space-4); }

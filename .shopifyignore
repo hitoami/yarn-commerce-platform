@@ -13,3 +13,5 @@ package-lock.json
 impeccable-hero-plates.html
 design/**
 scripts/**
+tools/**
+.claude-plugin/**

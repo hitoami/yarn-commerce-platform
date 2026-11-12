@@ -26,6 +26,41 @@ module.exports = {
     { key: 'yarn-collection', path: '/collections/yarn', requiredContent: [
       { selector: '.ycb-chip', minimum: 2, label: '毛线分类胶囊' },
       { selector: '.ycb-grid .yx-product-card', minimum: 4, label: '目录真实毛线商品卡' },
+    ], flows: [
+      // #243：粗细胶囊筛列表；手感地图五档、点线球出卡片。数量随商品变化，只断言「有」和「被筛掉了一些」。
+      { key: 'weight', label: '粗细筛选', steps: [
+        { click: '[data-ycb-weight-open]' },
+        // 面板里的款数填好 = 全部商品已载入，再点才不会和载入抢跑。
+        { waitFor: '[data-ycb-weight="3"] [data-ycb-weight-count]' },
+        { click: '[data-ycb-weight="3"]' },
+        { waitFor: '.ycb-active__chip' },
+        { expect: '.ycb-grid .yx-product-card', minimum: 1, label: '选「细」后仍有商品' },
+        { expect: '[data-ycb-grid] > li[hidden]', present: true, minimum: 1, label: '其他粗细的商品被筛掉' },
+        { noOverflow: true },
+        { shot: true },
+      ] },
+      // #284：新手友好胶囊只列有新手理由的毛线，卡片下出现理由。
+      { key: 'beginner', label: '新手友好', steps: [
+        { waitFor: '[data-ycb-beginner]' },
+        { click: '[data-ycb-beginner]' },
+        // 列表载完全部商品、筛好后才去掉 aria-busy。
+        { waitFor: '[data-ycb-grid]:not([aria-busy])' },
+        { expect: '.ycb-grid .yx-product-card', minimum: 1, label: '新手友好的毛线' },
+        { expect: '.ycb-reason', minimum: 1, label: '卡片下的新手理由' },
+        { expect: '[data-ycb-grid] > li[hidden]', present: true, minimum: 1, label: '其他毛线被筛掉' },
+        { noOverflow: true },
+        { shot: true },
+      ] },
+      { key: 'map', label: '手感地图', steps: [
+        { click: '[data-ycb-view="map"]' },
+        { waitFor: '.ycb-ball' },
+        { expect: '.ycb-map__row', minimum: 5, label: '五档粗细' },
+        { expect: '.ycb-ball', minimum: 10, label: '地图上的线球' },
+        { click: '.ycb-ball' },
+        { waitFor: '.ycb-pop__go' },
+        { noOverflow: true },
+        { shot: true },
+      ] },
     ] },
     // #131：演示商品已删除，编织包不再销售；成品详情等真实成品上架后再加回。
     // #131 / #152：手工成品上架前集合为空，yarn-collection-browse 显示三语「准备中」说明而不是「0/0 件」。

@@ -50,18 +50,32 @@
 -%}
 {%- if picks_count == 0 and section.settings.placeholder_count > 0 -%}
   {%- capture placeholder_label -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'placeholder_label' -%}{%- endcapture -%}
-  {%- capture placeholder_photo -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'placeholder_photo' -%}{%- endcapture -%}
-<section class="yx-picks yarn-shell-block color-{{ section.settings.color_scheme }}" aria-labelledby="Picks-{{ section.id }}">
+  <section class="yx-picks yarn-shell-block color-{{ section.settings.color_scheme }}" aria-labelledby="Picks-{{ section.id }}">
   <div class="yx-picks__inner page-width">
     <div class="yx-picks__head">
       <div class="yx-picks__titles"><h2 id="Picks-{{ section.id }}">{{ picks_heading | escape }}</h2></div>
-      {%- if placeholder_label != blank -%}<span class="yx-picks__status">{{ placeholder_label | escape }}</span>{%- endif -%}
     </div>
-    <ul class="yx-picks__placeholders" role="list" aria-hidden="true">
-      {%- for i in (1..section.settings.placeholder_count) -%}
-        <li class="yx-placeholder-card"><span class="yx-placeholder-card__media">{{ placeholder_photo | escape }}</span><span class="yx-placeholder-card__line"></span><span class="yx-placeholder-card__line yx-placeholder-card__line--short"></span></li>
-      {%- endfor -%}
-    </ul>
+    {%- comment -%}#264：集合为空时不画灰色占位框，改为一张「准备中」预告卡（已有品牌图 + 一句话 + LINE 链接）。{%- endcomment -%}
+    {%- capture teaser_text -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'teaser_text' -%}{%- endcapture -%}
+    {%- capture teaser_cta -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'teaser_cta' -%}{%- endcapture -%}
+    <div class="yx-teaser">
+      <div class="yx-teaser__media">
+        {%- if section.settings.teaser_image != blank -%}
+          {{ section.settings.teaser_image | image_url: width: 1200 | image_tag: widths: '600, 900, 1200', sizes: '(min-width: 750px) 40vw, calc(100vw - 48px)', loading: 'lazy', alt: '' }}
+        {%- else -%}
+          <img src="{{ 'hitoami-brand-knitting-cat-768.webp' | asset_url }}" srcset="{{ 'hitoami-brand-knitting-cat-768.webp' | asset_url }} 768w, {{ 'hitoami-brand-knitting-cat-1536.webp' | asset_url }} 1536w" sizes="(min-width: 750px) 40vw, calc(100vw - 48px)" width="1536" height="1024" loading="lazy" decoding="async" alt="">
+        {%- endif -%}
+      </div>
+      <div class="yx-teaser__text">
+        {%- if placeholder_label != blank -%}<span class="yx-teaser__tag">{{ placeholder_label | escape }}</span>{%- endif -%}
+        {%- if teaser_text != blank -%}<p>{{ teaser_text | escape }}</p>{%- endif -%}
+        {%- comment -%}留空时用官方 LINE（与品牌区同一个链接）。{%- endcomment -%}
+        {%- assign teaser_link = section.settings.teaser_link | default: 'https://lin.ee/p5xrDGo' -%}
+        {%- if teaser_cta != blank -%}
+          <a class="yx-teaser__link" href="{{ teaser_link }}" target="_blank" rel="noopener">{{ teaser_cta | escape }} <span aria-hidden="true">→</span></a>
+        {%- endif -%}
+      </div>
+    </div>
   </div>
 </section>
 {%- elsif picks_count == 0 -%}
@@ -157,7 +171,15 @@
     { "type": "text", "id": "exit_note_zh", "label": "中文 · 出口卡脚注" },
     { "type": "text", "id": "exit_note_en", "label": "英文 · 出口卡脚注" },
     { "type": "header", "content": "集合为空时的占位(可选)" },
-    { "type": "range", "id": "placeholder_count", "min": 0, "max": 6, "step": 1, "default": 0, "label": "占位卡数", "info": "0 表示集合为空时整块不显示；占位卡不含商品名、价格或库存" },
+    { "type": "range", "id": "placeholder_count", "min": 0, "max": 6, "step": 1, "default": 0, "label": "集合为空时显示预告卡", "info": "0 表示集合为空时整块不显示；大于 0 时显示一张「准备中」预告卡（#264），不含商品名、价格或库存" },
+    { "type": "image_picker", "id": "teaser_image", "label": "预告卡图片", "info": "留空时用品牌区的织毛线小猫图" },
+    { "type": "text", "id": "teaser_text", "label": "日文 · 预告卡文案", "default": "スタッフが一つずつ編んでいます。入荷したら LINE でお知らせします。" },
+    { "type": "text", "id": "teaser_text_zh", "label": "中文 · 预告卡文案", "default": "店员正在一件件织，上架后会在 LINE 通知你。" },
+    { "type": "text", "id": "teaser_text_en", "label": "英文 · 预告卡文案", "default": "We are knitting them one by one. We will tell you on LINE when they arrive." },
+    { "type": "url", "id": "teaser_link", "label": "预告卡链接", "info": "留空时用官方 LINE 链接（与品牌区相同）" },
+    { "type": "text", "id": "teaser_cta", "label": "日文 · 预告卡链接文字", "default": "LINE で友だち追加" },
+    { "type": "text", "id": "teaser_cta_zh", "label": "中文 · 预告卡链接文字", "default": "加 LINE 好友" },
+    { "type": "text", "id": "teaser_cta_en", "label": "英文 · 预告卡链接文字", "default": "Add us on LINE" },
     { "type": "text", "id": "placeholder_label", "label": "日文 · 占位标记", "default": "準備中" },
     { "type": "text", "id": "placeholder_label_zh", "label": "中文 · 占位标记", "default": "准备中" },
     { "type": "text", "id": "placeholder_label_en", "label": "英文 · 占位标记", "default": "Coming soon" },

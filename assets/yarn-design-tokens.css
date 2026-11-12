@@ -1,43 +1,71 @@
-@font-face {
-  font-family: 'Yarn Display';
-  src: url('yarn-display-400.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Yarn Display';
-  src: url('yarn-display-600.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
+/* Issue 340（用户 2026-11-07 选定）：三语都用圆润风格——日文 Kiwi Maru 标题 + Zen Maru Gothic 正文（#326 原样），
+   中文 Huninn（标题正文同一款，只有 400 一档），英文 Nunito 标题 + Source Sans 3 正文。字体只在这里按语言指定，页面只引用 --yarn-display / --yarn-body。 */
 :root {
-  /* Fonts. Colors live in the generated block below. */
-  --yarn-display: 'Noto Serif JP', 'Noto Sans JP', serif;
-  --yarn-body: 'Noto Sans JP', sans-serif;
+  --yarn-display: 'Kiwi Maru', 'Zen Maru Gothic', serif;
+  --yarn-body: 'Zen Maru Gothic', sans-serif;
 }
-
-/* #168: serif headings (weight 500) + sans body and controls in all three languages, per the Figma prototype. */
 :root:lang(en) {
-  --yarn-display: 'Source Serif 4', serif;
-  --yarn-body: 'Figtree', 'Noto Sans JP', sans-serif;
+  /* 英文页里夹带的日文（商品名等）落到 Zen Maru Gothic，保持圆润。 */
+  --yarn-display: 'Nunito', 'Zen Maru Gothic', sans-serif;
+  --yarn-body: 'Source Sans 3', 'Zen Maru Gothic', sans-serif;
 }
 :root:lang(zh) {
-  --yarn-display: 'Noto Serif SC', 'Noto Sans SC', serif;
-  --yarn-body: 'Noto Sans SC', sans-serif;
+  /* Huninn 是台湾字形，逗号句号居中；theme.liquid 另载只含 ，。、：；！？ 的 Noto Sans SC 子集放在最前面，标点按简体习惯靠左下。 */
+  --yarn-display: 'Noto Sans SC', 'Huninn', sans-serif;
+  --yarn-body: 'Noto Sans SC', 'Huninn', sans-serif;
 }
+/* Issue 311：衬线标题字体只加载 500 一档；禁止浏览器把 600 / 700 伪加粗（会发糊、发硬），没加载的字重回落到最接近的真实字重。 */
+html { font-synthesis-weight: none; }
+
 /* Japanese: proportional kana and punctuation. Set on every element because the `font` shorthand resets it. */
 :root:lang(ja),
 :root:lang(ja) * {
   font-feature-settings: "palt";
 }
+
+/* #326：Kiwi Maru / Zen Maru Gothic 的 Google Fonts 版不带 palt，假名等宽排列；日文标题统一收紧 −0.05em（实测区块标题宽度与原 Noto + palt 一致）。
+   选择器 = 所有用标题字体的规则；:is() 取其中最高的优先级，盖过各组件为 Noto 调的字距。新增标题字体规则时同步加到这里。正文不调。 */
+:root:lang(ja) :is(
+  h1, h2, h3, h4, h5, .h0, .h1, .h2, .h3, .h4, .h5,
+  .cart-disclosure-modal__title, .hitoami-heading, .hitoami-story h2,
+  .yx-product-card__title, .yx-catalog-card .card__heading, .yx-content-card__title, .yx-exit__title,
+  .yx-picks__head h2, .yx-picks--guided .yx-picks__number, .yarn-cart-addons__title,
+  .ycb-head__title, .ycb-empty h2, .ycb-drawer__head h2,
+  .collection-hero__title, .yx-collection-preparing__title, .yp-library--rows .yp-card__title, .yarn-favorites-dialog h2,
+  .yarn-entries__heading, .yarn-entries__name, .yarn-fswitch__head h2, .yarn-fswitch__name,
+  .yarn-footer .footer-block__heading, .yarn-guide__heading, .yarn-guide__title, .yarn-guide__starter-title,
+  .header--project .yarn-project-nav-title, .yarn-nav-tile__name, .yarn-mega__title,
+  .yarn-hero--connected .yarn-hero__heading, .yarn-home-catalog h2, .yarn-home-guide h2,
+  body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2,
+  .yk-title, .yk-buy__head .yk-h2, .yk-tutorial .yk-h2,
+  product-info.yarn-product-page.yarn-product-page--yarn .product__title h1, .yp-yarn-block__title,
+  .yarn-project-discovery__heading h2, .yarn-work h3,
+  .yp-detail--modes :is(h1, h2, h3), .yp-mode-option strong, .yp-shell :is(h1, h2, h3),
+  .yp-component--yarn .yp-component__heading h4, .yd-search h2, .yd-search__bar h1,
+  .yx-season__heading, .yx-season-page__heading, .yx-season-page__toc-num, .yx-season-page__num,
+  .yx-season-page__name, .yx-season-page__lead, .yarn-support-page .main-page-title
+) {
+  letter-spacing: -0.05em;
+}
 html[lang]:root {
   --font-body-family: var(--yarn-body);
   --font-heading-family: var(--yarn-display);
   --font-heading-weight: 500;
+}
+
+/* Issue 340：全站字号与字重的底层规则。表单控件不继承字体时浏览器会用 Arial；粗体标签统一为中粗 500。 */
+:where(button, input, select, textarea) { font-family: inherit; }
+b, strong { font-weight: 500; }
+h1, .h1 { font-size: var(--yarn-fs-32); }
+h2, .h2 { font-size: var(--yarn-fs-24); }
+h3, .h3 { font-size: var(--yarn-fs-18); }
+h4, .h4 { font-size: var(--yarn-fs-16); }
+h5, .h5 { font-size: var(--yarn-fs-14); }
+.h0 { font-size: var(--yarn-fs-display); }
+@media screen and (min-width: 750px) {
+  h1, .h1 { font-size: var(--yarn-fs-40); }
+  h2, .h2 { font-size: var(--yarn-fs-32); }
+  h3, .h3 { font-size: var(--yarn-fs-20); }
 }
 
 /* BEGIN generated colors — edit design/tokens/colors.json, then run npm run tokens */
@@ -46,20 +74,24 @@ html[lang]:root {
   --yarn-home-thread: #8c8880; /* sand-600 · hitoami 小猫展开的装饰毛线 */
   --yarn-home-rope: #b8b1a4; /* sand-400 · 首页导览条挂线的线芯（线纹用 home-thread）；不得用于文字 */
   --yarn-home-logo: #ab5631; /* clay-580 · Logo 品牌色（取自 hitoami-logo.webp）；首页滚动小猫的毛线与毛线球（#151）；不得用于文字 */
-  --yarn-bg-page: #f9f6f0; /* cream-100 · 页面底 */
-  --yarn-bg-surface: #fffefa; /* cream-50 · 卡片、导航、横幅、输入框面 */
-  --yarn-bg-sunken: #ebe5dc; /* sand-100 · 次级区块（暖砂）、页脚 */
-  --yarn-bg-warm: #ece8dc; /* sand-150 · 暖米区块（配色方案 5） */
-  --yarn-bg-band: #f5f1e8; /* sand-50 · 暖米面板：毛线详情「要买几团？」估算面板 */
+  --yarn-bg-page: #fffdfa; /* cream-0 · 页面底（#336 暖 1：奶白，带一丝暖意；取代 #326 的近中性浅灰） */
+  --yarn-bg-surface: #ffffff; /* paper-0 · 卡片、导航、横幅、输入框面 */
+  --yarn-bg-sunken: #f2e5db; /* clay-100 · 次级面、图片占位、分段控件底（#336 暖 1：淡陶土深一档） */
+  --yarn-bg-warm: #fffdfa; /* cream-0 · 原暖米区块（配色方案 5）；与页面底同色 */
+  --yarn-bg-wash-sage: #ecf0e4; /* wash-sage-100 · #326 抹茶晨雾：区块竖向渐变的底端（从页面底渐变到它） */
+  --yarn-bg-wash-mist: #eef1f3; /* wash-mist-100 · #326 抹茶晨雾：区块竖向渐变的底端（雾灰蓝，取自小猫线轴） */
+  --yarn-dot-sage: #a9b897; /* sage-500 · #329 装饰小圆点（通知条前），取自小猫的抹茶毛线；不得用于文字 */
+  --yarn-bg-footer: #f2e5db; /* clay-100 · 页脚纯色（#336：去掉渐变，与次级面同色） */
+  --yarn-bg-band: #f8eee7; /* clay-50 · 浅色面板与首页交替色带（#336 暖 1 淡陶土）：首页第 2、4… 个区块、毛线详情估算面板等 */
   --yarn-bg-inverse: #8f3c26; /* clay-700 · 深色反白区块 */
-  --yarn-text-primary: #2f302f; /* charcoal-900 · 正文、通用标题、Rise 原生文字 */
-  --yarn-text-heading: #13202d; /* navy-900 · 商品家族标题 */
+  --yarn-text-primary: #4a3426; /* brown-800 · 正文、通用标题、Rise 原生文字（#326 深褐） */
+  --yarn-text-heading: #573d2c; /* brown-700 · 标题（#326 栗褐，比正文浅一级） */
   --yarn-text-warm: #3d3931; /* charcoal-800 · 暖米区块文字（配色方案 5） */
   --yarn-text-secondary: #4a4b48; /* charcoal-700 · 次级正文 */
   --yarn-text-muted: #686762; /* charcoal-500 · 辅助说明、规格、元信息 */
   --yarn-text-disabled: #8c8880; /* sand-600 · 不可用文字 */
-  --yarn-text-inverse: #fffefa; /* cream-50 · 深色区块上的文字 */
-  --yarn-text-on-action: #fffefa; /* cream-50 · 陶土实心按钮上的文字 */
+  --yarn-text-inverse: #ffffff; /* paper-0 · 深色区块上的文字 */
+  --yarn-text-on-action: #ffffff; /* paper-0 · 陶土实心按钮上的文字 */
   --yarn-text-on-cta: #292a28; /* charcoal-950 · 奶油主按钮上的文字 */
   --yarn-action: #a6472e; /* clay-600 · 链接、文字按钮、图标勾选、编号徽章文字 */
   --yarn-accent: #ab5631; /* clay-580 · 价格（与 Logo 同色，A1 #177）、跨区导航与结账等实心按钮 */
@@ -69,8 +101,8 @@ html[lang]:root {
   --yarn-cta-bg: #f8e5a9; /* butter-200 · 奶油主按钮：加购、Hero 主按钮、选中筛选 */
   --yarn-cta-hover: #f6dfa0; /* butter-300 · 奶油主按钮悬停 */
   --yarn-cta-border: #efd68d; /* butter-400 · 奶油按钮与浅色胶囊边线 */
-  --yarn-border-subtle: #e4dfd7; /* sand-200 · 分组细线、区块分隔 */
-  --yarn-border-card: #dedbd5; /* sand-250 · 商品与内容卡片边线 */
+  --yarn-border-subtle: #e6e4df; /* paper-200 · 分组细线、区块分隔 */
+  --yarn-border-card: #d6d2ca; /* paper-300 · 商品与内容卡片边线（#336 加深一档，卡片从中性底里分出来） */
   --yarn-border-control: #686762; /* charcoal-500 · 输入框、筛选与数量控件边线 */
   --yarn-border-disabled: #d3cfc7; /* sand-300 · 不可用控件边线 */
   --yarn-tint-butter: #f8e5a9; /* butter-200 · 柔色面：编织包角标、信息卡 */
@@ -111,18 +143,31 @@ html[lang]:root {
   --yarn-space-7: 48px;
   --yarn-content-max: 1320px;
   --yarn-gutter: 48px;
-  --yarn-type-control: 1.5rem;
-  --yarn-type-meta: 1.3rem;
-  --yarn-type-section: clamp(2.5rem, 2.5vw, 3.2rem);
+  /* Issue 340 字号阶梯：全站只用这 10 档 + 两档随屏宽缩放的大字；页面 CSS 只能写 var(--yarn-fs-*)，不写数字（tests/yarn-type-system.test.cjs 检查）。
+     12 角标、徽章 / 13 规格与辅助说明 / 14 小正文、控件 / 15 正文 / 16 卡片标题、按钮 / 18 小标题 / 20 卡片价格、手机小节标题 /
+     24 区块标题（手机）、详情价格 / 32 区块标题（桌面）、页面标题（手机）/ 40 页面标题（桌面）。最小 12px。 */
+  --yarn-fs-12: 12px;
+  --yarn-fs-13: 13px;
+  --yarn-fs-14: 14px;
+  --yarn-fs-15: 15px;
+  --yarn-fs-16: 16px;
+  --yarn-fs-18: 18px;
+  --yarn-fs-20: 20px;
+  --yarn-fs-24: 24px;
+  --yarn-fs-32: 32px;
+  --yarn-fs-40: 40px;
+  --yarn-fs-section: clamp(24px, 2.5vw, 32px);
+  --yarn-fs-display: clamp(32px, 4vw, 52px);
+  /* 字重只用两档：400 常规；500 强调、按钮、价格、标题。中文 Huninn 只有 400，500 也显示为 400。 */
+  --yarn-lh-heading: 1.35;
+  --yarn-lh-body: 1.8;
   --yarn-leading: 1.5;
   --yarn-focus-width: 2px;
   --yarn-focus-offset: 4px;
   /* Issue 55: commerce family sizing. */
   --yarn-card-radius: 10px;
-  --yarn-card-title: 16px;
-  --yarn-card-meta: 14px;
-  --yarn-card-price: 21px;
   --yarn-commerce-max: 1200px;
 }
 @media (max-width: 989px) { :root { --yarn-gutter: 24px; } }
+:root:lang(en) { --yarn-lh-body: 1.6; }
 @media (max-width: 749px) { :root { --yarn-gutter: 16px; } }

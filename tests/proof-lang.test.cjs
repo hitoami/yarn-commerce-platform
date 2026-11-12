@@ -25,3 +25,19 @@ test('English page: flags any CJK text and names the likely source', () => {
   assert.equal(detectLeak('毛糸', 'en'), 'ja');
   assert.equal(detectLeak('商品', 'en'), 'zh/ja');
 });
+
+const { validateFlows } = require('../scripts/proof.cjs');
+const proofConfig = require('../scripts/proof.config.cjs');
+
+test('277: every configured click flow is well formed', () => {
+  assert.doesNotThrow(() => validateFlows(proofConfig.pages));
+  assert.ok(proofConfig.pages.some(page => (page.flows || []).length), 'at least one page has a flow');
+});
+
+test('277: a flow step must do exactly one thing and expectations need a minimum and a label', () => {
+  const page = (steps) => [{ key: 'p', flows: [{ key: 'f', label: 'F', steps }] }];
+  assert.throws(() => validateFlows(page([{ click: 'a', wait: 1 }])), /只能有一种动作/);
+  assert.throws(() => validateFlows(page([{ jump: 'a' }])), /只能有一种动作/);
+  assert.throws(() => validateFlows(page([{ expect: '.x', label: 'x' }])), /minimum/);
+  assert.throws(() => validateFlows([{ key: 'p', flows: [{ key: 'f', steps: [] }] }]), /缺 key/);
+});

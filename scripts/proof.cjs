@@ -2,8 +2,10 @@
 // npm run proof：对本地预览（shopify theme dev）生成证据包，写到被忽略的 .proof/。
 // 语言泄漏 + 首屏截图清单 + 横向溢出 / 图片 / 脚本错误断言。PR 只引用 .proof/report.md 的结论。
 //
-// 用法：npm run proof -- [--base <url>] [--live] [--pages home,yarn-pdp] [--locales zh,en] [--viewports mobile]
+// 用法：npm run proof -- [--base <url>] [--live] [--pages home,yarn-pdp] [--locales zh,en] [--viewports mobile] [--browser webkit]
 // --live（或 PROOF_LIVE=1）：按线上语言路径（日文 /、中文 /zh、英文 /en）检查 PROOF_BASE_URL / --base 指向的线上店铺。
+// --browser webkit（或 PROOF_BROWSER=webkit）：用 Safari 引擎跑，需先下载 WebKit（见 docs/agents/pitfalls.md）。
+// #277：页面可在 proof.config.cjs 写 flows（点击流程），首屏截图后逐个从页面初始状态跑，失败记为失败项。
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -17,7 +19,7 @@ function parseArgs(argv) {
   const args = {};
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--live') { args.live = true; continue; }
-    const match = argv[i].match(/^--(base|pages|locales|viewports|concurrency)$/);
+    const match = argv[i].match(/^--(base|pages|locales|viewports|concurrency|browser)$/);
     if (!match || argv[i + 1] === undefined) throw new Error(`未知参数：${argv[i]}`);
     args[match[1]] = argv[++i];
   }
@@ -30,6 +32,67 @@ function pick(list, csv, label) {
   const unknown = keys.filter(key => !list.some(item => item.key === key));
   if (unknown.length) throw new Error(`未知${label}：${unknown.join(', ')}（可选：${list.map(item => item.key).join(', ')}）`);
   return list.filter(item => keys.includes(item.key));
+}
+
+// #277 点击流程的步骤，每步只做一件事：
+//   { click: 选择器 }                     点第一个匹配的元素
+//   { waitFor: 选择器 }                   等它出现（最多 15 秒）
+//   { wait: 毫秒 }                        固定等待，尽量少用
+//   { expect: 选择器, minimum, maximum?, label, present? }
+//                                          数看得见的元素（present: true 时数 DOM 里存在的，含隐藏的）
+//   { noOverflow: true }                  页面不横向溢出
+//   { shot: true }                        截图进报告
+const STEP_KEYS = ['click', 'waitFor', 'wait', 'expect', 'noOverflow', 'shot'];
+function validateFlows(pages) {
+  for (const page of pages) {
+    for (const flow of page.flows || []) {
+      if (!flow.key || !flow.label || !Array.isArray(flow.steps) || !flow.steps.length) throw new Error(`${page.key} 的流程缺 key / label / steps`);
+      flow.steps.forEach((step, index) => {
+        const kinds = STEP_KEYS.filter(key => key in step);
+        if (kinds.length !== 1) throw new Error(`${page.key} · ${flow.key} 第 ${index + 1} 步要且只能有一种动作（${STEP_KEYS.join(' / ')}）`);
+        if ('expect' in step && (typeof step.minimum !== 'number' || !step.label)) throw new Error(`${page.key} · ${flow.key} 第 ${index + 1} 步 expect 要写 minimum 和 label`);
+      });
+    }
+  }
+  return pages;
+}
+
+async function countVisible(page, selector) {
+  return page.locator(selector).evaluateAll(elements => elements.filter(element => {
+    const box = element.getBoundingClientRect();
+    const style = getComputedStyle(element);
+    return box.width > 0 && box.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+  }).length);
+}
+
+async function runFlows(page, url, job, result) {
+  const { page: target, locale, viewport } = job;
+  for (const flow of target.flows || []) {
+    const fail = (index, message) => result.failures.push(`流程「${flow.label}」第 ${index + 1} 步：${message}`);
+    try {
+      await page.goto(url, { waitUntil: 'load', timeout: 90000 });
+      for (const [index, step] of flow.steps.entries()) {
+        if (step.click) await page.locator(step.click).first().click({ timeout: 10000 });
+        else if (step.waitFor) await page.locator(step.waitFor).first().waitFor({ state: 'visible', timeout: 15000 });
+        else if (step.wait) await page.waitForTimeout(step.wait);
+        else if (step.expect) {
+          const found = step.present ? await page.locator(step.expect).count() : await countVisible(page, step.expect);
+          if (found < step.minimum || (step.maximum !== undefined && found > step.maximum)) {
+            fail(index, `${step.label}（实际 ${found}，应 ${step.maximum === undefined ? `至少 ${step.minimum}` : `${step.minimum}–${step.maximum}`}）`);
+          }
+        } else if (step.noOverflow) {
+          const by = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+          if (by > 1) fail(index, `横向溢出 ${by}px`);
+        } else if (step.shot) {
+          const shot = path.join('shots', viewport.key, `${locale.key}-${target.key}-${flow.key}.png`);
+          await page.screenshot({ path: path.join(OUT, shot) });
+          result.flowShots.push({ flow: flow.label, shot });
+        }
+      }
+    } catch (error) {
+      result.failures.push(`流程「${flow.label}」中断：${error.message.split('\n')[0]}`);
+    }
+  }
 }
 
 // 在页面里运行：收集文字、溢出、图片与占位图。只收集，不判断语言。
@@ -187,7 +250,7 @@ async function runJob(browser, job, baseUrl) {
   });
   const page = await context.newPage();
   const url = `${baseUrl}${locale.prefix}${target.path === '/' && locale.prefix ? '' : target.path}`;
-  const result = { page: target.key, locale: locale.key, viewport: viewport.key, url, failures: [], warnings: [], leaks: [], contentLeaks: [] };
+  const result = { page: target.key, locale: locale.key, viewport: viewport.key, url, failures: [], warnings: [], leaks: [], contentLeaks: [], flowShots: [] };
   const origin = new URL(baseUrl).host;
 
   page.on('pageerror', error => result.failures.push(`脚本异常：${error.message.split('\n')[0]}`));
@@ -224,11 +287,7 @@ async function runJob(browser, job, baseUrl) {
 
     // Layout checks alone can pass a blank page. Required content is part of acceptance.
     for (const expected of target.requiredContent || []) {
-      const visible = await page.locator(expected.selector).evaluateAll(elements => elements.filter(element => {
-        const box = element.getBoundingClientRect();
-        const style = getComputedStyle(element);
-        return box.width > 0 && box.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
-      }).length);
+      const visible = await countVisible(page, expected.selector);
       if (visible < expected.minimum) result.failures.push(`内容未齐：${expected.label}（实际 ${visible}，至少 ${expected.minimum}）`);
     }
 
@@ -237,6 +296,7 @@ async function runJob(browser, job, baseUrl) {
     await page.waitForTimeout(300);
     result.shot = path.join('shots', viewport.key, `${locale.key}-${target.key}.png`);
     await page.screenshot({ path: path.join(OUT, result.shot) });
+    await runFlows(page, url, job, result);
   } catch (error) {
     result.failures.push(`检查中断：${error.message.split('\n')[0]}`);
   } finally {
@@ -255,6 +315,7 @@ function writeReport(results, meta) {
     `- 时间：${meta.time}`,
     `- 代码：${meta.git}`,
     `- 预览：${meta.baseUrl}`,
+    `- 浏览器：${meta.engine}`,
     `- 结论：**${failed.length ? '未通过' : '通过'}**（主题侧语言泄漏 ${count('leaks')}，失败项 ${count('failures')}；内容层混语言 ${count('contentLeaks')}、提醒 ${count('warnings')} 不阻塞）`,
     '',
     ...(meta.skipped && meta.skipped.length ? ['## 跳过', '', ...meta.skipped.map(item => `- ${item}`), ''] : []),
@@ -272,6 +333,8 @@ function writeReport(results, meta) {
       lines.push(`| ${page.key} | ${locale.key} | ${cells.join(' | ')} |`);
     }
   }
+  const flowShots = results.flatMap(r => r.flowShots.map(item => `| ${r.page} | ${r.locale} · ${r.viewport} | ${item.flow} | ${item.shot} |`));
+  if (flowShots.length) lines.push('', '## 点击流程截图', '', '| 页面 | 语言 · 视口 | 流程 | 截图 |', '|---|---|---|---|', ...flowShots);
   const section = (title, key, format) => {
     const rows = results.flatMap(r => r[key].map(item => `- [${r.locale} · ${r.viewport}] ${r.page}：${format(item)}`));
     if (rows.length) lines.push('', `## ${title}`, '', ...[...new Set(rows)]);
@@ -304,8 +367,22 @@ async function main() {
   const { resolved, skipped } = await resolvePages(pages, baseUrl);
   pages = resolved;
 
-  const { chromium } = require('playwright-core');
-  const browser = await chromium.launch({ channel: process.env.PROOF_BROWSER_CHANNEL || 'chrome' });
+  validateFlows(pages);
+  const engine = args.browser || process.env.PROOF_BROWSER || 'chromium';
+  if (!['chromium', 'webkit'].includes(engine)) throw new Error(`未知浏览器：${engine}（可选：chromium, webkit）`);
+  const playwright = require('playwright-core');
+  let browser;
+  try {
+    browser = engine === 'webkit'
+      ? await playwright.webkit.launch()
+      : await playwright.chromium.launch({ channel: process.env.PROOF_BROWSER_CHANNEL || 'chrome' });
+  } catch (error) {
+    if (engine === 'webkit' && /Executable doesn't exist/.test(error.message)) {
+      console.error('还没有下载 Safari 引擎（WebKit）。下载命令：node node_modules/playwright-core/cli.js install webkit（约百 MB，下载前先问锦晨）。');
+      process.exit(2);
+    }
+    throw error;
+  }
   fs.rmSync(OUT, { recursive: true, force: true });
   for (const viewport of viewports) fs.mkdirSync(path.join(OUT, 'shots', viewport.key), { recursive: true });
 
@@ -330,7 +407,7 @@ async function main() {
     time: new Date().toISOString(),
     git: `${git[0]}${Number(git[1]) ? `（另有 ${git[1].trim()} 个未提交改动）` : ''}`,
     baseUrl: live ? `${baseUrl}（线上语言路径）` : baseUrl,
-    pages, locales, viewports, skipped,
+    pages, locales, viewports, skipped, engine,
     seconds: Math.round((Date.now() - started) / 1000),
   };
   const summary = writeReport(results, meta);
@@ -346,4 +423,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { cartAjaxUrl, pickSoldOut };
+module.exports = { cartAjaxUrl, pickSoldOut, validateFlows };

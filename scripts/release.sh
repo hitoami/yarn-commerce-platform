@@ -18,6 +18,11 @@ if [ "$(chars "$NAME")" -gt 50 ]; then
   exit 1
 fi
 WORK="$(mktemp -d)"
+# #275：完整输出同时写进日志文件。推送要几分钟，只看 tail 会以为卡住；看这个文件判断进度。
+mkdir -p "$HOME/.cache"
+LOG="$HOME/.cache/hitoami-release-$(date +%Y%m%d-%H%M%S).log"
+exec > >(tee -a "$LOG") 2>&1
+echo "完整日志：$LOG"
 # 几个会话可能同时准奏上线：本机同一时间只跑一个发布，其余排队（最多等 30 分钟；超过 1 小时的锁视为残留）。
 mkdir -p "$HOME/.cache"
 LOCK="$HOME/.cache/hitoami-release.lock"

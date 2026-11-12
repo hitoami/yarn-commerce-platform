@@ -181,10 +181,15 @@
 
       if navigation_menu != blank
         capture nav_tiles
-          render 'yarn-nav-tiles', blocks: section.blocks, collection: section.settings.drawer_yarn_collection, all_image: section.settings.drawer_all_image
+          render 'yarn-nav-tiles', blocks: section.blocks, collection: section.settings.drawer_yarn_collection, all_image: section.settings.drawer_all_image, all_illustration: section.settings.drawer_all_illustration
         endcapture
         assign nav_tiles = nav_tiles | strip
-        render 'yarn-header-drawer', navigation_menu: navigation_menu, nav_tiles: nav_tiles, show_country_selector: country_selector, show_language_selector: language_selector, show_social_links: social_links
+        # #284：有新手友好毛线时，毛线入口旁多一个「第一次织毛线」，指向毛线目录的新手友好筛选。
+        capture nav_first_time
+          render 'yarn-beginner-first', beginner_collection: section.settings.drawer_yarn_collection
+        endcapture
+        assign nav_first_time = nav_first_time | strip
+        render 'yarn-header-drawer', navigation_menu: navigation_menu, show_country_selector: country_selector, show_language_selector: language_selector, show_social_links: social_links, first_time: nav_first_time, welcome_illustration: section.settings.drawer_welcome_illustration
       endif
 
       if render_search_left
@@ -227,7 +232,7 @@
 
     {%- liquid
       if navigation_menu != blank and section.settings.menu_type_desktop != 'drawer'
-        render 'yarn-header-menu', navigation_menu: navigation_menu, nav_tiles: nav_tiles
+        render 'yarn-header-menu', navigation_menu: navigation_menu, nav_tiles: nav_tiles, first_time: nav_first_time, welcome_illustration: section.settings.drawer_welcome_illustration
       endif
     %}
 
@@ -277,17 +282,9 @@
           </localization-form>
         {% endif %}
 
-        {%- if section.settings.enable_language_selector and localization.available_languages.size > 1 -%}
-          <localization-form class="small-hide medium-hide" data-prevent-hide>
-            {%- form 'localization', id: 'HeaderLanguageForm', class: 'localization-form' -%}
-              <div>
-                <h2 class="visually-hidden" id="HeaderLanguageLabel">{{ 'localization.language_label' | t }}</h2>
-                {%- render 'language-localization', localPosition: 'HeaderLanguage' -%}
-              </div>
-            {%- endform -%}
-          </localization-form>
-        {%- endif -%}
       </div>
+      {%- comment -%}#258：语言按钮在所有宽度都显示（手机替代账户图标，账户在抽屉里）；手机弹底部面板，桌面弹浮层。{%- endcomment -%}
+      {%- if language_selector -%}{%- render 'yarn-language-switch' -%}{%- endif -%}
       {% render 'header-search', input_id: 'Search-In-Modal' %}
       {%- comment -%}#175 收藏件数与实心状态由 assets/yarn-favorites.js 填写；飞入与跳动由 yarn-card-actions.js 负责。{%- endcomment -%}
       <a href="{{ routes.search_url }}?browse=favorites" class="header__icon header__icon--favorites link focus-inset" data-favorites-header
@@ -733,8 +730,10 @@
     { "type": "text", "id": "drawer_season_text", "label": "本季主推横条文案（日文）", "default": "この季節、編みたい色。" },
     { "type": "text", "id": "drawer_season_text_zh", "label": "本季主推横条文案（中文）", "default": "这一季，想织的颜色。" },
     { "type": "text", "id": "drawer_season_text_en", "label": "本季主推横条文案（英文）", "default": "This season, colours to knit." },
-    { "type": "collection", "id": "drawer_yarn_collection", "label": "毛线集合", "info": "菜单里指向这个集合的项：手机菜单展开为分类图块，桌面点开为大图面板。" },
+    { "type": "collection", "id": "drawer_yarn_collection", "label": "毛线集合", "info": "菜单里指向这个集合的项：手机菜单直接打开集合并显示款数，桌面点开为大图面板。" },
     { "type": "image_picker", "id": "drawer_all_image", "label": "「全部毛线」图块图片", "info": "留空时拼集合前四件商品主图。" },
+    { "type": "select", "id": "drawer_all_illustration", "label": "「全部毛线」小猫插画", "info": "#329：桌面下拉里「全部毛线」一格的小猫。", "options": [{"value": "", "label": "不配小猫（显示照片）"}, {"value": "hitoami-cat-knitting.webp", "label": "织毛衣的橘猫"}, {"value": "hitoami-cat-spools.webp", "label": "线轴旁的灰绿猫"}, {"value": "hitoami-cat-curly.webp", "label": "卷毛猫与毛线球"}, {"value": "hitoami-cat-beret.webp", "label": "戴贝雷帽的白猫"}, {"value": "hitoami-cat-lying.webp", "label": "趴着抱毛线的猫"}, {"value": "hitoami-cat-basket.webp", "label": "提毛线篮的三花猫"}], "default": "" },
+    { "type": "select", "id": "drawer_welcome_illustration", "label": "手机抽屉欢迎区小猫", "info": "#329：手机菜单顶部欢迎区的小猫；不选则不显示欢迎区。", "options": [{"value": "", "label": "不配小猫（显示照片）"}, {"value": "hitoami-cat-knitting.webp", "label": "织毛衣的橘猫"}, {"value": "hitoami-cat-spools.webp", "label": "线轴旁的灰绿猫"}, {"value": "hitoami-cat-curly.webp", "label": "卷毛猫与毛线球"}, {"value": "hitoami-cat-beret.webp", "label": "戴贝雷帽的白猫"}, {"value": "hitoami-cat-lying.webp", "label": "趴着抱毛线的猫"}, {"value": "hitoami-cat-basket.webp", "label": "提毛线篮的三花猫"}], "default": "" },
     { "type": "text", "id": "nav_yarn_eyebrow", "label": "桌面毛线面板小标题（日文）", "default": "毛糸をえらぶ" },
     { "type": "text", "id": "nav_yarn_eyebrow_zh", "label": "桌面毛线面板小标题（中文）", "default": "挑毛线" },
     { "type": "text", "id": "nav_yarn_eyebrow_en", "label": "桌面毛线面板小标题（英文）", "default": "Choose yarn" },
@@ -762,7 +761,8 @@
         },
         { "type": "text", "id": "entry", "label": "毛线入口 handle", "info": "yarn_entry Metaobject 的 handle，例如 gradient。" },
         { "type": "image_picker", "id": "image", "label": "图片", "info": "留空时用首个匹配商品的主图。" },
-        { "type": "text", "id": "source_photo", "label": "主题内置图片文件名", "info": "与首页「挑毛线」相同的原图，如 hitoami-source-texture-7.jpeg。" }
+        { "type": "text", "id": "source_photo", "label": "主题内置图片文件名", "info": "与首页「挑毛线」相同的原图，如 hitoami-source-texture-7.jpeg。" },
+        { "type": "select", "id": "illustration", "label": "桌面下拉小猫插画", "info": "#329：选了小猫时，桌面「毛线」下拉里这一格显示小猫和渐变底，不显示照片。", "options": [{"value": "", "label": "不配小猫（显示照片）"}, {"value": "hitoami-cat-knitting.webp", "label": "织毛衣的橘猫"}, {"value": "hitoami-cat-spools.webp", "label": "线轴旁的灰绿猫"}, {"value": "hitoami-cat-curly.webp", "label": "卷毛猫与毛线球"}, {"value": "hitoami-cat-beret.webp", "label": "戴贝雷帽的白猫"}, {"value": "hitoami-cat-lying.webp", "label": "趴着抱毛线的猫"}, {"value": "hitoami-cat-basket.webp", "label": "提毛线篮的三花猫"}], "default": "" }
       ]
     }
   ]
