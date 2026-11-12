@@ -223,23 +223,30 @@ function pickSoldOut(products) {
   return product ? `/products/${product.handle}` : null;
 }
 
-async function resolvePages(pages, baseUrl) {
+async function resolvePages(pages, baseUrl, request = fetch) {
   const skipped = [];
   const resolved = [];
   for (const page of pages) {
     if (page.path || page.find !== 'sold-out-yarn') { resolved.push(page); continue; }
     let found = null;
+    let prerequisite = '目录暂无已定价且全部规格缺货的商品';
     try {
-      const response = await fetch(`${baseUrl}/collections/yarn/products.json?limit=250`, { signal: AbortSignal.timeout(20000) });
+      const response = await request(`${baseUrl}/collections/yarn/products.json?limit=250`, { signal: AbortSignal.timeout(20000) });
+      if (!response.ok) throw new Error(`目录读取 HTTP ${response.status}`);
       found = pickSoldOut((await response.json()).products || []);
-    } catch {}
+    } catch (error) { prerequisite = `无法确认真实库存：${error.message}`; }
     if (found) resolved.push({ ...page, path: found });
-    else skipped.push(`${page.key}：目录里暂无缺货商品，跳过`);
+    else {
+      skipped.push(`${page.key}：原生缺货页样例前提未满足（${prerequisite}）；本轮执行隔离 Liquid 缺货样例，不代表原生页面已验收`);
+      if (!pages.some(item => item.fixture === 'yarn-sold-out')) {
+        resolved.push(config.pages.find(item => item.fixture === 'yarn-sold-out'));
+      }
+    }
   }
   return { resolved, skipped };
 }
 
-async function runJob(browser, job, baseUrl) {
+async function runJob(browser, job, baseUrl, fixtureBase) {
   const { page: target, locale, viewport } = job;
   const context = await browser.newContext({
     viewport: { width: viewport.width, height: viewport.height },
@@ -249,8 +256,10 @@ async function runJob(browser, job, baseUrl) {
     locale: locale.browserLocale,
   });
   const page = await context.newPage();
-  const url = `${baseUrl}${locale.prefix}${target.path === '/' && locale.prefix ? '' : target.path}`;
-  const result = { page: target.key, locale: locale.key, viewport: viewport.key, url, failures: [], warnings: [], leaks: [], contentLeaks: [], flowShots: [] };
+  const url = target.fixture
+    ? `${fixtureBase}/${target.fixture}?locale=${locale.key === 'zh' ? 'zh-CN' : locale.key}`
+    : `${baseUrl}${locale.prefix}${target.path === '/' && locale.prefix ? '' : target.path}`;
+  const result = { source: target.fixture ? 'isolated-liquid-fixture' : 'shopify-preview', page: target.key, locale: locale.key, viewport: viewport.key, url, failures: [], warnings: [], leaks: [], contentLeaks: [], flowShots: [] };
   const origin = new URL(baseUrl).host;
 
   page.on('pageerror', error => result.failures.push(`脚本异常：${error.message.split('\n')[0]}`));
@@ -319,6 +328,7 @@ function writeReport(results, meta) {
     `- 结论：**${failed.length ? '未通过' : '通过'}**（主题侧语言泄漏 ${count('leaks')}，失败项 ${count('failures')}；内容层混语言 ${count('contentLeaks')}、提醒 ${count('warnings')} 不阻塞）`,
     '',
     ...(meta.skipped && meta.skipped.length ? ['## 跳过', '', ...meta.skipped.map(item => `- ${item}`), ''] : []),
+    ...(meta.pages.some(page => page.fixture) ? ['隔离样例（fixture-*）使用当前仓库 Liquid 与固定数据；不代表 Shopify 线上库存或真实结账验收。', ''] : []),
     '## 截图清单',
     '',
     `| 页面 | 语言 | ${meta.viewports.map(v => `${v.key} ${v.width}`).join(' | ')} |`,
@@ -387,20 +397,22 @@ async function main() {
   for (const viewport of viewports) fs.mkdirSync(path.join(OUT, 'shots', viewport.key), { recursive: true });
 
   const jobs = pages.flatMap(page => locales.flatMap(locale => viewports.map(viewport => ({ page, locale, viewport }))));
+  const fixtures = pages.some(page => page.fixture) ? await require('./proof-fixtures.cjs').startFixtures() : null;
   const results = [];
   const started = Date.now();
   let next = 0;
   const worker = async () => {
     while (next < jobs.length) {
       const job = jobs[next++];
-      let result = await runJob(browser, job, baseUrl);
+      let result = await runJob(browser, job, baseUrl, fixtures?.url);
       // 本地预览偶发的网络请求失败（多为 Shopify 遥测）重跑一次；再失败就如实报告。
-      if (result.failures.length && result.failures.every(f => f.startsWith('脚本异常：Failed to fetch'))) result = await runJob(browser, job, baseUrl);
+      if (result.failures.length && result.failures.every(f => f.startsWith('脚本异常：Failed to fetch'))) result = await runJob(browser, job, baseUrl, fixtures?.url);
       results.push(result);
     }
   };
   await Promise.all(Array.from({ length: Number(args.concurrency || 4) }, worker));
   await browser.close();
+  if (fixtures) await fixtures.close();
 
   const git = execSync('git log -1 --format="%h %s" && git status --porcelain | wc -l', { encoding: 'utf8' }).trim().split('\n');
   const meta = {
@@ -423,4 +435,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { cartAjaxUrl, pickSoldOut, validateFlows };
+module.exports = { cartAjaxUrl, pickSoldOut, resolvePages, validateFlows };
