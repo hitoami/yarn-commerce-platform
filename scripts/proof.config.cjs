@@ -90,7 +90,11 @@ module.exports = {
     ] },
     { key: 'cart-drawer', path: '/products/mvp-yarn-18', openCart: true },
     // #149：搜索按毛线 / 材料包 / 手工成品分组；「段染」覆盖毛线与材料包两组，另看一次无结果状态。
-    { key: 'search', path: '/search?q=%E6%AE%B5%E6%9F%93' },
+    { key: 'search', path: '/search?q=%E6%AE%B5%E6%9F%93', flows: [
+      { key: 'keyboard-focus', label: 'Enter / Space / 点击展开后继续到商品', steps: [
+        { run: require('./proof-search-focus.cjs').searchFocus }, { noOverflow: true }, { shot: true },
+      ] },
+    ] },
     { key: 'search-empty', path: '/search?q=zzqx' },
     { key: 'commercial-disclosure', path: '/pages/commercial-disclosure' },
     { key: 'returns-exchanges', path: '/pages/returns-exchanges' },
