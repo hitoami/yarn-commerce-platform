@@ -563,10 +563,10 @@
     "addons_title": "凑满免运费，可以看看",
     "addon_add_label": "把{{ name }}加入购物车",
     "quick_error": "没能加入购物车。",
-    "footer_trust": "日本全国配送 · LINE 选线支持 · Shopify 安全结账",
+    "footer_trust": "LINE 选线支持 · Shopify 安全结账",
     "free_remaining": "再买 {{ amount }} 即可免运费",
     "free_reached": "已满足免运费条件",
-    "free_rule": "订单含税满 {{ amount }}，日本全国免运费（以结账页为准）",
+    "free_rule": "订单含税满 {{ amount }} 免运费（适用地区与条件请在结账页核对）",
     "kit_title": "购物车里有材料包用的线",
     "kit_text": "下单后，把订单号和作品名发到官方 LINE，店员核对后发送教程。"
   },
@@ -584,7 +584,7 @@
     "trust_free": "满 {{ amount }} 免运费",
     "trust_line": "LINE 真人选线",
     "trust_staff": "店员选线咨询",
-    "trust_ship": "日本全国配送",
+    "trust_ship": "配送地区与费用确认中",
     "beginner_heading": "新手能用吗？",
     "per_ball": "/ 团",
     "per_ball_tax_included": "/ 团（含税）",
@@ -964,8 +964,8 @@
     "finished_coming_soon": "手工成品还在准备中，上架后也会出现在搜索结果里。"
   },
   "yarn_cart_assurance": {
-    "title_1": "日本全国配送",
-    "text_1": "订单含税满9,900日元免运费",
+    "title_1": "配送说明",
+    "text_1": "地区与费用确认中，购买前请先咨询。",
     "title_2": "选线支持",
     "text_2": "可咨询配色与作品所需用量",
     "title_3": "放心购物",

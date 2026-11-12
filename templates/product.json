@@ -31,10 +31,10 @@
         "shopping-note": {
           "type": "text",
           "settings": {
-            "text": "税込価格 · 日本全国配送 · 税込9,900円以上で送料無料",
+            "text": "配送地域・送料は確認中です",
             "text_style": "body",
-            "text_zh": "含税价格 · 日本全国配送 · 满 9,900 日元免运费",
-            "text_en": "Tax included · Ships across Japan · Free shipping over ¥9,900"
+            "text_zh": "配送地区与费用确认中",
+            "text_en": "Delivery areas and fees are being confirmed"
           }
         },
         "description": {
@@ -87,9 +87,9 @@
             "heading_zh": "配送与运费",
             "heading_en": "Shipping",
             "icon": "truck",
-            "content": "<p>日本全国へ配送します。税込9,900円以上のご注文は送料無料です。発送時期は商品と在庫状況により異なります。</p>",
-            "content_zh": "<p>日本全国配送;订单含税满 9,900 日元免运费。发货时间因商品与库存情况而异。</p>",
-            "content_en": "<p>We ship across Japan. Orders over ¥9,900 (tax included) ship free. Dispatch times vary by item and stock.</p>",
+            "content": "<p>配送地域・送料は現在確認中です。ご購入前にお問い合わせください。</p>",
+            "content_zh": "<p>配送地区与费用尚在确认中。购买前请先咨询。</p>",
+            "content_en": "<p>Delivery areas and fees are being confirmed. Please contact us before purchasing.</p>",
             "page": ""
           }
         },
