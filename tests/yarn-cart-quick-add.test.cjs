@@ -6,8 +6,9 @@ function setup(button) {
   let listener;
   const requests = [];
   vm.runInNewContext(fs.readFileSync('assets/yarn-cart.js', 'utf8'), {
-    window: { location: { pathname: '/en/products/yarn', reload() {} }, routes: { cart_add_url: '/en/cart/add' } },
+    window: { location: { pathname: '/en/products/yarn', reload() {}, assign() {} }, routes: { cart_add_url: '/en/cart/add' } },
     document: { addEventListener: (_, fn) => listener = fn, querySelector: () => null },
+    AbortController, setTimeout: () => 1, clearTimeout() {},
     fetch: async (url, options) => { requests.push({ url, body: JSON.parse(options.body) }); return { ok: true, json: async () => ({}) }; },
   });
   return { requests, click: () => listener({ target: { closest: () => button } }) };
