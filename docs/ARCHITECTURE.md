@@ -22,7 +22,7 @@ flowchart TD
 
 Shopify 使用 Liquid 直接生成首屏商品内容。当某个页面需要 My Project 或 UGC 等高级功能时，Theme 中的 JavaScript 再通过自有 API 或 Shopify App Proxy 获取数据并渲染局部模块。
 
-Issue #39 已实现最小账号收藏服务代码（`services/favorites`），外部部署和应用安装尚未完成；图中的其余 Platform Service 能力仍属未来范围。收藏通过 App Proxy 的签名客户 ID 确认账号，SQLite 仅保存实体 ID 与收藏时间。Theme 配置只含同源代理路径，详情见[服务接入说明](../services/favorites/README.md)。
+上线阶段的账号与收藏（2026-09-26 用户决定，Issue #87）：账号使用 Shopify 新版顾客账号，不自建；收藏只覆盖 Product，使用 Shopify 应用商店的现成应用，具体应用待选型与批准。Issue #39 的自建收藏服务代码（`services/favorites`）保留但不部署，作品收藏与跨实体收藏等到 My Project 进入近期范围时再启用，接入方式见[服务接入说明](../services/favorites/README.md)。图中其余 Platform Service 能力仍属未来范围。
 
 独立搜索由 Liquid 分别生成公开 Project Metaobjects 与 Shopify Product 卡片，在浏览器按各实体自身的名称、描述和用途分组匹配。超过单页时通过同一 Section 的分页补齐目录；不使用关联作品自动扩充商品命中，也不从 Storefront API 重取价格。该实现适用于当前小目录，目录显著增长后再评估服务端索引。
 
@@ -36,7 +36,8 @@ Issue #39 已实现最小账号收藏服务代码（`services/favorites`），�
 | Order, refund | Shopify | 自有系统可保存 Shopify ID 和派生状态 |
 | Project 公开内容 | Shopify Metaobjects / Metafields initially | 名称、难度、时间、教程和关联商品 |
 | My Project, progress | Platform Service | 个性化状态 |
-| UGC, favorites, likes | Platform Service | 包含权限、审核和媒体存储 |
+| Product 收藏（上线阶段） | Shopify 应用商店现成应用 | 依附 Shopify 顾客账号，不自建服务 |
+| UGC、作品收藏、likes | Platform Service | 包含权限、审核和媒体存储；未来范围 |
 | Community, creator, payout | Platform Service | 只在经过人工验证需求后建设 |
 
 Platform Service 中的记录使用 `shopify_customer_id`、`shopify_product_id`、`shopify_variant_id` 和 `shopify_order_id` 建立关联。
