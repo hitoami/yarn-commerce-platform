@@ -27,6 +27,9 @@ module.exports = {
       { selector: '.ycb-chip', minimum: 2, label: '毛线分类胶囊' },
       { selector: '.ycb-grid .yx-product-card', minimum: 4, label: '目录真实毛线商品卡' },
     ], flows: [
+      { key: 'network-recovery', label: '目录失败保留内容并重试', steps: [
+        { run: require('./proof-network.cjs').collectionRecovery }, { noOverflow: true }, { shot: true },
+      ] },
       // #243：粗细胶囊筛列表；手感地图五档、点线球出卡片。数量随商品变化，只断言「有」和「被筛掉了一些」。
       { key: 'weight', label: '粗细筛选', steps: [
         { click: '[data-ycb-weight-open]' },
@@ -66,6 +69,11 @@ module.exports = {
     // #131 / #152：手工成品上架前集合为空，yarn-collection-browse 显示三语「准备中」说明而不是「0/0 件」。
     { key: 'finished-collection', path: '/collections/finished-goods', requiredContent: [
       { selector: '.ycb-preparing__text', minimum: 1, label: '手工成品准备中说明' },
+    ] },
+    { key: 'cart-recovery', path: '/products/mvp-yarn-18', openCart: true, flows: [
+      { key: 'network-recovery', label: '明确拒绝可重试、结果不明先核对', steps: [
+        { run: require('./proof-network.cjs').cartRecovery }, { noOverflow: true }, { shot: true },
+      ] },
     ] },
     { key: 'yarn-pdp', path: '/products/mvp-yarn-18' },
     // #177：缺货毛线（询问到货 + 同类毛线出口）与材料包的可购买 / 暂不可买两种购买区。

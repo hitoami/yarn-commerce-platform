@@ -75,3 +75,7 @@
   .yarn-cart-addon { width: 100%; }
   .yarn-cart-addon__text { flex: 1 1 auto; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 12px; }
 }
+
+.yarn-cart-quick-status { margin-block: var(--yarn-space-3); color: var(--yarn-text-primary); font-size: var(--yarn-fs-14); }
+.yarn-cart-quick-review { color: var(--yarn-action); text-underline-offset: 3px; }
+.yarn-cart-quick-status[hidden], .yarn-cart-quick-review[hidden] { display: none; }

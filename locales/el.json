@@ -556,6 +556,8 @@
     }
   },
   "yarn_cart": {
+    "quick_uncertain": "We couldn’t confirm whether this was added. Check your cart before adding it again.",
+    "quick_view_cart": "Check cart",
     "spare_title": "One more ball of {{ name }}",
     "spare_note": "Buying from the same dye lot keeps colors matched; later top-ups may differ slightly.",
     "spare_add": "+1 ball",
@@ -1045,6 +1047,8 @@
     "map_loading": "Loading all yarns…",
     "map_from_product": "See on the texture map",
     "beginner": "Beginner-friendly",
-    "first_time": "New to knitting? Start with these"
+    "first_time": "New to knitting? Start with these",
+    "load_error": "We couldn’t load all products. Only part of the catalog is shown. Please retry.",
+    "page_error": "The next products couldn’t load. Select “Show more” to retry."
   }
 }

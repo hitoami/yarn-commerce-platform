@@ -219,6 +219,7 @@
       <p class="ycb-toolbar__count" role="status" data-ycb-count>{{ 'yarn_collection.count' | t: n: collection.products_count }}</p>
     </div>
 
+    {% render 'yarn-collection-load-error' %}
     {%- paginate collection.products by section.settings.products_per_page -%}
       {%- if collection.products.size == 0 -%}
         <div class="ycb-empty">
@@ -266,6 +267,7 @@
         {%- assign cb_shown = paginate.current_offset | plus: collection.products.size -%}
         {%- unless cb_handmade -%}{%- render 'yarn-collection-map', section_id: section.id, pages: paginate.pages -%}{%- endunless -%}
         <div class="ycb-more" data-ycb-more>
+          <p class="ycb-load-error" role="status" data-ycb-page-error hidden>{{ 'yarn_collection.page_error' | t }}</p>
           <p class="ycb-more__status" data-ycb-status>{{ 'yarn_collection.shown' | t: shown: cb_shown, total: paginate.items }}</p>
           {%- if paginate.next -%}
             <a class="ycb-more__button" href="{{ paginate.next.url }}" data-ycb-next>{{ 'yarn_collection.show_more' | t }}</a>

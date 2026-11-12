@@ -556,6 +556,8 @@
     }
   },
   "yarn_cart": {
+    "quick_uncertain": "暂时无法确认是否加购成功。再次添加前，请先核对购物车。",
+    "quick_view_cart": "核对购物车",
     "spare_title": "{{ name }} · 多备 1 团",
     "spare_note": "同一批次一起买，颜色最一致；补买时可能有批次色差。",
     "spare_add": "+ 1 团",
@@ -1045,6 +1047,8 @@
     "map_loading": "正在载入全部毛线…",
     "map_from_product": "在手感地图上看",
     "beginner": "新手友好",
-    "first_time": "第一次织毛线？从这几款开始"
+    "first_time": "第一次织毛线？从这几款开始",
+    "load_error": "商品未能全部加载，目前只显示部分商品。请重试。",
+    "page_error": "后续商品加载失败，点击“显示更多”可重试。"
   }
 }
