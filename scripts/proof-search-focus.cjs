@@ -1,7 +1,10 @@
 const assert = require('node:assert/strict');
 async function searchFocus(page) {
-  const original = page.url();
-  const query = new URL(original).searchParams.get('q');
+  const initial = new URL(page.url());
+  if ((await page.locator('html').getAttribute('lang')).startsWith('en')) initial.searchParams.set('q', 'yarn');
+  initial.searchParams.delete('group');
+  const original = initial.href;
+  const query = initial.searchParams.get('q');
   for (const activation of ['Enter', 'Space', 'click']) {
     await page.goto(original, { waitUntil: 'load' });
     const more = page.locator('[data-search-show-all]');
