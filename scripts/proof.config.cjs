@@ -88,7 +88,11 @@ module.exports = {
       { selector: '.yx-season-page__yarn', minimum: 7, label: '本季专题 7 款毛线' },
       { selector: '.yx-season-page__toc-thumb img', minimum: 7, label: '本季专题目录小图' },
     ] },
-    { key: 'cart-drawer', path: '/products/mvp-yarn-18', openCart: true },
+    { key: 'cart-drawer', path: '/products/mvp-yarn-12', openCart: true, flows: [
+      { key: 'choose-options', label: '凑单选择规格与原规格加购', steps: [
+        { run: require('./proof-cart.cjs').cartChoice }, { noOverflow: true }, { shot: true },
+      ] },
+    ] },
     // #149：搜索按毛线 / 材料包 / 手工成品分组；「段染」覆盖毛线与材料包两组，另看一次无结果状态。
     { key: 'search', path: '/search?q=%E6%AE%B5%E6%9F%93' },
     { key: 'search-empty', path: '/search?q=zzqx' },

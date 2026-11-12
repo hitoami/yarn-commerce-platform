@@ -5,9 +5,9 @@
   参数 part：'spare'（进度条下）或 'addons'（商品行之后）。「+」按钮由 assets/yarn-cart.js 走 /cart/add.js 加 1 件并刷新抽屉。
 {%- endcomment -%}
 {%- liquid
-  assign spare_item = blank
+  assign spare_item = ''
   assign cart_ids = cart.items | map: 'product_id'
-  assign first_texture = blank
+  assign first_texture = ''
   for item in cart.items
     assign item_collections = item.product.collections | map: 'handle'
     unless item.product.tags contains '毛糸' or item_collections contains 'yarn'
@@ -57,7 +57,11 @@
         <li class="yarn-cart-addon">
           <a class="yarn-cart-addon__media" href="{{ addon.url }}" tabindex="-1" aria-hidden="true">{%- if addon.featured_image != blank -%}{{ addon.featured_image | image_url: width: 96 | image_tag: width: 48, height: 48, loading: 'lazy', alt: '' }}{%- endif -%}</a>
           <a class="yarn-cart-addon__text" href="{{ addon.url }}"><span data-proof-content>{{ addon_title | strip | escape }}</span><strong>{{ addon.price | money }}</strong></a>
+          {%- if addon.variants.size > 1 -%}
+            <a class="yarn-cart-addon__add yarn-cart-addon__choose" href="{{ addon.url }}" data-cart-choose-options aria-label="{{ 'yarn_cart.addon_choose_label' | t: name: addon_title | strip | escape }}">{{ 'yarn_cart.addon_choose' | t }}</a>
+          {%- else -%}
           <button type="button" class="yarn-cart-addon__add" data-cart-quick-add="{{ addon.selected_or_first_available_variant.id }}" aria-label="{{ 'yarn_cart.addon_add_label' | t: name: addon_title | strip | escape }}">{{ 'icon-plus.svg' | inline_asset_content }}</button>
+          {%- endif -%}
         </li>
       {%- endfor -%}
     {%- endfor -%}

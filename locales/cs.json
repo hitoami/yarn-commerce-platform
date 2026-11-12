@@ -592,7 +592,9 @@
     "free_reached": "You qualify for free shipping",
     "free_rule": "Free shipping in Japan on orders of {{ amount }} or more, tax included (confirmed at checkout)",
     "kit_title": "Your cart has yarn for a yarn set",
-    "kit_text": "After ordering, send your order number and the project name to our official LINE. We will check it and send you the pattern."
+    "kit_text": "After ordering, send your order number and the project name to our official LINE. We will check it and send you the pattern.",
+    "addon_choose": "Choose options",
+    "addon_choose_label": "Choose options for {{ name }}"
   },
   "yarn_pdp": {
     "trust_line_note": "Ask about colors and how much to buy",
