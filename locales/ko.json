@@ -556,6 +556,8 @@
     }
   },
   "yarn_cart": {
+    "quick_uncertain": "We couldn’t confirm whether this was added. Check your cart before adding it again.",
+    "quick_view_cart": "Check cart",
     "spare_title": "One more ball of {{ name }}",
     "spare_note": "Buying from the same dye lot keeps colors matched; later top-ups may differ slightly.",
     "spare_add": "+1 ball",
@@ -568,9 +570,7 @@
     "free_reached": "You qualify for free shipping",
     "free_rule": "Free shipping in Japan on orders of {{ amount }} or more, tax included (confirmed at checkout)",
     "kit_title": "Your cart has yarn for a yarn set",
-    "kit_text": "After ordering, send your order number and the project name to our official LINE. We will check it and send you the pattern.",
-    "quick_uncertain": "We couldn’t confirm whether this was added. Check your cart before adding it again.",
-    "quick_view_cart": "Check cart"
+    "kit_text": "After ordering, send your order number and the project name to our official LINE. We will check it and send you the pattern."
   },
   "yarn_pdp": {
     "trust_line_note": "Ask about colors and how much to buy",

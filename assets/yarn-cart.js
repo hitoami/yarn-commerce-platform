@@ -50,6 +50,8 @@
         status.hidden = false;
       }
       if (cartLink) cartLink.hidden = rejected;
+      (rejected ? status : cartLink || status)?.scrollIntoView?.({ block: 'nearest' });
+      if (!rejected) cartLink?.focus?.({ preventScroll: true });
     } finally { clearTimeout(timeout); }
   });
 })();

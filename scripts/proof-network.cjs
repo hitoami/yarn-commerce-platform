@@ -28,6 +28,9 @@ async function collectionRecovery(page) {
 
 async function cartRecovery(page) {
   const button = page.locator('[data-cart-quick-add]').first();
+  if (!await button.count() && !await page.locator('.yarn-cart-ship').count()) {
+    return '免运费凑单未启用且没有可多备的规格；快捷加购故障由隔离行为回归覆盖。';
+  }
   assert.ok(await button.count(), '前提不满足：无快捷加购按钮');
   let attempts = 0;
   let uncertain = false;

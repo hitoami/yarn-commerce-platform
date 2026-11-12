@@ -556,6 +556,8 @@
     }
   },
   "yarn_cart": {
+    "quick_uncertain": "暂时无法确认是否加购成功。再次添加前，请先核对购物车。",
+    "quick_view_cart": "核对购物车",
     "spare_title": "{{ name }} · 多备 1 团",
     "spare_note": "同一批次一起买，颜色最一致；补买时可能有批次色差。",
     "spare_add": "+ 1 团",
@@ -568,9 +570,7 @@
     "free_reached": "已满足免运费条件",
     "free_rule": "订单含税满 {{ amount }}，日本全国免运费（以结账页为准）",
     "kit_title": "购物车里有材料包用的线",
-    "kit_text": "下单后，把订单号和作品名发到官方 LINE，店员核对后发送教程。",
-    "quick_uncertain": "暂时无法确认是否加购成功。再次添加前，请先核对购物车。",
-    "quick_view_cart": "核对购物车"
+    "kit_text": "下单后，把订单号和作品名发到官方 LINE，店员核对后发送教程。"
   },
   "yarn_pdp": {
     "trust_line_note": "配色与用量都能问",

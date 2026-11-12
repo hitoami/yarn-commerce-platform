@@ -378,11 +378,23 @@
     }
 
     section.querySelectorAll('[data-ycb-load-retry]').forEach(button => button.addEventListener('click', async () => {
+      const restoreFocus = document.activeElement === button;
       button.disabled = true;
-      await update({});
-      // The weight sheet also needs all pages when no filter has been selected yet.
-      if (weightSheet.open && !items) { const complete = await loadAll(); if (complete) renderChrome(); }
+      grid.setAttribute('aria-busy', 'true');
+      const complete = await loadAll();
+      grid.removeAttribute('aria-busy');
+      if (complete) {
+        renderChrome();
+        renderList();
+        if (state.view === 'map') renderBoard();
+      }
       button.disabled = false;
+      if (restoreFocus) {
+        const next = !complete ? button : weightSheet.open
+          ? weightSheet.querySelector('[data-ycb-weight][aria-pressed="true"]')
+          : state.view === 'map' ? map.querySelector('.ycb-ball') : grid.querySelector('li:not([hidden]) a');
+        next?.focus({ preventScroll: true });
+      }
     }));
 
     section.querySelectorAll('[data-ycb-view]').forEach((button) => button.addEventListener('click', () => update({ view: button.dataset.ycbView })));
