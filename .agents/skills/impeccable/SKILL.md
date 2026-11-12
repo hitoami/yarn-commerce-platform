@@ -31,6 +31,8 @@ Choose a surface mode from visitor intent: **Persuade** (decide and act), **Oper
 
 Batch desktop and mobile self-QA, fix the observed defects together, then confirm. Stop polishing once required checks pass. A failed check remains unresolved until fixed or reported; a self-QA limit never waives required finish review or permits a false completion claim.
 
+For responsive UI changes, apply `critique` and `adapt` to actual screenshots before handoff. Technical `detect` / overflow success is not visual acceptance. Follow the desktop composition and empty / populated state checks in `docs/agents/visual-review.md`; repair disconnected alignment, unjustified full-width elements and dead space within the approved direction before reporting desktop completion.
+
 ## Commands
 
 | Command | Category | Description | Reference |

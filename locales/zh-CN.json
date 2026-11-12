@@ -961,7 +961,13 @@
     "show_all_yarn": "查看全部 {{ count }} 款毛线",
     "all_kits": "全部材料包 →",
     "all_finished": "全部成品 →",
-    "finished_coming_soon": "手工成品还在准备中，上架后也会出现在搜索结果里。"
+    "finished_coming_soon": "手工成品还在准备中，上架后也会出现在搜索结果里。",
+    "account_navigation": "账户导航",
+    "my_favorites": "我的收藏",
+    "local_favorites_title": "仅保存在当前浏览器",
+    "account_help": "需要帮助？",
+    "account_line_help": "联系 LINE 客服",
+    "account_contact": "联系店员"
   },
   "yarn_cart_assurance": {
     "title_1": "日本全国配送",

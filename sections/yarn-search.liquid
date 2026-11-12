@@ -1,6 +1,7 @@
 {{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
 {{ 'yarn-discovery.css' | asset_url | stylesheet_tag }}
 {{ 'yarn-search.css' | asset_url | stylesheet_tag }}
+{{ 'yarn-account.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'yarn-search.js' | asset_url }}" defer="defer"></script>
 {%- comment -%}
   #149 搜索结果按「毛线 / 材料包 / 手工成品」分组（2026-10-16 用户决定，取代「有成品 / 可买材料 / 仅灵感」与包袋等分类）。
@@ -68,9 +69,15 @@
   {%- endif -%}
 {%- endcapture -%}
 <yarn-discovery-search class="yd-search" data-search-url="{{ routes.search_url }}" data-section-id="{{ section.id }}">
+  <nav class="yarn-account-header" aria-label="{{ 'yarn_discovery.account_navigation' | t }}">
+    <a class="yd-search__back" href="{{ routes.root_url }}" aria-label="{{ 'yarn_discovery.back' | t }}">{{ 'icon-arrow.svg' | inline_asset_content }}</a>
+    <a class="yarn-account-header__logo" href="{{ routes.root_url }}">{% render 'yarn-wordmark' %}</a>
+    <a class="yarn-account-header__cart" href="{{ routes.cart_url }}" aria-label="{{ 'templates.cart.cart' | t }}">{{ 'icon-cart-empty.svg' | inline_asset_content }}</a>
+  </nav>
+  <div class="yarn-account-intro">
   <header class="yd-search__bar">
     <a class="yd-search__back" href="{{ routes.root_url }}" data-search-back aria-label="{{ 'yarn_discovery.back' | t }}">{{ 'icon-arrow.svg' | inline_asset_content }}</a>
-    <h1 data-search-title data-title="{{ 'yarn_discovery.search' | t }}" data-favorites-title="{{ 'yarn_discovery.favorites' | t }}">{{ 'yarn_discovery.search' | t }}</h1>
+    <h1 data-search-title data-title="{{ 'yarn_discovery.search' | t }}" data-favorites-title="{{ 'yarn_discovery.my_favorites' | t }}">{{ 'yarn_discovery.search' | t }}</h1>
     <a class="yd-search__favorites" href="{{ routes.search_url }}?browse=favorites" data-favorites-link>{{ 'yarn_discovery.favorites' | t }}</a>
   </header>
   <form class="yd-search__form" action="{{ routes.search_url }}" method="get" role="search" data-search-form>
@@ -84,6 +91,12 @@
       <button class="yd-search__icon yd-search__clear" type="button" data-search-clear aria-label="{{ 'yarn_discovery.clear_search' | t }}" {% if search.terms == blank %}hidden{% endif %}><span>{{ 'icon-close.svg' | inline_asset_content }}</span></button>
     </div>
   </form>
+  <aside class="yd-search__local-note" data-favorites-local-note hidden>
+    <strong>{{ 'yarn_discovery.local_favorites_title' | t }}</strong>
+    <p>{{ 'yarn_discovery.favorites_local_note' | t }}</p>
+  </aside>
+  </div>
+  <div class="yarn-account-content">
   <nav class="yd-search__tabs" aria-label="{{ 'yarn_discovery.groups_label' | t }}">
     <button class="yd-search__tab" type="button" data-search-tab="" aria-pressed="true">{{ 'yarn_discovery.group_all' | t }} <span data-search-tab-count></span></button>
     <button class="yd-search__tab" type="button" data-search-tab="yarn" aria-pressed="false">{{ 'yarn_discovery.group_yarn' | t }} <span data-search-tab-count></span></button>
@@ -101,8 +114,8 @@
     <h2 data-search-empty-title data-title="{{ 'yarn_discovery.empty' | t }}" data-query-template="{{ 'yarn_discovery.empty_query' | t: query: '[query]' | escape }}">{{ 'yarn_discovery.empty' | t }}</h2>
     <p>{{ 'yarn_discovery.empty_hint' | t }}</p>
   </section>
-  <p class="yd-search__local-note" data-favorites-local-note hidden>{{ 'yarn_discovery.favorites_local_note' | t }}</p>
   <section class="yd-search__empty" data-favorites-empty hidden>
+    <img class="yarn-account-empty-cat" src="{{ 'hitoami-cat-basket.webp' | asset_url }}" width="320" height="306" alt="" loading="lazy">
     <h2>{{ 'yarn_discovery.favorites_empty' | t }}</h2>
     <p>{{ 'yarn_discovery.favorites_empty_hint' | t }}</p>
     <a class="yd-search__action" href="{{ yarn_collection.url | default: routes.all_products_collection_url }}">{{ 'yarn_discovery.browse_yarn' | t }}</a>
@@ -202,6 +215,15 @@
       <p class="yd-search__note" data-search-finished-note hidden>{{ 'yarn_discovery.finished_coming_soon' | t }}</p>
     {%- endif -%}
   </div>
+  </div>
+  <footer class="yarn-account-help">
+    <span>{{ 'yarn_discovery.account_help' | t }}</span>
+    {%- if settings.yarn_line_url != blank -%}
+      <a href="{{ settings.yarn_line_url | escape }}">{{ 'yarn_discovery.account_line_help' | t }}</a>
+    {%- else -%}
+      <a href="{{ pages.contact.url | default: routes.root_url }}">{{ 'yarn_discovery.account_contact' | t }}</a>
+    {%- endif -%}
+  </footer>
   <noscript><p>{{ 'yarn_discovery.javascript_required' | t }} <a href="{{ yarn_collection.url | default: routes.all_products_collection_url }}">{{ 'yarn_discovery.browse_yarn' | t }}</a></p></noscript>
 </yarn-discovery-search>
 {% schema %}

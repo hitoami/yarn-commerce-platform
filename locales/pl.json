@@ -985,7 +985,13 @@
     "show_all_yarn": "See all {{ count }} yarns",
     "all_kits": "All kits →",
     "all_finished": "All handmade →",
-    "finished_coming_soon": "Handmade pieces are coming soon and will appear in search once listed."
+    "finished_coming_soon": "Handmade pieces are coming soon and will appear in search once listed.",
+    "account_navigation": "Account navigation",
+    "my_favorites": "My favorites",
+    "local_favorites_title": "Saved in this browser only",
+    "account_help": "Need a hand?",
+    "account_line_help": "Contact us on LINE",
+    "account_contact": "Contact us"
   },
   "yarn_cart_assurance": {
     "title_1": "Delivery across Japan",
