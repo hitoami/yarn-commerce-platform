@@ -79,8 +79,25 @@ module.exports = {
     { key: 'kit-buyable', path: '/pages/projects/kit-xuebao-fringe-scarf', requiredContent: [
       { selector: '.yk-add-all[data-kit-add]', minimum: 1, label: '材料包主按钮' },
     ] },
-    { key: 'kit-blocked', path: '/pages/projects/kit-tyndall-kids-scarf', requiredContent: [
-      { selector: '.yk-blocked', minimum: 1, label: '材料包不可买说明' },
+    // #199：真实页面只断言有效购买状态；缺货/未定价由真实 Liquid + 隔离数据固定覆盖。
+    { key: 'kit-current', path: '/pages/projects/kit-tyndall-kids-scarf', requiredContent: [
+      { selector: '.yk-blocked, [data-kit-add]', minimum: 1, label: '材料包当前购买状态' },
+    ] },
+    { key: 'fixture-yarn-sold-out', fixture: 'yarn-sold-out', requiredContent: [
+      { selector: '.yp-status--sold-out', minimum: 1, label: '隔离样例：缺货说明' },
+      { selector: '.yp-status__ask, .yp-status__link', minimum: 2, label: '联系与同类商品出口' },
+    ] },
+    { key: 'fixture-kit-blocked', fixture: 'kit-blocked', requiredContent: [
+      { selector: '.yk-blocked', minimum: 1, label: '隔离样例：材料包不可买说明' },
+    ] },
+    { key: 'fixture-kit-unpriced', fixture: 'kit-unpriced', requiredContent: [
+      { selector: '.yk-blocked', minimum: 1, label: '隔离样例：未定价不可购买' },
+    ] },
+    { key: 'fixture-kit-buyable', fixture: 'kit-buyable', requiredContent: [
+      { selector: '[data-kit-add="all"]', minimum: 1, label: '隔离样例：全部可买' },
+    ] },
+    { key: 'fixture-kit-partial', fixture: 'kit-partial', requiredContent: [
+      { selector: '[data-kit-add="available"]', minimum: 1, label: '隔离样例：只加入可买的毛线' },
     ] },
     // 本季主推专题页：后台页面已建（handle season）；page.season 上线正式主题、后台改选该模板前，用 ?view 预览。
     { key: 'season', path: '/pages/season?view=season', requiredContent: [
