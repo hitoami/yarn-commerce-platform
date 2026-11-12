@@ -16,6 +16,7 @@ module.exports = {
   viewports: [
     { key: 'mobile', width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
     { key: 'desktop', width: 1440, height: 900, deviceScaleFactor: 1 },
+    { key: 'desktop-wide', width: 1920, height: 1080, deviceScaleFactor: 1 },
   ],
 
   pages: [
@@ -116,6 +117,18 @@ module.exports = {
         { click: '[data-search-group="yarn"] [data-discovery-card]:not([hidden]) [data-favorite-button]' },
         { waitFor: '[data-favorites-empty]:not([hidden])' },
         { noOverflow: true },
+      ] },
+      { key: 'saved-grid', label: '多件收藏桌面网格', steps: [
+        { waitFor: '[data-search-group="yarn"]:not([hidden]) [data-discovery-card]:not([hidden]) [data-favorite-button]' },
+        { click: '[data-search-group="yarn"] [data-discovery-card]:not([hidden]) [data-favorite-button][aria-pressed="false"]' },
+        { click: '[data-search-group="yarn"] [data-discovery-card]:not([hidden]) [data-favorite-button][aria-pressed="false"]' },
+        { click: '[data-search-group="yarn"] [data-discovery-card]:not([hidden]) [data-favorite-button][aria-pressed="false"]' },
+        { click: '[data-search-group="yarn"] [data-discovery-card]:not([hidden]) [data-favorite-button][aria-pressed="false"]' },
+        { click: '[data-favorites-link]' },
+        { waitFor: '[data-search-group="yarn"]:not([hidden])' },
+        { expect: '[data-search-group="yarn"] [data-discovery-card]:not([hidden])', minimum: 4, label: '多件真实收藏跨行显示' },
+        { noOverflow: true },
+        { shot: true },
       ] },
     ] },
     { key: 'commercial-disclosure', path: '/pages/commercial-disclosure' },

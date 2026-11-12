@@ -74,6 +74,7 @@
     <a class="yarn-account-header__logo" href="{{ routes.root_url }}">{% render 'yarn-wordmark' %}</a>
     <a class="yarn-account-header__cart" href="{{ routes.cart_url }}" aria-label="{{ 'templates.cart.cart' | t }}">{{ 'icon-cart-empty.svg' | inline_asset_content }}</a>
   </nav>
+  <div class="yarn-account-intro">
   <header class="yd-search__bar">
     <a class="yd-search__back" href="{{ routes.root_url }}" data-search-back aria-label="{{ 'yarn_discovery.back' | t }}">{{ 'icon-arrow.svg' | inline_asset_content }}</a>
     <h1 data-search-title data-title="{{ 'yarn_discovery.search' | t }}" data-favorites-title="{{ 'yarn_discovery.my_favorites' | t }}">{{ 'yarn_discovery.search' | t }}</h1>
@@ -94,6 +95,8 @@
     <strong>{{ 'yarn_discovery.local_favorites_title' | t }}</strong>
     <p>{{ 'yarn_discovery.favorites_local_note' | t }}</p>
   </aside>
+  </div>
+  <div class="yarn-account-content">
   <nav class="yd-search__tabs" aria-label="{{ 'yarn_discovery.groups_label' | t }}">
     <button class="yd-search__tab" type="button" data-search-tab="" aria-pressed="true">{{ 'yarn_discovery.group_all' | t }} <span data-search-tab-count></span></button>
     <button class="yd-search__tab" type="button" data-search-tab="yarn" aria-pressed="false">{{ 'yarn_discovery.group_yarn' | t }} <span data-search-tab-count></span></button>
@@ -211,6 +214,7 @@
     {%- if finished_coming_soon -%}
       <p class="yd-search__note" data-search-finished-note hidden>{{ 'yarn_discovery.finished_coming_soon' | t }}</p>
     {%- endif -%}
+  </div>
   </div>
   <footer class="yarn-account-help">
     <span>{{ 'yarn_discovery.account_help' | t }}</span>

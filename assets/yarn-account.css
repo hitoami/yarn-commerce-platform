@@ -1,6 +1,7 @@
 /* Issue 344: approved account family. Only the favorites state changes here;
    Shopify-hosted sign-in, orders and profile use a separate draft configuration. */
 .yarn-account-header, .yarn-account-help { display: none; }
+.yarn-account-intro, .yarn-account-content { display: contents; }
 .yarn-search-page:has(.is-favorites) { background: var(--yarn-bg-page); }
 .yd-search.is-favorites { padding-top: var(--yarn-space-3); }
 .is-favorites .yd-search__bar { display: block; margin-block: var(--yarn-space-5) var(--yarn-space-4); }
@@ -40,4 +41,28 @@
   .is-favorites .yd-search__tab { min-width: 120px; }
   .is-favorites .yd-search__empty { min-height: 360px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .yarn-account-empty-cat { width: 160px; }
+}
+@media (min-width: 990px) {
+  .yd-search.is-favorites {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    grid-template-rows: max-content 1fr;
+    column-gap: var(--yarn-space-7);
+    row-gap: var(--yarn-space-5);
+    align-content: start;
+    min-height: 65vh;
+    padding-block: var(--yarn-space-7);
+  }
+  .is-favorites .yarn-account-intro { display: block; grid-column: 1; grid-row: 1; min-width: 0; }
+  .is-favorites .yd-search__bar { margin: 0 0 var(--yarn-space-5); }
+  .is-favorites .yd-search__bar h1 { font-size: var(--yarn-fs-32); }
+  .is-favorites .yd-search__local-note { margin: 0; }
+  .is-favorites .yarn-account-content { display: block; grid-column: 2; grid-row: 1 / 3; min-width: 0; }
+  .is-favorites .yd-search__tabs { width: 100%; margin: 0 0 var(--yarn-space-5); }
+  .is-favorites .yd-search__tab { min-width: 0; }
+  .is-favorites .yd-search__empty,
+  .is-favorites .yd-search__error { min-height: 400px; padding: var(--yarn-space-6); background: var(--yarn-bg-surface); border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-radius-panel); }
+  .is-favorites .yd-search__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .is-favorites .yd-search__kits { grid-template-columns: minmax(0, 1fr); }
+  .is-favorites .yarn-account-help { grid-column: 1; grid-row: 2; align-self: start; justify-content: flex-start; margin: 0; padding: var(--yarn-space-3) 0 0; border-top: 1px solid var(--yarn-border-card); border-radius: 0; background: transparent; }
 }
