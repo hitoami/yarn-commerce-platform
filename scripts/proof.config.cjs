@@ -95,8 +95,8 @@ module.exports = {
     // #347：同一搜索状态通过真实语言入口到三种语言，不依赖商品标题译文。
     { key: 'search-language', path: '/search?q=%E6%AE%B5%E6%9F%93&group=yarn', flows:
       ['ja', 'zh-CN', 'en'].map(language => ({ key: `language-${language}`, label: `切换语言 ${language}`, steps: [
-        { click: '#YarnLang > summary' },
-        { click: `.yarn-lang__option[hreflang="${language}"]` },
+        { click: '#YarnLang > summary:visible, #FooterLanguageForm .localization-form__select:visible' },
+        { click: `.yarn-lang__option[hreflang="${language}"]:visible, #FooterLanguageForm a[hreflang="${language}"]:visible` },
         { waitFor: '[data-search-tab="yarn"][aria-pressed="true"]' },
         { expect: 'input[name="q"][value="段染"]', minimum: 1, label: '搜索词保留' },
         { noOverflow: true }, { shot: true },
