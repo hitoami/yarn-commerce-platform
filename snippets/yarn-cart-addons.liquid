@@ -69,4 +69,7 @@
     </div>
   {%- endif -%}
 {%- endif -%}
-{%- if part == 'addons' -%}<p class="yarn-cart-quick-status visually-hidden" role="status" data-cart-quick-status data-error="{{ 'yarn_cart.quick_error' | t | escape }}"></p>{%- endif -%}
+{%- if part == 'addons' -%}
+  <p class="yarn-cart-quick-status" role="status" data-cart-quick-status data-error="{{ 'yarn_cart.quick_error' | t | escape }}" data-uncertain="{{ 'yarn_cart.quick_uncertain' | t | escape }}" hidden></p>
+  <a class="yarn-cart-quick-review" href="{{ routes.cart_url }}" data-cart-quick-review hidden>{{ 'yarn_cart.quick_view_cart' | t }}</a>
+{%- endif -%}

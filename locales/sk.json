@@ -592,7 +592,9 @@
     "free_reached": "You qualify for free shipping",
     "free_rule": "Free shipping in Japan on orders of {{ amount }} or more, tax included (confirmed at checkout)",
     "kit_title": "Your cart has yarn for a yarn set",
-    "kit_text": "After ordering, send your order number and the project name to our official LINE. We will check it and send you the pattern."
+    "kit_text": "After ordering, send your order number and the project name to our official LINE. We will check it and send you the pattern.",
+    "quick_uncertain": "We couldn’t confirm whether this was added. Check your cart before adding it again.",
+    "quick_view_cart": "Check cart"
   },
   "yarn_pdp": {
     "trust_line_note": "Ask about colors and how much to buy",
@@ -1069,6 +1071,8 @@
     "map_loading": "Loading all yarns…",
     "map_from_product": "See on the texture map",
     "beginner": "Beginner-friendly",
-    "first_time": "New to knitting? Start with these"
+    "first_time": "New to knitting? Start with these",
+    "load_error": "We couldn’t load all products. Only part of the catalog is shown. Please retry.",
+    "page_error": "The next products couldn’t load. Select “Show more” to retry."
   }
 }

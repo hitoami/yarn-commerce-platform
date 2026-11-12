@@ -38,6 +38,7 @@
   </header>
   <div class="ycb-drawer__body">
     <p class="ycb-sheet__note">{{ 'yarn_collection.weight_note' | t }}</p>
+    {% render 'yarn-collection-load-error' %}
     <ul class="ycb-weights" role="list">
       <li><button class="ycb-weight" type="button" data-ycb-weight=""><span class="ycb-weight__name">{{ 'yarn_collection.weight_any' | t }}</span></button></li>
       {%- for i in (0..4) -%}

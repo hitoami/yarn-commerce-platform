@@ -27,6 +27,9 @@ module.exports = {
       { selector: '.ycb-chip', minimum: 2, label: '毛线分类胶囊' },
       { selector: '.ycb-grid .yx-product-card', minimum: 4, label: '目录真实毛线商品卡' },
     ], flows: [
+      { key: 'network-recovery', label: '目录失败保留内容并重试', steps: [
+        { run: require('./proof-network.cjs').collectionRecovery }, { noOverflow: true }, { shot: true },
+      ] },
       // #243：粗细胶囊筛列表；手感地图五档、点线球出卡片。数量随商品变化，只断言「有」和「被筛掉了一些」。
       { key: 'weight', label: '粗细筛选', steps: [
         { click: '[data-ycb-weight-open]' },
@@ -88,7 +91,11 @@ module.exports = {
       { selector: '.yx-season-page__yarn', minimum: 7, label: '本季专题 7 款毛线' },
       { selector: '.yx-season-page__toc-thumb img', minimum: 7, label: '本季专题目录小图' },
     ] },
-    { key: 'cart-drawer', path: '/products/mvp-yarn-18', openCart: true },
+    { key: 'cart-drawer', path: '/products/mvp-yarn-18', openCart: true, flows: [
+      { key: 'network-recovery', label: '明确拒绝可重试、结果不明先核对', steps: [
+        { run: require('./proof-network.cjs').cartRecovery }, { noOverflow: true }, { shot: true },
+      ] },
+    ] },
     // #149：搜索按毛线 / 材料包 / 手工成品分组；「段染」覆盖毛线与材料包两组，另看一次无结果状态。
     { key: 'search', path: '/search?q=%E6%AE%B5%E6%9F%93' },
     { key: 'search-empty', path: '/search?q=zzqx' },

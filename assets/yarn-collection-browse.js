@@ -115,12 +115,15 @@
       section.querySelector('[data-ycb-more]')?.addEventListener('click', async (event) => {
         const link = event.target.closest('[data-ycb-next]');
         if (!link || !grid) return;
+        if (link.getAttribute('aria-busy') === 'true') { event.preventDefault(); return; }
         event.preventDefault();
         link.setAttribute('aria-busy', 'true');
+        const errorStatus = section.querySelector('[data-ycb-page-error]');
+        if (errorStatus) errorStatus.hidden = true;
         try {
           const url = nextPageUrl(link.getAttribute('href'), window.location.href);
           url.searchParams.set('section_id', section.dataset.sectionId);
-          const response = await fetch(url, { credentials: 'same-origin', headers: { Accept: 'text/html' } });
+          const response = await fetch(url, { credentials: 'same-origin', signal: AbortSignal.timeout(15000), headers: { Accept: 'text/html' } });
           if (!response.ok) throw new Error('Collection page failed');
           const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
           const items = doc.querySelectorAll('[data-ycb-grid] > li');
@@ -134,8 +137,8 @@
           else link.remove();
           added[0].querySelector('a')?.focus({ preventScroll: true });
         } catch (error) {
-          // Fall back to a normal page load so the shopper still reaches the next products.
-          window.location.assign(link.href);
+          // Keep the current products and page cursor; the same link retries this page.
+          if (errorStatus) errorStatus.hidden = false;
         } finally {
           link.removeAttribute('aria-busy');
         }
@@ -170,6 +173,8 @@
     let state = readState(new URLSearchParams(window.location.search));
     let items = null;
     let loading = null;
+    const loadErrors = section.querySelectorAll('[data-ycb-load-error]');
+    const showLoadError = (shown) => loadErrors.forEach(node => { node.hidden = !shown; });
 
     section.querySelectorAll('[data-ycb-js]').forEach((node) => { if (node !== map) node.hidden = false; });
     section.querySelectorAll('a.ycb-chip').forEach((link) => { link.dataset.base = link.getAttribute('href'); });
@@ -191,20 +196,27 @@
       const pages = Number(T.pages) || 1;
       const done = (lis) => { items = lis.map(readItem); if (more) more.hidden = true; return items; };
       if (pages <= 1) return Promise.resolve(done(Array.from(grid.children)));
+      showLoadError(false);
       map.querySelector('[data-ycb-map-status]').textContent = T.tLoading;
       loading = Promise.all(Array.from({ length: pages }, async (_, index) => {
         const url = new URL(window.location.href);
         url.searchParams.set('page', String(index + 1));
         url.searchParams.set('section_id', section.dataset.sectionId);
-        const response = await fetch(url, { credentials: 'same-origin', headers: { Accept: 'text/html' } });
+        const response = await fetch(url, { credentials: 'same-origin', signal: AbortSignal.timeout(15000), headers: { Accept: 'text/html' } });
         if (!response.ok) throw new Error('Collection page failed');
         const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
-        return Array.from(doc.querySelectorAll('[data-ycb-grid] > li'), (li) => document.importNode(li, true));
+        const nodes = doc.querySelectorAll('[data-ycb-grid] > li');
+        if (!nodes.length) throw new Error('Collection page is empty');
+        return Array.from(nodes, (li) => document.importNode(li, true));
       })).then((pagesOfItems) => {
         const lis = pagesOfItems.flat();
         grid.replaceChildren(...lis);
         return done(lis);
-      }).catch(() => done(Array.from(grid.children)));
+      }).catch(() => {
+        showLoadError(true);
+        map.querySelector('[data-ycb-map-status]').textContent = '';
+        return null;
+      }).finally(() => { loading = null; });
       return loading;
     }
 
@@ -351,13 +363,27 @@
       // 要全部商品时先标「载入中」，列表变淡，载完筛好再恢复，避免先闪出全部商品。
       if (state.view === 'map' || state.weight !== null || state.beginner || state.cmp.length > 1) {
         if (!items) grid.setAttribute('aria-busy', 'true');
-        await loadAll();
+        const complete = await loadAll();
+        if (!complete) {
+          grid.removeAttribute('aria-busy');
+          map.hidden = true;
+          grid.hidden = false;
+          return;
+        }
       }
       renderChrome();
       renderList();
       grid.removeAttribute('aria-busy');
       if (state.view === 'map') renderBoard();
     }
+
+    section.querySelectorAll('[data-ycb-load-retry]').forEach(button => button.addEventListener('click', async () => {
+      button.disabled = true;
+      await update({});
+      // The weight sheet also needs all pages when no filter has been selected yet.
+      if (weightSheet.open && !items) { const complete = await loadAll(); if (complete) renderChrome(); }
+      button.disabled = false;
+    }));
 
     section.querySelectorAll('[data-ycb-view]').forEach((button) => button.addEventListener('click', () => update({ view: button.dataset.ycbView })));
     section.querySelector('[data-ycb-beginner]')?.addEventListener('click', () => update({ beginner: !state.beginner }));
@@ -367,7 +393,7 @@
 
     section.querySelector('[data-ycb-weight-open]')?.addEventListener('click', () => {
       weightSheet.showModal();
-      loadAll().then(renderChrome);
+      loadAll().then(complete => { if (complete) renderChrome(); });
     });
     weightSheet?.querySelectorAll('[data-ycb-weight]').forEach((button) => button.addEventListener('click', () => {
       weightSheet.close();

@@ -237,3 +237,7 @@ div.ycb-head__intro { margin-bottom: var(--yarn-space-5); }
   .ycb-drawer { inset: 0 0 0 auto; width: min(420px, 100%); max-height: none; height: 100%; border-radius: var(--yarn-radius-panel) 0 0 var(--yarn-radius-panel); }
   .ycb-drawer form { max-height: none; height: 100%; }
 }
+
+/* Failed requests keep existing products visible and offer an explicit retry. */
+.ycb-load-error { margin-block: var(--yarn-space-4); color: var(--yarn-text-primary); }
+.ycb-load-error[hidden] { display: none; }
