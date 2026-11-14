@@ -8,7 +8,7 @@ hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus)
 /* A copy-safe veil stays independent of merchant artwork. */
 .hitoami-slide::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, color-mix(in srgb, var(--yarn-bg-page) 78%, transparent), color-mix(in srgb, var(--yarn-bg-page) 25%, transparent) 38%, transparent 58%); }
 .hitoami-slide--light::after { background: linear-gradient(180deg, color-mix(in srgb, var(--yarn-text-warm) 88%, transparent), color-mix(in srgb, var(--yarn-text-warm) 60%, transparent) 38%, transparent 62%); }
-.hitoami-slide[hidden], .hitoami-controls[hidden] { display: none; }
+.hitoami-slide[hidden] { display: none; }
 /* Soft wavy lower edge into the page ground. */
 .hitoami-wave { position: absolute; bottom: -1px; left: 0; z-index: 1; width: 100%; height: 30px; fill: var(--yarn-bg-page); pointer-events: none; }
 .hitoami-scene, .hitoami-scene img { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -29,14 +29,6 @@ hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus)
 .hitoami-slide--light .hitoami-heading, .hitoami-slide--light .hitoami-subtitle { color: var(--yarn-text-inverse); }
 .hitoami-slide--light .hitoami-copy { text-shadow: 0 1px 5px var(--yarn-overlay); }
 .hitoami-slide--light .hitoami-cta { color: var(--yarn-text-inverse); }
-.hitoami-controls { position: absolute; left: 0; right: 0; bottom: 40px; z-index: 2; display: flex; justify-content: center; padding: 0 16px; pointer-events: none; }
-/* Issue 274 (N1, after Mobbin · Givingli): a frosted capsule names every slide, the current one filled clay, with "01 / 03" at the end. */
-.hitoami-tabs { display: flex; align-items: center; gap: 2px; max-width: 100%; padding: 4px; border-radius: var(--yarn-radius-pill); background: color-mix(in srgb, var(--yarn-bg-surface) 92%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 4px 16px var(--yarn-shadow-soft); pointer-events: auto; }
-.hitoami-tab { min-height: 44px; padding: 0 16px; border: 0; border-radius: var(--yarn-radius-pill); background: transparent; color: var(--yarn-text-warm); font: inherit; font-size: var(--yarn-fs-14); font-weight: 500; line-height: 1.2; white-space: nowrap; cursor: pointer; transition: background-color .25s ease, color .25s ease; }
-.hitoami-tab:hover { background: color-mix(in srgb, var(--yarn-home-action) 10%, transparent); }
-.hitoami-tab[aria-current] { background: var(--yarn-home-action); color: var(--yarn-text-on-action); font-weight: 500; }
-.hitoami-count { flex: none; margin-left: 4px; padding: 0 10px 0 12px; border-left: 1px solid var(--yarn-border-subtle); color: var(--yarn-text-muted); font-size: var(--yarn-fs-12); font-variant-numeric: tabular-nums; white-space: nowrap; }
-@media (prefers-reduced-motion: reduce) { .hitoami-tab { transition: none; } }
 /* Built-in phone scenes: the subject sits right of centre, so the crop keeps it whole. */
 .hitoami-slide--default-scene .hitoami-scene img { object-position: 72% 50%; }
 .hitoami-slide--default-scene[data-scene="kit"] .hitoami-scene img { object-position: 85% 50%; }
@@ -62,10 +54,6 @@ hitoami-hero :is(a, button):focus-visible { outline: 2px solid var(--yarn-focus)
   .hitoami-copy > .hitoami-subtitle { max-width: min(30em, 46vw); }
   .hitoami-subtitle { margin-bottom: 28px; font-size: var(--yarn-fs-18); line-height: 1.7; }
   .hitoami-cta { font-size: var(--yarn-fs-18); }
-  .hitoami-controls { bottom: 56px; }
-  .hitoami-tabs { padding: 5px; }
-  .hitoami-tab { padding: 0 20px; font-size: var(--yarn-fs-15); }
-  .hitoami-count { font-size: var(--yarn-fs-13); }
   .hitoami-wave { height: 44px; }
 }
 
