@@ -1,0 +1,69 @@
+/* 首页常见问题「店员猫答疑」（品牌与常见问题合并，方向 B）。
+   手机：标题 → 横滑问题按钮 → 回答气泡（尾巴朝下）→ 店员猫 → LINE 卡片。
+   桌面：问题按钮换行排开；店员猫在左、气泡在右（尾巴朝左）。颜色只用 yarn-design-tokens。 */
+.yarn-home-guide.yarn-home-guide--cat { display: block; background: none; }
+.yarn-home-guide--cat .yarn-faq-chat__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--yarn-space-3) var(--yarn-space-5); }
+.yarn-home-guide--cat .yarn-faq-chat__titles > * { margin: 0; }
+.yarn-home-guide--cat .yarn-faq-chat__note { margin-top: var(--yarn-space-2); color: var(--yarn-text-muted); font-size: var(--yarn-fs-14); line-height: 1.7; }
+.yarn-faq-chat__all { display: inline-flex; align-items: center; gap: 6px; min-height: var(--yarn-touch); color: var(--yarn-action); font-size: var(--yarn-fs-14); font-weight: 500; text-decoration: none; }
+.yarn-faq-chat__all:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+.yarn-faq-chat { display: block; margin-top: var(--yarn-space-4); }
+/* 问题按钮自动换行，全部问题一眼可见（锦晨 2026-11-14：可以多折几行）。 */
+.yarn-faq-chat__chips { display: flex; flex-wrap: wrap; gap: var(--yarn-space-2); padding: 2px 0; }
+.yarn-faq-chat__chips[hidden] { display: none; }
+.yarn-faq-chat__chip { flex: none; min-height: var(--yarn-touch); padding: 0 16px; border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-radius-pill); background: var(--yarn-bg-surface); color: var(--yarn-text-heading); font: 500 var(--yarn-fs-14)/1.3 var(--yarn-body); white-space: nowrap; cursor: pointer; transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease; }
+.yarn-faq-chat__chip:hover { border-color: var(--yarn-text-heading); }
+.yarn-faq-chat__chip[aria-selected='true'] { border-color: var(--yarn-text-primary); background: var(--yarn-text-primary); color: var(--yarn-text-inverse); }
+.yarn-faq-chat__chip:focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 3px; }
+
+.yarn-faq-chat__scene { display: flex; flex-direction: column; margin-top: var(--yarn-space-5); }
+.yarn-faq-chat__cat { order: 2; display: block; width: 120px; height: auto; margin: 18px 0 0 var(--yarn-space-3); }
+.yarn-faq-chat__bubbles { display: grid; gap: var(--yarn-space-3); }
+.yarn-faq-chat__bubble { position: relative; padding: 20px; border: 1px solid var(--yarn-border-subtle); border-radius: 22px; background: var(--yarn-bg-surface); }
+.yarn-faq-chat.is-ready .yarn-faq-chat__bubble::after { content: ''; position: absolute; left: 44px; bottom: -10px; width: 18px; height: 18px; border-right: 1px solid var(--yarn-border-subtle); border-bottom: 1px solid var(--yarn-border-subtle); background: inherit; transform: rotate(45deg); }
+.yarn-faq-chat__bubble.is-entering { animation: yarn-faq-chat-in 0.3s ease; }
+@keyframes yarn-faq-chat-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.yarn-home-guide--cat .yarn-faq-chat__who { margin: 0; color: var(--yarn-action); font-size: var(--yarn-fs-13); font-weight: 500; line-height: 1.4; }
+.yarn-home-guide--cat .yarn-faq-chat__bubble h3 { margin: 6px 0 6px; color: var(--yarn-text-heading); font: 500 var(--yarn-fs-18)/1.45 var(--yarn-display); }
+.yarn-home-guide--cat .yarn-faq-chat__bubble p:last-child { margin: 0; color: var(--yarn-text-secondary); font-size: var(--yarn-fs-15); line-height: 1.9; }
+
+.yarn-faq-chat__line { display: grid; gap: var(--yarn-space-4); margin-top: var(--yarn-space-5); padding: 20px; border-radius: var(--yarn-radius-panel); background: var(--yarn-bg-band); }
+.yarn-home-guide--cat .yarn-faq-chat__line-copy > p { margin: 0; }
+.yarn-home-guide--cat .yarn-faq-chat__line-title { color: var(--yarn-text-heading); font: 500 var(--yarn-fs-16)/1.5 var(--yarn-display); }
+.yarn-home-guide--cat .yarn-faq-chat__line-text { margin-top: 4px; color: var(--yarn-text-muted); font-size: var(--yarn-fs-14); line-height: 1.7; }
+.yarn-faq-chat__line-actions { display: flex; align-items: center; gap: var(--yarn-space-5); }
+.yarn-faq-chat__line-cta { display: inline-flex; align-items: center; min-height: var(--yarn-touch); padding: 0 24px; border-radius: var(--yarn-radius-pill); background: var(--yarn-action); color: var(--yarn-text-on-action); font-size: var(--yarn-fs-15); font-weight: 500; text-decoration: none; white-space: nowrap; transition: background-color 0.2s ease; }
+.yarn-faq-chat__line-cta:hover { background: var(--yarn-action-strong); color: var(--yarn-text-on-action); }
+.yarn-faq-chat__line-cta:focus-visible, .yarn-faq-chat__all:focus-visible { outline: 2px solid var(--yarn-focus); outline-offset: 4px; }
+/* 手机上扫自己屏幕上的码没有意义，二维码只在桌面显示。 */
+.yarn-faq-chat__qr { display: none; }
+
+/* 与上方品牌介绍连成一块：共用页面底色、去掉顶部留白，并且不参与首页区块交替色带的计数（见 yarn-home-mobile.css Issue 336）。 */
+body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:has(.hitoami-story) + .shopify-section:has(.yarn-home-guide--cat) { background: var(--yarn-bg-page); padding-top: 0; }
+/* 品牌介绍落在偶数位（淡陶土色带）时，常见问题跟着用色带，里面的浅色面板改白面。 */
+body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:nth-child(even of :not(:has(.hitoami-hero, yarn-scroll-cat, .yarn-home-guide--cat))):has(.hitoami-story) + .shopify-section:has(.yarn-home-guide--cat) { background: var(--yarn-bg-band); }
+body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:nth-child(even of :not(:has(.hitoami-hero, yarn-scroll-cat, .yarn-home-guide--cat))):has(.hitoami-story) + .shopify-section:has(.yarn-home-guide--cat) > * { --yarn-bg-band: var(--yarn-bg-surface); }
+
+@media (min-width: 750px) {
+  .yarn-home-guide--cat .yarn-faq-chat__note { font-size: var(--yarn-fs-15); }
+  .yarn-faq-chat { margin-top: var(--yarn-space-6); }
+  .yarn-faq-chat__chips { gap: 10px; }
+  .yarn-faq-chat__chip { padding: 0 20px; font-size: var(--yarn-fs-15); }
+  .yarn-faq-chat__scene { display: grid; grid-template-columns: 180px minmax(0, 1fr); align-items: end; gap: 28px; margin-top: var(--yarn-space-6); }
+  .yarn-faq-chat__cat { order: 0; width: 180px; margin: 0; }
+  .yarn-faq-chat__bubbles { margin-bottom: 48px; }
+  .yarn-faq-chat__bubble { padding: 28px 32px; border-radius: 24px; }
+  .yarn-faq-chat.is-ready .yarn-faq-chat__bubble::after { left: -10px; bottom: 32px; border-right: 0; border-left: 1px solid var(--yarn-border-subtle); }
+  .yarn-home-guide--cat .yarn-faq-chat__bubble h3 { font-size: var(--yarn-fs-20); }
+  .yarn-home-guide--cat .yarn-faq-chat__bubble p:last-child { font-size: var(--yarn-fs-16); }
+  .yarn-faq-chat__line { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--yarn-space-5); margin-top: var(--yarn-space-2); padding: 20px 28px; }
+  .yarn-faq-chat__qr { display: grid; justify-items: center; gap: 4px; margin: 0; }
+  .yarn-faq-chat__qr img { display: block; width: 76px; height: auto; padding: 5px; border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-radius-media); background: var(--yarn-bg-surface); }
+  .yarn-faq-chat__qr figcaption { color: var(--yarn-text-muted); font-size: var(--yarn-fs-12); line-height: 1.4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yarn-faq-chat__bubble.is-entering { animation: none; }
+  .yarn-faq-chat__chip, .yarn-faq-chat__line-cta { transition: none; }
+}

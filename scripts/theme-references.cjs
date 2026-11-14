@@ -92,10 +92,10 @@ function scan(root = '.') {
     }
   }
 
-  // 图片旁的来源记录（x.png.source.json、x.webp.json、x.json）跟随图片是否在用。
+  // 图片和视频旁的来源记录（x.png.source.json、x.mp4.source.json、x.webp.json、x.json）跟随素材是否在用。
   for (const asset of assets.filter(file => file.endsWith('.json'))) {
     const base = asset.replace(/(\.source|\.provenance)?\.json$/, '');
-    const images = /\.(png|webp|jpe?g|svg)$/.test(base) ? [base] : [`${base}.png`, `${base}.webp`];
+    const images = /\.(png|webp|jpe?g|svg|mp4)$/.test(base) ? [base] : [`${base}.png`, `${base}.webp`];
     if (images.some(image => live.has(image))) live.add(asset);
   }
 

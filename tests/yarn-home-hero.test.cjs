@@ -54,25 +54,27 @@ test('homepage hero v4: yarn, project yarn and season scenes, each with a browsi
   assert.equal(index.sections['yarn-hero'].disabled, true);
 });
 
-test('hero capsule names every slide in the page language and swipes on phones (Issue 274)', () => {
-  // 2026-10-30 锦晨选定 N1：底部胶囊写出每张的名字（选中填陶土色）和「01 / 03」，取代圆点；手机可左右滑动，不自动轮播。
+test('hero has no capsule tabs, autoplays and still swipes on phones (2026-11-14)', () => {
+  // 2026-11-14 锦晨决定去掉首屏底部的名字胶囊（原 #274 N1），改成自动轮播；手机左右滑与键盘左右键照常可用。
   const section = fs.readFileSync('sections/hitoami-hero.liquid', 'utf8');
   const css = fs.readFileSync('assets/hitoami-hero.css', 'utf8');
   const js = fs.readFileSync('assets/hitoami-hero.js', 'utf8');
-  assert.match(section, /class="hitoami-tab" data-page=/);
-  assert.match(section, /render 'yarn-setting-text', settings: block\.settings, key: 'label', allow_blank: true/);
-  assert.match(section, /'hitoami_home\.hero_tab_' \| append: block\.settings\.scene/);
-  assert.match(section, /data-slide-number/);
+  assert.doesNotMatch(section, /hitoami-(controls|tabs|tab|count)\b|data-page|data-slide-number/);
+  assert.doesNotMatch(css, /hitoami-(controls|tabs|tab|count)\b/);
   for (const locale of ['ja', 'zh-CN', 'en.default']) {
     const strings = JSON.parse(fs.readFileSync(`locales/${locale}.json`, 'utf8').replace(/^\/\*[\s\S]*?\*\//, '')).hitoami_home;
-    for (const key of ['hero_tabs', 'hero_tab_yarn', 'hero_tab_kit', 'hero_tab_season', 'hero_tab_finished']) assert.ok(strings[key]?.trim(), `${locale}.${key}`);
+    assert.ok(!Object.keys(strings).some((key) => key.startsWith('hero_tab')), `${locale} hero_tab*`);
   }
-  assert.match(css, /\.hitoami-tab\[aria-current\] \{[^}]*background: var\(--yarn-home-action\)/);
-  assert.match(css, /\.hitoami-tab \{[^}]*min-height: 44px/);
   // 窗边系列满版铺图：不再保留 #167 的「桌面贴右、不裁切」。
   assert.doesNotMatch(css, /object-fit: contain/);
   assert.match(js, /pointermove/);
-  assert.doesNotMatch(js, /setInterval|setTimeout/);
+  // 自动轮播：每 6 秒换一张；鼠标停留、焦点在首屏内、页面在后台、主题编辑器里暂停；减少动态效果时不自动换。
+  assert.match(js, /this\.delay = 6000/);
+  assert.match(js, /setTimeout\(\(\) => this\.show\(this\.index \+ 1, true, 0, true\)/);
+  assert.match(js, /this\.holds\.size \|\| this\.reduce\.matches \|\| window\.Shopify\?\.designMode/);
+  for (const reason of ['hover', 'focus', 'hidden', 'drag']) assert.match(js, new RegExp(`hold\\('${reason}'`));
+  // 自动换张不朗读，免得屏幕阅读器每 6 秒被打断。
+  assert.match(js, /const status = auto \? null :/);
 });
 
 test('home frosted header keeps the phone language sheet on screen (Issue 290)', () => {

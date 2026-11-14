@@ -43,7 +43,8 @@ html { font-synthesis-weight: none; }
   .yp-detail--modes :is(h1, h2, h3), .yp-mode-option strong, .yp-shell :is(h1, h2, h3),
   .yp-component--yarn .yp-component__heading h4, .yd-search h2, .yd-search__bar h1,
   .yx-season__heading, .yx-season-page__heading, .yx-season-page__toc-num, .yx-season-page__num,
-  .yx-season-page__name, .yx-season-page__lead, .yarn-support-page .main-page-title
+  .yx-season-page__name, .yx-season-page__lead, .yarn-support-page .main-page-title,
+  .yarn-home-guide--cat .yarn-faq-chat__bubble h3, .yarn-home-guide--cat .yarn-faq-chat__line-title
 ) {
   letter-spacing: -0.05em;
 }
@@ -77,6 +78,8 @@ h5, .h5 { font-size: var(--yarn-fs-14); }
   --yarn-bg-page: #fffdfa; /* cream-0 · 页面底（#336 暖 1：奶白，带一丝暖意；取代 #326 的近中性浅灰） */
   --yarn-bg-surface: #ffffff; /* paper-0 · 卡片、导航、横幅、输入框面 */
   --yarn-bg-sunken: #f2e5db; /* clay-100 · 次级面、图片占位、分段控件底（#336 暖 1：淡陶土深一档） */
+  --yarn-scheme-bg-page: #f8f7f4; /* neutral-50 · Rise 配色方案 1、5 的页面底（锦晨 2026-11-14 保留线上后台改回的中性浅灰；自制区块仍用 bg-page） */
+  --yarn-scheme-bg-sunken: #efeeea; /* neutral-100 · Rise 配色方案 2 的次级面（锦晨 2026-11-14 保留线上后台改回的中性灰；自制区块仍用 bg-sunken） */
   --yarn-bg-warm: #fffdfa; /* cream-0 · 原暖米区块（配色方案 5）；与页面底同色 */
   --yarn-bg-wash-sage: #ecf0e4; /* wash-sage-100 · #326 抹茶晨雾：区块竖向渐变的底端（从页面底渐变到它） */
   --yarn-bg-wash-mist: #eef1f3; /* wash-mist-100 · #326 抹茶晨雾：区块竖向渐变的底端（雾灰蓝，取自小猫线轴） */

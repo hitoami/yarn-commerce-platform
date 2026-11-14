@@ -10,6 +10,7 @@
         "slide-yarn": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/a8da93f2614e1610a1632194ca1d008c.png",
             "scene": "yarn",
             "focus": 50,
             "tone": "dark",
@@ -136,6 +137,9 @@
     "story": {
       "type": "hitoami-story",
       "settings": {
+        "image": "shopify://shop_images/82764f4a29429f8f3178eb4b359d69ac.jpg",
+        "use_shop_video": true,
+        "hide_line": true,
         "use_brand_scene": true,
         "line_link": "https://lin.ee/p5xrDGo",
         "story_heading": "最初のひと目から、\n編みもので、人と暮らしをやさしくつなぐ。",
@@ -439,6 +443,8 @@
     "faq": {
       "type": "yarn-home-guide",
       "settings": {
+        "faq_style": "cat",
+        "help_link": "https://lin.ee/p5xrDGo",
         "mode": "faq",
         "eyebrow": "Q&A",
         "eyebrow_zh": "Q&A",
@@ -527,6 +533,28 @@
             "text_zh": "退换货条件请查看退换货说明页面。",
             "text_en": "Our returns and exchanges page explains the conditions."
           }
+        },
+        "item-7": {
+          "type": "item",
+          "settings": {
+            "title": "商品価格は税込みですか？",
+            "title_zh": "商品价格含税吗？",
+            "title_en": "Do prices include tax?",
+            "text": "はい。各商品ページに税込価格を表示します。",
+            "text_zh": "是。商品页面标示含税价格。",
+            "text_en": "Yes. Tax-inclusive prices are shown on each product page."
+          }
+        },
+        "item-8": {
+          "type": "item",
+          "settings": {
+            "title": "ギフト包装はありますか？",
+            "title_zh": "提供礼品包装吗？",
+            "title_en": "Is gift wrapping available?",
+            "text": "無料でご用意しています。お申し込み方法は情報待ちです。",
+            "text_zh": "提供，且免费。申请方式待提供。",
+            "text_en": "Yes, free of charge. How to request it: to be provided."
+          }
         }
       },
       "block_order": [
@@ -535,26 +563,28 @@
         "item-3",
         "item-4",
         "item-5",
-        "item-6"
+        "item-6",
+        "item-7",
+        "item-8"
       ]
     }
   },
   "order": [
     "hero",
-    "story",
     "yarn-entries",
     "catalog",
     "season",
     "guide",
     "project-picks",
     "picks-finished",
-    "faq",
     "guide-strip",
     "sale-picks",
     "beginner-kits",
     "filter-switch",
     "yarn-hero",
     "line-support",
+    "story",
+    "faq",
     "scroll-cat"
   ]
 }

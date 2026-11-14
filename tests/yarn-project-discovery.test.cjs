@@ -36,7 +36,8 @@ test('homepage follows the #131 IA: yarn first, then season feature, yarn sets a
   // #180 独立新手指引合并进作品区；导览条、新手友好编织包、底部 LINE 帮助条停用而不删除，编辑器里可重新打开。
   // 滚动进度小猫（#151）是底边固定的装饰层，不占版面顺序，放在最后。
   const live = index.order.filter(id => !index.sections[id].disabled);
-  assert.deepEqual(live, ['hero', 'story', 'yarn-entries', 'catalog', 'season', 'project-picks', 'picks-finished', 'faq', 'scroll-cat']);
+  // 品牌与常见问题合并（锦晨 2026-11-14 选定原型方向 B「店员猫答疑」）：常见问题紧接品牌介绍，LINE 入口移到常见问题底部；整块放在页脚前。
+  assert.deepEqual(live, ['hero', 'yarn-entries', 'catalog', 'season', 'project-picks', 'picks-finished', 'story', 'faq', 'scroll-cat']);
   for (const retired of ['guide', 'guide-strip', 'beginner-kits', 'line-support', 'sale-picks', 'filter-switch', 'yarn-hero']) assert.equal(index.sections[retired].disabled, true, retired);
   assert.equal(index.sections.hero.type, 'hitoami-hero');
   assert.equal(index.sections.story.type, 'hitoami-story');
@@ -147,10 +148,10 @@ test('filter updates preserve preview parameters and URL hash', () => {
   assert.equal(urls[0].hash, '#discover-products');
 });
 
-test('home follows Claude Design 1a: capsule-tab hero (Issue 274), switchable two-row yarn strip, 4-up finished picks (#126)', () => {
+test('home follows Claude Design 1a: hero without capsule tabs (2026-11-14), switchable two-row yarn strip, 4-up finished picks (#126)', () => {
   const heroSection = fs.readFileSync('sections/hitoami-hero.liquid', 'utf8');
   assert.doesNotMatch(heroSection, /data-previous|data-next|data-current/);
-  assert.match(heroSection, /class="hitoami-tabs"/);
+  assert.doesNotMatch(heroSection, /class="hitoami-tabs"/);
   const circles = fs.readFileSync('sections/yarn-entry-circles.liquid', 'utf8');
   // 同一商品字段的入口归为一段；段名可编辑；只有一段时不出切换。
   assert.match(circles, /if block\.settings\.field != ec_group_field/);

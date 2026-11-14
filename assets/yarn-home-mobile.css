@@ -142,9 +142,9 @@ body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.hitoam
 /* Issue 336（用户 2026-11-07 选定「暖 1 淡陶土」）：每个相邻区块用底色分开——奶白页面底与整宽淡陶土色带按区块顺序交替，
    第 1、3、5… 个内容区块为页面底，第 2、4… 个为 `bg-band`。不做内缩圆角块（用户认为局促），色带铺满整宽，上下留白与其他区块相同。
    按位置计数（跳过首屏大图和零高度的滚动小猫），运营在 Shopify 里增删、调整区块顺序后仍然交替。 */
-body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:nth-child(even of :not(:has(.hitoami-hero, yarn-scroll-cat))) { background: var(--yarn-bg-band); }
+body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:nth-child(even of :not(:has(.hitoami-hero, yarn-scroll-cat, .yarn-home-guide--cat))) { background: var(--yarn-bg-band); }
 /* 色带里的浅色面板（如三步提示条）改用白面，免得和色带同色看不见。 */
-body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:nth-child(even of :not(:has(.hitoami-hero, yarn-scroll-cat))) > * { --yarn-bg-band: var(--yarn-bg-surface); }
+body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:nth-child(even of :not(:has(.hitoami-hero, yarn-scroll-cat, .yarn-home-guide--cat))) > * { --yarn-bg-band: var(--yarn-bg-surface); }
 body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:is(:has(.hitoami-story), :has(.yarn-entries), :has(.yarn-home-catalog), :has(.yx-season), :has(.yx-picks), :has(.yarn-home-guide--faq)) { padding-block: 48px; }
 body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) { padding-block: 0; background: none; }
 body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2 { margin: 0; color: var(--yarn-text-heading); font: 500 var(--yarn-fs-24)/1.45 var(--yarn-display); letter-spacing: 0; }
