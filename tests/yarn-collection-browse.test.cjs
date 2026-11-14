@@ -80,14 +80,13 @@ test('284: the beginner filter is kept in the URL and survives category links li
   assert.equal(link.get('ycb_weight'), '1');
 });
 
-test('284: beginner chip and header entry only render when a yarn has a beginner reason', () => {
+test('284: beginner chip only renders when a yarn has a beginner reason; the header no longer links it (#355)', () => {
   const section = fs.readFileSync('sections/yarn-collection-browse.liquid', 'utf8');
   assert.match(section, /if cb_beginner_first != blank/);
   assert.match(section, /data-ycb-beginner-item/);
-  const header = fs.readFileSync('sections/header.liquid', 'utf8');
-  assert.match(header, /render 'yarn-beginner-first', beginner_collection: section.settings.drawer_yarn_collection/);
-  for (const file of ['snippets/yarn-header-menu.liquid', 'snippets/yarn-header-drawer.liquid']) {
-    assert.match(fs.readFileSync(file, 'utf8'), /first_time != blank[\s\S]*\?ycb_beginner=1/);
+  // #355（用户 2026-11-14）：导航下拉不放「第一次织毛线」，新手友好只在毛线目录的胶囊里。
+  for (const file of ['sections/header.liquid', 'snippets/yarn-header-menu.liquid', 'snippets/yarn-header-drawer.liquid']) {
+    assert.doesNotMatch(fs.readFileSync(file, 'utf8'), /yarn-beginner-first|first_time|ycb_beginner/, file);
   }
 });
 

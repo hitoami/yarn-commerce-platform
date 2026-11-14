@@ -34,7 +34,7 @@ html { font-synthesis-weight: none; }
   .collection-hero__title, .yx-collection-preparing__title, .yp-library--rows .yp-card__title, .yarn-favorites-dialog h2,
   .yarn-entries__heading, .yarn-entries__name, .yarn-fswitch__head h2, .yarn-fswitch__name,
   .yarn-footer .footer-block__heading, .yarn-guide__heading, .yarn-guide__title, .yarn-guide__starter-title,
-  .header--project .yarn-project-nav-title, .yarn-mega__title,
+  .header--project .yarn-project-nav-title,
   .yarn-hero--connected .yarn-hero__heading, .yarn-home-catalog h2, .yarn-home-guide h2,
   body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2,
   .yk-title, .yk-buy__head .yk-h2, .yk-tutorial .yk-h2,

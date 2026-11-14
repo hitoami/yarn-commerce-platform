@@ -67,7 +67,6 @@
           </header-menu>
         {%- elsif link.type == 'collection_link' and link.object.handle == section.settings.drawer_yarn_collection.handle and nav_facets != blank -%}
           {%- comment -%}#355 毛线：点击展开三组筛选（粗细 / 花色 / 材质），每项进毛线目录并带筛选；紧接着是「织什么」下拉。沿用 Rise 的 header-menu 开关与键盘行为。{%- endcomment -%}
-          {%- capture mega_title -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'nav_yarn_title' -%}{%- endcapture -%}
           <header-menu>
             <details id="Details-YarnHeaderMenu-{{ forloop.index }}" class="mega-menu yarn-mega">
               <summary
@@ -79,12 +78,9 @@
               </summary>
               <div id="YarnMegaMenu-{{ forloop.index }}" class="mega-menu__content yarn-mega__content motion-reduce global-settings-popup" tabindex="-1">
                 <div class="yarn-mega__inner">
+                  {%- comment -%}#355（用户 2026-11-14）：面板不要标题和「第一次织毛线」入口，只留「查看全部毛线」。{%- endcomment -%}
                   <div class="yarn-mega__head">
-                    <p class="yarn-mega__title">{{ mega_title | default: link.title | escape }}</p>
-                    <div class="yarn-mega__links">
-                      {%- if first_time != blank -%}<a class="yarn-mega__first" href="{{ link.url | escape }}?ycb_beginner=1">{{ 'yarn_collection.first_time' | t }}<span aria-hidden="true"> →</span></a>{%- endif -%}
-                      <a class="yarn-mega__all" href="{{ link.url | escape }}">{{ 'yarn_project.entries_view_all' | t }}<span aria-hidden="true"> →</span></a>
-                    </div>
+                    <a class="yarn-mega__all" href="{{ link.url | escape }}">{{ 'yarn_project.entries_view_all' | t }}<span aria-hidden="true"> →</span></a>
                   </div>
                   <div class="yarn-mega__groups">
                     {%- for nav_group in yarn_nav_groups -%}
