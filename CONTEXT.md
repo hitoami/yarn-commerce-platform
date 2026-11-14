@@ -13,7 +13,7 @@ _Avoid_: Item, Listing
 _Avoid_: SKU（除非明确指库存编码）
 
 **Project**:
-围绕一个目标作品组织真实照片、所需毛线与团数、制作准备及教程领取安排的内容入口。当前使用 yarn_project，不是可购买 Product；公开的完整方案在消费者界面称「材料包」。
+围绕一个目标作品组织真实照片、所需毛线与团数、制作准备及教程领取安排的内容。当前使用 yarn_project，本身不可购买；对应的可购买商品是 Project Kit。
 _Avoid_: Kit, Product
 
 **Draft Project**:
@@ -25,7 +25,7 @@ _Avoid_: Inspiration, Published Project
 _Avoid_: Project, Tutorial
 
 **Project Kit**:
-某个 Project 的默认毛线购买方案，团队与消费者称「材料包」。当前由 yarn_material 引用 Variant × 团数，不是独立 Product，没有独立库存或包内折扣；顾客可选同款可售颜色，购物车中仍是各毛线 Variant。此前整包采购、独立库存模式不适用于 #131。
+某个 Project 打包好的实物商品，团队与消费者称「材料包」。它是独立 Product（2026-11-14 用户决定）：有自己的库存和售价，每种固定配色是一个 Variant；购物车中是材料包 Variant 本身，不拆成毛线。
 _Avoid_: Project, Tutorial
 
 **Season Feature（本季主推）**:
@@ -57,7 +57,7 @@ _Avoid_: Product, Variant, Kit Component
 _Avoid_: Material Requirement, Kit Component
 
 **Kit Component**:
-当前 Project Kit 中一项毛线 Variant 及其所需团数，使用既有 yarn_material 承载。只引用真实商品，不复制库存。其他自备材料或工具可说明但不进入当前材料包加购。
+Project Kit 里装的一项毛线及其团数，用于向顾客说明包里有什么（既有 yarn_material）。它是内容说明，不决定材料包的库存或价格；其他自备材料或工具可以说明。
 _Avoid_: Variant, Copied Product
 
 **Tutorial**:
@@ -110,13 +110,12 @@ _Avoid_: Project, Product
 
 ## Relationships
 
-- 一个 **Product** 有一个或多个 **Variants**；价格、可售性、库存和购物车真值只在 Shopify。当前 Product 只有毛线与 **Finished Piece** 两类。
-- **Project Kit** 与 **Season Feature** 都是内容，最终导向毛线（或成品）的 **Variant** 购买，不形成新的可售对象。
+- 一个 **Product** 有一个或多个 **Variants**；价格、可售性、库存和购物车真值只在 Shopify。当前 Product 有毛线、**Project Kit**（材料包）与 **Finished Piece** 三类。
+- **Project Kit** 是可售 Product，库存、价格与毛线单卖分开；**Season Feature** 是内容，导向毛线 **Variant** 购买。
 - **Project** 用真实照片、所需毛线/团数与教程安排形成可公开方案。资料未齐是 **Draft Project**，不因演示开关出现在当前材料包路径。
-- **Material Requirement** 描述制作要求；**Product Recommendation** 关联适用商品。当前 **Project Kit** 用 **Kit Components** 表达可购买的默认毛线与团数，不成为新的 Product。
-- 默认原作色号与团数可由顾客改为同款、相同其他规格的可售颜色；最终加入购物车的是选定 **Variant** 与数量。
-- 任一所需毛线缺货、未定价或资料缺失时禁止整份加购，不能静默跳过或自动替代；仍可逐项购买其他可售毛线。
-- **Project** 的公开完整性与库存不同：资料完整的材料包可继续展示缺货项；缺货不自动隐藏真实作品。
+- **Material Requirement** 描述制作要求；**Product Recommendation** 关联适用商品。**Kit Components** 只说明 **Project Kit** 里装了什么，不参与它的库存与定价。
+- 顾客只能在 **Project Kit** 已有的固定配色 **Variant** 里选，不能自己换线或换色；材料包售罄按它自己的库存显示。
+- **Project** 的公开完整性与库存不同：材料包售罄不自动隐藏真实作品。
 - **Finished Piece** 独立销售，当前不与材料包互链，不推定顾客可以从成品购买材料或教程。
 - **Tutorial** 的人工领取须有对应支持教程的作品安排；购买普通毛线不自动获得任何教程。
 - **Visitor** 可以浏览并购买；**Shopify Customer** 是商业身份记录，可能早于首笔订单。**Buyer** 表示已购买角色，不是额外账号。
@@ -125,11 +124,11 @@ _Avoid_: Project, Product
 ## Example dialogue
 
 > **Dev:** “材料包是不是一种独立商品？”
-> **Domain expert:** “不是。Project 展示作品；Project Kit 是其中的毛线方案。顾客选择颜色与团数，购物车加入实际毛线 Variant。”
+> **Domain expert:** “是（2026-11-14 起）。Project 展示作品；Project Kit 是打包好的实物商品，有自己的库存和价格。顾客选一种配色，购物车加入的是材料包本身。”
 
 ## 词义边界
 
-- 当前「材料包」「编织包」「kit」指内容中的 **Project Kit** 方案，不指旧独立库存套装。
+- 当前「材料包」「编织包」「kit」指可售的 **Project Kit** 商品；作品的照片与教程内容是 **Project**。
 - **Draft Project** 表示资料尚未达到公开标准，不能以 Inspiration 或样例名义绕过当前公开要求。
 - 「暂未开售」表示售价或销售资料尚未确认；「售罄」表示已确认商品的库存状态，两者不能混用。
 - 色卡是颜色参考，不等于 Shopify 可售 **Variants**，不证明任何库存。
