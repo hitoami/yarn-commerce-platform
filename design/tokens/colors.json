@@ -143,12 +143,10 @@
     "allow": [
       ["paper-0", "cream-0"],
       ["neutral-100", "sand-50"],
-      ["neutral-100", "wash-mist-100"],
       ["neutral-100", "wash-sage-100"],
       ["neutral-100", "paper-200"],
       ["clay-50", "neutral-100"],
       ["neutral-50", "sand-50"],
-      ["neutral-50", "wash-mist-100"],
       ["neutral-50", "neutral-100"],
       ["neutral-50", "clay-50"],
       ["cream-0", "neutral-50"],
