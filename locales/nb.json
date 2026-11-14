@@ -1069,6 +1069,7 @@
     "facet_grams_any": "Any",
     "facet_grams_small": "Up to 50g",
     "facet_grams_mid": "51–149g",
-    "facet_grams_big": "Big balls (150g+)"
+    "facet_grams_big": "Big balls (150g+)",
+    "nav_beginner_tag": "Pick"
   }
 }

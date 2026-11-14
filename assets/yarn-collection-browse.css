@@ -106,8 +106,8 @@ div.ycb-head__intro { margin-bottom: var(--yarn-space-5); }
 .ycb-reason { display: none; margin: 8px 0 0; color: var(--yarn-text-secondary); font-size: var(--yarn-fs-13); line-height: 1.6; }
 .ycb-reason .yx-product-card__badge { margin: 0 4px 0 0; }
 .ycb[data-ycb-beginner-on] .ycb-reason { display: block; }
-/* 卡片默认撑满格子高度；显示理由时改为按内容高，理由才排在卡片下面而不压到下一排。 */
-.ycb[data-ycb-beginner-on] .ycb-grid__item { display: flex; flex-direction: column; }
+/* 卡片默认撑满格子高度；显示理由时改为按内容高，理由才排在卡片下面而不压到下一排。:not([hidden]) 让筛掉的卡片仍然隐藏（Issue 365）。 */
+.ycb[data-ycb-beginner-on] .ycb-grid__item:not([hidden]) { display: flex; flex-direction: column; }
 .ycb[data-ycb-beginner-on] .ycb-grid__item > .yx-product-card { flex: 1; height: auto; }
 .ycb-grid[aria-busy='true'] { opacity: .4; pointer-events: none; }
 
