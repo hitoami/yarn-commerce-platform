@@ -3,8 +3,10 @@
   "palette": {
     "paper-0": "#ffffff",
     "cream-0": "#fffdfa",
+    "neutral-50": "#f8f7f4",
     "clay-50": "#f8eee7",
     "clay-100": "#f2e5db",
+    "neutral-100": "#efeeea",
     "paper-200": "#e6e4df",
     "paper-300": "#d6d2ca",
     "wash-sage-100": "#ecf0e4",
@@ -50,6 +52,8 @@
     "bg-page": { "value": "cream-0", "use": "页面底（#336 暖 1：奶白，带一丝暖意；取代 #326 的近中性浅灰）" },
     "bg-surface": { "value": "paper-0", "use": "卡片、导航、横幅、输入框面" },
     "bg-sunken": { "value": "clay-100", "use": "次级面、图片占位、分段控件底（#336 暖 1：淡陶土深一档）" },
+    "scheme-bg-page": { "value": "neutral-50", "use": "Rise 配色方案 1、5 的页面底（锦晨 2026-11-14 保留线上后台改回的中性浅灰；自制区块仍用 bg-page）" },
+    "scheme-bg-sunken": { "value": "neutral-100", "use": "Rise 配色方案 2 的次级面（锦晨 2026-11-14 保留线上后台改回的中性灰；自制区块仍用 bg-sunken）" },
     "bg-warm": { "value": "cream-0", "use": "原暖米区块（配色方案 5）；与页面底同色" },
     "bg-wash-sage": { "value": "wash-sage-100", "use": "#326 抹茶晨雾：区块竖向渐变的底端（从页面底渐变到它）" },
     "bg-wash-mist": { "value": "wash-mist-100", "use": "#326 抹茶晨雾：区块竖向渐变的底端（雾灰蓝，取自小猫线轴）" },
@@ -106,11 +110,11 @@
     "shadow-warm": { "value": "shade-200", "use": "配色方案 5 阴影色" }
   },
   "schemes": {
-    "scheme-1": { "name": "默认页面", "background": "bg-page", "text": "text-primary", "button": "accent", "button_label": "text-on-action", "secondary_button_label": "action", "shadow": "shadow-page" },
-    "scheme-2": { "name": "暖砂次级", "background": "bg-sunken", "text": "text-primary", "button": "accent", "button_label": "text-on-action", "secondary_button_label": "action", "shadow": "shadow-sunken" },
+    "scheme-1": { "name": "默认页面", "background": "scheme-bg-page", "text": "text-primary", "button": "accent", "button_label": "text-on-action", "secondary_button_label": "action", "shadow": "shadow-page" },
+    "scheme-2": { "name": "暖砂次级", "background": "scheme-bg-sunken", "text": "text-primary", "button": "accent", "button_label": "text-on-action", "secondary_button_label": "action", "shadow": "shadow-sunken" },
     "scheme-3": { "name": "深色反白", "background": "bg-inverse", "text": "text-inverse", "button": "bg-surface", "button_label": "bg-inverse", "secondary_button_label": "text-inverse", "shadow": "shadow-inverse" },
     "scheme-4": { "name": "柔和奶油", "background": "action-subtle-bg", "text": "text-primary", "button": "accent", "button_label": "text-on-action", "secondary_button_label": "action", "shadow": "shadow-cream" },
-    "scheme-5": { "name": "暖米", "background": "bg-warm", "text": "text-warm", "button": "accent", "button_label": "text-on-action", "secondary_button_label": "action", "shadow": "shadow-warm" }
+    "scheme-5": { "name": "暖米", "background": "scheme-bg-page", "text": "text-warm", "button": "accent", "button_label": "text-on-action", "secondary_button_label": "action", "shadow": "shadow-warm" }
   },
   "contrast": {
     "$comment": "声明实际使用的文字/背景搭配；min 为 WCAG 最低对比度（正文 4.5，大字与控件 3）。",
@@ -136,6 +140,17 @@
     "minDeltaE": 5,
     "allow": [
       ["paper-0", "cream-0"],
+      ["neutral-100", "sand-50"],
+      ["neutral-100", "wash-mist-100"],
+      ["neutral-100", "wash-sage-100"],
+      ["neutral-100", "paper-200"],
+      ["clay-50", "neutral-100"],
+      ["neutral-50", "sand-50"],
+      ["neutral-50", "wash-mist-100"],
+      ["neutral-50", "neutral-100"],
+      ["neutral-50", "clay-50"],
+      ["cream-0", "neutral-50"],
+      ["paper-0", "neutral-50"],
       ["clay-50", "clay-100"],
       ["clay-50", "sand-50"],
       ["clay-100", "paper-200"],

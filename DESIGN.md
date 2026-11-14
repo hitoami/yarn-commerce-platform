@@ -9,6 +9,8 @@ colors:
   bg-page: "#fffdfa"
   bg-surface: "#ffffff"
   bg-sunken: "#f2e5db"
+  scheme-bg-page: "#f8f7f4"
+  scheme-bg-sunken: "#efeeea"
   bg-warm: "#fffdfa"
   bg-wash-sage: "#ecf0e4"
   bg-wash-mist: "#eef1f3"
