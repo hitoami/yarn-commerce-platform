@@ -49,10 +49,22 @@
     return index === -1 ? BAND_LIMITS.length : index;
   }
 
-  const STATE_KEYS = ['ycb_view', 'ycb_weight', 'ycb_beginner', 'ycb_cmp', 'ycb_here'];
+  // #355 navigation filters: one value per group, matched against the item's yarn-facets tokens (e.g. "fiber:wool").
+  const FACET_GROUPS = ['thick', 'color', 'fiber', 'works', 'grams'];
+  const STATE_KEYS = ['ycb_view', 'ycb_weight', 'ycb_beginner', 'ycb_cmp', 'ycb_here', ...FACET_GROUPS.map((group) => `ycb_${group}`)];
+  function readFacets(params) {
+    return Object.fromEntries(FACET_GROUPS.map((group) => {
+      const value = params.get(`ycb_${group}`) || '';
+      return [group, /^[a-z_]{1,24}$/.test(value) ? value : ''];
+    }));
+  }
+  const facetsActive = (facets) => FACET_GROUPS.filter((group) => facets[group]);
+  // Tokens come from the yarn-facets snippet: " thick:fine fiber:wool works:hat ".
+  const matchesFacets = (tokens, facets) => facetsActive(facets).every((group) => ` ${tokens} `.includes(` ${group}:${facets[group]} `));
   function readState(params) {
     const weight = Number(params.get('ycb_weight'));
     return {
+      facets: readFacets(params),
       view: params.get('ycb_view') === 'map' ? 'map' : 'list',
       weight: params.get('ycb_weight') !== null && Number.isInteger(weight) && weight >= 0 && weight <= BAND_LIMITS.length ? weight : null,
       beginner: params.get('ycb_beginner') === '1',
@@ -67,12 +79,13 @@
     if (state.view === 'map') next.set('ycb_view', 'map');
     if (state.weight !== null) next.set('ycb_weight', String(state.weight));
     if (state.beginner) next.set('ycb_beginner', '1');
+    FACET_GROUPS.forEach((group) => { if (state.facets?.[group]) next.set(`ycb_${group}`, state.facets[group]); });
     if (keepVisit && state.cmp.length > 1) next.set('ycb_cmp', state.cmp.join(','));
     if (keepVisit && state.here) next.set('ycb_here', state.here);
     return next;
   }
 
-  if (typeof module !== 'undefined') module.exports = { applyBand, activeBand, nextPageUrl, metresPer100g, weightBand, readState, writeState };
+  if (typeof module !== 'undefined') module.exports = { applyBand, activeBand, nextPageUrl, metresPer100g, weightBand, readState, writeState, matchesFacets };
   if (typeof document === 'undefined') return;
 
   function connect(root) {
@@ -87,6 +100,9 @@
       section.querySelector('[data-ycb-close]')?.addEventListener('click', () => drawer?.close());
       drawer?.addEventListener('click', (event) => { if (event.target === drawer) drawer.close(); });
 
+      const gramsNow = readFacets(current).grams;
+      section.querySelectorAll('[data-ycb-grams]').forEach((input) => { input.checked = input.value === gramsNow; });
+
       const bands = Array.from(section.querySelectorAll('[data-ycb-band]'));
       const active = activeBand(current, bands.map((input) => input.value).filter(Boolean));
       bands.forEach((input) => { input.checked = active ? input.value === active : !input.value; });
@@ -95,7 +111,9 @@
         event.preventDefault();
         const params = new URLSearchParams(new FormData(filterForm));
         const band = filterForm.querySelector('[data-ycb-band]:checked')?.value || '';
-        const next = writeState(applyBand(params, band), { ...readState(new URLSearchParams(window.location.search)), cmp: [], here: '' });
+        const before = readState(new URLSearchParams(window.location.search));
+        const grams = readFacets(params).grams;
+        const next = writeState(applyBand(params, band), { ...before, facets: { ...before.facets, grams }, cmp: [], here: '' });
         if (current.has('preview_theme_id')) next.set('preview_theme_id', current.get('preview_theme_id'));
         window.location.assign(`${filterForm.getAttribute('action')}${next.size ? `?${next}` : ''}`);
       });
@@ -178,7 +196,7 @@
       const title = li.querySelector('.yx-product-card__title');
       const band = weightBand(metresPer100g(li.dataset.ycbSpec));
       return {
-        li, band, handle: li.dataset.ycbItem, beginner: li.hasAttribute('data-ycb-beginner-item'), cats: (li.dataset.ycbCats || '').split(' ').filter(Boolean),
+        li, band, facets: li.dataset.ycbFacets || '', handle: li.dataset.ycbItem, beginner: li.hasAttribute('data-ycb-beginner-item'), cats: (li.dataset.ycbCats || '').split(' ').filter(Boolean),
         img: li.dataset.ycbImg || '', spec: li.dataset.ycbSpec || '', name: title?.textContent.trim() || '', url: title?.getAttribute('href') || '#',
         price: li.querySelector('.yx-product-card__price')?.textContent.replace(/\s+/g, ' ').trim() || '',
       };
@@ -237,7 +255,7 @@
       pop.hidden = true;
       map.append(pop);
       board.replaceChildren();
-      const placed = items.filter((item) => item.band !== null && (!state.beginner || item.beginner));
+      const placed = items.filter((item) => item.band !== null && (!state.beginner || item.beginner) && matchesFacets(item.facets, state.facets));
       const rows = bands.map((_, index) => index).filter((index) => state.weight === null || state.weight === index);
       const compare = state.cmp.length > 1;
       board.classList.toggle('ycb-map__board--compare', compare);
@@ -246,7 +264,7 @@
         head.append(el('div', 'ycb-map__gut'), ...state.cmp.map((handle) => el('div', 'ycb-map__col', catName(handle))));
         board.append(head);
       }
-      const named = compare ? false : categoryActive() || state.weight !== null || state.beginner;
+      const named = compare ? false : categoryActive() || state.weight !== null || state.beginner || facetsActive(state.facets).length > 0;
       rows.forEach((index) => {
         const row = el('div', 'ycb-map__row');
         row.append(gutter(index));
@@ -273,7 +291,7 @@
         }
         board.append(row);
       });
-      const missing = items.filter((item) => !state.beginner || item.beginner).length - placed.length;
+      const missing = items.filter((item) => (!state.beginner || item.beginner) && matchesFacets(item.facets, state.facets)).length - placed.length;
       map.querySelector('[data-ycb-map-status]').textContent = missing > 0 ? fill(T.tMissing, missing) : '';
       const here = board.querySelector('.is-here');
       if (here) here.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
@@ -295,11 +313,14 @@
       if (!items) return;
       let shown = 0;
       items.forEach((item) => {
-        const visible = (state.weight === null || item.band === state.weight) && (!state.beginner || item.beginner);
+        const visible = (state.weight === null || item.band === state.weight) && (!state.beginner || item.beginner) && matchesFacets(item.facets, state.facets);
         item.li.hidden = !visible;
         if (visible) shown += 1;
       });
-      if (count) count.textContent = state.weight === null && !state.beginner ? countText : fill(T.tCount, shown);
+      const filtered = state.weight !== null || state.beginner || facetsActive(state.facets).length > 0;
+      const none = section.querySelector('[data-ycb-none]');
+      if (none) none.hidden = shown > 0 || state.view === 'map';
+      if (count) count.textContent = filtered ? fill(T.tCount, shown) : countText;
     }
 
     function renderChrome() {
@@ -332,6 +353,10 @@
       };
       if (state.beginner && beginnerButton) chip(beginnerButton.querySelector('.ycb-chip__name').textContent.trim(), () => update({ beginner: false }));
       if (state.weight !== null) chip(`${bands[state.weight].name}`, () => update({ weight: null }));
+      facetsActive(state.facets).forEach((group) => {
+        const label = section.querySelector(`[data-ycb-facet="${group}:${state.facets[group]}"]`)?.textContent.trim();
+        if (label) chip(label, () => update({ facets: { ...state.facets, [group]: '' } }));
+      });
       if (state.cmp.length > 1) chip(`${T.tCompareOn} ${state.cmp.map(catName).join(' × ')}`, () => update({ cmp: [] }));
       active.hidden = !active.children.length;
       const params = writeState(new URLSearchParams(window.location.search), state);
@@ -349,7 +374,7 @@
       state = { ...state, ...change };
       renderChrome();
       // 要全部商品时先标「载入中」，列表变淡，载完筛好再恢复，避免先闪出全部商品。
-      if (state.view === 'map' || state.weight !== null || state.beginner || state.cmp.length > 1) {
+      if (state.view === 'map' || state.weight !== null || state.beginner || facetsActive(state.facets).length > 0 || state.cmp.length > 1) {
         if (!items) grid.setAttribute('aria-busy', 'true');
         await loadAll();
       }

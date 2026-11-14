@@ -1,4 +1,6 @@
-{%- comment -%}Desktop navigation. Menu labels and URLs come from Shopify Navigation; a top-level link to the collection with handle `sale` is highlighted.{%- endcomment -%}
+{%- comment -%}Desktop navigation. Menu labels and URLs come from Shopify Navigation; a top-level link to the collection with handle `sale` is highlighted.
+  #355：指向毛线目录的那一项展开「粗细 / 花色 / 材质」三组，后面插入「织什么」；三组的顺序在这里，各组选项在 yarn-nav-facet-links，文案在 Theme locales。{%- endcomment -%}
+{%- assign yarn_nav_groups = 'thick,color,fiber' | split: ',' -%}
 <nav class="header__inline-menu" aria-label="{{ 'sections.header.menu' | t }}">
   <svg class="yarn-nav-strand-defs" width="0" height="0" aria-hidden="true" focusable="false">
     <pattern id="YarnNavPly" width="3.2" height="3.2" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
@@ -63,10 +65,8 @@
               </ul>
             </details>
           </header-menu>
-        {%- elsif link.type == 'collection_link' and link.object.handle == section.settings.drawer_yarn_collection.handle and nav_tiles != blank -%}
-          {%- comment -%}毛线：点击展开 6 格大图面板（#131 桌面稿），沿用 Rise 的 header-menu / mega-menu 开关与键盘行为。{%- endcomment -%}
-          {%- capture mega_eyebrow -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'nav_yarn_eyebrow' -%}{%- endcapture -%}
-          {%- capture mega_title -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'nav_yarn_title' -%}{%- endcapture -%}
+        {%- elsif link.type == 'collection_link' and link.object.handle == section.settings.drawer_yarn_collection.handle and nav_facets != blank -%}
+          {%- comment -%}#355 毛线：点击展开三组筛选（粗细 / 花色 / 材质），每项进毛线目录并带筛选；紧接着是「织什么」下拉。沿用 Rise 的 header-menu 开关与键盘行为。{%- endcomment -%}
           <header-menu>
             <details id="Details-YarnHeaderMenu-{{ forloop.index }}" class="mega-menu yarn-mega">
               <summary
@@ -78,21 +78,26 @@
               </summary>
               <div id="YarnMegaMenu-{{ forloop.index }}" class="mega-menu__content yarn-mega__content motion-reduce global-settings-popup" tabindex="-1">
                 <div class="yarn-mega__inner">
+                  {%- comment -%}#355（用户 2026-11-14）：面板不要标题和「第一次织毛线」入口，只留「查看全部毛线」。{%- endcomment -%}
                   <div class="yarn-mega__head">
-                    <div>
-                      {%- if mega_eyebrow != blank -%}<p class="yarn-mega__eyebrow">{{ mega_eyebrow | escape }}</p>{%- endif -%}
-                      {%- if mega_title != blank -%}<p class="yarn-mega__title">{{ mega_title | escape }}</p>{%- endif -%}
-                    </div>
-                    <div class="yarn-mega__links">
-                      {%- if first_time != blank -%}<a class="yarn-mega__first" href="{{ link.url | escape }}?ycb_beginner=1">{{ 'yarn_collection.first_time' | t }}<span aria-hidden="true"> →</span></a>{%- endif -%}
-                      <a class="yarn-mega__all" href="{{ link.url | escape }}">{{ 'yarn_project.entries_view_all' | t }}<span aria-hidden="true"> →</span></a>
-                    </div>
+                    <a class="yarn-mega__all" href="{{ link.url | escape }}">{{ 'yarn_project.entries_view_all' | t }}<span aria-hidden="true"> →</span></a>
                   </div>
-                  <ul class="yarn-mega__tiles list-unstyled" role="list">{{ nav_tiles }}</ul>
+                  <div class="yarn-mega__groups">
+                    {%- for nav_group in yarn_nav_groups -%}
+                      {%- capture nav_links -%}{%- render 'yarn-nav-facet-links', group: nav_group, facets: nav_facets, base_url: link.url, link_class: 'yarn-mega__link focus-inset', id_prefix: 'YarnHeaderMenu' -%}{%- endcapture -%}
+                      {%- if nav_links == blank -%}{%- continue -%}{%- endif -%}
+                      {%- assign nav_group_key = 'yarn_collection.facet_group_' | append: nav_group -%}
+                      <div class="yarn-mega__group">
+                        <p class="yarn-mega__group-title" id="YarnMegaGroup-{{ nav_group }}">{{ nav_group_key | t }}</p>
+                        <ul class="list-unstyled" role="list" aria-labelledby="YarnMegaGroup-{{ nav_group }}">{{ nav_links }}</ul>
+                      </div>
+                    {%- endfor -%}
+                  </div>
                 </div>
               </div>
             </details>
           </header-menu>
+          {%- capture works_links -%}{%- render 'yarn-nav-facet-links', group: 'works', facets: nav_facets, base_url: link.url, link_class: 'header__menu-item list-menu__item link link--text focus-inset caption-large', id_prefix: 'YarnHeaderMenu' -%}{%- endcapture -%}
         {%- else -%}
           <a
             id="YarnHeaderMenu-{{ link.handle }}"
@@ -107,6 +112,23 @@
           </a>
         {%- endif -%}
       </li>
+    {%- comment -%}#355：「织什么」紧跟在毛线后面；works_links 只在毛线那一项里算。{%- endcomment -%}
+    {%- if works_links != blank -%}
+      <li>
+        <header-menu>
+          <details id="Details-YarnHeaderMenu-works">
+            <summary id="YarnHeaderMenu-works" class="header__menu-item list-menu__item link focus-inset">
+              <span>{{ 'yarn_collection.nav_works' | t }}{%- render 'yarn-nav-strand' -%}</span>
+              {{- 'icon-caret.svg' | inline_asset_content -}}
+            </summary>
+            <ul id="YarnHeaderMenu-MenuList-works" class="header__submenu list-menu list-menu--disclosure yarn-works-menu color-{{ section.settings.menu_color_scheme }} gradient caption-large motion-reduce global-settings-popup" role="list" tabindex="-1">
+              {{ works_links }}
+            </ul>
+          </details>
+        </header-menu>
+      </li>
+      {%- assign works_links = blank -%}
+    {%- endif -%}
     {%- endfor -%}
   </ul>
 </nav>
