@@ -1,0 +1,10 @@
+{
+  "name": "tutorial-claim",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@shopify/ui-extensions": "2026.10.0",
+    "preact": "^10.27.0",
+    "@preact/signals": "^2.3.0"
+  }
+}
