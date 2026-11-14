@@ -61,7 +61,7 @@ Project Kit 里装的一项毛线及其团数，用于向顾客说明包里有�
 _Avoid_: Variant, Copied Product
 
 **Tutorial**:
-帮助完成 Project 的图解、视频或步骤资料。当前通过官方 LINE，由店员核对订单号和作品名称后发送；本轮没有站内教程阅读、自动核验或发放。
+帮助完成 Project 的图解、视频或步骤资料。只随 Project Kit 提供：购买材料包后发送到下单邮箱；只买毛线不提供（2026-11-14 用户决定）。本轮没有站内教程阅读。
 _Avoid_: Project
 
 **Customization Inquiry**:
@@ -117,7 +117,7 @@ _Avoid_: Project, Product
 - 顾客只能在 **Project Kit** 已有的固定配色 **Variant** 里选，不能自己换线或换色；材料包售罄按它自己的库存显示。
 - **Project** 的公开完整性与库存不同：材料包售罄不自动隐藏真实作品。
 - **Finished Piece** 独立销售，当前不与材料包互链，不推定顾客可以从成品购买材料或教程。
-- **Tutorial** 的人工领取须有对应支持教程的作品安排；购买普通毛线不自动获得任何教程。
+- **Tutorial** 只随 **Project Kit** 的订单发送到邮箱；购买毛线（包括材料包里用到的同款毛线）不获得教程。
 - **Visitor** 可以浏览并购买；**Shopify Customer** 是商业身份记录，可能早于首笔订单。**Buyer** 表示已购买角色，不是额外账号。
 - **Favorite**、**My Project**、**Making**、**Member Work** 与社区属于各自既有或后续平台范围，不能从材料包购买推定已经创建制作记录或获得创作者身份。
 
