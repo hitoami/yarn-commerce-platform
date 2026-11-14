@@ -563,10 +563,10 @@
     "addons_title": "送料無料まで、こちらもどうぞ",
     "addon_add_label": "{{ name }}をカートに追加",
     "quick_error": "カートに追加できませんでした。",
-    "footer_trust": "日本全国配送 · LINEで毛糸相談 · Shopify の安全な決済",
+    "footer_trust": "LINEで毛糸相談 · Shopify の安全な決済",
     "free_remaining": "あと {{ amount }} で送料無料",
     "free_reached": "送料無料の対象です",
-    "free_rule": "税込 {{ amount }} 以上で日本全国送料無料（決済画面で確定します）",
+    "free_rule": "税込 {{ amount }} 以上で送料無料（対象地域・条件は決済画面で確認してください）",
     "kit_title": "材料セット用の毛糸が入っています",
     "kit_text": "ご注文後、注文番号と作品名を公式 LINE に送ってください。スタッフが確認して作り方をお送りします。"
   },
@@ -584,7 +584,7 @@
     "trust_free": "{{ amount }}以上で送料無料",
     "trust_line": "LINEで毛糸相談",
     "trust_staff": "スタッフに毛糸相談",
-    "trust_ship": "日本全国へ配送",
+    "trust_ship": "配送地域・送料は確認中",
     "beginner_heading": "初心者でも使える？",
     "per_ball": "/ 玉",
     "per_ball_tax_included": "/ 玉（税込）",
@@ -964,8 +964,8 @@
     "finished_coming_soon": "ハンドメイド作品は準備中です。販売開始後は検索結果にも表示されます。"
   },
   "yarn_cart_assurance": {
-    "title_1": "日本全国へ配送",
-    "text_1": "税込9,900円以上で送料無料",
+    "title_1": "配送について",
+    "text_1": "地域・送料は確認中です。ご購入前にお問い合わせください。",
     "title_2": "糸選びをサポート",
     "text_2": "色合わせや必要量を相談できます",
     "title_3": "安心してお買いもの",
