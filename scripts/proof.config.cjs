@@ -62,6 +62,17 @@ module.exports = {
         { shot: true },
       ] },
     ] },
+    // #355：导航下拉的每一项都是「毛线目录 + ycb_<组>=<值>」；打开后有可清除的筛选标签，只显示符合的毛线。
+    { key: 'yarn-nav-filter', path: '/collections/yarn?ycb_works=hat', flows: [
+      { key: 'works-hat', label: '织什么 › 帽子', steps: [
+        { waitFor: '.ycb-active__chip' },
+        { waitFor: '[data-ycb-grid]:not([aria-busy])' },
+        { expect: '.ycb-grid .yx-product-card', minimum: 1, label: '适合织帽子的毛线' },
+        { expect: '[data-ycb-grid] > li[hidden]', present: true, minimum: 1, label: '其他毛线被筛掉' },
+        { noOverflow: true },
+        { shot: true },
+      ] },
+    ] },
     // #131：演示商品已删除，编织包不再销售；成品详情等真实成品上架后再加回。
     // #131 / #152：手工成品上架前集合为空，yarn-collection-browse 显示三语「准备中」说明而不是「0/0 件」。
     { key: 'finished-collection', path: '/collections/finished-goods', requiredContent: [

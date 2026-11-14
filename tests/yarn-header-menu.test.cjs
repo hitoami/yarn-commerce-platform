@@ -51,18 +51,14 @@ test('mobile drawer leads with account and quick actions, then plain shop rows (
   assert.match(drawer, /routes\.account_login_url/);
   assert.match(drawer, /routes\.account_addresses_url/);
   assert.doesNotMatch(drawer, /yarn-drawer-feature|drawer_season_text/);
-  // #299：手机上毛线行是直达目录的普通链接，不在抽屉里展开分类图块。
+  // #355：手机上毛线、织什么都是抽屉子面板；其他行是普通链接。没有商品的分类不输出。
   assert.doesNotMatch(drawer, /nav_tiles|YarnDrawerTiles|yarn-drawer-yarn/);
-  assert.match(drawer, /drawer_yarn_collection\.handle and link\.object\.all_products_count > 0[\s\S]*yarn-drawer-row__total/);
+  assert.match(drawer, /drawer_yarn_collection\.handle and nav_facets != blank[\s\S]*yarn-drawer-row__total/);
   assert.match(drawer, /link\.object\.all_products_count == 0[\s\S]*'sections\.header\.coming_soon' \| t/);
   for (const key of ['drawer_login_title', 'drawer_welcome', 'drawer_orders', 'drawer_addresses', 'drawer_shipping', 'drawer_contact', 'drawer_shop']) {
     assert.match(drawer, new RegExp(`'sections\\.header\\.${key}' \\| t`), key);
   }
-  const entry = fs.readFileSync('snippets/yarn-nav-tiles.liquid', 'utf8');
-  assert.match(entry, /block\.type != 'yarn_entry'/);
-  assert.match(entry, /metaobjects\.yarn_entry\[block\.settings\.entry\]/);
-  assert.match(entry, /filter\.p\.m\.\{\{ block\.settings\.field \}\}=\{\{ de_gid \| url_encode \}\}/);
-  assert.match(entry, /de_entry\.name\.value \| escape/);
+  // 旧的「毛线入口」图块（#131）不再渲染；block 类型保留，后台已有的 header-group 数据仍能通过校验。
   const blockTypes = schema.blocks.map(block => block.type);
   assert.deepEqual(blockTypes, ['@app', 'yarn_entry']);
   // 本季文案设置保留在 schema 里，旧的 header-group 数据仍能通过校验。
@@ -103,19 +99,40 @@ test('one language switch serves header and drawer, opening the same page in eac
   assert.match(headerCss, /\.yarn-lang__option\[aria-current='true'\]/);
 });
 
-test('header computes the yarn tiles once and the desktop yarn link opens them in a mega panel (#131)', () => {
-  assert.equal((header.match(/render 'yarn-nav-tiles'/g) || []).length, 1);
-  assert.match(header, /render 'yarn-header-drawer', navigation_menu: navigation_menu, show_country_selector/);
-  assert.match(header, /render 'yarn-header-menu', navigation_menu: navigation_menu, nav_tiles: nav_tiles/);
-  assert.match(desktop, /link\.object\.handle == section\.settings\.drawer_yarn_collection\.handle and nav_tiles != blank/);
+test('header computes the yarn facets once; yarn opens three filter groups and 织什么 follows it (#355)', () => {
+  assert.equal((header.match(/render 'yarn-facets'/g) || []).length, 1);
+  assert.match(header, /for nav_product in section\.settings\.drawer_yarn_collection\.products/);
+  assert.match(header, /render 'yarn-header-drawer', navigation_menu: navigation_menu, nav_facets: nav_facets/);
+  assert.match(header, /render 'yarn-header-menu', navigation_menu: navigation_menu, nav_facets: nav_facets/);
+  assert.match(desktop, /link\.object\.handle == section\.settings\.drawer_yarn_collection\.handle and nav_facets != blank/);
   assert.match(desktop, /<header-menu>\s*<details[^>]*class="mega-menu yarn-mega"/);
-  assert.match(desktop, /<ul class="yarn-mega__tiles[^"]*" role="list">\{\{ nav_tiles \}\}<\/ul>/);
-  for (const key of ['nav_yarn_eyebrow', 'nav_yarn_title']) {
-    assert.match(desktop, new RegExp(`yarn-setting-text', settings: section\\.settings, key: '${key}'`));
-    for (const suffix of ['', '_zh', '_en']) assert.ok(schema.settings.some(setting => setting.id === key + suffix), key + suffix);
+  for (const source of [desktop, drawer]) {
+    assert.match(source, /assign yarn_nav_groups = 'thick,color,fiber' \| split: ','/);
+    assert.match(source, /render 'yarn-nav-facet-links', group: nav_group/);
+    assert.match(source, /render 'yarn-nav-facet-links', group: 'works'/);
+    assert.match(source, /'yarn_collection\.nav_works' \| t/);
   }
-  assert.match(desktop, /link\.object\.all_products_count == 0[\s\S]*'sections\.header\.coming_soon' \| t/);
-  assert.match(headerCss, /\.yarn-mega__tiles \{ display: grid; grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
+  const links = fs.readFileSync('snippets/yarn-nav-facet-links.liquid', 'utf8');
+  assert.match(links, /unless facets contains nfl_token/, 'options without products are not rendered');
+  assert.match(links, /href="\{\{ base_url \}\}\?ycb_\{\{ group \}\}=\{\{ nfl_value \}\}"/);
+  for (const [group, values] of Object.entries({ thick: 'fine,medium,chunky', color: 'solid,variegated,gradient,heather,rainbow', fiber: 'wool,wool_blend,mohair,synthetic,cotton', works: 'sweater,hat,scarf,blanket,bag,doll' })) {
+    assert.ok(links.includes(`when '${group}'\n      assign nfl_values = '${values}'`), group);
+    for (const locale of ['ja', 'zh-CN', 'en.default']) {
+      const copy = JSON.parse(fs.readFileSync(`locales/${locale}.json`, 'utf8').replace(/^\/\*[\s\S]*?\*\//, '')).yarn_collection;
+      assert.ok(copy[`facet_group_${group}`], `${locale} group ${group}`);
+      for (const value of values.split(',')) assert.ok(copy[`facet_${group}_${value}`], `${locale} ${group} ${value}`);
+    }
+  }
+  assert.ok(!fs.existsSync('snippets/yarn-nav-tiles.liquid'));
+  // 用户 2026-11-14：紧凑三栏浮层挂在按钮下方；粗细是手绘波浪线、花色是小毛线球，颜色只用 token。
+  assert.match(headerCss, /\.yarn-main-menu \.mega-menu__content\.yarn-mega__content \{[^}]*width: max-content;/);
+  assert.match(headerCss, /\.yarn-mega__group \+ \.yarn-mega__group \{ border-left: 1px solid var\(--yarn-border-subtle\); \}/);
+  assert.match(links, /render 'yarn-facet-icon', group: group, value: nfl_value, uid: id_prefix/);
+  const icon = fs.readFileSync('snippets/yarn-facet-icon.liquid', 'utf8');
+  assert.doesNotMatch(icon.replace(/\{%- comment -%\}[\s\S]*?\{%- endcomment -%\}/, ''), /(fill|stroke|stop-color)="#/i, 'icon colours come from CSS tokens');
+  for (const value of ['solid', 'variegated', 'gradient', 'heather', 'rainbow']) assert.match(icon, new RegExp(`when '${value}'`), value);
+  assert.match(icon, /id="\{\{ yfi_id \}\}-c"/, 'clip ids are unique per menu (desktop / drawer)');
+  assert.match(headerCss, /\.yarn-drawer-facets \.menu-drawer__menu-item \{ min-height: var\(--yarn-touch\); \}/);
 });
 
 test('desktop header docks with a drop-in and compact bar, honouring reduced motion (#131)', () => {

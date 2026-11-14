@@ -34,7 +34,7 @@ html { font-synthesis-weight: none; }
   .collection-hero__title, .yx-collection-preparing__title, .yp-library--rows .yp-card__title, .yarn-favorites-dialog h2,
   .yarn-entries__heading, .yarn-entries__name, .yarn-fswitch__head h2, .yarn-fswitch__name,
   .yarn-footer .footer-block__heading, .yarn-guide__heading, .yarn-guide__title, .yarn-guide__starter-title,
-  .header--project .yarn-project-nav-title, .yarn-nav-tile__name, .yarn-mega__title,
+  .header--project .yarn-project-nav-title,
   .yarn-hero--connected .yarn-hero__heading, .yarn-home-catalog h2, .yarn-home-guide h2,
   body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2,
   .yk-title, .yk-buy__head .yk-h2, .yk-tutorial .yk-h2,
@@ -82,7 +82,6 @@ h5, .h5 { font-size: var(--yarn-fs-14); }
   --yarn-scheme-bg-sunken: #efeeea; /* neutral-100 · Rise 配色方案 2 的次级面（锦晨 2026-11-14 保留线上后台改回的中性灰；自制区块仍用 bg-sunken） */
   --yarn-bg-warm: #fffdfa; /* cream-0 · 原暖米区块（配色方案 5）；与页面底同色 */
   --yarn-bg-wash-sage: #ecf0e4; /* wash-sage-100 · #326 抹茶晨雾：区块竖向渐变的底端（从页面底渐变到它） */
-  --yarn-bg-wash-mist: #eef1f3; /* wash-mist-100 · #326 抹茶晨雾：区块竖向渐变的底端（雾灰蓝，取自小猫线轴） */
   --yarn-dot-sage: #a9b897; /* sage-500 · #329 装饰小圆点（通知条前），取自小猫的抹茶毛线；不得用于文字 */
   --yarn-bg-footer: #f2e5db; /* clay-100 · 页脚纯色（#336：去掉渐变，与次级面同色） */
   --yarn-bg-band: #f8eee7; /* clay-50 · 浅色面板与首页交替色带（#336 暖 1 淡陶土）：首页第 2、4… 个区块、毛线详情估算面板等 */
@@ -115,6 +114,8 @@ h5, .h5 { font-size: var(--yarn-fs-14); }
   --yarn-focus: #426f82; /* indigo-600 · 键盘焦点环、输入光标（全站唯一冷色） */
   --yarn-decor-thread: #bf5a38; /* clay-500 · 插画连线、装饰描边；不得用于文字 */
   --yarn-decor-art-line: #e9bd51; /* butter-600 · 插画节点描边；不得用于文字 */
+  --yarn-decor-yarn-mist: #8fb2c4; /* mist-400 · #355 导航花色小图标：彩虹色线团里的一道雾蓝；不得用于文字 */
+  --yarn-decor-yarn-blush: #e8b9b0; /* blush-300 · #355 导航花色小图标：混色、彩虹色线团里的樱粉；不得用于文字 */
   --yarn-decor-halo: rgba(248, 229, 169, 0.45); /* butter-200 @ 0.45 · 插画节点光晕 */
   --yarn-overlay: rgba(47, 48, 47, 0.32); /* charcoal-900 @ 0.32 · 抽屉与弹窗遮罩、浮层阴影 */
   --yarn-shadow-soft: rgba(103, 81, 68, 0.14); /* umber-700 @ 0.14 · 卡片与浮层的柔和阴影 */

@@ -294,8 +294,6 @@
 
 
 .header-wrapper .yarn-drawer-row__total { color: var(--yarn-text-muted); font-family: var(--yarn-body); font-size: var(--yarn-fs-13); }
-/* Issue 284：毛线行下的「第一次织毛线」，缩进一级、比主行小一号。 */
-.header-wrapper .yarn-drawer-sub { display: flex; align-items: center; min-height: var(--yarn-touch); padding: 0 16px 0 28px; color: var(--yarn-action); font-family: var(--yarn-body); font-size: var(--yarn-fs-14); font-weight: 500; text-decoration: none; }
 /* Rise absolutely positions drawer item icons and hides carets; these arrows sit in the row instead. */
 .header-wrapper .menu-drawer__menu-item > .yarn-drawer-row__arrow,
 .header-wrapper :is(.yarn-drawer-account, .yarn-drawer-account__head) > .yarn-drawer-row__arrow {
@@ -307,54 +305,39 @@
 }
 .js .header-wrapper :is(.menu-drawer__menu-item, .yarn-drawer-account, .yarn-drawer-account__head) .yarn-drawer-row__arrow .icon-caret { display: block; width: 14px; height: 14px; margin: auto; }
 .yarn-drawer-row__arrow svg { transform: rotate(-90deg); }
+/* Issue 355：可展开的行（毛线、织什么）是 summary，Rise 给它留了右内边距并把箭头绝对定位；与普通行对齐。 */
+.js .header-wrapper summary.yarn-drawer-row.menu-drawer__menu-item { padding-right: 0; }
+.header-wrapper summary.yarn-drawer-row .yarn-drawer-row__arrow .icon-caret { position: static; }
+/* Issue 355 导航小图标（snippets/yarn-facet-icon）：粗细是手绘波浪线，花色是小毛线球；只用品牌色 token。 */
+.yfi { flex: none; width: 28px; height: 24px; }
+.yfi-line { fill: none; stroke: var(--yarn-home-logo); stroke-linecap: round; }
+.yfi-ink { fill: none; stroke: var(--yarn-text-heading); stroke-width: 1.2; stroke-linecap: round; }
+.yfi-clay { fill: var(--yarn-home-logo); }
+.yfi-cream { fill: var(--yarn-tint-butter); }
+.yfi-sage { fill: var(--yarn-dot-sage); }
+.yfi-butter { fill: var(--yarn-decor-art-line); }
+.yfi-blush { fill: var(--yarn-decor-yarn-blush); }
+.yfi-mist { fill: var(--yarn-decor-yarn-mist); }
+.yfi-stop-cream { stop-color: var(--yarn-tint-butter); }
+.yfi-stop-clay { stop-color: var(--yarn-home-logo); }
+.header-wrapper .yarn-drawer-facets .menu-drawer__menu-item { gap: 12px; }
+/* 材质 / 想织什么的小插画：f- 填色、s- 描边（线宽写在 SVG 上）。 */
+.yfi--art path:not([class*='f-']) { fill: none; }
+.yfi .f-clay { fill: var(--yarn-home-logo); } .yfi .s-clay { stroke: var(--yarn-home-logo); }
+.yfi .f-butter { fill: var(--yarn-decor-art-line); } .yfi .s-butter { stroke: var(--yarn-decor-art-line); }
+.yfi .f-sage { fill: var(--yarn-dot-sage); } .yfi .s-sage { stroke: var(--yarn-dot-sage); }
+.yfi .f-blush { fill: var(--yarn-decor-yarn-blush); } .yfi .s-blush { stroke: var(--yarn-decor-yarn-blush); }
+.yfi .f-cream { fill: var(--yarn-tint-butter); } .yfi .s-cream { stroke: var(--yarn-tint-butter); }
+.yfi .f-mist { fill: var(--yarn-decor-yarn-mist); }
+.yfi .f-paper { fill: var(--yarn-bg-surface); } .yfi .s-paper { stroke: var(--yarn-bg-surface); }
+.yfi .f-ink { fill: var(--yarn-text-heading); } .yfi .s-ink { stroke: var(--yarn-text-heading); }
+/* Issue 355：抽屉里毛线 / 织什么的子面板：分组小标题不可点，每个选项一行 ≥ 44px。 */
+.header-wrapper .yarn-drawer-facets__all { color: var(--yarn-action); font-weight: 500; }
+.header-wrapper .yarn-drawer-facets__group { margin-top: 12px; }
+.header-wrapper .yarn-drawer-facets__title { margin: 0; padding: 8px 0 4px; color: var(--yarn-text-muted); font-size: var(--yarn-fs-13); line-height: 1.4; }
+.header-wrapper .yarn-drawer-facets .menu-drawer__menu-item { min-height: var(--yarn-touch); }
+.header-wrapper .yarn-drawer-facets__list { margin: 0; padding: 0; }
 
-.yarn-nav-tile {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  height: 100%;
-  padding: 8px 8px 12px;
-  border-radius: var(--yarn-radius-panel);
-  background: var(--yarn-bg-sunken);
-  color: var(--yarn-text-heading);
-  text-decoration: none;
-}
-.yarn-mega__tiles > li:nth-child(1) .yarn-nav-tile { background: var(--yarn-tint-blush); }
-.yarn-mega__tiles > li:nth-child(2) .yarn-nav-tile { background: var(--yarn-tint-butter); }
-.yarn-mega__tiles > li:nth-child(3) .yarn-nav-tile { background: var(--yarn-tint-sage); }
-.yarn-mega__tiles > li:nth-child(5) .yarn-nav-tile { background: var(--yarn-bg-band); }
-.yarn-mega__tiles .yarn-nav-tile--all { background: var(--yarn-action-subtle-bg); }
-.yarn-nav-tile__photo { display: block; margin-bottom: 8px; aspect-ratio: 151 / 104; overflow: hidden; border-radius: var(--yarn-radius-media); background: var(--yarn-bg-surface); }
-.yarn-nav-tile__photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.yarn-nav-tile__photo--mosaic { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; }
-.yarn-nav-tile__photo--mosaic img { min-height: 0; }
-.yarn-nav-tile__text { display: flex; flex-direction: column; gap: 2px; padding-inline: 4px; }
-.yarn-nav-tile__name { font-family: var(--yarn-display); font-size: var(--yarn-fs-15); line-height: 1.4; }
-.yarn-nav-tile__count { color: var(--yarn-text-muted); font-size: var(--yarn-fs-12); }
-/* Issue 329：设了小猫的格子——左猫右字，白 → 淡色竖向渐变底（不用实心色块），淡色按格轮换 blush / sage / mist。 */
-.yarn-mega__tiles > li { --tile-tint: var(--yarn-bg-wash-sage); }
-.yarn-mega__tiles > li:nth-child(3n + 1) { --tile-tint: var(--yarn-tint-blush); }
-.yarn-mega__tiles > li:nth-child(3n) { --tile-tint: var(--yarn-bg-wash-mist); }
-.yarn-mega__tiles > li > .yarn-nav-tile.yarn-nav-tile--cat {
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  min-height: 76px;
-  padding: 8px 14px 8px 8px;
-  border-radius: 16px;
-  /* 只在格子下半带一点淡色：淡色再和白混一半，避免糖果感。 */
-  background: linear-gradient(180deg, var(--yarn-bg-surface) 40%, color-mix(in srgb, var(--tile-tint) 55%, var(--yarn-bg-surface)) 100%);
-  box-shadow: inset 0 0 0 1px var(--yarn-border-subtle);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.yarn-mega__tiles > li > .yarn-nav-tile.yarn-nav-tile--cat:hover { box-shadow: inset 0 0 0 1px var(--yarn-border-card), 0 8px 18px -12px var(--yarn-shadow-soft); }
-.yarn-nav-tile--cat .yarn-nav-tile__text { flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; padding: 0; }
-.yarn-mega .yarn-nav-tile--cat .yarn-nav-tile__name { font: 500 var(--yarn-fs-15)/1.4 var(--yarn-body); color: var(--yarn-text-heading); }
-.yarn-mega .yarn-nav-tile--cat .yarn-nav-tile__count { font-size: var(--yarn-fs-12); }
-.yarn-nav-tile--cat:hover { transform: translateY(-2px); }
-.yarn-nav-tile__cat { flex: none; display: block; width: 60px; aspect-ratio: 1; }
-.yarn-nav-tile__cat img { display: block; width: 100%; height: 100%; object-fit: contain; }
-@media (prefers-reduced-motion: reduce) { .yarn-nav-tile--cat:hover { transform: none; } }
 .header-wrapper .yarn-drawer-row {
   display: flex;
   align-items: center;
@@ -429,15 +412,21 @@
   .yarn-main-menu summary.header__menu-item .icon-caret { position: static; flex: 0 0 10px; width: 10px; height: 6px; transition: transform 0.2s ease; }
   .yarn-main-menu details[open] > .header__menu-item .icon-caret { transform: rotate(180deg); }
 
-  /* Issue 329：下拉是离开页头 8px 的圆角白色浮层，宽度与首页胶囊对齐（最宽 1100），不再是贴边的整块方板。 */
+  /* Issue 355（用户 2026-11-14 选「紧凑三栏 + 小图示」）：浮层只有内容那么宽，挂在「毛线分类」正下方；
+     三栏用细线隔开，粗细与花色每项前有小图标（yarn-facet-icon），「查看全部毛线」在底部。 */
+  .yarn-main-menu details.yarn-mega { position: relative; }
   .yarn-main-menu .mega-menu__content.yarn-mega__content {
-    width: min(calc(100vw - 48px), 1100px);
+    position: absolute;
+    top: 100%;
+    left: -28px;
+    right: auto;
+    width: max-content;
     max-height: none;
     overflow: visible;
-    margin: 8px auto 0;
-    padding: 18px 20px 20px;
+    margin-top: 14px;
+    padding: 22px 28px 18px;
     border: 0;
-    border-radius: 24px;
+    border-radius: 20px;
     background: var(--yarn-bg-surface);
     box-shadow: 0 18px 44px -18px var(--yarn-shadow-soft), 0 2px 8px -4px var(--yarn-shadow-soft);
   }
@@ -447,26 +436,26 @@
     inset: var(--header-bottom-position-desktop, 0) 0 0;
     z-index: -1;
     background: var(--yarn-overlay);
-    opacity: 0.45;
+    opacity: 0.25;
     pointer-events: none;
   }
-  .yarn-mega__inner { max-width: var(--yarn-content-max); margin: 0 auto; }
-  /* 标题区压成一行：去掉小眉题，标题 17px，右侧两个链接 13px。 */
-  .yarn-mega__head { display: flex; align-items: center; justify-content: space-between; gap: var(--yarn-space-4); margin: 0 4px 14px; }
-  .yarn-mega__eyebrow { display: none; }
-  .yarn-mega__title { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: var(--yarn-fs-18); line-height: 1.4; }
+  .yarn-mega__inner { display: flex; flex-direction: column-reverse; }
+  .yarn-mega__head { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--yarn-border-subtle); }
   .yarn-mega__all { color: var(--yarn-action); font-size: var(--yarn-fs-13); text-decoration: none; white-space: nowrap; }
   .yarn-mega__all:hover { text-decoration: underline; }
-  .yarn-mega__links { display: flex; align-items: center; gap: var(--yarn-space-5); }
-  .yarn-mega__first { padding: 4px 12px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: var(--yarn-fs-13); font-weight: 500; text-decoration: none; white-space: nowrap; }
-  .yarn-mega__first:hover { text-decoration: underline; }
-  .yarn-mega__tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 12px; margin: 0; padding: 0; }
-  .yarn-mega .yarn-nav-tile { flex-direction: row; align-items: center; gap: 20px; min-height: 128px; padding: 16px; }
-  .yarn-mega .yarn-nav-tile:hover { box-shadow: inset 0 0 0 1px var(--yarn-border-card); }
-  .yarn-mega .yarn-nav-tile__photo { flex: 0 0 96px; width: 96px; margin: 0; aspect-ratio: 1; }
-  .yarn-mega .yarn-nav-tile__text { gap: 4px; padding: 0; }
-  .yarn-mega .yarn-nav-tile__name { font-size: var(--yarn-fs-20); }
-  .yarn-mega .yarn-nav-tile__count { font-size: var(--yarn-fs-13); }
+  .yarn-mega__groups { display: flex; }
+  .yarn-mega__group { padding: 0 32px; }
+  .yarn-mega__group:first-child { padding-left: 0; }
+  .yarn-mega__group:last-child { padding-right: 4px; }
+  .yarn-mega__group + .yarn-mega__group { border-left: 1px solid var(--yarn-border-subtle); }
+  .yarn-mega__group-title { margin: 0 0 6px; color: var(--yarn-text-muted); font-size: var(--yarn-fs-12); line-height: 1.4; letter-spacing: 0.08em; }
+  .yarn-mega__group ul { margin: 0; padding: 0; }
+  .yarn-mega__link { display: flex; align-items: center; gap: 10px; min-height: 40px; color: var(--yarn-text-heading); font-size: var(--yarn-fs-15); white-space: nowrap; text-decoration: none; }
+  .yarn-mega__link:hover span { color: var(--yarn-action); text-decoration: underline; text-underline-offset: 4px; }
+  /* 「想织什么」：同样的圆角浮层，悬停整行变底色。 */
+  .yarn-main-menu .yarn-works-menu { min-width: 180px; margin-top: 14px; padding: 10px 8px; border: 0; border-radius: 16px; box-shadow: 0 18px 44px -18px var(--yarn-shadow-soft), 0 2px 8px -4px var(--yarn-shadow-soft); }
+  .yarn-main-menu .yarn-works-menu .header__menu-item { display: flex; align-items: center; justify-content: flex-start; gap: 10px; min-height: 40px; padding: 0 14px; border-radius: 10px; font-size: var(--yarn-fs-15); }
+  .yarn-main-menu .yarn-works-menu .header__menu-item:hover { background: var(--yarn-bg-page); color: var(--yarn-action); text-decoration: none; }
 }
 
 /* Issue 190 desktop: opened panels unroll downward from under the header while fading in, and the page dims behind them. */
@@ -474,11 +463,11 @@
   .yarn-main-menu details[open] > :is(.yarn-mega__content, .header__submenu) {
     animation: yarn-menu-unroll 0.42s cubic-bezier(0.16, 1, 0.3, 1) both, yarn-menu-fade 0.16s linear both;
   }
-  .yarn-mega[open] :is(.yarn-mega__head, .yarn-mega__tiles > li) {
+  .yarn-mega[open] :is(.yarn-mega__head, .yarn-mega__group) {
     animation: yarn-menu-settle 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
     animation-delay: 0.08s;
   }
-  .yarn-mega[open] .yarn-mega__tiles > li:nth-child(n + 4) { animation-delay: 0.14s; }
+  .yarn-mega[open] .yarn-mega__group:nth-child(n + 2) { animation-delay: 0.12s; }
   .yarn-mega[open]::before { animation: yarn-menu-fade 0.35s ease both; }
 }
 
@@ -532,7 +521,7 @@
   /* Keep the strand and panels as state changes, without the drawing or sliding. */
   .yarn-nav-strand path { transition: none !important; }
   .yarn-main-menu details[open] > :is(.yarn-mega__content, .header__submenu) { animation: yarn-menu-fade 0.15s ease both; }
-  .yarn-mega[open] :is(.yarn-mega__head, .yarn-mega__tiles > li) { animation: none; }
+  .yarn-mega[open] :is(.yarn-mega__head, .yarn-mega__group) { animation: none; }
 }
 
 /* Issue 258 language pill: same control at every width; phones get a bottom sheet, wider screens a popover. */
@@ -693,8 +682,6 @@
   }
   .section-header .header__heading-link { justify-self: start; margin-left: 0; } /* Rise 给 Logo 留了 -7.5px 外边距，会让它比内容列多出去一截 */
   .section-header .header__icons { justify-self: end; margin-right: -8px; } /* 图标按钮自带 8px 留白：抵掉后购物车图形右边落在内容列右边，两侧栏仍等宽，菜单居中 */
-  /* 下拉浮层与胶囊同宽（Issue 329 的约定）。 */
-  .yarn-main-menu .mega-menu__content.yarn-mega__content { width: min(calc(100vw - 48px), 1248px); }
   .header-wrapper .desktop-localization-wrapper:not(:has(*)) { display: none; }
 }
 
@@ -737,5 +724,15 @@
   .yarn-drawer-heading { margin: 12px 0 2px; }
   .header-wrapper .yarn-drawer-row { min-height: 52px; padding: 12px 0; }
   .header-wrapper .menu-drawer__menu li + li { margin-top: 0; }
-  .header-wrapper .yarn-drawer-sub { min-height: 40px; margin-top: -6px; padding-left: 12px; }
+  /* Issue 355：毛线 / 织什么的子面板和抽屉一样铺满整屏，内容与主菜单同宽、同左边距，长了在面板里滚动。 */
+  .js .header-wrapper .menu-drawer__submenu {
+    position: fixed;
+    inset: 0;
+    padding-top: calc(var(--header-bottom-position, 78px) + 4px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .header-wrapper .menu-drawer__inner-submenu { box-sizing: border-box; width: 100%; max-width: 560px; margin: 0 auto; padding: 8px 24px calc(24px + env(safe-area-inset-bottom)); }
+  .header-wrapper .menu-drawer__inner-submenu .menu-drawer__close-button { margin: 0 0 4px; padding: 0; background: none; font-size: var(--yarn-fs-15); }
+  .header-wrapper .yarn-drawer-facets .menu-drawer__menu-item { padding: 0; font-size: var(--yarn-fs-16); }
 }
