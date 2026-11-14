@@ -34,7 +34,7 @@ html { font-synthesis-weight: none; }
   .collection-hero__title, .yx-collection-preparing__title, .yp-library--rows .yp-card__title, .yarn-favorites-dialog h2,
   .yarn-entries__heading, .yarn-entries__name, .yarn-fswitch__head h2, .yarn-fswitch__name,
   .yarn-footer .footer-block__heading, .yarn-guide__heading, .yarn-guide__title, .yarn-guide__starter-title,
-  .header--project .yarn-project-nav-title, .yarn-nav-tile__name, .yarn-mega__title,
+  .header--project .yarn-project-nav-title, .yarn-mega__title,
   .yarn-hero--connected .yarn-hero__heading, .yarn-home-catalog h2, .yarn-home-guide h2,
   body:has(.hitoami-hero--catalog) :is(.hitoami-story, .yarn-entries, .yarn-home-catalog, .yx-season, .yx-picks, .yarn-home-guide--faq) h2,
   .yk-title, .yk-buy__head .yk-h2, .yk-tutorial .yk-h2,
@@ -82,7 +82,6 @@ h5, .h5 { font-size: var(--yarn-fs-14); }
   --yarn-scheme-bg-sunken: #efeeea; /* neutral-100 · Rise 配色方案 2 的次级面（锦晨 2026-11-14 保留线上后台改回的中性灰；自制区块仍用 bg-sunken） */
   --yarn-bg-warm: #fffdfa; /* cream-0 · 原暖米区块（配色方案 5）；与页面底同色 */
   --yarn-bg-wash-sage: #ecf0e4; /* wash-sage-100 · #326 抹茶晨雾：区块竖向渐变的底端（从页面底渐变到它） */
-  --yarn-bg-wash-mist: #eef1f3; /* wash-mist-100 · #326 抹茶晨雾：区块竖向渐变的底端（雾灰蓝，取自小猫线轴） */
   --yarn-dot-sage: #a9b897; /* sage-500 · #329 装饰小圆点（通知条前），取自小猫的抹茶毛线；不得用于文字 */
   --yarn-bg-footer: #f2e5db; /* clay-100 · 页脚纯色（#336：去掉渐变，与次级面同色） */
   --yarn-bg-band: #f8eee7; /* clay-50 · 浅色面板与首页交替色带（#336 暖 1 淡陶土）：首页第 2、4… 个区块、毛线详情估算面板等 */

@@ -48,7 +48,7 @@ test('catalogue section reuses the shared yarn card, hides empty categories and 
   assert.doesNotMatch(liquid.split('{% schema %}')[0], /\| t: count:/, 'count triggers Shopify plural keys');
 });
 
-const { metresPer100g, weightBand, readState, writeState } = require('../assets/yarn-collection-browse.js');
+const { metresPer100g, weightBand, readState, writeState, matchesFacets } = require('../assets/yarn-collection-browse.js');
 
 test('243: weight comes only from grams and metres in the localized spec line', () => {
   assert.equal(metresPer100g('50g · 約75m'), 150);
@@ -63,7 +63,8 @@ test('243: weight comes only from grams and metres in the localized spec line', 
 
 test('243: view and weight survive category links; compare and "you are here" do not', () => {
   const state = readState(new URLSearchParams('ycb_view=map&ycb_weight=3&ycb_cmp=fluffy,loop-fancy&ycb_here=mvp-yarn-01'));
-  assert.deepEqual(state, { view: 'map', weight: 3, beginner: false, cmp: ['fluffy', 'loop-fancy'], here: 'mvp-yarn-01' });
+  const noFacets = { thick: '', color: '', fiber: '', works: '', grams: '' };
+  assert.deepEqual(state, { facets: noFacets, view: 'map', weight: 3, beginner: false, cmp: ['fluffy', 'loop-fancy'], here: 'mvp-yarn-01' });
   const link = writeState(new URLSearchParams('filter.p.m.yarn.texture=gid%3A1'), state, { keepVisit: false });
   assert.equal(link.toString(), 'filter.p.m.yarn.texture=gid%3A1&ycb_view=map&ycb_weight=3');
   assert.equal(readState(new URLSearchParams('ycb_weight=9')).weight, null);
@@ -88,4 +89,26 @@ test('284: beginner chip and header entry only render when a yarn has a beginner
   for (const file of ['snippets/yarn-header-menu.liquid', 'snippets/yarn-header-drawer.liquid']) {
     assert.match(fs.readFileSync(file, 'utf8'), /first_time != blank[\s\S]*\?ycb_beginner=1/);
   }
+});
+
+test('355: navigation filters ride the URL, survive category links and match whole facet tokens', () => {
+  const state = readState(new URLSearchParams('ycb_fiber=wool&ycb_works=hat&ycb_color=<script>'));
+  assert.deepEqual(state.facets, { thick: '', color: '', fiber: 'wool', works: 'hat', grams: '' });
+  const link = writeState(new URLSearchParams('filter.p.m.yarn.texture=gid%3A1'), state, { keepVisit: false });
+  assert.equal(link.toString(), 'filter.p.m.yarn.texture=gid%3A1&ycb_fiber=wool&ycb_works=hat');
+  // 「羊毛」不能把「羊毛混纺」也筛进来；多组条件同时满足才显示。
+  assert.equal(matchesFacets(' fiber:wool_blend works:hat ', state.facets), false);
+  assert.equal(matchesFacets(' thick:fine fiber:wool works:sweater works:hat ', state.facets), true);
+  assert.equal(matchesFacets(' fiber:wool ', state.facets), false);
+  assert.equal(matchesFacets('', readState(new URLSearchParams('')).facets), true);
+});
+
+test('355: list cards carry yarn-facets tokens; ball weight / big balls live only in the filter drawer', () => {
+  const section = fs.readFileSync('sections/yarn-collection-browse.liquid', 'utf8');
+  assert.match(section, /data-ycb-facets="\{%- render 'yarn-facets', product: product -%\}"/);
+  assert.match(section, /name="ycb_grams" value="\{\{ cb_grams_value \}\}" data-ycb-grams/);
+  assert.match(section, /data-ycb-facet="\{\{ cb_facet_pair\[0\] \}\}:\{\{ cb_facet_value \}\}"/);
+  const facets = fs.readFileSync('snippets/yarn-facets.liquid', 'utf8');
+  for (const field of ['ball_length_m', 'ball_weight_g', 'composition', 'color_type', 'works']) assert.match(facets, new RegExp(`metafields\\.yarn\\.${field}`), field);
+  for (const word of ['ウール', 'wool', 'モヘア', 'コットン', 'cotton', '綿']) assert.ok(facets.includes(word), word);
 });

@@ -1,4 +1,5 @@
-{%- comment -%}Mobile and drawer navigation. Menu labels and URLs come from Shopify Navigation.{%- endcomment -%}
+{%- comment -%}Mobile and drawer navigation. Menu labels and URLs come from Shopify Navigation; #355 adds the yarn / 织什么 submenus (see yarn-header-menu).{%- endcomment -%}
+{%- assign yarn_nav_groups = 'thick,color,fiber' | split: ',' -%}
 <header-drawer data-breakpoint="desktop">
   <details id="Details-menu-drawer-container" class="menu-drawer-container">
     <summary class="header__icon header__icon--menu header__icon--summary link focus-inset" aria-label="{{ 'sections.header.menu' | t }}">
@@ -130,6 +131,39 @@
                         </div>
                       </div>
                     </details>
+                  {%- elsif link.type == 'collection_link' and link.object.handle == section.settings.drawer_yarn_collection.handle and nav_facets != blank -%}
+                    {%- comment -%}#355：手机上毛线、织什么都是可展开的子菜单（Rise 的抽屉子面板），分组标题不可点，每项 ≥ 44px。{%- endcomment -%}
+                    <details id="Details-yarn-menu-drawer-yarn">
+                      <summary id="YarnHeaderDrawer-{{ link.handle }}" class="menu-drawer__menu-item list-menu__item link link--text focus-inset yarn-drawer-row{% if link.current %} menu-drawer__menu-item--active{% endif %}">
+                        <span>{{ link.title | escape }}</span>
+                        {%- if link.object.all_products_count > 0 -%}<span class="yarn-drawer-row__total">{{ 'yarn_project.entry_count' | t: count: link.object.all_products_count }}</span>{%- endif -%}
+                        <span class="svg-wrapper yarn-drawer-row__arrow" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
+                      </summary>
+                      <div id="yarn-link-yarn" class="menu-drawer__submenu has-submenu gradient motion-reduce" tabindex="-1">
+                        <div class="menu-drawer__inner-submenu">
+                          <button class="menu-drawer__close-button link link--text focus-inset" aria-expanded="true">
+                            <span class="svg-wrapper">{{- 'icon-arrow.svg' | inline_asset_content -}}</span>
+                            {{ link.title | escape }}
+                          </button>
+                          <ul class="menu-drawer__menu list-menu yarn-drawer-facets" role="list" tabindex="-1">
+                            <li><a class="menu-drawer__menu-item link link--text list-menu__item focus-inset yarn-drawer-facets__all" href="{{ link.url | escape }}">{{ 'yarn_project.entries_view_all' | t }}<span aria-hidden="true"> →</span></a></li>
+                            {%- if first_time != blank -%}
+                              <li><a class="menu-drawer__menu-item link link--text list-menu__item focus-inset yarn-drawer-facets__all" href="{{ link.url | escape }}?ycb_beginner=1">{{ 'yarn_collection.first_time' | t }}<span aria-hidden="true"> →</span></a></li>
+                            {%- endif -%}
+                            {%- for nav_group in yarn_nav_groups -%}
+                              {%- capture nav_links -%}{%- render 'yarn-nav-facet-links', group: nav_group, facets: nav_facets, base_url: link.url, link_class: 'menu-drawer__menu-item link link--text list-menu__item focus-inset', id_prefix: 'YarnHeaderDrawer' -%}{%- endcapture -%}
+                              {%- if nav_links == blank -%}{%- continue -%}{%- endif -%}
+                              {%- assign nav_group_key = 'yarn_collection.facet_group_' | append: nav_group -%}
+                              <li class="yarn-drawer-facets__group">
+                                <p class="yarn-drawer-facets__title" id="YarnDrawerGroup-{{ nav_group }}">{{ nav_group_key | t }}</p>
+                                <ul class="list-unstyled yarn-drawer-facets__list" role="list" aria-labelledby="YarnDrawerGroup-{{ nav_group }}">{{ nav_links }}</ul>
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        </div>
+                      </div>
+                    </details>
+                    {%- capture works_links -%}{%- render 'yarn-nav-facet-links', group: 'works', facets: nav_facets, base_url: link.url, link_class: 'menu-drawer__menu-item link link--text list-menu__item focus-inset', id_prefix: 'YarnHeaderDrawer' -%}{%- endcapture -%}
                   {%- else -%}
                     <a
                       id="YarnHeaderDrawer-{{ link.handle }}"
@@ -152,6 +186,26 @@
                     {%- endif -%}
                   {%- endif -%}
                 </li>
+                {%- if works_links != blank -%}
+                  <li>
+                    <details id="Details-yarn-menu-drawer-works">
+                      <summary id="YarnHeaderDrawer-works" class="menu-drawer__menu-item list-menu__item link link--text focus-inset yarn-drawer-row">
+                        <span>{{ 'yarn_collection.nav_works' | t }}</span>
+                        <span class="svg-wrapper yarn-drawer-row__arrow" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
+                      </summary>
+                      <div id="yarn-link-works" class="menu-drawer__submenu has-submenu gradient motion-reduce" tabindex="-1">
+                        <div class="menu-drawer__inner-submenu">
+                          <button class="menu-drawer__close-button link link--text focus-inset" aria-expanded="true">
+                            <span class="svg-wrapper">{{- 'icon-arrow.svg' | inline_asset_content -}}</span>
+                            {{ 'yarn_collection.nav_works' | t }}
+                          </button>
+                          <ul class="menu-drawer__menu list-menu yarn-drawer-facets" role="list" tabindex="-1">{{ works_links }}</ul>
+                        </div>
+                      </div>
+                    </details>
+                  </li>
+                  {%- assign works_links = blank -%}
+                {%- endif -%}
               {%- endfor -%}
             </ul>
           </nav>

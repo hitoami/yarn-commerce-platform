@@ -13,7 +13,6 @@ colors:
   scheme-bg-sunken: "#efeeea"
   bg-warm: "#fffdfa"
   bg-wash-sage: "#ecf0e4"
-  bg-wash-mist: "#eef1f3"
   dot-sage: "#a9b897"
   bg-footer: "#f2e5db"
   bg-band: "#f8eee7"

@@ -1,0 +1,27 @@
+{%- comment -%}
+  #355 导航下拉里一组筛选链接（桌面浮层与手机抽屉共用）：每项链到毛线目录并带 ycb_<组>=<值>；
+  facets 是页头对毛线目录全部商品算出的 yarn-facets 标记，没有商品的项不输出，所以不会点到空结果。
+  各组的选项与顺序只在这里定义（Issue #355 确认）；文案键 yarn_collection.facet_<组>_<值>。
+  用法：{%- render 'yarn-nav-facet-links', group: 'thick', facets: nav_facets, base_url: url, link_class: '…', id_prefix: '…' -%}
+{%- endcomment -%}
+{%- liquid
+  case group
+    when 'thick'
+      assign nfl_values = 'fine,medium,chunky'
+    when 'color'
+      assign nfl_values = 'solid,variegated,gradient,heather,rainbow'
+    when 'fiber'
+      assign nfl_values = 'wool,wool_blend,mohair,synthetic,cotton'
+    when 'works'
+      assign nfl_values = 'sweater,hat,scarf,blanket,bag,doll'
+  endcase
+  assign nfl_values = nfl_values | split: ','
+-%}
+{%- for nfl_value in nfl_values -%}
+  {%- assign nfl_token = ' ' | append: group | append: ':' | append: nfl_value | append: ' ' -%}
+  {%- unless facets contains nfl_token -%}{%- continue -%}{%- endunless -%}
+  {%- assign nfl_key = 'yarn_collection.facet_' | append: group | append: '_' | append: nfl_value -%}
+  <li>
+    <a id="{{ id_prefix }}-{{ group }}-{{ nfl_value }}" href="{{ base_url }}?ycb_{{ group }}={{ nfl_value }}" class="{{ link_class }}">{{ nfl_key | t }}</a>
+  </li>
+{%- endfor -%}

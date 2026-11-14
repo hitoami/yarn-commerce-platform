@@ -48,6 +48,7 @@ div.ycb-head__intro { margin-bottom: var(--yarn-space-5); }
 .ycb-more__button[aria-busy='true'] { opacity: .6; cursor: progress; }
 
 .ycb-empty { display: grid; justify-items: start; gap: var(--yarn-space-2); padding-block: var(--yarn-space-5); }
+.ycb-empty[hidden] { display: none; }
 .ycb-empty h2 { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: var(--yarn-fs-20); font-weight: 500; }
 .ycb-empty p { margin: 0 0 var(--yarn-space-2); color: var(--yarn-text-secondary); font-size: var(--yarn-fs-14); line-height: 1.7; }
 

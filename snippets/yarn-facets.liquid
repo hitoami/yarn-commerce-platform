@@ -1,0 +1,114 @@
+{%- comment -%}
+  #355 毛线的导航筛选标记：输出以空格分隔、首尾带空格的标记，如「 thick:fine fiber:wool color:solid works:hat grams:big 」。
+  页头下拉（只显示有商品的项）与毛线目录（网址 ycb_thick / ycb_color / ycb_fiber / ycb_works / ycb_grams）共用这一份算法。
+  - 粗细：每 100g 米数（yarn.ball_length_m / yarn.ball_weight_g），与手感地图的五档对齐：≤200 蓬蓬粗线，≤350 粗细适中，其余轻柔细线；缺米数不标。
+  - 材质：成分（yarn.composition，已按语言翻译，日 / 中 / 英关键词都认）：有马海毛 → mohair；全是羊毛类 → wool；含羊毛类 → wool_blend；
+    棉 ≥50% 或未写百分比的棉 → cotton；其余 → synthetic。
+  - 花色、织什么：商品字段 yarn.color_type / yarn.works（后台中文选项，可多选），在这里换成英文标记。
+  - 克重：yarn.ball_weight_g，≤50g small，51–149g mid，≥150g big（大容量）。
+  用法：{%- capture tokens -%}{%- render 'yarn-facets', product: p -%}{%- endcapture -%}
+{%- endcomment -%}
+{%- liquid
+  assign yf_w = product.metafields.yarn.ball_weight_g.value | plus: 0
+  assign yf_len = product.metafields.yarn.ball_length_m.value | plus: 0
+  echo ' '
+  if yf_w > 0 and yf_len > 0
+    assign yf_per = yf_len | times: 100 | divided_by: yf_w
+    if yf_per <= 200
+      echo 'thick:chunky '
+    elsif yf_per <= 350
+      echo 'thick:medium '
+    else
+      echo 'thick:fine '
+    endif
+  endif
+
+  assign yf_comp = product.metafields.yarn.composition.value | downcase | replace: '＋', '/' | replace: '+', '/'
+  if yf_comp != blank
+    assign yf_parts = yf_comp | split: '/'
+    assign yf_any_wool = false
+    assign yf_all_wool = true
+    assign yf_mohair = false
+    assign yf_cotton = false
+    for yf_part in yf_parts
+      assign yf_p = yf_part | strip
+      if yf_p == blank
+        continue
+      endif
+      if yf_p contains '马海' or yf_p contains 'モヘア' or yf_p contains 'mohair'
+        assign yf_mohair = true
+      endif
+      assign yf_is_wool = false
+      if yf_p contains '羊毛' or yf_p contains '美利奴' or yf_p contains '羊驼' or yf_p contains 'ウール' or yf_p contains 'メリノ' or yf_p contains 'アルパカ' or yf_p contains 'wool' or yf_p contains 'merino' or yf_p contains 'alpaca'
+        assign yf_is_wool = true
+        assign yf_any_wool = true
+      endif
+      unless yf_is_wool
+        assign yf_all_wool = false
+      endunless
+      if yf_p contains '棉' or yf_p contains '綿' or yf_p contains 'コットン' or yf_p contains 'cotton'
+        if yf_p contains '%'
+          assign yf_pct = yf_p | split: '%' | first | plus: 0
+          if yf_pct >= 50
+            assign yf_cotton = true
+          endif
+        else
+          assign yf_cotton = true
+        endif
+      endif
+    endfor
+    if yf_mohair
+      echo 'fiber:mohair '
+    elsif yf_all_wool
+      echo 'fiber:wool '
+    elsif yf_any_wool
+      echo 'fiber:wool_blend '
+    elsif yf_cotton
+      echo 'fiber:cotton '
+    else
+      echo 'fiber:synthetic '
+    endif
+  endif
+
+  for yf_v in product.metafields.yarn.color_type.value
+    case yf_v
+      when '纯色'
+        echo 'color:solid '
+      when '段染'
+        echo 'color:variegated '
+      when '渐变'
+        echo 'color:gradient '
+      when '混色'
+        echo 'color:heather '
+      when '彩虹色'
+        echo 'color:rainbow '
+    endcase
+  endfor
+
+  for yf_v in product.metafields.yarn.works.value
+    case yf_v
+      when '毛衣'
+        echo 'works:sweater '
+      when '帽子'
+        echo 'works:hat '
+      when '围巾'
+        echo 'works:scarf '
+      when '毯子'
+        echo 'works:blanket '
+      when '包包'
+        echo 'works:bag '
+      when '玩偶'
+        echo 'works:doll '
+    endcase
+  endfor
+
+  if yf_w > 0
+    if yf_w <= 50
+      echo 'grams:small '
+    elsif yf_w < 150
+      echo 'grams:mid '
+    else
+      echo 'grams:big '
+    endif
+  endif
+-%}

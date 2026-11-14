@@ -183,6 +183,18 @@
       </nav>
     {%- endif -%}
     <div class="ycb-active" data-ycb-active hidden></div>
+    {%- comment -%}#355 导航带来的筛选（ycb_thick 等）显示成可清除的标签；文字取自这里，选项与 yarn-nav-facet-links 一致。{%- endcomment -%}
+    <div hidden data-ycb-facet-labels>
+      {%- assign cb_facet_groups = 'thick:fine,medium,chunky|color:solid,variegated,gradient,heather,rainbow|fiber:wool,wool_blend,mohair,synthetic,cotton|works:sweater,hat,scarf,blanket,bag,doll|grams:small,mid,big' | split: '|' -%}
+      {%- for cb_facet_group in cb_facet_groups -%}
+        {%- assign cb_facet_pair = cb_facet_group | split: ':' -%}
+        {%- assign cb_facet_values = cb_facet_pair[1] | split: ',' -%}
+        {%- for cb_facet_value in cb_facet_values -%}
+          {%- assign cb_facet_key = 'yarn_collection.facet_' | append: cb_facet_pair[0] | append: '_' | append: cb_facet_value -%}
+          <span data-ycb-facet="{{ cb_facet_pair[0] }}:{{ cb_facet_value }}">{{ cb_facet_key | t }}</span>
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
 
     <div class="ycb-toolbar">
       <div class="ycb-toolbar__actions">
@@ -248,7 +260,7 @@
                 endfor
               endcapture
             -%}
-            <li class="ycb-grid__item"{% if product.metafields.yarn.beginner_reason.value != blank %} data-ycb-beginner-item{% endif %} data-ycb-item="{{ product.handle }}" data-ycb-spec="{{ product.metafields.yarn.spec_line.value | escape }}" data-ycb-cats="{{ cb_item_cats | strip }}"{% if cb_item_image != blank %} data-ycb-img="{{ cb_item_image | image_url: width: 160 }}"{% endif %}>
+            <li class="ycb-grid__item"{% if product.metafields.yarn.beginner_reason.value != blank %} data-ycb-beginner-item{% endif %} data-ycb-item="{{ product.handle }}" data-ycb-spec="{{ product.metafields.yarn.spec_line.value | escape }}" data-ycb-cats="{{ cb_item_cats | strip }}" data-ycb-facets="{%- render 'yarn-facets', product: product -%}"{% if cb_item_image != blank %} data-ycb-img="{{ cb_item_image | image_url: width: 160 }}"{% endif %}>
               {%- comment -%}#189：第一行（手机 2 张、桌面 4 张）是首屏 LCP 候选，不懒加载。{%- endcomment -%}
               {%- assign cb_eager = false -%}
               {%- if forloop.index <= 4 -%}{%- assign cb_eager = true -%}{%- endif -%}
@@ -263,6 +275,12 @@
             </li>
           {%- endfor -%}
         </ul>
+        {%- comment -%}#355：浏览器里的筛选（粗细、花色、材质、织什么、克重等）组合起来可能一款都没有，这时显示空状态。{%- endcomment -%}
+        <div class="ycb-empty" data-ycb-none hidden>
+          <h2>{{ 'yarn_collection.empty_title' | t }}</h2>
+          <p>{{ 'yarn_collection.empty_text' | t }}</p>
+          <a class="ycb-exit" href="{{ collection.url }}">{{ 'yarn_collection.clear_all' | t }}</a>
+        </div>
         {%- assign cb_shown = paginate.current_offset | plus: collection.products.size -%}
         {%- unless cb_handmade -%}{%- render 'yarn-collection-map', section_id: section.id, pages: paginate.pages -%}{%- endunless -%}
         <div class="ycb-more" data-ycb-more>
@@ -282,6 +300,20 @@
         </header>
         <div class="ycb-drawer__body">
           <input type="hidden" name="sort_by" value="{{ cb_sort | escape }}">
+          {%- unless cb_handmade -%}
+            {%- comment -%}#355 克重与大容量只放在这里（不进导航下拉），按 yarn.ball_weight_g 在浏览器里筛，网址 ycb_grams。{%- endcomment -%}
+            <fieldset class="ycb-drawer__group">
+              <legend>{{ 'yarn_collection.facet_group_grams' | t }}</legend>
+              <div class="ycb-drawer__options">
+                <label class="ycb-option"><input type="radio" name="ycb_grams" value="" data-ycb-grams checked><span>{{ 'yarn_collection.facet_grams_any' | t }}</span></label>
+                {%- assign cb_grams_values = 'small,mid,big' | split: ',' -%}
+                {%- for cb_grams_value in cb_grams_values -%}
+                  {%- assign cb_grams_key = 'yarn_collection.facet_grams_' | append: cb_grams_value -%}
+                  <label class="ycb-option"><input type="radio" name="ycb_grams" value="{{ cb_grams_value }}" data-ycb-grams><span>{{ cb_grams_key | t }}</span></label>
+                {%- endfor -%}
+              </div>
+            </fieldset>
+          {%- endunless -%}
           {%- for filter in collection.filters -%}
             {%- if cb_cat_params contains filter.param_name -%}
               {%- for value in filter.active_values -%}<input type="hidden" name="{{ value.param_name }}" value="{{ value.value | escape }}">{%- endfor -%}
