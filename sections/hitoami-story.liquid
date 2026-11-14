@@ -12,9 +12,13 @@
 {%- capture line_text -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'line_text' -%}{%- endcapture -%}
 {%- capture line_cta -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'line_cta' -%}{%- endcapture -%}
 {%- if story_heading != blank or story_text != blank -%}
-<div class="hitoami-story" {% if story_heading != blank %}aria-labelledby="HitoamiStory-{{ section.id }}"{% endif %}>
-  {% if section.settings.image != blank or section.settings.use_brand_scene %}<div class="hitoami-story__media">
-    {%- if section.settings.image != blank -%}
+<div class="hitoami-story{% if section.settings.use_shop_video %} hitoami-story--video{% endif %}" {% if story_heading != blank %}aria-labelledby="HitoamiStory-{{ section.id }}"{% endif %}>
+  {% if section.settings.image != blank or section.settings.use_brand_scene or section.settings.use_shop_video %}<div class="hitoami-story__media">
+    {%- if section.settings.use_shop_video -%}
+      {%- comment -%}店内小猫手绘动画：静音自动循环；系统偏好减少动态时停在封面并给出播放控件。{%- endcomment -%}
+      <video class="hitoami-story__video" src="{{ 'hitoami-shop-cats.mp4' | asset_url }}" poster="{{ 'hitoami-shop-cats-poster.webp' | asset_url }}" width="1280" height="720" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+      <script>(function(v){if(v&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){v.removeAttribute('autoplay');v.pause();v.controls=true;v.removeAttribute('aria-hidden');}})(document.currentScript.previousElementSibling);</script>
+    {%- elsif section.settings.image != blank -%}
       {{ section.settings.image | image_url: width: 1200 | image_tag: widths: '400, 600, 900, 1200', sizes: '(min-width: 750px) 46vw, calc(100vw - 32px)', loading: 'lazy', alt: section.settings.image.alt | escape }}
     {%- else -%}
       {%- comment -%}#189：原 PNG 2.6 MB，改为 768 / 1536 WebP（58 / 151 KB）按显示宽度选。{%- endcomment -%}
@@ -24,7 +28,7 @@
   {% endif %}<div class="hitoami-story__body">
     {%- if story_heading != blank -%}<h2 id="HitoamiStory-{{ section.id }}">{{ story_heading | escape | newline_to_br }}</h2>{%- endif -%}
     {%- if story_text != blank -%}<div class="rte">{{ story_text }}</div>{%- endif -%}
-    {%- if line_cta != blank -%}
+    {%- if line_cta != blank and section.settings.hide_line == false -%}
       {%- assign line_href = section.settings.line_link | default: pages.contact.url -%}
       {% if section.settings.line_link == blank %}{% capture line_cta %}{% render 'yarn-setting-text', settings: section.settings, key: 'line_fallback' %}{% endcapture %}{% endif %}
       {%- if section.settings.line_link != blank -%}
@@ -83,7 +87,7 @@
   "name": "品牌介绍",
   "tag": "section",
   "class": "section hitoami-story-section",
-  "settings": [{"type":"checkbox","id":"use_brand_scene","label":"使用编织与猫的品牌氛围图","default":false},{"type":"text","id":"line_fallback","label":"未配置 LINE · 日文","default":"毛糸選びについてお問い合わせ"},{"type":"text","id":"line_fallback_zh","label":"未配置 LINE · 中文","default":"选线遇到问题？联系我们"},{"type":"text","id":"line_fallback_en","label":"未配置 LINE · 英文","default":"Need help choosing yarn? Contact us"},
+  "settings": [{"type":"checkbox","id":"use_shop_video","label":"使用店内小猫动画（视频）","info":"开启后优先于品牌图显示；静音自动循环。","default":false},{"type":"checkbox","id":"use_brand_scene","label":"使用编织与猫的品牌氛围图","default":false},{"type":"text","id":"line_fallback","label":"未配置 LINE · 日文","default":"毛糸選びについてお問い合わせ"},{"type":"text","id":"line_fallback_zh","label":"未配置 LINE · 中文","default":"选线遇到问题？联系我们"},{"type":"text","id":"line_fallback_en","label":"未配置 LINE · 英文","default":"Need help choosing yarn? Contact us"},
     { "type": "image_picker", "id": "image", "label": "品牌图", "info": "上传图优先；未上传时可启用本轮品牌氛围图。" },
     {
       "type": "textarea",
@@ -122,6 +126,7 @@
       "default": "<p>hitoami brings together the ideas of “one” and “knitting”.</p><p>From the first stitch, bring yarn, colour and imagination into everyday life. Whether you are picking up yarn for the first time or have always loved making, find your own rhythm, one stitch at a time—and connect with others who share that love.</p>"
     },
     { "type": "header", "content": "LINE 卡片" },
+    { "type": "checkbox", "id": "hide_line", "label": "隐藏品牌区的 LINE 行", "info": "常见问题紧接在下方并使用店员猫答疑时开启，LINE 入口只留在常见问题底部。", "default": false },
     { "type": "url", "id": "line_link", "label": "LINE 链接", "info": "官方 LINE 加好友链接；留空时按钮链到联系页。" },
     { "type": "image_picker", "id": "line_qr", "label": "LINE 二维码", "info": "桌面直接显示，手机点击展开。留空且链接为当前 hitoami 账号时，手机使用随主题提供的二维码；更换账号请同时上传对应二维码。" },
     { "type": "text", "id": "line_heading", "label": "日文 · LINE 标题", "default": "hitoami 公式 LINE" },

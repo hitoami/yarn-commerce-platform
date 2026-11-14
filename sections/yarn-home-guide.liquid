@@ -9,6 +9,66 @@
 {%- capture help_text -%}{% render 'yarn-setting-text', settings: section.settings, key: 'help_text' %}{%- endcapture -%}
 {%- capture help_cta -%}{% render 'yarn-setting-text', settings: section.settings, key: 'help_cta' %}{%- endcapture -%}
 {%- capture all_label -%}{% render 'yarn-setting-text', settings: section.settings, key: 'all_label' %}{%- endcapture -%}
+{%- if section.settings.mode == 'faq' and section.settings.faq_style == 'cat' -%}
+{%- comment -%}
+  店员猫答疑（品牌与常见问题合并，方向 B）：点一个问题，店员猫在对话框里回答；底部一张 LINE 卡片。
+  无 JS 时问题按钮隐藏、所有回答依次显示；有 JS 时变成可用方向键切换的标签页。
+{%- endcomment -%}
+{{ 'yarn-home-faq-chat.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'yarn-home-faq-chat.js' | asset_url }}" defer="defer"></script>
+{%- capture chat_note -%}{% render 'yarn-setting-text', settings: section.settings, key: 'chat_note' %}{%- endcapture -%}
+{%- capture cat_name -%}{% render 'yarn-setting-text', settings: section.settings, key: 'cat_name' %}{%- endcapture -%}
+<section class="yarn-home-guide yarn-home-guide--faq yarn-home-guide--cat page-width" aria-labelledby="Guide-{{ section.id }}">
+ <div class="yarn-faq-chat__head">
+  <div class="yarn-faq-chat__titles">
+   <h2 id="Guide-{{ section.id }}">{{ heading | escape }}</h2>
+   {%- if chat_note != blank -%}<p class="yarn-faq-chat__note">{{ chat_note | escape }}</p>{%- endif -%}
+  </div>
+  {%- if section.settings.all_link != blank and all_label != blank -%}<a class="yarn-faq-chat__all" href="{% render 'yarn-local-url', url: section.settings.all_link %}">{{ all_label | escape }} <span aria-hidden="true">→</span></a>{%- endif -%}
+ </div>
+ <yarn-faq-chat class="yarn-faq-chat">
+  <div class="yarn-faq-chat__chips" aria-label="{{ heading | escape }}" hidden>
+   {%- for block in section.blocks -%}
+    {%- capture title -%}{% render 'yarn-setting-text', settings: block.settings, key: 'title' %}{%- endcapture -%}
+    <button type="button" class="yarn-faq-chat__chip" id="FaqTab-{{ section.id }}-{{ forloop.index }}" aria-controls="FaqPanel-{{ section.id }}-{{ forloop.index }}">{{ title | escape }}</button>
+   {%- endfor -%}
+  </div>
+  <div class="yarn-faq-chat__scene">
+   <img class="yarn-faq-chat__cat" src="{{ 'hitoami-cat-basket.webp' | asset_url }}" width="320" height="305" loading="lazy" decoding="async" alt="">
+   <div class="yarn-faq-chat__bubbles">
+    {%- for block in section.blocks -%}
+     {%- capture title -%}{% render 'yarn-setting-text', settings: block.settings, key: 'title' %}{%- endcapture -%}
+     {%- capture text -%}{% render 'yarn-setting-text', settings: block.settings, key: 'text' %}{%- endcapture -%}
+     <div class="yarn-faq-chat__bubble" id="FaqPanel-{{ section.id }}-{{ forloop.index }}" {{ block.shopify_attributes }}>
+      {%- if cat_name != blank -%}<p class="yarn-faq-chat__who">{{ cat_name | escape }}</p>{%- endif -%}
+      <h3>{{ title | escape }}</h3>
+      <p>{{ text | escape }}</p>
+     </div>
+    {%- endfor -%}
+   </div>
+  </div>
+ </yarn-faq-chat>
+ {%- if help_cta != blank -%}
+  {%- capture help_href -%}{%- if section.settings.help_link != blank -%}{{ section.settings.help_link }}{%- else -%}{% render 'yarn-local-url', url: pages.contact.url %}{%- endif -%}{%- endcapture -%}
+  {%- if section.settings.help_link == blank -%}{%- capture help_cta -%}{% render 'yarn-setting-text', settings: section.settings, key: 'help_fallback' %}{%- endcapture -%}{%- endif -%}
+  <div class="yarn-faq-chat__line">
+   <div class="yarn-faq-chat__line-copy">
+    {%- if help_title != blank -%}<p class="yarn-faq-chat__line-title">{{ help_title | escape }}</p>{%- endif -%}
+    {%- if help_text != blank -%}<p class="yarn-faq-chat__line-text">{{ help_text | escape }}</p>{%- endif -%}
+   </div>
+   <div class="yarn-faq-chat__line-actions">
+    <a class="yarn-faq-chat__line-cta" href="{{ help_href }}"{% if section.settings.help_link != blank %} target="_blank" rel="noopener"{% endif %}>{{ help_cta | escape }}</a>
+    {%- if section.settings.help_link == 'https://lin.ee/p5xrDGo' -%}
+     <figure class="yarn-faq-chat__qr">
+      <img src="{{ 'hitoami-line-qr-brown.png' | asset_url }}" width="184" height="194" loading="lazy" alt="{{ 'accessibility.line_qr_alt' | t | escape }}">
+      <figcaption>{{ 'accessibility.scan_line_qr' | t }}</figcaption>
+     </figure>
+    {%- endif -%}
+   </div>
+  </div>
+ {%- endif -%}
+</section>
+{%- else -%}
 <section class="yarn-home-guide yarn-home-guide--{{ section.settings.mode }} page-width" aria-labelledby="Guide-{{ section.id }}">
  <div class="yarn-home-guide__intro">
   <h2 id="Guide-{{ section.id }}">{{ heading | escape }}</h2>
@@ -37,6 +97,7 @@
   {%- if section.settings.all_link != blank and all_label != blank -%}<a class="yarn-home-guide__all" href="{% render 'yarn-local-url', url: section.settings.all_link %}">{{ all_label | escape }} <span aria-hidden="true">→</span></a>{%- endif -%}
  </div>{% endif %}
 </section>
+{%- endif -%}
 {% schema %}
 {
  "name":"新手指引与常见问题",
@@ -52,6 +113,13 @@
   {"type":"text","id":"note_zh","label":"中文 · 说明（可空）"},
   {"type":"text","id":"note_en","label":"英文 · 说明（可空）"},
   {"type":"header","content":"常见问题"},
+  {"type":"select","id":"faq_style","label":"常见问题样式","options":[{"value":"list","label":"列表（左侧求助卡）"},{"value":"cat","label":"店员猫答疑（点问题，店员猫在对话框里回答）"}],"default":"list"},
+  {"type":"text","id":"chat_note","label":"日文 · 店员猫答疑说明","info":"仅「店员猫答疑」样式显示，取代上面的说明。","default":"質問を選ぶと、店員ねこがお答えします。"},
+  {"type":"text","id":"chat_note_zh","label":"中文 · 店员猫答疑说明","default":"点一个问题，店员猫来回答。"},
+  {"type":"text","id":"chat_note_en","label":"英文 · 店员猫答疑说明","default":"Pick a question and our shop cat will answer."},
+  {"type":"text","id":"cat_name","label":"日文 · 店员猫名字","default":"店員ねこ"},
+  {"type":"text","id":"cat_name_zh","label":"中文 · 店员猫名字","default":"店员猫"},
+  {"type":"text","id":"cat_name_en","label":"英文 · 店员猫名字","default":"Shop cat"},
   {"type":"checkbox","id":"open_first","label":"默认展开第一条","default":true},
   {"type":"text","id":"help_title","label":"日文 · 求助卡标题"},
   {"type":"text","id":"help_title_zh","label":"中文 · 求助卡标题"},
