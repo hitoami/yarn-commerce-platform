@@ -337,6 +337,9 @@
 .header-wrapper .yarn-drawer-facets__title { margin: 0; padding: 8px 0 4px; color: var(--yarn-text-muted); font-size: var(--yarn-fs-13); line-height: 1.4; }
 .header-wrapper .yarn-drawer-facets .menu-drawer__menu-item { min-height: var(--yarn-touch); }
 .header-wrapper .yarn-drawer-facets__list { margin: 0; padding: 0; }
+/* Issue 365「想织什么」第一项「新手友好」：小标签与作品项之间一条细分隔线。 */
+.yarn-nav-beginner { margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid var(--yarn-border-subtle); }
+.yarn-nav-beginner__tag { flex: none; padding: 1px 8px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: var(--yarn-fs-12); font-weight: 500; line-height: 1.4; white-space: nowrap; }
 
 .header-wrapper .yarn-drawer-row {
   display: flex;
