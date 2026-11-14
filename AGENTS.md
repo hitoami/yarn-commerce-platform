@@ -1,6 +1,6 @@
 # AGENTS.md
 
-日本市场毛线电商与手作平台，当前以 Shopify Theme 实现 MVP。网站只卖**毛线**和**手工成品**；材料包、本季主推是导向购买的内容页，不是商品。产品范围见 `PRODUCT.md`，领域名称见 `CONTEXT.md`。
+日本市场毛线电商与手作平台，当前以 Shopify Theme 实现 MVP。网站卖**毛线**、**材料包**和**手工成品**三类商品；材料包是打包好的独立商品，本季主推是导向购买的内容页。产品范围见 `PRODUCT.md`，领域名称见 `CONTEXT.md`。
 
 本文件是所有 agent 工具（Codex、Claude Code 等）共用的规则入口。仓库技能放 `.agents/skills/`。
 
@@ -36,7 +36,7 @@
 - 运营内容要能在 Shopify 里编辑（Section 设置、Block、Metaobject、Metafield 或商品）。
 - 首屏重要商品内容用 Liquid 服务端渲染。全面改 Headless 需要人工批准。
 - 店铺数据的查询和批量写入用 `npm run admin`；写入前列出改动清单，获当次批准后加 `--write`。凭证放本地 `.env`，不提交、不自行搜寻。
-- 下架商品用归档（`ARCHIVED`），不删除；材料包只引用已有毛线商品。
+- 下架商品用归档（`ARCHIVED`），不删除。
 - 不虚构评价、销量、折扣或品牌证明。diff 不得含密钥、个人数据或未授权素材。
 
 ## 语言与视觉
