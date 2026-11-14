@@ -308,6 +308,19 @@
 /* Issue 355：可展开的行（毛线、织什么）是 summary，Rise 给它留了右内边距并把箭头绝对定位；与普通行对齐。 */
 .js .header-wrapper summary.yarn-drawer-row.menu-drawer__menu-item { padding-right: 0; }
 .header-wrapper summary.yarn-drawer-row .yarn-drawer-row__arrow .icon-caret { position: static; }
+/* Issue 355 导航小图标（snippets/yarn-facet-icon）：粗细是手绘波浪线，花色是小毛线球；只用品牌色 token。 */
+.yfi { flex: none; width: 28px; height: 24px; }
+.yfi-line { fill: none; stroke: var(--yarn-home-logo); stroke-linecap: round; }
+.yfi-ink { fill: none; stroke: var(--yarn-text-heading); stroke-width: 1.2; stroke-linecap: round; }
+.yfi-clay { fill: var(--yarn-home-logo); }
+.yfi-cream { fill: var(--yarn-tint-butter); }
+.yfi-sage { fill: var(--yarn-dot-sage); }
+.yfi-butter { fill: var(--yarn-decor-art-line); }
+.yfi-blush { fill: var(--yarn-decor-yarn-blush); }
+.yfi-mist { fill: var(--yarn-decor-yarn-mist); }
+.yfi-stop-cream { stop-color: var(--yarn-tint-butter); }
+.yfi-stop-clay { stop-color: var(--yarn-home-logo); }
+.header-wrapper .yarn-drawer-facets .menu-drawer__menu-item { gap: 12px; }
 /* Issue 355：抽屉里毛线 / 织什么的子面板：分组小标题不可点，每个选项一行 ≥ 44px。 */
 .header-wrapper .yarn-drawer-facets__all { color: var(--yarn-action); font-weight: 500; }
 .header-wrapper .yarn-drawer-facets__group { margin-top: 12px; }
@@ -389,15 +402,21 @@
   .yarn-main-menu summary.header__menu-item .icon-caret { position: static; flex: 0 0 10px; width: 10px; height: 6px; transition: transform 0.2s ease; }
   .yarn-main-menu details[open] > .header__menu-item .icon-caret { transform: rotate(180deg); }
 
-  /* Issue 329：下拉是离开页头 8px 的圆角白色浮层，宽度与首页胶囊对齐（最宽 1100），不再是贴边的整块方板。 */
+  /* Issue 355（用户 2026-11-14 选「紧凑三栏 + 小图示」）：浮层只有内容那么宽，挂在「毛线分类」正下方；
+     三栏用细线隔开，粗细与花色每项前有小图标（yarn-facet-icon），「查看全部毛线」在底部。 */
+  .yarn-main-menu details.yarn-mega { position: relative; }
   .yarn-main-menu .mega-menu__content.yarn-mega__content {
-    width: min(calc(100vw - 48px), 1100px);
+    position: absolute;
+    top: 100%;
+    left: -28px;
+    right: auto;
+    width: max-content;
     max-height: none;
     overflow: visible;
-    margin: 8px auto 0;
-    padding: 18px 20px 20px;
+    margin-top: 14px;
+    padding: 22px 28px 18px;
     border: 0;
-    border-radius: 24px;
+    border-radius: 20px;
     background: var(--yarn-bg-surface);
     box-shadow: 0 18px 44px -18px var(--yarn-shadow-soft), 0 2px 8px -4px var(--yarn-shadow-soft);
   }
@@ -407,21 +426,26 @@
     inset: var(--header-bottom-position-desktop, 0) 0 0;
     z-index: -1;
     background: var(--yarn-overlay);
-    opacity: 0.45;
+    opacity: 0.25;
     pointer-events: none;
   }
-  .yarn-mega__inner { max-width: var(--yarn-content-max); margin: 0 auto; }
-  /* Issue 355：面板顶部只剩右侧的「查看全部毛线」。 */
-  .yarn-mega__head { display: flex; justify-content: flex-end; margin: 0 4px 12px; }
+  .yarn-mega__inner { display: flex; flex-direction: column-reverse; }
+  .yarn-mega__head { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--yarn-border-subtle); }
   .yarn-mega__all { color: var(--yarn-action); font-size: var(--yarn-fs-13); text-decoration: none; white-space: nowrap; }
   .yarn-mega__all:hover { text-decoration: underline; }
-  /* Issue 355：毛线下拉是三栏文字筛选（粗细 / 花色 / 材质），每栏一个小标题，链接各自一行。 */
-  .yarn-mega__groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--yarn-space-5); margin: 0 4px; }
-  .yarn-mega__group { padding: 14px 16px 10px; border-radius: var(--yarn-radius-media); background: var(--yarn-bg-page); }
-  .yarn-mega__group-title { margin: 0 0 4px; color: var(--yarn-text-muted); font-size: var(--yarn-fs-13); line-height: 1.4; }
+  .yarn-mega__groups { display: flex; }
+  .yarn-mega__group { padding: 0 32px; }
+  .yarn-mega__group:first-child { padding-left: 0; }
+  .yarn-mega__group:last-child { padding-right: 4px; }
+  .yarn-mega__group + .yarn-mega__group { border-left: 1px solid var(--yarn-border-subtle); }
+  .yarn-mega__group-title { margin: 0 0 6px; color: var(--yarn-text-muted); font-size: var(--yarn-fs-12); line-height: 1.4; letter-spacing: 0.08em; }
   .yarn-mega__group ul { margin: 0; padding: 0; }
-  .yarn-mega__link { display: flex; align-items: center; min-height: 40px; color: var(--yarn-text-heading); font-size: var(--yarn-fs-16); text-decoration: none; }
-  .yarn-mega__link:hover { color: var(--yarn-action); text-decoration: underline; text-underline-offset: 4px; }
+  .yarn-mega__link { display: flex; align-items: center; gap: 10px; min-height: 40px; color: var(--yarn-text-heading); font-size: var(--yarn-fs-15); white-space: nowrap; text-decoration: none; }
+  .yarn-mega__link:hover span { color: var(--yarn-action); text-decoration: underline; text-underline-offset: 4px; }
+  /* 「想织什么」：同样的圆角浮层，悬停整行变底色。 */
+  .yarn-main-menu .yarn-works-menu { min-width: 180px; margin-top: 14px; padding: 10px 8px; border: 0; border-radius: 16px; box-shadow: 0 18px 44px -18px var(--yarn-shadow-soft), 0 2px 8px -4px var(--yarn-shadow-soft); }
+  .yarn-main-menu .yarn-works-menu .header__menu-item { min-height: 40px; padding: 0 14px; border-radius: 10px; font-size: var(--yarn-fs-15); }
+  .yarn-main-menu .yarn-works-menu .header__menu-item:hover { background: var(--yarn-bg-page); color: var(--yarn-action); text-decoration: none; }
 }
 
 /* Issue 190 desktop: opened panels unroll downward from under the header while fading in, and the page dims behind them. */
@@ -648,8 +672,6 @@
   }
   .section-header .header__heading-link { justify-self: start; margin-left: 0; } /* Rise 给 Logo 留了 -7.5px 外边距，会让它比内容列多出去一截 */
   .section-header .header__icons { justify-self: end; margin-right: -8px; } /* 图标按钮自带 8px 留白：抵掉后购物车图形右边落在内容列右边，两侧栏仍等宽，菜单居中 */
-  /* 下拉浮层与胶囊同宽（Issue 329 的约定）。 */
-  .yarn-main-menu .mega-menu__content.yarn-mega__content { width: min(calc(100vw - 48px), 1248px); }
   .header-wrapper .desktop-localization-wrapper:not(:has(*)) { display: none; }
 }
 

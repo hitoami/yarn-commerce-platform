@@ -124,7 +124,14 @@ test('header computes the yarn facets once; yarn opens three filter groups and �
     }
   }
   assert.ok(!fs.existsSync('snippets/yarn-nav-tiles.liquid'));
-  assert.match(headerCss, /\.yarn-mega__groups \{ display: grid; grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
+  // 用户 2026-11-14：紧凑三栏浮层挂在按钮下方；粗细是手绘波浪线、花色是小毛线球，颜色只用 token。
+  assert.match(headerCss, /\.yarn-main-menu \.mega-menu__content\.yarn-mega__content \{[^}]*width: max-content;/);
+  assert.match(headerCss, /\.yarn-mega__group \+ \.yarn-mega__group \{ border-left: 1px solid var\(--yarn-border-subtle\); \}/);
+  assert.match(links, /render 'yarn-facet-icon', group: group, value: nfl_value, uid: id_prefix/);
+  const icon = fs.readFileSync('snippets/yarn-facet-icon.liquid', 'utf8');
+  assert.doesNotMatch(icon.replace(/\{%- comment -%\}[\s\S]*?\{%- endcomment -%\}/, ''), /(fill|stroke|stop-color)="#/i, 'icon colours come from CSS tokens');
+  for (const value of ['solid', 'variegated', 'gradient', 'heather', 'rainbow']) assert.match(icon, new RegExp(`when '${value}'`), value);
+  assert.match(icon, /id="\{\{ yfi_id \}\}-c"/, 'clip ids are unique per menu (desktop / drawer)');
   assert.match(headerCss, /\.yarn-drawer-facets \.menu-drawer__menu-item \{ min-height: var\(--yarn-touch\); \}/);
 });
 

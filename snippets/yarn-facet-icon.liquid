@@ -1,0 +1,34 @@
+{%- comment -%}
+  #355 导航下拉的小图标（用户 2026-11-14 选定：粗细用手绘波浪线，花色用小毛线球）。颜色全部由 yarn-header.css 的 .yfi-* 类取 token。
+  粗细：同一条波浪线，越粗越粗（1.4 / 3.2 / 5.6）。花色：带三道绕线和卷曲线尾的小线团，球面表示花色。
+  材质、想织什么不输出图标。uid 让桌面与抽屉里的渐变 / 裁切 id 不重复。
+  用法：{%- render 'yarn-facet-icon', group: 'color', value: 'solid', uid: 'YarnHeaderMenu' -%}
+{%- endcomment -%}
+{%- assign yfi_id = uid | append: '-yfi-' | append: value -%}
+{%- if group == 'thick' -%}
+  {%- case value -%}
+    {%- when 'fine' -%}{%- assign yfi_w = '1.4' -%}
+    {%- when 'medium' -%}{%- assign yfi_w = '3.2' -%}
+    {%- else -%}{%- assign yfi_w = '5.6' -%}
+  {%- endcase -%}
+  <svg class="yfi" viewBox="0 0 28 24" width="28" height="24" aria-hidden="true" focusable="false"><path class="yfi-line" d="M3 13 C 6 9.5, 8.5 15.5, 12 12.5 S 18 10, 21 13 S 24.5 12.5, 25.5 11.5" stroke-width="{{ yfi_w }}"/></svg>
+{%- elsif group == 'color' -%}
+  <svg class="yfi" viewBox="0 0 28 24" width="28" height="24" aria-hidden="true" focusable="false">
+    <defs><clipPath id="{{ yfi_id }}-c"><circle cx="11.5" cy="12" r="8.6"/></clipPath>
+      {%- if value == 'gradient' -%}<linearGradient id="{{ yfi_id }}-g" x1="0" x2="1" y1="0" y2="1"><stop offset="0" class="yfi-stop-cream"/><stop offset="1" class="yfi-stop-clay"/></linearGradient>{%- endif -%}
+    </defs>
+    <g clip-path="url(#{{ yfi_id }}-c)">
+      {%- case value -%}
+        {%- when 'solid' -%}<rect class="yfi-clay" x="2" y="3" width="20" height="18"/>
+        {%- when 'variegated' -%}<rect class="yfi-clay" x="2" y="3" width="20" height="6"/><rect class="yfi-cream" x="2" y="9" width="20" height="6"/><rect class="yfi-sage" x="2" y="15" width="20" height="6"/>
+        {%- when 'gradient' -%}<rect fill="url(#{{ yfi_id }}-g)" x="2" y="3" width="20" height="18"/>
+        {%- when 'heather' -%}<rect class="yfi-blush" x="2" y="3" width="20" height="18"/>
+          {%- assign yfi_dots = '6,7 10,5.6 14.5,7 18,9 5,11.5 9,10 13,11.6 17.4,13 7,15.4 11,14.6 15,16 9.4,18.4 13.6,19' | split: ' ' -%}
+          {%- for yfi_dot in yfi_dots -%}{%- assign yfi_xy = yfi_dot | split: ',' -%}{%- assign yfi_odd = forloop.index | modulo: 2 -%}<circle class="{% if yfi_odd == 1 %}yfi-clay{% else %}yfi-sage{% endif %}" cx="{{ yfi_xy[0] }}" cy="{{ yfi_xy[1] }}" r="0.8"/>{%- endfor -%}
+        {%- when 'rainbow' -%}<rect class="yfi-clay" x="2" y="3" width="20" height="4"/><rect class="yfi-butter" x="2" y="7" width="20" height="3.6"/><rect class="yfi-sage" x="2" y="10.6" width="20" height="3.6"/><rect class="yfi-mist" x="2" y="14.2" width="20" height="3.6"/><rect class="yfi-blush" x="2" y="17.8" width="20" height="4"/>
+      {%- endcase -%}
+    </g>
+    <circle class="yfi-ink" cx="11.5" cy="12" r="8.6"/>
+    <path class="yfi-ink" d="M4.6 8.4 C 8.5 5.6, 14.5 5.6, 18.4 8.6 M3.2 12.6 C 8 9.6, 15 9.6, 20 12.8 M4.8 16.6 C 8.8 14, 14.6 14, 18.4 16.8 M18.6 17.6 C 20.5 21.6, 24.5 22.4, 24.6 19.2 C 24.7 16.8, 22 17.4, 22.8 19.6 C 23.4 21.4, 26 21.8, 27 20.4"/>
+  </svg>
+{%- endif -%}

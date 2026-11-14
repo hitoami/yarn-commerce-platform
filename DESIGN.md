@@ -45,6 +45,8 @@ colors:
   focus: "#426f82"
   decor-thread: "#bf5a38"
   decor-art-line: "#e9bd51"
+  decor-yarn-mist: "#8fb2c4"
+  decor-yarn-blush: "#e8b9b0"
   decor-halo: "rgba(248, 229, 169, 0.45)"
   overlay: "rgba(47, 48, 47, 0.32)"
   shadow-soft: "rgba(103, 81, 68, 0.14)"

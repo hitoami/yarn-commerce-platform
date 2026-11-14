@@ -22,6 +22,6 @@
   {%- unless facets contains nfl_token -%}{%- continue -%}{%- endunless -%}
   {%- assign nfl_key = 'yarn_collection.facet_' | append: group | append: '_' | append: nfl_value -%}
   <li>
-    <a id="{{ id_prefix }}-{{ group }}-{{ nfl_value }}" href="{{ base_url }}?ycb_{{ group }}={{ nfl_value }}" class="{{ link_class }}">{{ nfl_key | t }}</a>
+    <a id="{{ id_prefix }}-{{ group }}-{{ nfl_value }}" href="{{ base_url }}?ycb_{{ group }}={{ nfl_value }}" class="{{ link_class }}">{%- render 'yarn-facet-icon', group: group, value: nfl_value, uid: id_prefix -%}<span>{{ nfl_key | t }}</span></a>
   </li>
 {%- endfor -%}

@@ -11,6 +11,8 @@
     "paper-300": "#d6d2ca",
     "wash-sage-100": "#ecf0e4",
     "sage-500": "#a9b897",
+    "mist-400": "#8fb2c4",
+    "blush-300": "#e8b9b0",
     "cream-150": "#fff9e9",
     "cream-200": "#fff3de",
     "sand-50": "#f5f1e8",
@@ -94,6 +96,8 @@
 
     "decor-thread": { "value": "clay-500", "use": "插画连线、装饰描边；不得用于文字" },
     "decor-art-line": { "value": "butter-600", "use": "插画节点描边；不得用于文字" },
+    "decor-yarn-mist": { "value": "mist-400", "use": "#355 导航花色小图标：彩虹色线团里的一道雾蓝；不得用于文字" },
+    "decor-yarn-blush": { "value": "blush-300", "use": "#355 导航花色小图标：混色、彩虹色线团里的樱粉；不得用于文字" },
     "decor-halo": { "value": "butter-200", "alpha": 0.45, "use": "插画节点光晕" },
 
     "overlay": { "value": "charcoal-900", "alpha": 0.32, "use": "抽屉与弹窗遮罩、浮层阴影" },
