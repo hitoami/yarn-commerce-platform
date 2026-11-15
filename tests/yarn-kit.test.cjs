@@ -164,12 +164,32 @@ test('the kit page buys yarn variants only, with one main button: add all, add o
   assert.match(section, /yarn_rows == 1/);
   assert.match(section, /data-kit-add="all"/);
   assert.match(section, /data-kit-add="available"/);
-  assert.match(section, /data-kit-step="-1"/);
+  assert.match(fs.readFileSync('snippets/yarn-kit-row.liquid', 'utf8'), /data-kit-step="-1"/);
   assert.match(section, /class="yk-blocked"/);
   assert.doesNotMatch(section, /data-kit-add="all"[^>]*disabled/);
   assert.match(section, /project\.tutorial_url\.value/);
   // 材料包页不提供定制咨询，也不出现「买成品 / 自己做」双模式。
   assert.doesNotMatch(section, /customization_enabled|purchase_modes|yarn-project-modes/);
+});
+
+test('a published 材料包 product with the project handle replaces the yarn rows: one row, its own price and stock (#369)', () => {
+  const section = fs.readFileSync('sections/yarn-kit-detail.liquid', 'utf8');
+  assert.match(section, /assign kit_product = all_products\[project\.system\.handle\]/);
+  assert.match(section, /kit_product\.id != blank and kit_product\.type == '材料包'/);
+  assert.match(section, /render 'yarn-kit-row', row_variant: kit_variant, row_qty: 1/);
+  // 没有材料包商品（例如还是草稿）时仍按配件逐行买毛线。
+  assert.match(section, /\{%- else -%\}\s*\{%- for component in project\.components\.value -%\}[\s\S]*render 'yarn-kit-row', row_variant: row_variant/);
+  assert.match(section, /assign total_label_js = 'yarn_project\.kit_total_set' \| t/);
+  const card = fs.readFileSync('snippets/yarn-project-pick-card.liquid', 'utf8');
+  assert.match(card, /all_products\[project\.system\.handle\]/);
+  assert.match(card, /assign kit_state = 'sold_out'/);
+  assert.match(card, /'yarn_project\.kit_card_sold_out' \| t/);
+  assert.match(fs.readFileSync('snippets/yarn-kit-card-price.liquid', 'utf8'), /kit_product\.price_varies/);
+  assert.match(fs.readFileSync('snippets/yarn-cart-kit-note.liquid', 'utf8'), /kit_item\.product\.type == '材料包'/);
+  for (const locale of ['ja', 'zh-CN', 'en.default']) {
+    const copy = JSON.parse(fs.readFileSync(`locales/${locale}.json`, 'utf8').replace(/^\/\*[\s\S]*?\*\//, '')).yarn_project;
+    for (const key of ['kit_total_set', 'kit_card_sold_out', 'kit_price_from']) assert.ok(copy[key], `${locale} ${key}`);
+  }
 });
 
 test('changing the colour submits the selected variant and retains the project quantity', async () => {

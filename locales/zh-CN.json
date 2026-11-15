@@ -899,7 +899,10 @@
     "collection_preparing_title": "正在准备中",
     "collection_preparing_text": "正在一件件准备，上架前可以先看看毛线。",
     "collection_preparing_link": "查看毛线",
-    "kit_choose_colour": "选择同款颜色"
+    "kit_choose_colour": "选择同款颜色",
+    "kit_total_set": "合计",
+    "kit_card_sold_out": "已售罄 · 暂不可买",
+    "kit_price_from": "{{ price }} 起"
   },
   "yarn_discovery": {
     "search": "搜索",

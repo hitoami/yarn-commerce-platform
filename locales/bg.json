@@ -899,7 +899,10 @@
     "collection_preparing_title": "Coming soon",
     "collection_preparing_text": "We're preparing these one piece at a time. In the meantime, have a look at our yarn.",
     "collection_preparing_link": "Browse yarn",
-    "kit_choose_colour": "Choose a colour of this yarn"
+    "kit_choose_colour": "Choose a colour of this yarn",
+    "kit_total_set": "Total",
+    "kit_card_sold_out": "Sold out · not available",
+    "kit_price_from": "From {{ price }}"
   },
   "yarn_discovery": {
     "search": "Search",

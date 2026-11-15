@@ -1,4 +1,7 @@
 {% comment %}
+  #369（2026-11-14 用户决定）：材料包是独立商品。店里有与作品同 handle、商品类型为「材料包」且可在网店访问的商品时，
+  购买框只有这一行（材料包本身，配色 = Variant，数量默认 1），价格、库存都读这件商品；包里有什么仍按下面的配件说明。
+  没有这样的商品（例如还是草稿）时，沿用下面 #131 / #177 的旧做法，逐行买毛线。
   材料包详情(#131,yarn_project 网页):内容页,买的始终是毛线商品本身,购物车里没有「材料包」这种商品。
   所需毛线 = 配件(yarn_material)里类型为「毛线」且关联了 Variant 的条目;团数取配件的 quantity(空为 1)。
   只有 1 行毛线时显示购买框(团数预填、可改,一键加入购物车),看起来像商品页;2 行及以上显示清单(逐个加购)+ 合计 + 全部加入购物车。
@@ -62,6 +65,33 @@
       assign self_rows = self_rows | plus: 1
     endif
   endfor
+
+  comment
+    #369：材料包商品（同 handle、类型「材料包」）。all_products 只能取到在网店上架的商品，草稿取不到。
+  endcomment
+  assign kit_mode = false
+  assign kit_product = all_products[project.system.handle]
+  if kit_product.id != blank and kit_product.type == '材料包'
+    assign kit_mode = true
+    assign kit_variant = kit_product.selected_or_first_available_variant
+    assign yarn_rows = 1
+    assign colour_pending_any = false
+    assign ready_rows = 0
+    assign ready_balls = 0
+    assign ready_total = 0
+    assign missing_name = blank
+    assign missing_pending = false
+    if kit_variant.available and kit_variant.price > 0
+      assign ready_rows = 1
+      assign ready_balls = 1
+      assign ready_total = kit_variant.price
+    else
+      assign missing_name = kit_product.title
+      if kit_variant.price <= 0
+        assign missing_pending = true
+      endif
+    endif
+  endif
 -%}
 <article class="yk-detail">
   {%- if visible == 'true' -%}
@@ -121,9 +151,16 @@
         if cart.taxes_included
           assign tax_note = 'yarn_project.kit_total_tax' | t
         endif
+        if kit_mode
+          assign total_label_js = 'yarn_project.kit_total_set' | t
+          assign total_label_now = total_label_js
+        else
+          assign total_label_js = 'yarn_project.kit_total' | t: count: '[count]'
+          assign total_label_now = 'yarn_project.kit_total' | t: count: ready_balls
+        endif
       -%}
       <yarn-kit-buy class="yk-buy{% if yarn_rows == 1 %} yk-buy--single{% endif %}"
-        data-all-label="{% if yarn_rows == 1 %}{{ 'yarn_project.kit_add' | t | escape }}{% else %}{{ 'yarn_project.kit_add_all' | t | escape }}{% endif %}" data-available-label="{{ 'yarn_project.kit_add_available' | t: count: '[count]' | escape }}" data-currency="{{ cart.currency.iso_code }}" data-money-format="{{ shop.money_format | strip_html | escape }}" data-locale="{{ request.locale.iso_code }}" data-total-label="{{ 'yarn_project.kit_total' | t: count: '[count]' | escape }}{{ tax_note | escape }}" data-not-on-sale="{{ 'yarn_project.kit_not_on_sale' | t | escape }}" data-sold-out="{{ 'yarn_project.kit_sold_out' | t | escape }}"
+        data-all-label="{% if yarn_rows == 1 %}{{ 'yarn_project.kit_add' | t | escape }}{% else %}{{ 'yarn_project.kit_add_all' | t | escape }}{% endif %}" data-available-label="{{ 'yarn_project.kit_add_available' | t: count: '[count]' | escape }}" data-currency="{{ cart.currency.iso_code }}" data-money-format="{{ shop.money_format | strip_html | escape }}" data-locale="{{ request.locale.iso_code }}" data-total-label="{{ total_label_js | escape }}{{ tax_note | escape }}" data-not-on-sale="{{ 'yarn_project.kit_not_on_sale' | t | escape }}" data-sold-out="{{ 'yarn_project.kit_sold_out' | t | escape }}"
         data-pending="{{ 'yarn_project.kit_adding' | t | escape }}" data-success="{{ 'yarn_project.kit_added' | t | escape }}"
         data-incomplete="{{ 'yarn_project.kit_incomplete' | t | escape }}"
         data-error="{{ 'yarn_project.kit_add_error' | t | escape }}" data-uncertain="{{ 'yarn_project.kit_uncertain' | t | escape }}"
@@ -133,66 +170,23 @@
           {%- if ready_rows > 0 and ready_rows < yarn_rows -%}<span class="yk-tag yk-tag--partial">{{ 'yarn_project.kit_partial_tag' | t }}</span>{%- endif -%}
         </div>
         <ul class="yk-rows" role="list">
-          {%- for component in project.components.value -%}
-            {%- if component.component_type.value == '毛线' and component.variant.value != blank -%}
-              {%- liquid
-                assign row_variant = component.variant.value
-                assign row_product = row_variant.product
-                assign row_qty = component.quantity.value | default: 1
-                assign row_image = component.image.value | default: row_variant.featured_image | default: row_product.featured_image
-                assign row_ok = false
-                if row_variant.available and row_variant.price > 0
-                  assign row_ok = true
-                endif
-              -%}
-              <li class="yk-row{% unless row_ok %} yk-row--out{% endunless %}" data-kit-row data-variant="{{ row_variant.id }}" data-price="{{ row_variant.price }}" data-available="{{ row_variant.available }}">
-                <a class="yk-row__media" href="{{ row_variant.url }}" tabindex="-1" aria-hidden="true">
-                  {%- if row_image != blank -%}{{ row_image | image_url: width: 200 | image_tag: width: 64, height: 64, loading: 'lazy', alt: '' }}{%- endif -%}
-                </a>
-                <div class="yk-row__info">
-                  <p class="yk-row__title">
-                    <a class="yk-row__name" href="{{ row_variant.url }}">{{ row_product.title | escape }}</a>
-                    {%- if row_variant.price > 0 and row_variant.available == false -%}<span class="yk-tag" data-kit-stock>{{ 'yarn_project.kit_sold_out' | t }}</span>{%- endif -%}
-                  </p>
-                  {%- assign colour_index = -1 -%}
-                  {%- for option in row_product.options_with_values -%}
-                    {%- assign option_name = option.name | downcase -%}
-                    {%- if option_name contains '色' or option_name contains 'color' or option_name contains 'colour' or option_name contains 'カラー' -%}{%- assign colour_index = forloop.index0 -%}{%- endif -%}
-                  {%- endfor -%}
-                  {%- if colour_index >= 0 -%}
-                    <label class="yk-colour" for="Colour-{{ section.id }}-{{ forloop.index }}">{{ 'yarn_project.kit_choose_colour' | t }}</label>
-                    <select id="Colour-{{ section.id }}-{{ forloop.index }}" data-kit-colour>
-                      {%- for alternative in row_product.variants -%}
-                        {%- assign same_spec = true -%}
-                        {%- for value in alternative.options -%}
-                          {%- if forloop.index0 != colour_index and value != row_variant.options[forloop.index0] -%}{%- assign same_spec = false -%}{%- endif -%}
-                        {%- endfor -%}
-                        {%- if same_spec -%}
-                          <option value="{{ alternative.id }}" data-price="{{ alternative.price }}" data-available="{{ alternative.available }}" data-url="{{ alternative.url }}" {% if alternative.id == row_variant.id %}selected{% endif %}{% unless alternative.available and alternative.price > 0 %} disabled{% endunless %}>{{ alternative.options[colour_index] | escape }}{% if alternative.price <= 0 %} — {{ 'yarn_project.kit_not_on_sale' | t }}{% elsif alternative.available == false %} — {{ 'yarn_project.kit_sold_out' | t }}{% endif %}</option>
-                        {%- endif -%}
-                      {%- endfor -%}
-                    </select>
-                  {%- elsif row_product.has_only_default_variant -%}
-                    <span class="yk-row__note">{{ 'yarn_project.kit_qty_needed' | t: count: row_qty }} · {{ 'yarn_pdp.colour_pending' | t }}</span>
-                  {%- else -%}
-                    <span class="yk-row__variant">{{ row_variant.title | escape }}</span>
-                  {%- endif -%}
-                  <div class="yk-row__buy">
-                    {%- if row_variant.price > 0 -%}<span class="yk-row__price" data-kit-price>{{ row_variant.price | money }}</span>{%- else -%}<span class="yk-soldout" data-kit-price>{{ 'yarn_project.kit_not_on_sale' | t }}</span>{%- endif -%}
-                    <div class="yk-step" data-kit-stepper{% unless row_ok %} hidden{% endunless %}>
-                      <button type="button" data-kit-step="-1" aria-label="{{ 'products.product.quantity.decrease' | t: product: row_product.title | escape }}"><span class="svg-wrapper">{{- 'icon-minus.svg' | inline_asset_content -}}</span></button>
-                      <input type="number" data-kit-qty name="quantity" value="{{ row_qty }}" min="1" inputmode="numeric" aria-label="{{ 'yarn_project.kit_qty_label' | t }} · {{ row_product.title | escape }}">
-                      <button type="button" data-kit-step="1" aria-label="{{ 'products.product.quantity.increase' | t: product: row_product.title | escape }}"><span class="svg-wrapper">{{- 'icon-plus.svg' | inline_asset_content -}}</span></button>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            {%- endif -%}
-          {%- endfor -%}
+          {%- if kit_mode -%}
+            {%- assign kit_row_image = kit_variant.featured_image | default: kit_product.featured_image -%}
+            {%- render 'yarn-kit-row', row_variant: kit_variant, row_qty: 1, row_image: kit_row_image, row_index: 1, section_id: section.id -%}
+          {%- else -%}
+            {%- for component in project.components.value -%}
+              {%- if component.component_type.value == '毛线' and component.variant.value != blank -%}
+                {%- assign row_variant = component.variant.value -%}
+                {%- assign row_qty = component.quantity.value | default: 1 -%}
+                {%- assign row_image = component.image.value | default: row_variant.featured_image | default: row_variant.product.featured_image -%}
+                {%- render 'yarn-kit-row', row_variant: row_variant, row_qty: row_qty, row_image: row_image, row_index: forloop.index, section_id: section.id -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
         </ul>
         {%- if ready_rows > 0 -%}
           <div class="yk-total" data-kit-total>
-            <span data-kit-total-label>{{ 'yarn_project.kit_total' | t: count: ready_balls }}{{ tax_note }}</span>
+            <span data-kit-total-label>{{ total_label_now }}{{ tax_note }}</span>
             <strong data-kit-total-price>{{ ready_total | money }}</strong>
           </div>
           {%- if ready_rows == yarn_rows -%}
@@ -217,8 +211,8 @@
         <yarn-kit-proxy class="yk-sticky" data-kit-sticky data-visible="false" inert>
           <div class="yk-sticky__bar" role="region" aria-label="{{ 'yarn_pdp.sticky_label' | t }}">
             {%- if project.cover.value != blank -%}<span class="yk-sticky__thumb" aria-hidden="true">{{ project.cover.value | image_url: width: 104 | image_tag: width: 52, height: 52, loading: 'lazy', alt: '' }}</span>{%- endif -%}
-            <span class="yk-sticky__sum"><span data-kit-proxy-count>{{ 'yarn_project.kit_total' | t: count: ready_balls }}</span><strong data-kit-proxy-total>{{ ready_total | money }}</strong></span>
-            <button type="button" class="yk-sticky__add" data-kit-proxy data-kit-proxy-short>{{ 'yarn_project.kit_sticky_add' | t }}</button>
+            <span class="yk-sticky__sum"><span data-kit-proxy-count>{% if kit_mode %}{{ 'yarn_project.kit_total_set' | t }}{% else %}{{ 'yarn_project.kit_total' | t: count: ready_balls }}{% endif %}</span><strong data-kit-proxy-total>{{ ready_total | money }}</strong></span>
+            <button type="button" class="yk-sticky__add" data-kit-proxy data-kit-proxy-short>{% if kit_mode %}{{ 'yarn_project.kit_add' | t }}{% else %}{{ 'yarn_project.kit_sticky_add' | t }}{% endif %}</button>
           </div>
         </yarn-kit-proxy>
       {%- endif -%}
