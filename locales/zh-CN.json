@@ -1070,6 +1070,9 @@
     "facet_grams_small": "50g 以下",
     "facet_grams_mid": "51–149g",
     "facet_grams_big": "大容量（150g 以上）",
-    "nav_beginner_tag": "推荐"
+    "nav_beginner_tag": "推荐",
+    "thick_range_chunky": "≤200m",
+    "thick_range_medium": "≤350m",
+    "thick_range_fine": ">350m"
   }
 }

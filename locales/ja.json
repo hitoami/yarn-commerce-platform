@@ -1070,6 +1070,9 @@
     "facet_grams_small": "50g以下",
     "facet_grams_mid": "51〜149g",
     "facet_grams_big": "大玉（150g以上）",
-    "nav_beginner_tag": "おすすめ"
+    "nav_beginner_tag": "おすすめ",
+    "thick_range_chunky": "≤200m",
+    "thick_range_medium": "≤350m",
+    "thick_range_fine": ">350m"
   }
 }

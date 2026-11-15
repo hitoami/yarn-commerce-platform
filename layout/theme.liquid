@@ -24,6 +24,12 @@
       if template.name == 'product' and yarn_product_page_title != blank
         assign yarn_page_title = yarn_product_page_title | strip
       endif
+      comment
+        #366：集合的 SEO 标题没有日 / 英翻译，切语言后还是中文；标题栏改用会跟着语言翻译的集合名。
+      endcomment
+      if template.name == 'collection' and collection.title != blank
+        assign yarn_page_title = collection.title
+      endif
       if page_title == 'My Store'
         assign yarn_page_title = 'hitoami'
       endif
