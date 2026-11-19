@@ -1,0 +1,226 @@
+{% comment %}
+  首页「想找什么样的毛线？」晾衣绳吊牌（锦晨 2026-11-18 选定，替换 yarn-entry-circles 质感圆图）。
+  一根毛线横穿整个区块，每个 block 是一张用木夹夹在线上的吊牌：拍立得照片（或导航同款小图标）+ 名字 + 一句说明。
+  吊牌按「顾客怎么说」分（新手毛线、粗毛线、大团毛线、渐变段染、毛茸茸、钩针娃娃，词来自淘宝搜索联想），
+  每张链到毛线目录并带导航同一套筛选参数（ycb_beginner / ycb_thick / ycb_grams / ycb_color / ycb_fiber / ycb_works），
+  是否有商品、默认照片都用 yarn-facets 对所选集合（前 60 件）算出；一件都没有的吊牌不渲染，不会点到空结果。
+  小猫沿用导览条（#5fc32df）与滚动小猫的九帧精灵图 yarn-guide-cat.webp 和 Logo 线球：进入视野时从线头走到第一张，
+  悬停或聚焦哪张就推着线球沿线走过去，停下后站、趴、睡；动效在 yarn-tag-line.js，减少动态时直接出现在目标处。
+  三语文案走 yarn-setting-text：纯键名为日文默认，_zh / _en 为中英。
+{% endcomment %}
+{{ 'yarn-tag-line.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'yarn-tag-line.js' | asset_url }}" defer="defer"></script>
+
+{%- capture tl_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'heading' -%}{%- endcapture -%}
+{%- capture tl_sub -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'subheading' -%}{%- endcapture -%}
+{%- capture tl_all -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'all_label' -%}{%- endcapture -%}
+{%- assign tl_collection = collections[section.settings.collection] -%}
+{%- liquid
+  # 每件商品的筛选标记只算一次：行之间用 § 分隔，同一行里商品在集合里的序号在 ¦ 前。
+  # 默认照片按序号回到 tl_collection.products 取，不用 all_products（每页最多查 20 个，首页本季主推也在用）。
+  assign tl_rows = ''
+  if tl_collection != blank
+    for tl_product in tl_collection.products limit: 60
+      capture tl_tokens
+        render 'yarn-facets', product: tl_product
+      endcapture
+      assign tl_rows = tl_rows | append: forloop.index0 | append: '¦' | append: tl_tokens | append: '§'
+    endfor
+  endif
+  assign tl_rows = tl_rows | split: '§'
+-%}
+
+{%- assign tl_shown = 0 -%}
+{%- capture tl_items -%}
+  {%- for block in section.blocks -%}
+    {%- liquid
+      assign tl_filter = block.settings.filter | split: ':'
+      assign tl_group = tl_filter[0]
+      assign tl_value = tl_filter[1]
+      if tl_group == 'beginner'
+        assign tl_token = ' beginner:yes '
+        assign tl_query = 'ycb_beginner=1'
+      else
+        assign tl_token = ' ' | append: block.settings.filter | append: ' '
+        assign tl_query = 'ycb_' | append: tl_group | append: '=' | append: tl_value
+      endif
+      assign tl_count = 0
+      assign tl_first = blank
+      for tl_row in tl_rows
+        if tl_row contains tl_token
+          assign tl_count = tl_count | plus: 1
+          if tl_first == blank
+            assign tl_first = tl_row | split: '¦' | first
+          endif
+        endif
+      endfor
+      if tl_count == 0
+        continue
+      endif
+      assign tl_shown = tl_shown | plus: 1
+      assign tl_image = block.settings.image
+      if tl_image == blank
+        assign tl_first_index = tl_first | plus: 0
+        assign tl_first_product = tl_collection.products[tl_first_index]
+        assign tl_image = tl_first_product.metafields.yarn.card_image.value | default: tl_first_product.featured_image
+      endif
+      case tl_group
+        when 'grams'
+          assign tl_icon_group = 'color'
+          assign tl_icon_value = 'variegated'
+        when 'beginner'
+          assign tl_icon_group = 'beginner'
+          assign tl_icon_value = 'yes'
+        else
+          assign tl_icon_group = tl_group
+          assign tl_icon_value = tl_value
+      endcase
+    -%}
+    {%- capture tl_name -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'title' -%}{%- endcapture -%}
+    {%- capture tl_hint -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'hint', allow_blank: true -%}{%- endcapture -%}
+    <li class="yarn-tagline__item" {{ block.shopify_attributes }}>
+      <a class="yarn-tagline__hang" href="{{ tl_collection.url }}?{{ tl_query }}" data-tagline-tag>
+        <span class="yarn-tagline__pin" aria-hidden="true">
+          <svg viewBox="0 0 20 54" focusable="false">
+            <path class="yarn-tagline__pin-jaw" d="M2.2 3.2Q2.2 1 4.4 1H9.4V52.4Q9.4 53.2 8.6 53.2H6.8Q5.4 53.2 5 51.6L2.6 34.6Q2.2 32.8 2.2 31Z"/>
+            <path class="yarn-tagline__pin-jaw yarn-tagline__pin-jaw--back" d="M17.8 3.2Q17.8 1 15.6 1H10.6V52.4Q10.6 53.2 11.4 53.2H13.2Q14.6 53.2 15 51.6L17.4 34.6Q17.8 32.8 17.8 31Z"/>
+            <path class="yarn-tagline__pin-notch" d="M9.4 30.5Q8 31.6 9.4 32.7M10.6 30.5Q12 31.6 10.6 32.7"/>
+            <path class="yarn-tagline__pin-grain" d="M5.4 6V14M6.8 38V47M14.6 6V13M13.4 39V46"/>
+            <rect class="yarn-tagline__pin-spring" x="1" y="19" width="18" height="6.4" rx="3.2"/>
+            <path class="yarn-tagline__pin-coil" d="M4.2 19.4V25M6.8 19.4V25M9.4 19.4V25M12 19.4V25M14.6 19.4V25"/>
+          </svg>
+        </span>
+        <span class="yarn-tagline__card">
+          {%- if section.settings.style == 'photo' and tl_image != blank -%}
+            <span class="yarn-tagline__photo">{{ tl_image | image_url: width: 480 | image_tag: widths: '240, 360, 480', sizes: '(min-width: 990px) 170px, 110px', loading: 'lazy', alt: '' }}</span>
+          {%- else -%}
+            <span class="yarn-tagline__icon">{%- render 'yarn-facet-icon', group: tl_icon_group, value: tl_icon_value, uid: block.id -%}</span>
+          {%- endif -%}
+          <span class="yarn-tagline__name">{{ tl_name | escape }}</span>
+          {%- if tl_hint != blank and section.settings.style != 'photo' -%}<span class="yarn-tagline__hint">{{ tl_hint | escape }}</span>{%- endif -%}
+        </span>
+      </a>
+    </li>
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if tl_items != blank -%}
+<section class="yarn-tagline yarn-tagline--{{ section.settings.style }}" aria-labelledby="TagLine-{{ section.id }}">
+  <div class="yarn-tagline__inner">
+    <div class="yarn-tagline__head">
+      <div>
+        <h2 class="yarn-tagline__heading" id="TagLine-{{ section.id }}">{{ tl_heading | escape }}</h2>
+        {%- if tl_sub != blank -%}<p class="yarn-tagline__sub">{{ tl_sub | escape }}</p>{%- endif -%}
+      </div>
+      {%- if tl_all != blank -%}<a class="yarn-tagline__all" href="{{ tl_collection.url }}">{{ tl_all | escape }} <span aria-hidden="true">→</span></a>{%- endif -%}
+    </div>
+    <div class="yarn-tagline__scroller">
+      <div class="yarn-tagline__rail" data-tagline>
+        {%- comment -%} 没有 JS 时是一条直线；yarn-tag-line.js 按木夹位置重画成在夹子之间微垂的线。 {%- endcomment -%}
+        <svg class="yarn-tagline__line" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <path d="M0 70H1000" vector-effect="non-scaling-stroke"/>
+          <circle r="4.5" cx="-20" cy="0"/><circle r="4.5" cx="-20" cy="0"/>
+        </svg>
+        <span class="yarn-tagline__cat" aria-hidden="true" style="background-image: url('{{ 'yarn-guide-cat.webp' | asset_url }}');"></span>
+        {%- comment -%} Same drawing as the logo's ball (yarn-scroll-cat). {%- endcomment -%}
+        <svg class="yarn-tagline__ball" viewBox="-11 -11 22 22" aria-hidden="true" focusable="false">
+          <circle r="10"/>
+          <path d="M-9.9 -.6Q-8 -6 -3.4 -9.3M-9.2 3.2Q-6.5 -4.5 1.2 -9.6M-7.6 6.3Q-4.2 -2.6 5.2 -8.4M-5.2 8.4Q-1.6 0 8.4 -5.4M-1.6 2.6Q3.6 .4 9.9 1.4M-.6 5.4Q4.2 3.6 8.8 4.9M1.2 4.4Q1.4 7.4 .6 9.9M4.2 4.7Q4.8 7.2 4.4 9"/>
+        </svg>
+        <ol class="yarn-tagline__tags" role="list" style="--tl-count: {{ tl_shown }};">{{ tl_items }}</ol>
+      </div>
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "晾衣绳吊牌",
+  "tag": "div",
+  "class": "section-yarn-tag-line",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "毛线目录（计算哪些吊牌有商品、默认照片，并作为链接目标）" },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "吊牌样式",
+      "options": [
+        { "value": "photo", "label": "拍立得照片" },
+        { "value": "icon", "label": "导航同款小图标 + 说明" }
+      ],
+      "default": "photo"
+    },
+    { "type": "header", "content": "日文(默认)" },
+    { "type": "text", "id": "heading", "label": "标题", "default": "どんな毛糸をお探しですか？" },
+    { "type": "text", "id": "subheading", "label": "副标题", "default": "迷ったら「はじめての毛糸」から。" },
+    { "type": "text", "id": "all_label", "label": "「全部」链接文字", "default": "すべての毛糸" },
+    { "type": "header", "content": "中文" },
+    { "type": "text", "id": "heading_zh", "label": "标题", "default": "想找什么样的毛线？" },
+    { "type": "text", "id": "subheading_zh", "label": "副标题", "default": "不知道从哪开始？先看「新手毛线」。" },
+    { "type": "text", "id": "all_label_zh", "label": "「全部」链接文字", "default": "查看全部毛线" },
+    { "type": "header", "content": "英文" },
+    { "type": "text", "id": "heading_en", "label": "标题", "default": "What kind of yarn are you looking for?" },
+    { "type": "text", "id": "subheading_en", "label": "副标题", "default": "Not sure? Start with beginner yarn." },
+    { "type": "text", "id": "all_label_en", "label": "「全部」链接文字", "default": "All yarn" }
+  ],
+  "blocks": [
+    {
+      "type": "tag",
+      "name": "吊牌",
+      "settings": [
+        {
+          "type": "select",
+          "id": "filter",
+          "label": "筛选（与导航下拉同一套）",
+          "options": [
+            { "value": "beginner:yes", "label": "新手友好" },
+            { "value": "thick:fine", "label": "粗细 · 轻柔细线" },
+            { "value": "thick:medium", "label": "粗细 · 粗细适中" },
+            { "value": "thick:chunky", "label": "粗细 · 蓬蓬粗线" },
+            { "value": "grams:big", "label": "克重 · 大容量（≥150g）" },
+            { "value": "color:solid", "label": "花色 · 纯色" },
+            { "value": "color:variegated", "label": "花色 · 段染" },
+            { "value": "color:gradient", "label": "花色 · 渐变" },
+            { "value": "color:heather", "label": "花色 · 混色" },
+            { "value": "color:rainbow", "label": "花色 · 彩虹色" },
+            { "value": "fiber:wool", "label": "材质 · 羊毛" },
+            { "value": "fiber:wool_blend", "label": "材质 · 羊毛混纺" },
+            { "value": "fiber:mohair", "label": "材质 · 马海毛" },
+            { "value": "fiber:synthetic", "label": "材质 · 合成纤维" },
+            { "value": "fiber:cotton", "label": "材质 · 棉类" },
+            { "value": "works:sweater", "label": "想织什么 · 毛衣" },
+            { "value": "works:hat", "label": "想织什么 · 帽子" },
+            { "value": "works:scarf", "label": "想织什么 · 围巾" },
+            { "value": "works:blanket", "label": "想织什么 · 毯子" },
+            { "value": "works:bag", "label": "想织什么 · 包包" },
+            { "value": "works:doll", "label": "想织什么 · 玩偶" }
+          ],
+          "default": "beginner:yes"
+        },
+        { "type": "image_picker", "id": "image", "label": "拍立得照片（留空用第一款符合的毛线的卡片图）" },
+        { "type": "text", "id": "title", "label": "名字 · 日文" },
+        { "type": "text", "id": "hint", "label": "说明 · 日文（只在图标样式显示）" },
+        { "type": "text", "id": "title_zh", "label": "名字 · 中文" },
+        { "type": "text", "id": "hint_zh", "label": "说明 · 中文" },
+        { "type": "text", "id": "title_en", "label": "名字 · 英文" },
+        { "type": "text", "id": "hint_en", "label": "说明 · 英文" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "晾衣绳吊牌",
+      "blocks": [
+        { "type": "tag", "settings": { "filter": "beginner:yes", "title": "はじめての毛糸", "title_zh": "新手毛线", "title_en": "Beginner yarn", "hint": "編み目が見やすく、割れにくい", "hint_zh": "粗细适中、不分股，针脚看得清", "hint_en": "Easy to see stitches, won't split" } },
+        { "type": "tag", "settings": { "filter": "thick:chunky", "title": "極太毛糸", "title_zh": "粗毛线", "title_en": "Chunky yarn", "hint": "太い針でサクサク編める", "hint_zh": "粗针大针脚，很快就织好", "hint_en": "Big needles, quick to finish" } },
+        { "type": "tag", "settings": { "filter": "grams:big", "title": "大玉毛糸", "title_zh": "大团毛线", "title_en": "Big balls", "hint": "1玉でマフラーまで、つなぎなし", "hint_zh": "一团织完围巾、披肩，不用接线", "hint_en": "One ball, no joins" } },
+        { "type": "tag", "settings": { "filter": "color:gradient", "title": "グラデーション・段染め", "title_zh": "渐变段染", "title_en": "Gradient & variegated", "hint": "糸を替えずに模様が出る", "hint_zh": "不换线，自己就织出花纹", "hint_en": "Patterns without changing yarn" } },
+        { "type": "tag", "settings": { "filter": "fiber:mohair", "title": "ふわふわ毛糸", "title_zh": "毛茸茸", "title_en": "Fluffy yarn", "hint": "モヘアでふんわり", "hint_zh": "马海毛，软乎乎", "hint_en": "Soft, airy mohair" } },
+        { "type": "tag", "settings": { "filter": "works:doll", "title": "あみぐるみ用", "title_zh": "钩针娃娃", "title_en": "For amigurumi", "hint": "発色がよく形がきれい", "hint_zh": "颜色鲜、好成型的玩偶用线", "hint_en": "Bright colours that hold their shape" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

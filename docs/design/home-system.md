@@ -60,7 +60,7 @@ Issue #65 删除了无模板使用的 `yarn-purpose-grid` / `yarn-seasonal-featu
 | --- | --- | --- |
 | 品类入口 + 新手入口 | `yarn-guide-strip` | 节点为 block（图标、链接、三语标题与说明）；新手入口的标题和链接都填写才显示（用户 2026-09-28 决定首页不放，模板里链接留空）。桌面挂线像晾衣绳：两端钉在上一个 section 的底边（伸入 20px），两个钉点以页面中线对称（比内容区边缘各外伸至多 96px），两端垂下同样形状的弯，左侧多出的一段平缓绳子，小猫睡在左侧弯里；悬停入口时小猫醒来沿绳走过去。手机端挂线仍在节点上方、无小猫 |
 | 品牌介绍 | `hitoami-story` | 居中的品牌标语与品牌故事，取自线上首页，三语在编辑器维护；两项都为空时不渲染。桌面小标题「关于品牌」另设三语设置 |
-| 挑毛线 | `yarn-entry-circles`（`assets/yarn-entries.css` / `.js`） | 入口数据同 #117（`yarn_entry` Metaobject + `yarn.texture` / `yarn.use`）。同一字段的入口归为一段，段名（按质感 / 按用途）在区块设置三语维护，只有一段时不出切换；说明行优先取 block 三语说明，留空显示款数；没有商品的入口不渲染 |
+| 挑毛线 | `yarn-tag-line`（`assets/yarn-tag-line.css` / `.js`） | 锦晨 2026-11-18 选定的晾衣绳吊牌，取代 `yarn-entry-circles`（模板里停用保留）。每张吊牌是一个 block：一个导航筛选（`beginner:yes` / `thick:*` / `grams:big` / `color:*` / `fiber:*` / `works:*`）+ 三语名字与说明 + 可选照片；是否有商品与默认照片由 `yarn-facets` 对毛线目录前 60 件算出，链接 `?ycb_*` 与页头下拉同一套；没有商品的吊牌不渲染。小猫复用 `yarn-guide-cat.webp` |
 | 优惠（停用） | `yarn-picks`，显示方式「优惠」 | 只取所选集合里 `compare_at_price` 高于 `price` 的商品（前 50 件中），按折扣比例从大到小；一件都没有时整块不渲染 |
 | 用我们的毛线可以织 | `yarn-project-picks` | 只展示通过 `yarn-kit-visible` 的真实材料包作品；首页合并新手三步指引（#180，用户 2026-10-17 批准 [Figma 方案 C](https://www.figma.com/design/xBdWJgV7u4hO50MpcLcfB2?node-id=3-3)）。副标题与三步标签为三语 Section setting，当前语言留空隐藏；照片角、毛线团数行、教程行对应显示 1 / 2 / 3，缺行不出编号。手机 220px 横滑卡、12px 间距、照片 220:250；编号复用 `cta-bg` / `action`。仍点卡进作品页选色购买；桌面按同日批准的 [1440 方案 C](https://www.figma.com/design/xBdWJgV7u4hO50MpcLcfB2?node-id=7-3)：1200px 内容轴，32px 衬线标题、16px 副标题与右侧「查看全部」底部对齐；胶囊含三语 `step_N_note` 短说明（可空），以 48px 静态 `decor-thread` 装饰虚线连接，手机隐藏说明和连线；四列作品、24px 间距、282:350 照片、12px 圆角、20px 卡片编号，无横滑 |
 | 新手友好编织包 | `yarn-picks`，显示方式「新手友好」 | 集合由运营选择；只有商品字段 `yarn.beginner_reason` 有内容时才显示「新手友好」标签与理由 |
