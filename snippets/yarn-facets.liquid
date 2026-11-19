@@ -4,6 +4,7 @@
   分类定稿（2026-11-19，锦晨确认）：粗细以选品表标注为准，花色只分纯色 / 段染渐变，马海毛并进羊毛混纺，毛茸茸与钩针用线是人工勾选。
   - 粗细：商品字段 yarn.thickness（照选品表「粗细」列填，如「特粗」「中粗（蓬松）」「中细」，也认三档名字）：
     特粗 / 超粗 / 粗 → chunky（蓬蓬粗线），中粗 → medium（粗细适中），中细 / 细 / 超细 → fine（轻柔细线）。
+    也认日文标注：並太 / 合太 → medium，極太 / 超極太 → chunky，中細 / 合細 / 極細 → fine。
     没填时退回按每 100g 米数（yarn.ball_length_m / yarn.ball_weight_g）：≤200 chunky，≤350 medium，其余 fine；都缺不标。
   - 材质：成分（yarn.composition，已按语言翻译，日 / 中 / 英关键词都认）：全是羊毛类（羊毛、美利奴、羊驼）→ wool；
     含羊毛类或马海毛 → wool_blend；棉 ≥50% 或未写百分比的棉 → cotton；其余 → synthetic。
@@ -19,11 +20,11 @@
   assign yf_len = product.metafields.yarn.ball_length_m.value | plus: 0
   echo ' '
   assign yf_th = product.metafields.yarn.thickness.value | append: '' | split: '（' | first | split: '(' | first | strip | downcase
-  if yf_th contains '中粗' or yf_th contains '粗细适中' or yf_th contains 'medium'
+  if yf_th contains '中粗' or yf_th contains '粗细适中' or yf_th contains '並太' or yf_th contains '并太' or yf_th contains '合太' or yf_th contains 'medium'
     echo 'thick:medium '
-  elsif yf_th contains '粗' or yf_th contains 'chunky'
+  elsif yf_th contains '粗' or yf_th contains '太' or yf_th contains 'chunky'
     echo 'thick:chunky '
-  elsif yf_th contains '细' or yf_th contains 'fine'
+  elsif yf_th contains '细' or yf_th contains '細' or yf_th contains 'fine'
     echo 'thick:fine '
   elsif yf_w > 0 and yf_len > 0
     assign yf_per = yf_len | times: 100 | divided_by: yf_w
