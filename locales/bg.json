@@ -902,7 +902,10 @@
     "kit_choose_colour": "Choose a colour of this yarn",
     "kit_total_set": "Total",
     "kit_card_sold_out": "Sold out · not available",
-    "kit_price_from": "From {{ price }}"
+    "kit_price_from": "From {{ price }}",
+    "kit_buy_heading_set": "Choose a colourway",
+    "kit_choose_set_colour": "Colourway",
+    "kit_quick_hint_set": "Choose the colourway and quantity below"
   },
   "yarn_discovery": {
     "search": "Search",

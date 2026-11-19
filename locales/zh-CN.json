@@ -902,7 +902,10 @@
     "kit_choose_colour": "选择同款颜色",
     "kit_total_set": "合计",
     "kit_card_sold_out": "已售罄 · 暂不可买",
-    "kit_price_from": "{{ price }} 起"
+    "kit_price_from": "{{ price }} 起",
+    "kit_buy_heading_set": "选择配色",
+    "kit_choose_set_colour": "配色",
+    "kit_quick_hint_set": "配色和数量可以在下方选择"
   },
   "yarn_discovery": {
     "search": "搜索",

@@ -180,6 +180,9 @@ test('a published 材料包 product with the project handle replaces the yarn ro
   // 没有材料包商品（例如还是草稿）时仍按配件逐行买毛线。
   assert.match(section, /\{%- else -%\}\s*\{%- for component in project\.components\.value -%\}[\s\S]*render 'yarn-kit-row', row_variant: row_variant/);
   assert.match(section, /assign total_label_js = 'yarn_project\.kit_total_set' \| t/);
+  // 材料包模式不再写「所需毛线」「选择同款颜色」「想换团数」。
+  assert.match(section, /\{% if kit_mode %\}\{\{ 'yarn_project\.kit_buy_heading_set' \| t \}\}/);
+  assert.match(section, /colour_key: 'yarn_project\.kit_choose_set_colour'/);
   const card = fs.readFileSync('snippets/yarn-project-pick-card.liquid', 'utf8');
   assert.match(card, /all_products\[project\.system\.handle\]/);
   assert.match(card, /assign kit_state = 'sold_out'/);
@@ -188,7 +191,7 @@ test('a published 材料包 product with the project handle replaces the yarn ro
   assert.match(fs.readFileSync('snippets/yarn-cart-kit-note.liquid', 'utf8'), /kit_item\.product\.type == '材料包'/);
   for (const locale of ['ja', 'zh-CN', 'en.default']) {
     const copy = JSON.parse(fs.readFileSync(`locales/${locale}.json`, 'utf8').replace(/^\/\*[\s\S]*?\*\//, '')).yarn_project;
-    for (const key of ['kit_total_set', 'kit_card_sold_out', 'kit_price_from']) assert.ok(copy[key], `${locale} ${key}`);
+    for (const key of ['kit_total_set', 'kit_card_sold_out', 'kit_price_from', 'kit_buy_heading_set', 'kit_choose_set_colour', 'kit_quick_hint_set']) assert.ok(copy[key], `${locale} ${key}`);
   }
 });
 

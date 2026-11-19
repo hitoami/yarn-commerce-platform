@@ -1,7 +1,7 @@
 {%- comment -%}
   材料包详情购买框里的一行（从 sections/yarn-kit-detail 拆出，#369）：一种商品的图、名称、配色下拉、单价与数量步进器。
   #369 起材料包是独立商品时只渲染这一行（材料包本身，配色就是它的 Variant）；没有材料包商品时仍按配件逐行渲染毛线。
-  参数：row_variant、row_qty（预填数量）、row_image、row_index（同页唯一序号）、section_id。
+  参数：row_variant、row_qty（预填数量）、row_image、row_index（同页唯一序号）、section_id；colour_key 可选，配色下拉的标签文案键（默认「选择同款颜色」）。
 {%- endcomment -%}
 {%- liquid
   assign row_product = row_variant.product
@@ -25,7 +25,7 @@
       {%- if option_name contains '色' or option_name contains 'color' or option_name contains 'colour' or option_name contains 'カラー' -%}{%- assign colour_index = forloop.index0 -%}{%- endif -%}
     {%- endfor -%}
     {%- if colour_index >= 0 -%}
-      <label class="yk-colour" for="Colour-{{ section_id }}-{{ row_index }}">{{ 'yarn_project.kit_choose_colour' | t }}</label>
+      <label class="yk-colour" for="Colour-{{ section_id }}-{{ row_index }}">{{ colour_key | default: 'yarn_project.kit_choose_colour' | t }}</label>
       <select id="Colour-{{ section_id }}-{{ row_index }}" data-kit-colour>
         {%- for alternative in row_product.variants -%}
           {%- assign same_spec = true -%}
