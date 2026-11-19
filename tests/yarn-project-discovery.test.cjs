@@ -37,8 +37,9 @@ test('homepage follows the #131 IA: yarn first, then season feature, yarn sets a
   // 滚动进度小猫（#151）是底边固定的装饰层，不占版面顺序，放在最后。
   const live = index.order.filter(id => !index.sections[id].disabled);
   // 品牌与常见问题合并（锦晨 2026-11-14 选定原型方向 B「店员猫答疑」）：常见问题紧接品牌介绍，LINE 入口移到常见问题底部；整块放在页脚前。
-  assert.deepEqual(live, ['hero', 'yarn-entries', 'catalog', 'season', 'project-picks', 'picks-finished', 'story', 'faq', 'scroll-cat']);
-  for (const retired of ['guide', 'guide-strip', 'beginner-kits', 'line-support', 'sale-picks', 'filter-switch', 'yarn-hero']) assert.equal(index.sections[retired].disabled, true, retired);
+  // 锦晨 2026-11-18：「想找什么样的毛线？」改为晾衣绳吊牌（tag-line），质感圆图（yarn-entries）停用而不删除。
+  assert.deepEqual(live, ['hero', 'tag-line', 'catalog', 'season', 'project-picks', 'picks-finished', 'story', 'faq', 'scroll-cat']);
+  for (const retired of ['guide', 'guide-strip', 'beginner-kits', 'line-support', 'sale-picks', 'filter-switch', 'yarn-hero', 'yarn-entries']) assert.equal(index.sections[retired].disabled, true, retired);
   assert.equal(index.sections.hero.type, 'hitoami-hero');
   assert.equal(index.sections.story.type, 'hitoami-story');
   assert.equal(index.sections.season.type, 'yarn-season-feature');
