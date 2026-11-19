@@ -41,9 +41,9 @@ test('catalogue section reuses the shared yarn card and never invents placeholde
   assert.doesNotMatch(liquid.split('{% schema %}')[0], /\| t: count:/, 'count triggers Shopify plural keys');
 });
 
-const NONE = { thick: '', color: '', fiber: '', works: '', grams: '' };
+const NONE = { thick: '', color: '', fiber: '', works: '', grams: '', feature: '' };
 const items = [
-  ' thick:fine fiber:mohair color:solid grams:small ',
+  ' thick:fine fiber:wool_blend color:solid grams:small feature:fluffy ',
   ' thick:fine fiber:wool works:hat beginner:yes grams:mid ',
   ' thick:medium fiber:wool works:hat grams:big ',
   ' thick:chunky fiber:synthetic grams:big beginner:yes ',
@@ -59,10 +59,13 @@ test('366: one filter set — the old category chips, 5-band weight and 「全�
   assert.match(section, /data-ycb-chip="thick:\{\{ cb_value \}\}"/);
   assert.match(section, /'yarn_collection\.facet_thick_' \| append: cb_value/);
   const nav = fs.readFileSync('snippets/yarn-nav-facet-links.liquid', 'utf8');
-  for (const values of ['fine,medium,chunky', 'solid,variegated,gradient,heather,rainbow', 'wool,wool_blend,mohair,synthetic,cotton', 'sweater,hat,scarf,blanket,bag,doll']) {
-    assert.ok(nav.includes(values), values);
-    assert.ok(section.includes(values), values);
+  // 分类定稿（2026-11-19）：花色只分纯色 / 段染渐变，马海毛并进羊毛混纺；毛茸茸、钩针用线是「特点」。
+  for (const [group, values] of Object.entries({ thick: 'fine,medium,chunky', color: 'solid,variegated', fiber: 'wool,wool_blend,cotton,synthetic', works: 'sweater,hat,scarf,blanket,bag,doll' })) {
+    assert.ok(nav.includes(values.split(',').map((v) => `${group}:${v}`).join(',')), group);
+    assert.ok(section.includes(`${group}:${values}`), group);
   }
+  assert.ok(section.includes('feature:fluffy,crochet'));
+  for (const gone of ['gradient', 'heather', 'rainbow', 'mohair']) assert.ok(!section.includes(`,${gone}`) && !nav.includes(`:${gone}`), gone);
   // 「显示更多」不再请求未筛过的下一页。
   assert.doesNotMatch(fs.readFileSync('assets/yarn-collection-browse.js', 'utf8'), /data-ycb-next\]'\)\?\.addEventListener|nextPageUrl/);
 });
@@ -77,6 +80,10 @@ test('366: filters match whole tokens and combine across groups', () => {
   assert.equal(matches(' fiber:wool ', readState(new URLSearchParams('ycb_beginner=1'))), false);
   assert.equal(isFiltered(readState(new URLSearchParams('ycb_view=map'))), false);
   assert.equal(isFiltered(readState(new URLSearchParams('ycb_thick=fine'))), true);
+  // 首页「毛茸茸」「钩针用线」吊牌带 ycb_feature；一款毛线可以同时是两者。
+  const fluffy = readState(new URLSearchParams('ycb_feature=fluffy'));
+  assert.equal(matches(' feature:fluffy feature:crochet ', fluffy), true);
+  assert.equal(matches(' feature:crochet ', fluffy), false);
 });
 
 test('366: counts follow the other active filters (navigation and the collection page agree)', () => {
@@ -88,7 +95,7 @@ test('366: counts follow the other active filters (navigation and the collection
   assert.equal(wool.all, 2);
   assert.equal(wool['thick:fine'], 1, '粗细的款数只算羊毛');
   assert.equal(wool['thick:chunky'] || 0, 0);
-  assert.equal(wool['fiber:mohair'], 1, '同组的其他选项不被本组条件压成 0');
+  assert.equal(wool['fiber:wool_blend'], 1, '同组的其他选项不被本组条件压成 0');
   const fine = countOptions(items, readState(new URLSearchParams('ycb_thick=fine')));
   assert.equal(fine['thick:medium'], 1);
   assert.equal(fine.all, 2);
@@ -116,7 +123,7 @@ test('355: list cards carry yarn-facets tokens; ball weight / big balls live in 
   assert.match(section, /grams:small,mid,big/);
   assert.match(section, /data-ycb-facet="\{\{ cb_facet_pair\[0\] \}\}:\{\{ cb_facet_value \}\}"/);
   const facets = fs.readFileSync('snippets/yarn-facets.liquid', 'utf8');
-  for (const field of ['ball_length_m', 'ball_weight_g', 'composition', 'color_type', 'works']) assert.match(facets, new RegExp(`metafields\\.yarn\\.${field}`), field);
+  for (const field of ['thickness', 'ball_length_m', 'ball_weight_g', 'composition', 'color_type', 'works', 'fluffy', 'crochet']) assert.match(facets, new RegExp(`metafields\\.yarn\\.${field}`), field);
   for (const word of ['ウール', 'wool', 'モヘア', 'コットン', 'cotton', '綿']) assert.ok(facets.includes(word), word);
 });
 

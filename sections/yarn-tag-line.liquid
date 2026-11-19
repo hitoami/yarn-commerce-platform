@@ -1,8 +1,8 @@
 {% comment %}
   首页「想找什么样的毛线？」晾衣绳吊牌（锦晨 2026-11-18 选定，替换 yarn-entry-circles 质感圆图）。
   一根毛线横穿整个区块，每个 block 是一张用木夹夹在线上的吊牌：拍立得照片（或导航同款小图标）+ 名字 + 一句说明。
-  吊牌按「顾客怎么说」分（新手毛线、粗毛线、大团毛线、渐变段染、毛茸茸、钩针娃娃，词来自淘宝搜索联想），
-  每张链到毛线目录并带导航同一套筛选参数（ycb_beginner / ycb_thick / ycb_grams / ycb_color / ycb_fiber / ycb_works），
+  吊牌是分类定稿（2026-11-19）的快捷入口：新手推荐、渐变段染、毛茸茸、轻柔细线、钩针用线、大团毛线，每个入口至少 8 款；
+  每张链到毛线目录并带导航同一套筛选参数（ycb_beginner / ycb_thick / ycb_grams / ycb_color / ycb_fiber / ycb_works / ycb_feature），
   是否有商品、默认照片都用 yarn-facets 对所选集合（前 60 件）算出；一件都没有的吊牌不渲染，不会点到空结果。
   小猫沿用导览条（#5fc32df）与滚动小猫的九帧精灵图 yarn-guide-cat.webp 和 Logo 线球：进入视野时从线头走到第一张，
   悬停或聚焦哪张就推着线球沿线走过去，停下后站、趴、睡；动效在 yarn-tag-line.js，减少动态时直接出现在目标处。
@@ -64,17 +64,8 @@
         assign tl_first_product = tl_collection.products[tl_first_index]
         assign tl_image = tl_first_product.metafields.yarn.card_image.value | default: tl_first_product.featured_image
       endif
-      case tl_group
-        when 'grams'
-          assign tl_icon_group = 'color'
-          assign tl_icon_value = 'variegated'
-        when 'beginner'
-          assign tl_icon_group = 'beginner'
-          assign tl_icon_value = 'yes'
-        else
-          assign tl_icon_group = tl_group
-          assign tl_icon_value = tl_value
-      endcase
+      assign tl_icon_group = tl_group
+      assign tl_icon_value = tl_value
     -%}
     {%- capture tl_name -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'title' -%}{%- endcapture -%}
     {%- capture tl_hint -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'hint', allow_blank: true -%}{%- endcapture -%}
@@ -175,21 +166,19 @@
           "id": "filter",
           "label": "筛选（与导航下拉同一套）",
           "options": [
-            { "value": "beginner:yes", "label": "新手友好" },
+            { "value": "beginner:yes", "label": "新手推荐" },
+            { "value": "color:variegated", "label": "花色 · 段染渐变" },
+            { "value": "feature:fluffy", "label": "特点 · 毛茸茸" },
             { "value": "thick:fine", "label": "粗细 · 轻柔细线" },
+            { "value": "feature:crochet", "label": "特点 · 钩针用线" },
+            { "value": "grams:big", "label": "克重 · 大团（≥150g）" },
             { "value": "thick:medium", "label": "粗细 · 粗细适中" },
             { "value": "thick:chunky", "label": "粗细 · 蓬蓬粗线" },
-            { "value": "grams:big", "label": "克重 · 大容量（≥150g）" },
             { "value": "color:solid", "label": "花色 · 纯色" },
-            { "value": "color:variegated", "label": "花色 · 段染" },
-            { "value": "color:gradient", "label": "花色 · 渐变" },
-            { "value": "color:heather", "label": "花色 · 混色" },
-            { "value": "color:rainbow", "label": "花色 · 彩虹色" },
             { "value": "fiber:wool", "label": "材质 · 羊毛" },
             { "value": "fiber:wool_blend", "label": "材质 · 羊毛混纺" },
-            { "value": "fiber:mohair", "label": "材质 · 马海毛" },
+            { "value": "fiber:cotton", "label": "材质 · 棉" },
             { "value": "fiber:synthetic", "label": "材质 · 合成纤维" },
-            { "value": "fiber:cotton", "label": "材质 · 棉类" },
             { "value": "works:sweater", "label": "想织什么 · 毛衣" },
             { "value": "works:hat", "label": "想织什么 · 帽子" },
             { "value": "works:scarf", "label": "想织什么 · 围巾" },
@@ -213,12 +202,12 @@
     {
       "name": "晾衣绳吊牌",
       "blocks": [
-        { "type": "tag", "settings": { "filter": "beginner:yes", "title": "はじめての毛糸", "title_zh": "新手毛线", "title_en": "Beginner yarn", "hint": "編み目が見やすく、割れにくい", "hint_zh": "粗细适中、不分股，针脚看得清", "hint_en": "Easy to see stitches, won't split" } },
-        { "type": "tag", "settings": { "filter": "thick:chunky", "title": "極太毛糸", "title_zh": "粗毛线", "title_en": "Chunky yarn", "hint": "太い針でサクサク編める", "hint_zh": "粗针大针脚，很快就织好", "hint_en": "Big needles, quick to finish" } },
-        { "type": "tag", "settings": { "filter": "grams:big", "title": "大玉毛糸", "title_zh": "大团毛线", "title_en": "Big balls", "hint": "1玉でマフラーまで、つなぎなし", "hint_zh": "一团织完围巾、披肩，不用接线", "hint_en": "One ball, no joins" } },
-        { "type": "tag", "settings": { "filter": "color:gradient", "title": "グラデーション・段染め", "title_zh": "渐变段染", "title_en": "Gradient & variegated", "hint": "糸を替えずに模様が出る", "hint_zh": "不换线，自己就织出花纹", "hint_en": "Patterns without changing yarn" } },
-        { "type": "tag", "settings": { "filter": "fiber:mohair", "title": "ふわふわ毛糸", "title_zh": "毛茸茸", "title_en": "Fluffy yarn", "hint": "モヘアでふんわり", "hint_zh": "马海毛，软乎乎", "hint_en": "Soft, airy mohair" } },
-        { "type": "tag", "settings": { "filter": "works:doll", "title": "あみぐるみ用", "title_zh": "钩针娃娃", "title_en": "For amigurumi", "hint": "発色がよく形がきれい", "hint_zh": "颜色鲜、好成型的玩偶用线", "hint_en": "Bright colours that hold their shape" } }
+        { "type": "tag", "settings": { "filter": "beginner:yes", "title": "はじめての毛糸", "title_zh": "新手推荐", "title_en": "Beginner picks", "hint": "編み目が見やすく、割れにくい", "hint_zh": "粗细适中、不分股，针脚看得清", "hint_en": "Easy to see stitches, won't split" } },
+        { "type": "tag", "settings": { "filter": "color:variegated", "title": "グラデーション・段染め", "title_zh": "渐变段染", "title_en": "Gradient & variegated", "hint": "糸を替えずに模様が出る", "hint_zh": "不换线，自己就织出花纹", "hint_en": "Patterns without changing yarn" } },
+        { "type": "tag", "settings": { "filter": "feature:fluffy", "title": "ふわふわ毛糸", "title_zh": "毛茸茸", "title_en": "Fluffy yarn", "hint": "もこもこ、ふんわりした手ざわり", "hint_zh": "绒绒的，摸起来软乎乎", "hint_en": "Soft, fuzzy and cosy" } },
+        { "type": "tag", "settings": { "filter": "thick:fine", "title": "やわらか細糸", "title_zh": "轻柔细线", "title_en": "Light & fine", "hint": "軽くて繊細な作品に", "hint_zh": "织轻薄的春夏衣物和精致小物", "hint_en": "For light, delicate pieces" } },
+        { "type": "tag", "settings": { "filter": "feature:crochet", "title": "かぎ針編み用", "title_zh": "钩针用线", "title_en": "For crochet", "hint": "あみぐるみやバッグに", "hint_zh": "钩玩偶、钩包包都合适", "hint_en": "Amigurumi, bags and more" } },
+        { "type": "tag", "settings": { "filter": "grams:big", "title": "大玉毛糸", "title_zh": "大团毛线", "title_en": "Big balls", "hint": "1玉でマフラーまで、つなぎなし", "hint_zh": "一团织完围巾、披肩，不用接线", "hint_en": "One ball, no joins" } }
       ]
     }
   ]

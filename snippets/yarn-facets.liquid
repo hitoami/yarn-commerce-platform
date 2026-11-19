@@ -1,19 +1,31 @@
 {%- comment -%}
   #355 毛线的导航筛选标记：输出以空格分隔、首尾带空格的标记，如「 thick:fine fiber:wool color:solid works:hat grams:big 」。
-  页头下拉（只显示有商品的项）与毛线目录（网址 ycb_thick / ycb_color / ycb_fiber / ycb_works / ycb_grams）共用这一份算法。
-  - 粗细：每 100g 米数（yarn.ball_length_m / yarn.ball_weight_g），与手感地图的五档对齐：≤200 蓬蓬粗线，≤350 粗细适中，其余轻柔细线；缺米数不标。
-  - 材质：成分（yarn.composition，已按语言翻译，日 / 中 / 英关键词都认）：有马海毛 → mohair；全是羊毛类 → wool；含羊毛类 → wool_blend；
-    棉 ≥50% 或未写百分比的棉 → cotton；其余 → synthetic。
-  - 花色、织什么：商品字段 yarn.color_type / yarn.works（后台中文选项，可多选），在这里换成英文标记。
-  - 克重：yarn.ball_weight_g，≤50g small，51–149g mid，≥150g big（大容量）。
-  - 新手友好（#365）：填了 yarn.beginner_reason 的标 beginner:yes，页头「想织什么」据此决定是否显示「新手友好」入口。
+  页头下拉（只显示有商品的项）与毛线目录（网址 ycb_thick / ycb_color / ycb_fiber / ycb_works / ycb_grams / ycb_feature）共用这一份算法。
+  分类定稿（2026-11-19，锦晨确认）：粗细以选品表标注为准，花色只分纯色 / 段染渐变，马海毛并进羊毛混纺，毛茸茸与钩针用线是人工勾选。
+  - 粗细：商品字段 yarn.thickness（照选品表「粗细」列填，如「特粗」「中粗（蓬松）」「中细」，也认三档名字）：
+    特粗 / 超粗 / 粗 → chunky（蓬蓬粗线），中粗 → medium（粗细适中），中细 / 细 / 超细 → fine（轻柔细线）。
+    没填时退回按每 100g 米数（yarn.ball_length_m / yarn.ball_weight_g）：≤200 chunky，≤350 medium，其余 fine；都缺不标。
+  - 材质：成分（yarn.composition，已按语言翻译，日 / 中 / 英关键词都认）：全是羊毛类（羊毛、美利奴、羊驼）→ wool；
+    含羊毛类或马海毛 → wool_blend；棉 ≥50% 或未写百分比的棉 → cotton；其余 → synthetic。
+  - 花色：yarn.color_type，纯色 → solid，段染 / 渐变 / 混色 / 彩虹色 / 段染渐变 → variegated。
+  - 织什么：yarn.works（后台中文选项，可多选），在这里换成英文标记。
+  - 克重：yarn.ball_weight_g，≤50g small，51–149g mid，≥150g big（大团）。
+  - 新手推荐（#365）：填了 yarn.beginner_reason 的标 beginner:yes。
+  - 特点：yarn.fluffy 为真 → feature:fluffy（毛茸茸），yarn.crochet 为真 → feature:crochet（钩针用线），可以同时有。
   用法：{%- capture tokens -%}{%- render 'yarn-facets', product: p -%}{%- endcapture -%}
 {%- endcomment -%}
 {%- liquid
   assign yf_w = product.metafields.yarn.ball_weight_g.value | plus: 0
   assign yf_len = product.metafields.yarn.ball_length_m.value | plus: 0
   echo ' '
-  if yf_w > 0 and yf_len > 0
+  assign yf_th = product.metafields.yarn.thickness.value | append: '' | split: '（' | first | split: '(' | first | strip | downcase
+  if yf_th contains '中粗' or yf_th contains '粗细适中' or yf_th contains 'medium'
+    echo 'thick:medium '
+  elsif yf_th contains '粗' or yf_th contains 'chunky'
+    echo 'thick:chunky '
+  elsif yf_th contains '细' or yf_th contains 'fine'
+    echo 'thick:fine '
+  elsif yf_w > 0 and yf_len > 0
     assign yf_per = yf_len | times: 100 | divided_by: yf_w
     if yf_per <= 200
       echo 'thick:chunky '
@@ -36,10 +48,11 @@
       if yf_p == blank
         continue
       endif
+      assign yf_is_wool = false
       if yf_p contains '马海' or yf_p contains 'モヘア' or yf_p contains 'mohair'
         assign yf_mohair = true
+        assign yf_any_wool = true
       endif
-      assign yf_is_wool = false
       if yf_p contains '羊毛' or yf_p contains '美利奴' or yf_p contains '羊驼' or yf_p contains 'ウール' or yf_p contains 'メリノ' or yf_p contains 'アルパカ' or yf_p contains 'wool' or yf_p contains 'merino' or yf_p contains 'alpaca'
         assign yf_is_wool = true
         assign yf_any_wool = true
@@ -59,8 +72,9 @@
       endif
     endfor
     if yf_mohair
-      echo 'fiber:mohair '
-    elsif yf_all_wool
+      assign yf_all_wool = false
+    endif
+    if yf_all_wool
       echo 'fiber:wool '
     elsif yf_any_wool
       echo 'fiber:wool_blend '
@@ -71,20 +85,21 @@
     endif
   endif
 
+  assign yf_solid = false
+  assign yf_multi = false
   for yf_v in product.metafields.yarn.color_type.value
-    case yf_v
-      when '纯色'
-        echo 'color:solid '
-      when '段染'
-        echo 'color:variegated '
-      when '渐变'
-        echo 'color:gradient '
-      when '混色'
-        echo 'color:heather '
-      when '彩虹色'
-        echo 'color:rainbow '
-    endcase
+    if yf_v == '纯色'
+      assign yf_solid = true
+    elsif yf_v == '段染' or yf_v == '渐变' or yf_v == '混色' or yf_v == '彩虹色' or yf_v == '段染渐变'
+      assign yf_multi = true
+    endif
   endfor
+  if yf_solid
+    echo 'color:solid '
+  endif
+  if yf_multi
+    echo 'color:variegated '
+  endif
 
   for yf_v in product.metafields.yarn.works.value
     case yf_v
@@ -105,6 +120,12 @@
 
   if product.metafields.yarn.beginner_reason.value != blank
     echo 'beginner:yes '
+  endif
+  if product.metafields.yarn.fluffy.value == true
+    echo 'feature:fluffy '
+  endif
+  if product.metafields.yarn.crochet.value == true
+    echo 'feature:crochet '
   endif
 
   if yf_w > 0

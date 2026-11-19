@@ -6,7 +6,8 @@
   #149 搜索结果按「毛线 / 材料包 / 手工成品」分组（2026-10-16 用户决定，取代「有成品 / 可买材料 / 仅灵感」与包袋等分类）。
   毛线 = 毛线集合（默认 yarn）的商品，卡片与首页 / 目录同一张 yarn-pick-card；材料包 = 通过 yarn-kit-visible 的 yarn_project；
   手工成品 = 成品集合（默认 finished-goods）。成品集合为空时标签显示「准备中」并禁用。
-  「毛线分类」block 把关键词连到毛线目录的同一筛选（filter.p.m.<字段>=<Metaobject GID>），只在关键词正好对应分类名称或别名时显示。
+  「毛线分类」block 把关键词连到毛线目录的同一筛选（导航同一套 ycb_* 参数，分类定稿 2026-11-19），只在关键词正好对应分类名称或别名时显示；
+  名称取 Theme locales 里导航的同一个名字，款数与默认小图用 yarn-facets 对毛线集合（前 50 件）算出，一件都没有的不显示。
 {%- endcomment -%}
 {%- liquid
   assign yarn_collection = collections[section.settings.yarn_collection]
@@ -22,45 +23,39 @@
     {%- for block in section.blocks -%}
       {%- if block.type != 'category' -%}{%- continue -%}{%- endif -%}
       {%- liquid
-        assign category_entry = metaobjects.yarn_entry[block.settings.entry]
-        if category_entry == blank
-          continue
+        assign category_filter = block.settings.filter | split: ':'
+        assign category_group = category_filter[0]
+        assign category_value = category_filter[1]
+        assign category_token = ' ' | append: block.settings.filter | append: ' '
+        if category_group == 'beginner'
+          assign category_query = 'ycb_beginner=1'
+          assign category_key = 'yarn_collection.beginner'
+        else
+          assign category_query = 'ycb_' | append: category_group | append: '=' | append: category_value
+          assign category_key = 'yarn_collection.facet_' | append: category_group | append: '_' | append: category_value
         endif
-        assign category_id = category_entry.system.id
-        assign category_parts = block.settings.field | split: '.'
+        assign category_name = category_key | t
         assign category_count = 0
         assign category_image = block.settings.image
         for category_product in yarn_collection.products limit: 50
-          assign category_field = category_product.metafields[category_parts[0]][category_parts[1]]
-          if category_field == blank
-            continue
-          endif
-          assign category_found = false
-          if category_field.type contains 'list'
-            for category_ref in category_field.value
-              if category_ref.system.id == category_id
-                assign category_found = true
-              endif
-            endfor
-          elsif category_field.value.system.id == category_id
-            assign category_found = true
-          endif
-          if category_found
+          capture category_tokens
+            render 'yarn-facets', product: category_product
+          endcapture
+          if category_tokens contains category_token
             assign category_count = category_count | plus: 1
             if category_image == blank
-              assign category_image = category_product.featured_image
+              assign category_image = category_product.metafields.yarn.card_image.value | default: category_product.featured_image
             endif
           endif
         endfor
         if category_count == 0
           continue
         endif
-        assign category_gid = 'gid://shopify/Metaobject/' | append: category_id
       -%}
       <li>
-        <a class="yd-search__chip" href="{{ yarn_collection.url }}?filter.p.m.{{ block.settings.field }}={{ category_gid | url_encode }}" data-search-category data-category-name="{{ category_entry.name.value | escape }}" data-category-aliases="{{ block.settings.aliases | escape }}" {{ block.shopify_attributes }}>
+        <a class="yd-search__chip" href="{{ yarn_collection.url }}?{{ category_query }}" data-search-category data-category-name="{{ category_name | escape }}" data-category-aliases="{{ block.settings.aliases | escape }}" {{ block.shopify_attributes }}>
           <span class="yd-search__chip-photo">{%- if category_image != blank -%}{{ category_image | image_url: width: 120 | image_tag: widths: '80, 120', sizes: '40px', loading: 'lazy', alt: '' }}{%- endif -%}</span>
-          <span class="yd-search__chip-name">{{ category_entry.name.value | escape }}</span>
+          <span class="yd-search__chip-name">{{ category_name | escape }}</span>
           <span class="yd-search__chip-count">{{ category_count }}</span>
         </a>
       </li>
@@ -220,8 +215,7 @@
       "name": "毛线分类",
       "limit": 8,
       "settings": [
-        { "type": "select", "id": "field", "label": "商品字段", "options": [ { "value": "yarn.texture", "label": "质感 yarn.texture" }, { "value": "yarn.use", "label": "用途 yarn.use" } ], "default": "yarn.texture" },
-        { "type": "text", "id": "entry", "label": "毛线入口 handle（Metaobject「毛线入口」yarn_entry）", "info": "与首页「挑毛线」同一个 handle；名称三语在 Translate & Adapt 编辑" },
+        { "type": "select", "id": "filter", "label": "筛选（与导航、首页吊牌同一套）", "options": [ { "value": "beginner:yes", "label": "新手推荐" }, { "value": "color:variegated", "label": "花色 · 段染渐变" }, { "value": "feature:fluffy", "label": "特点 · 毛茸茸" }, { "value": "thick:fine", "label": "粗细 · 轻柔细线" }, { "value": "feature:crochet", "label": "特点 · 钩针用线" }, { "value": "grams:big", "label": "克重 · 大团（≥150g）" }, { "value": "thick:medium", "label": "粗细 · 粗细适中" }, { "value": "thick:chunky", "label": "粗细 · 蓬蓬粗线" }, { "value": "color:solid", "label": "花色 · 纯色" }, { "value": "fiber:wool", "label": "材质 · 羊毛" }, { "value": "fiber:wool_blend", "label": "材质 · 羊毛混纺" }, { "value": "fiber:cotton", "label": "材质 · 棉" }, { "value": "fiber:synthetic", "label": "材质 · 合成纤维" } ], "default": "color:variegated", "info": "名称用导航里的同一个名字，三语在 Theme locales" },
         { "type": "text", "id": "aliases", "label": "搜索别名", "info": "用逗号分隔，三语都可以写，例如：段染,渐变,グラデーション,gradient。关键词对上名称或别名时，毛线结果旁显示「××分类 →」。" },
         { "type": "image_picker", "id": "image", "label": "胶囊小图", "info": "留空时用集合里第一件属于该分类的商品主图" }
       ]

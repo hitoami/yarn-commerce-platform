@@ -26,7 +26,7 @@
   }
 
   // Navigation filters: one value per group. "beginner" is the 新手友好 chip (token beginner:yes, URL ycb_beginner=1).
-  const FACET_GROUPS = ['thick', 'color', 'fiber', 'works', 'grams'];
+  const FACET_GROUPS = ['thick', 'color', 'fiber', 'works', 'grams', 'feature'];
   const THICK_ROWS = ['chunky', 'medium', 'fine'];
   const STATE_KEYS = ['ycb_view', 'ycb_beginner', 'ycb_here', ...FACET_GROUPS.map((group) => `ycb_${group}`)];
   function readFacets(params) {

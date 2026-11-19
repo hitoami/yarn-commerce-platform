@@ -216,23 +216,59 @@
           "settings": {
             "filter": "beginner:yes",
             "title": "はじめての毛糸",
-            "title_zh": "新手毛线",
-            "title_en": "Beginner yarn",
+            "title_zh": "新手推荐",
+            "title_en": "Beginner picks",
             "hint": "編み目が見やすく、割れにくい",
             "hint_zh": "粗细适中、不分股，针脚看得清",
             "hint_en": "Easy to see stitches, won't split"
           }
         },
-        "tag-chunky": {
+        "tag-gradient": {
           "type": "tag",
           "settings": {
-            "filter": "thick:chunky",
-            "title": "極太毛糸",
-            "title_zh": "粗毛线",
-            "title_en": "Chunky yarn",
-            "hint": "太い針でサクサク編める",
-            "hint_zh": "粗针大针脚，很快就织好",
-            "hint_en": "Big needles, quick to finish"
+            "filter": "color:variegated",
+            "title": "グラデーション・段染め",
+            "title_zh": "渐变段染",
+            "title_en": "Gradient & variegated",
+            "hint": "糸を替えずに模様が出る",
+            "hint_zh": "不换线，自己就织出花纹",
+            "hint_en": "Patterns without changing yarn"
+          }
+        },
+        "tag-fluffy": {
+          "type": "tag",
+          "settings": {
+            "filter": "feature:fluffy",
+            "title": "ふわふわ毛糸",
+            "title_zh": "毛茸茸",
+            "title_en": "Fluffy yarn",
+            "hint": "もこもこ、ふんわりした手ざわり",
+            "hint_zh": "绒绒的，摸起来软乎乎",
+            "hint_en": "Soft, fuzzy and cosy"
+          }
+        },
+        "tag-fine": {
+          "type": "tag",
+          "settings": {
+            "filter": "thick:fine",
+            "title": "やわらか細糸",
+            "title_zh": "轻柔细线",
+            "title_en": "Light & fine",
+            "hint": "軽くて繊細な作品に",
+            "hint_zh": "织轻薄的春夏衣物和精致小物",
+            "hint_en": "For light, delicate pieces"
+          }
+        },
+        "tag-crochet": {
+          "type": "tag",
+          "settings": {
+            "filter": "feature:crochet",
+            "title": "かぎ針編み用",
+            "title_zh": "钩针用线",
+            "title_en": "For crochet",
+            "hint": "あみぐるみやバッグに",
+            "hint_zh": "钩玩偶、钩包包都合适",
+            "hint_en": "Amigurumi, bags and more"
           }
         },
         "tag-big": {
@@ -246,51 +282,15 @@
             "hint_zh": "一团织完围巾、披肩，不用接线",
             "hint_en": "One ball, no joins"
           }
-        },
-        "tag-gradient": {
-          "type": "tag",
-          "settings": {
-            "filter": "color:gradient",
-            "title": "グラデーション・段染め",
-            "title_zh": "渐变段染",
-            "title_en": "Gradient & variegated",
-            "hint": "糸を替えずに模様が出る",
-            "hint_zh": "不换线，自己就织出花纹",
-            "hint_en": "Patterns without changing yarn"
-          }
-        },
-        "tag-fluffy": {
-          "type": "tag",
-          "settings": {
-            "filter": "fiber:mohair",
-            "title": "ふわふわ毛糸",
-            "title_zh": "毛茸茸",
-            "title_en": "Fluffy yarn",
-            "hint": "モヘアでふんわり",
-            "hint_zh": "马海毛，软乎乎",
-            "hint_en": "Soft, airy mohair"
-          }
-        },
-        "tag-doll": {
-          "type": "tag",
-          "settings": {
-            "filter": "works:doll",
-            "title": "あみぐるみ用",
-            "title_zh": "钩针娃娃",
-            "title_en": "For amigurumi",
-            "hint": "発色がよく形がきれい",
-            "hint_zh": "颜色鲜、好成型的玩偶用线",
-            "hint_en": "Bright colours that hold their shape"
-          }
         }
       },
       "block_order": [
         "tag-beginner",
-        "tag-chunky",
-        "tag-big",
         "tag-gradient",
         "tag-fluffy",
-        "tag-doll"
+        "tag-fine",
+        "tag-crochet",
+        "tag-big"
       ],
       "settings": {
         "collection": "yarn",

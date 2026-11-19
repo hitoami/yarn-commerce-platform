@@ -1,6 +1,6 @@
 {%- comment -%}Desktop navigation. Menu labels and URLs come from Shopify Navigation; a top-level link to the collection with handle `sale` is highlighted.
-  #355：指向毛线目录的那一项展开「粗细 / 花色 / 材质」三组，后面插入「织什么」；三组的顺序在这里，各组选项在 yarn-nav-facet-links，文案在 Theme locales。{%- endcomment -%}
-{%- assign yarn_nav_groups = 'thick,color,fiber' | split: ',' -%}
+  #355：指向毛线目录的那一项展开「粗细 / 花色 / 材质 / 推荐」四组，后面插入「织什么」；四组的顺序在这里，各组选项在 yarn-nav-facet-links，文案在 Theme locales。{%- endcomment -%}
+{%- assign yarn_nav_groups = 'thick,color,fiber,picks' | split: ',' -%}
 <nav class="header__inline-menu" aria-label="{{ 'sections.header.menu' | t }}">
   <svg class="yarn-nav-strand-defs" width="0" height="0" aria-hidden="true" focusable="false">
     <pattern id="YarnNavPly" width="3.2" height="3.2" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
