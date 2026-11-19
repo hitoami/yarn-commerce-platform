@@ -2,8 +2,8 @@
   #355 导航下拉里一组筛选链接（桌面浮层与手机抽屉共用）：每项链到毛线目录并带 ycb_<组>=<值>；
   facets 是页头对毛线目录全部商品算出的 yarn-facets 标记，没有商品的项不输出，所以不会点到空结果。
   各组的选项与顺序只在这里定义（分类定稿 2026-11-19）；文案键 yarn_collection.facet_<组>_<值>。
-  picks（推荐）是首页吊牌那一层的捷径：新手推荐（ycb_beginner=1）、毛茸茸、钩针用线（ycb_feature）、大团毛线（ycb_grams=big）。
-  渐变段染、轻柔细线已在花色 / 粗细里，不重复。
+  「想织什么」第一项是「新手推荐」（#365，ycb_beginner=1），和作品项之间一条细线；没有填新手理由的毛线就不输出。
+  2026-11-19 锦晨决定不做第三层快捷入口，导航只有粗细 / 花色 / 材质三栏和「想织什么」。
   用法：{%- render 'yarn-nav-facet-links', group: 'thick', facets: nav_facets, base_url: url, link_class: '…', id_prefix: '…' -%}
 {%- endcomment -%}
 {%- liquid
@@ -15,9 +15,7 @@
     when 'fiber'
       assign nfl_values = 'fiber:wool,fiber:wool_blend,fiber:cotton,fiber:synthetic'
     when 'works'
-      assign nfl_values = 'works:sweater,works:hat,works:scarf,works:blanket,works:bag,works:doll'
-    when 'picks'
-      assign nfl_values = 'beginner:yes,feature:fluffy,feature:crochet,grams:big'
+      assign nfl_values = 'beginner:yes,works:sweater,works:hat,works:scarf,works:blanket,works:bag,works:doll'
   endcase
   assign nfl_values = nfl_values | split: ','
 -%}
@@ -33,9 +31,8 @@
   {%- else -%}
     {%- assign nfl_query = 'ycb_' | append: nfl_group | append: '=' | append: nfl_value -%}
     {%- assign nfl_key = 'yarn_collection.facet_' | append: nfl_group | append: '_' | append: nfl_value -%}
-    {%- if nfl_pair == 'grams:big' -%}{%- assign nfl_key = 'yarn_collection.nav_big' -%}{%- endif -%}
   {%- endif -%}
-  <li>
+  <li{% if nfl_group == 'beginner' %} class="yarn-nav-beginner"{% endif %}>
     <a id="{{ id_prefix }}-{{ nfl_group }}-{{ nfl_value }}" href="{{ base_url }}?{{ nfl_query }}" class="{{ link_class }}">{%- render 'yarn-facet-icon', group: nfl_group, value: nfl_value, uid: id_prefix -%}<span>{{ nfl_key | t }}</span></a>
   </li>
 {%- endfor -%}

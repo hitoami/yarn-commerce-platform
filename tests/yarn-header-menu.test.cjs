@@ -99,7 +99,7 @@ test('one language switch serves header and drawer, opening the same page in eac
   assert.match(headerCss, /\.yarn-lang__option\[aria-current='true'\]/);
 });
 
-test('header computes the yarn facets once; yarn opens four filter groups and 织什么 follows it (#355)', () => {
+test('header computes the yarn facets once; yarn opens three filter groups and 织什么 follows it (#355)', () => {
   assert.equal((header.match(/render 'yarn-facets'/g) || []).length, 1);
   assert.match(header, /for nav_product in section\.settings\.drawer_yarn_collection\.products/);
   assert.match(header, /render 'yarn-header-drawer', navigation_menu: navigation_menu, nav_facets: nav_facets/);
@@ -107,7 +107,7 @@ test('header computes the yarn facets once; yarn opens four filter groups and �
   assert.match(desktop, /link\.object\.handle == section\.settings\.drawer_yarn_collection\.handle and nav_facets != blank/);
   assert.match(desktop, /<header-menu>\s*<details[^>]*class="mega-menu yarn-mega"/);
   for (const source of [desktop, drawer]) {
-    assert.match(source, /assign yarn_nav_groups = 'thick,color,fiber,picks' \| split: ','/);
+    assert.match(source, /assign yarn_nav_groups = 'thick,color,fiber' \| split: ','/);
     assert.match(source, /render 'yarn-nav-facet-links', group: nav_group/);
     assert.match(source, /render 'yarn-nav-facet-links', group: 'works'/);
     assert.match(source, /'yarn_collection\.nav_works' \| t/);
@@ -118,7 +118,8 @@ test('header computes the yarn facets once; yarn opens four filter groups and �
   assert.match(links, /assign nfl_query = 'ycb_' \| append: nfl_group \| append: '=' \| append: nfl_value/);
   // 分类定稿（2026-11-19）：花色只分纯色 / 段染渐变，马海毛并进羊毛混纺。
   for (const [group, values] of Object.entries({ thick: 'fine,medium,chunky', color: 'solid,variegated', fiber: 'wool,wool_blend,cotton,synthetic', works: 'sweater,hat,scarf,blanket,bag,doll' })) {
-    assert.ok(links.includes(`when '${group}'\n      assign nfl_values = '${values.split(',').map((v) => `${group}:${v}`).join(',')}'`), group);
+    const listed = (group === 'works' ? 'beginner:yes,' : '') + values.split(',').map((v) => `${group}:${v}`).join(',');
+    assert.ok(links.includes(`when '${group}'\n      assign nfl_values = '${listed}'`), group);
     for (const locale of ['ja', 'zh-CN', 'en.default']) {
       const copy = JSON.parse(fs.readFileSync(`locales/${locale}.json`, 'utf8').replace(/^\/\*[\s\S]*?\*\//, '')).yarn_collection;
       assert.ok(copy[`facet_group_${group}`], `${locale} group ${group}`);
@@ -137,26 +138,20 @@ test('header computes the yarn facets once; yarn opens four filter groups and �
   assert.match(headerCss, /\.yarn-drawer-facets \.menu-drawer__menu-item \{ min-height: var\(--yarn-touch\); \}/);
 });
 
-test('推荐 column: 新手推荐 / 毛茸茸 / 钩针用线 / 大团毛线, each only when such yarns exist (分类定稿 2026-11-19)', () => {
+test('织什么 opens with 新手推荐 (#365); no third-layer 推荐 column (2026-11-19)', () => {
   const facets = fs.readFileSync('snippets/yarn-facets.liquid', 'utf8');
   assert.match(facets, /if product\.metafields\.yarn\.beginner_reason\.value != blank\s*echo 'beginner:yes '/);
-  assert.match(facets, /if product\.metafields\.yarn\.fluffy\.value == true\s*echo 'feature:fluffy '/);
-  assert.match(facets, /if product\.metafields\.yarn\.crochet\.value == true\s*echo 'feature:crochet '/);
   const links = fs.readFileSync('snippets/yarn-nav-facet-links.liquid', 'utf8');
-  assert.ok(links.includes("when 'picks'\n      assign nfl_values = 'beginner:yes,feature:fluffy,feature:crochet,grams:big'"));
-  assert.ok(!links.includes("group == 'works' and facets contains"), '新手不再放在「想织什么」里');
+  assert.ok(links.includes("when 'works'\n      assign nfl_values = 'beginner:yes,works:"), '新手推荐是想织什么第一项');
+  assert.ok(!links.includes("when 'picks'"), '不做推荐栏');
   assert.match(links, /assign nfl_query = 'ycb_beginner=1'/);
-  assert.match(links, /assign nfl_key = 'yarn_collection\.beginner'/);
-  const expected = { ja: ['はじめての毛糸', 'おすすめ'], 'zh-CN': ['新手推荐', '推荐'], 'en.default': ['Beginner picks', 'Picks'] };
-  for (const [locale, [name, group]] of Object.entries(expected)) {
+  assert.match(links, /<li\{% if nfl_group == 'beginner' %\} class="yarn-nav-beginner"/);
+  for (const [locale, name] of Object.entries({ ja: 'はじめての毛糸', 'zh-CN': '新手推荐', 'en.default': 'Beginner picks' })) {
     const copy = JSON.parse(fs.readFileSync(`locales/${locale}.json`, 'utf8').replace(/^\/\*[\s\S]*?\*\//, '')).yarn_collection;
     assert.equal(copy.beginner, name, locale);
-    assert.equal(copy.facet_group_picks, group, locale);
-    for (const key of ['facet_group_feature', 'facet_feature_fluffy', 'facet_feature_crochet']) assert.ok(copy[key], `${locale} ${key}`);
   }
-  const icon = fs.readFileSync('snippets/yarn-facet-icon.liquid', 'utf8');
-  assert.match(icon, /elsif group == 'beginner'/);
-  assert.match(icon, /elsif group == 'feature'/);
+  assert.match(fs.readFileSync('snippets/yarn-facet-icon.liquid', 'utf8'), /elsif group == 'beginner'/);
+  assert.match(headerCss, /\.yarn-nav-beginner \{[^}]*border-bottom: 1px solid var\(--yarn-border-subtle\);/);
   // 新手筛选打开时卡片改成 flex，不能盖掉筛选写上的 hidden。
   const browseCss = fs.readFileSync('assets/yarn-collection-browse.css', 'utf8');
   assert.doesNotMatch(browseCss, /\[data-ycb-beginner-on\] \.ycb-grid__item \{ display:/);

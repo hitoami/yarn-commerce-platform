@@ -17,25 +17,11 @@
             "aliases": "段染,渐变,段染め,グラデーション,gradient,variegated"
           }
         },
-        "category-fluffy": {
-          "type": "category",
-          "settings": {
-            "filter": "feature:fluffy",
-            "aliases": "毛绒,毛茸茸,蓬松,ふわふわ,もこもこ,fluffy"
-          }
-        },
         "category-fine": {
           "type": "category",
           "settings": {
             "filter": "thick:fine",
             "aliases": "细线,极细,細い,細糸,極細,fine"
-          }
-        },
-        "category-crochet": {
-          "type": "category",
-          "settings": {
-            "filter": "feature:crochet",
-            "aliases": "钩针,钩织,かぎ針,crochet"
           }
         },
         "category-big": {
@@ -56,9 +42,7 @@
       "block_order": [
         "category-beginner",
         "category-gradient",
-        "category-fluffy",
         "category-fine",
-        "category-crochet",
         "category-big",
         "category-solid"
       ],

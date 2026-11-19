@@ -25,7 +25,6 @@ test('every filter option is one the yarn catalog understands', () => {
   const facets = read('snippets/yarn-facets.liquid');
   const navLinks = read('snippets/yarn-nav-facet-links.liquid');
   for (const option of options) {
-    assert.ok(navLinks.includes(option), `${option} is a nav option`);
     assert.ok(facets.includes(`${option.split(':')[0]}:`), `${option} is a yarn-facets token`);
   }
   // 链接与导航同一套参数。
