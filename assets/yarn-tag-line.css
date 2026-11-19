@@ -1,6 +1,6 @@
 /* Home "what kind of yarn" clothesline (2026-11-18): tags clipped to one yarn line with wooden pins; the sprite cat walks the line. */
-.section-yarn-tag-line { background: var(--yarn-bg-band); }
-.yarn-tagline { padding: 40px 0 48px; background: var(--yarn-bg-band); color: var(--yarn-text-primary); }
+.section-yarn-tag-line { background: var(--yarn-bg-page); } /* 紧接首屏波浪（同为 bg-page），衔接自然；下一个区块按首页交替规则铺 bg-band。 */
+.yarn-tagline { padding: 40px 0 48px; background: var(--yarn-bg-page); color: var(--yarn-text-primary); }
 .yarn-tagline__inner { width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter))); margin: 0 auto; }
 .yarn-tagline__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--yarn-space-3) var(--yarn-space-5); margin-bottom: var(--yarn-space-2); }
 .yarn-tagline__heading { margin: 0; color: var(--yarn-text-heading); font: 500 var(--yarn-fs-24)/1.35 var(--yarn-display); letter-spacing: 0; }
