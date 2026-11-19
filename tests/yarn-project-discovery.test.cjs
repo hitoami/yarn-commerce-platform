@@ -37,9 +37,22 @@ test('homepage follows the #131 IA: yarn first, then season feature, yarn sets a
   // 滚动进度小猫（#151）是底边固定的装饰层，不占版面顺序，放在最后。
   const live = index.order.filter(id => !index.sections[id].disabled);
   // 品牌与常见问题合并（锦晨 2026-11-14 选定原型方向 B「店员猫答疑」）：常见问题紧接品牌介绍，LINE 入口移到常见问题底部；整块放在页脚前。
-  // 锦晨 2026-11-18：「想找什么样的毛线？」改为晾衣绳吊牌（tag-line），质感圆图（yarn-entries）停用而不删除。
-  assert.deepEqual(live, ['hero', 'tag-line', 'catalog', 'season', 'project-picks', 'picks-finished', 'story', 'faq', 'scroll-cat']);
-  for (const retired of ['guide', 'guide-strip', 'beginner-kits', 'line-support', 'sale-picks', 'filter-switch', 'yarn-hero', 'yarn-entries']) assert.equal(index.sections[retired].disabled, true, retired);
+  // 首页重排（锦晨 2026-11-19，样稿 v6 极简商品卡）：首屏 → 限时折扣 → 本店精选 → 本季主推 → 新手推荐 → 编织包 → 手工成品 → 顾客评论 → 品牌故事与常见问题。
+  // 不放分类入口（晾衣绳吊牌删除、质感圆图停用）；各模块都显示，没有商品时显示一行说明。
+  assert.deepEqual(live, ['hero', 'sale-picks', 'picks-featured', 'season', 'picks-beginner', 'project-picks', 'picks-finished', 'reviews', 'story', 'faq', 'scroll-cat']);
+  for (const retired of ['guide', 'guide-strip', 'beginner-kits', 'line-support', 'filter-switch', 'yarn-hero', 'yarn-entries']) assert.equal(index.sections[retired].disabled, true, retired);
+  for (const id of ['sale-picks', 'picks-featured', 'picks-beginner']) {
+    assert.equal(index.sections[id].type, 'yarn-picks', id);
+    assert.equal(index.sections[id].settings.show_empty, true, id);
+    assert.equal(index.sections[id].settings.clean_title, true, id);
+  }
+  assert.equal(index.sections['sale-picks'].settings.mode, 'sale');
+  assert.equal(index.sections['sale-picks'].settings.layout, 'rail');
+  assert.equal(index.sections['picks-featured'].settings.mode, 'tag');
+  assert.equal(index.sections['picks-featured'].settings.tag, '本店推荐');
+  assert.equal(index.sections['picks-beginner'].settings.mode, 'beginner');
+  assert.equal(index.sections.reviews.type, 'yarn-home-reviews');
+  assert.equal(index.sections['tag-line'], undefined);
   assert.equal(index.sections.hero.type, 'hitoami-hero');
   assert.equal(index.sections.story.type, 'hitoami-story');
   assert.equal(index.sections.season.type, 'yarn-season-feature');
@@ -62,7 +75,17 @@ test('homepage follows the #131 IA: yarn first, then season feature, yarn sets a
   // #140（用户 2026-10-16）：集合为空时只有开启占位才显示「准备中」占位卡，占位里不得出现商品资料。
   assert.match(picks, /\{%- if picks_count == 0 and section\.settings\.placeholder_count > 0 -%\}/);
   assert.match(picks, /\{%- elsif picks_count == 0 -%\}/);
-  const placeholder = picks.slice(picks.indexOf('placeholder_count > 0 -%}'), picks.indexOf('{%- elsif picks_count == 0 -%}'));
+  const placeholder = picks.slice(picks.indexOf('placeholder_count > 0 -%}'), picks.indexOf('{%- elsif picks_count == 0 and section.settings.show_empty -%}'));
+  // 没有商品时的说明行也不得出现商品资料。
+  const empty = picks.slice(picks.indexOf('{%- elsif picks_count == 0 and section.settings.show_empty -%}'), picks.indexOf('{%- elsif picks_count == 0 -%}'));
+  assert.doesNotMatch(empty, /price|card_product|yarn-pick-card|inventory/);
+  // 新手推荐只取填了理由的商品；本店精选只取带标签的商品。
+  assert.match(picks, /picks_mode == 'beginner' and pick_product\.metafields\.yarn\.beginner_reason\.value != blank/);
+  assert.match(picks, /pick_product\.tags contains picks_tag/);
+  // 顾客评论只放真实评价：没有评论应用区块时只显示「还没有评价」。
+  const reviews = fs.readFileSync('sections/yarn-home-reviews.liquid', 'utf8');
+  assert.match(reviews, /"blocks": \[ \{ "type": "@app" \} \]/);
+  assert.doesNotMatch(reviews.split('{% schema %}')[0], /★|rating|4\.9/);
   assert.doesNotMatch(placeholder, /price|card_product|yarn-pick-card|inventory/);
   assert.match(pickCard, /metafields\.yarn\.beginner_reason/);
   assert.match(pickCard, /\{%- if card_reason != blank -%\}/);

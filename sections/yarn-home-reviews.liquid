@@ -1,0 +1,57 @@
+{{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
+{% comment %}
+  首页「顾客评论」（首页重排 2026-11-19，锦晨定：放在手工成品后、品牌故事前，一直显示）。
+  只放真实评价：评论应用（计划用 Judge.me）装好后，把它的评论轮播 / 评论列表作为应用区块加进本区块；
+  没有应用区块时显示「还没有评价」和一个写评价的入口，不放示意或编造的评价（仓库规则：不虚构评价）。
+  三语文案经 yarn-setting-text 取：纯键名为日文默认，_zh / _en 为中英设置。
+{% endcomment %}
+{%- capture rv_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'heading' -%}{%- endcapture -%}
+{%- capture rv_note -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'note', allow_blank: true -%}{%- endcapture -%}
+{%- capture rv_empty -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'empty_text' -%}{%- endcapture -%}
+{%- capture rv_cta -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'cta' -%}{%- endcapture -%}
+<section class="yx-picks yx-reviews yarn-shell-block color-{{ section.settings.color_scheme }}" aria-labelledby="Reviews-{{ section.id }}">
+  <div class="yx-picks__inner page-width">
+    <div class="yx-picks__head">
+      <div class="yx-picks__titles">
+        <h2 id="Reviews-{{ section.id }}">{{ rv_heading | escape }}</h2>
+        {%- if rv_note != blank -%}<p class="yx-picks__note">{{ rv_note | escape }}</p>{%- endif -%}
+      </div>
+    </div>
+    {%- if section.blocks.size > 0 -%}
+      <div class="yx-reviews__app">
+        {%- for block in section.blocks -%}{% render block %}{%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="yx-reviews__empty">
+        <p>{{ rv_empty | escape }}</p>
+        {%- if rv_cta != blank and section.settings.cta_link != blank -%}
+          <a class="yx-reviews__cta" href="{{ section.settings.cta_link }}">{{ rv_cta | escape }}</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "顾客评论",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "日文 · 标题", "default": "お客さまの声" },
+    { "type": "text", "id": "heading_zh", "label": "中文 · 标题", "default": "买过的人怎么说" },
+    { "type": "text", "id": "heading_en", "label": "英文 · 标题", "default": "What customers say" },
+    { "type": "text", "id": "note", "label": "日文 · 辅助说明(可空)" },
+    { "type": "text", "id": "note_zh", "label": "中文 · 辅助说明(可空)" },
+    { "type": "text", "id": "note_en", "label": "英文 · 辅助说明(可空)" },
+    { "type": "text", "id": "empty_text", "label": "日文 · 还没有评价时", "default": "まだレビューがありません。最初のひと言をお待ちしています。" },
+    { "type": "text", "id": "empty_text_zh", "label": "中文 · 还没有评价时", "default": "还没有评价，欢迎写下第一条。" },
+    { "type": "text", "id": "empty_text_en", "label": "英文 · 还没有评价时", "default": "No reviews yet. Be the first to write one." },
+    { "type": "text", "id": "cta", "label": "日文 · 写评价按钮", "default": "レビューを書く" },
+    { "type": "text", "id": "cta_zh", "label": "中文 · 写评价按钮", "default": "写评价" },
+    { "type": "text", "id": "cta_en", "label": "英文 · 写评价按钮", "default": "Write a review" },
+    { "type": "url", "id": "cta_link", "label": "写评价链接", "info": "评论应用装好前，可以先指向联系页面；装好后改成应用的评价页" },
+    { "type": "select", "id": "color_scheme", "label": "配色", "options": [ { "value": "scheme-1", "label": "默认" } ], "default": "scheme-1" }
+  ],
+  "blocks": [ { "type": "@app" } ],
+  "presets": [ { "name": "顾客评论" } ]
+}
+{% endschema %}
