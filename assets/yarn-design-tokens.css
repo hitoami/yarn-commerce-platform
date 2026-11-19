@@ -32,7 +32,7 @@ html { font-synthesis-weight: none; }
   .yx-picks__head h2, .yx-picks--guided .yx-picks__number, .yarn-cart-addons__title,
   .ycb-head__title, .ycb-empty h2, .ycb-drawer__head h2,
   .collection-hero__title, .yx-collection-preparing__title, .yp-library--rows .yp-card__title, .yarn-favorites-dialog h2,
-  .yarn-entries__heading, .yarn-entries__name, .yarn-fswitch__head h2, .yarn-fswitch__name,
+  .yarn-entries__heading, .yarn-entries__name, .yarn-tagline__heading, .yarn-tagline__name, .yarn-fswitch__head h2, .yarn-fswitch__name,
   .yarn-footer .footer-block__heading, .yarn-guide__heading, .yarn-guide__title, .yarn-guide__starter-title,
   .header--project .yarn-project-nav-title,
   .yarn-hero--connected .yarn-hero__heading, .yarn-home-catalog h2, .yarn-home-guide h2,
@@ -117,6 +117,11 @@ h5, .h5 { font-size: var(--yarn-fs-14); }
   --yarn-decor-yarn-mist: #8fb2c4; /* mist-400 · #355 导航花色小图标：彩虹色线团里的一道雾蓝；不得用于文字 */
   --yarn-decor-yarn-blush: #e8b9b0; /* blush-300 · #355 导航花色小图标：混色、彩虹色线团里的樱粉；不得用于文字 */
   --yarn-decor-halo: rgba(248, 229, 169, 0.45); /* butter-200 @ 0.45 · 插画节点光晕 */
+  --yarn-decor-pin-light: #e8cba6; /* wood-200 · 首页晾衣绳吊牌：木夹亮面；不得用于文字 */
+  --yarn-decor-pin: #c99c70; /* wood-400 · 首页晾衣绳吊牌：木夹暗面与木纹；不得用于文字 */
+  --yarn-decor-pin-edge: #9c6f4b; /* wood-600 · 首页晾衣绳吊牌：木夹描边；不得用于文字 */
+  --yarn-decor-pin-spring: #d3cfc7; /* sand-300 · 首页晾衣绳吊牌：木夹钢弹簧；不得用于文字 */
+  --yarn-decor-pin-coil: #8c8880; /* sand-600 · 首页晾衣绳吊牌：弹簧圈线；不得用于文字 */
   --yarn-overlay: rgba(47, 48, 47, 0.32); /* charcoal-900 @ 0.32 · 抽屉与弹窗遮罩、浮层阴影 */
   --yarn-shadow-soft: rgba(103, 81, 68, 0.14); /* umber-700 @ 0.14 · 卡片与浮层的柔和阴影 */
   --yarn-scrollbar-thumb: #b8b1a4; /* sand-400 · 滚动条滑块 */

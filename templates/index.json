@@ -206,6 +206,96 @@
         "heading_zh": "想找什么样的毛线？",
         "heading": "どんな毛糸をお探しですか？",
         "heading_en": "What kind of yarn are you looking for?"
+      },
+      "disabled": true
+    },
+    "tag-line": {
+      "type": "yarn-tag-line",
+      "blocks": {
+        "tag-beginner": {
+          "type": "tag",
+          "settings": {
+            "filter": "beginner:yes",
+            "title": "はじめての毛糸",
+            "title_zh": "新手毛线",
+            "title_en": "Beginner yarn",
+            "hint": "編み目が見やすく、割れにくい",
+            "hint_zh": "粗细适中、不分股，针脚看得清",
+            "hint_en": "Easy to see stitches, won't split"
+          }
+        },
+        "tag-chunky": {
+          "type": "tag",
+          "settings": {
+            "filter": "thick:chunky",
+            "title": "極太毛糸",
+            "title_zh": "粗毛线",
+            "title_en": "Chunky yarn",
+            "hint": "太い針でサクサク編める",
+            "hint_zh": "粗针大针脚，很快就织好",
+            "hint_en": "Big needles, quick to finish"
+          }
+        },
+        "tag-big": {
+          "type": "tag",
+          "settings": {
+            "filter": "grams:big",
+            "title": "大玉毛糸",
+            "title_zh": "大团毛线",
+            "title_en": "Big balls",
+            "hint": "1玉でマフラーまで、つなぎなし",
+            "hint_zh": "一团织完围巾、披肩，不用接线",
+            "hint_en": "One ball, no joins"
+          }
+        },
+        "tag-gradient": {
+          "type": "tag",
+          "settings": {
+            "filter": "color:gradient",
+            "title": "グラデーション・段染め",
+            "title_zh": "渐变段染",
+            "title_en": "Gradient & variegated",
+            "hint": "糸を替えずに模様が出る",
+            "hint_zh": "不换线，自己就织出花纹",
+            "hint_en": "Patterns without changing yarn"
+          }
+        },
+        "tag-fluffy": {
+          "type": "tag",
+          "settings": {
+            "filter": "fiber:mohair",
+            "title": "ふわふわ毛糸",
+            "title_zh": "毛茸茸",
+            "title_en": "Fluffy yarn",
+            "hint": "モヘアでふんわり",
+            "hint_zh": "马海毛，软乎乎",
+            "hint_en": "Soft, airy mohair"
+          }
+        },
+        "tag-doll": {
+          "type": "tag",
+          "settings": {
+            "filter": "works:doll",
+            "title": "あみぐるみ用",
+            "title_zh": "钩针娃娃",
+            "title_en": "For amigurumi",
+            "hint": "発色がよく形がきれい",
+            "hint_zh": "颜色鲜、好成型的玩偶用线",
+            "hint_en": "Bright colours that hold their shape"
+          }
+        }
+      },
+      "block_order": [
+        "tag-beginner",
+        "tag-chunky",
+        "tag-big",
+        "tag-gradient",
+        "tag-fluffy",
+        "tag-doll"
+      ],
+      "settings": {
+        "collection": "yarn",
+        "style": "photo"
       }
     },
     "sale-picks": {
@@ -571,6 +661,7 @@
   },
   "order": [
     "hero",
+    "tag-line",
     "yarn-entries",
     "catalog",
     "season",
