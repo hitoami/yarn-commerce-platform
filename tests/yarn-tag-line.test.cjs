@@ -28,10 +28,12 @@ test('every filter option is one the yarn catalog understands', () => {
     assert.ok(navLinks.includes(option), `${option} is a nav option`);
     assert.ok(facets.includes(`${option.split(':')[0]}:`), `${option} is a yarn-facets token`);
   }
-  // 链接与导航同一套参数；没有商品的吊牌不渲染。
+  // 链接与导航同一套参数。
   assert.match(section, /assign tl_query = 'ycb_beginner=1'/);
   assert.match(section, /assign tl_query = 'ycb_' \| append: tl_group/);
-  assert.match(section, /if tl_count == 0\s+continue/);
+  // 锦晨 2026-11-19：还没有商品的吊牌也显示，带「准备中」。
+  assert.doesNotMatch(section, /if tl_count == 0\s+continue/);
+  assert.match(section, /if tl_count == 0 -%\}<span class="yarn-tagline__soon">\{\{ 'sections\.header\.coming_soon' \| t \}\}/);
   // 默认照片不走 all_products（每页限 20 个查询，首页别的区块也在用）。
   assert.doesNotMatch(section.replace(/#[^\n]*/g, ''), /all_products\[/);
   assert.match(section, /tl_collection\.products\[tl_first_index\]/);

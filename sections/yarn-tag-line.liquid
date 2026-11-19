@@ -3,7 +3,7 @@
   一根毛线横穿整个区块，每个 block 是一张用木夹夹在线上的吊牌：拍立得照片（或导航同款小图标）+ 名字 + 一句说明。
   吊牌是分类定稿（2026-11-19）的快捷入口：新手推荐、渐变段染、毛茸茸、轻柔细线、钩针用线、大团毛线，每个入口至少 8 款；
   每张链到毛线目录并带导航同一套筛选参数（ycb_beginner / ycb_thick / ycb_grams / ycb_color / ycb_fiber / ycb_works / ycb_feature），
-  是否有商品、默认照片都用 yarn-facets 对所选集合（前 60 件）算出；一件都没有的吊牌不渲染，不会点到空结果。
+  默认照片用 yarn-facets 对所选集合（前 60 件）算出；还没有商品的吊牌也显示（锦晨 2026-11-19：入口先做出来），带「准备中」小标签。
   小猫沿用导览条（#5fc32df）与滚动小猫的九帧精灵图 yarn-guide-cat.webp 和 Logo 线球：进入视野时从线头走到第一张，
   悬停或聚焦哪张就推着线球沿线走过去，停下后站、趴、睡；动效在 yarn-tag-line.js，减少动态时直接出现在目标处。
   三语文案走 yarn-setting-text：纯键名为日文默认，_zh / _en 为中英。
@@ -54,12 +54,10 @@
           endif
         endif
       endfor
-      if tl_count == 0
-        continue
-      endif
+      # 锦晨 2026-11-19：入口先全部做出来；还没有商品的吊牌照样显示，带「准备中」小标签，照片位换成导航同款小图标。
       assign tl_shown = tl_shown | plus: 1
       assign tl_image = block.settings.image
-      if tl_image == blank
+      if tl_image == blank and tl_count > 0
         assign tl_first_index = tl_first | plus: 0
         assign tl_first_product = tl_collection.products[tl_first_index]
         assign tl_image = tl_first_product.metafields.yarn.card_image.value | default: tl_first_product.featured_image
@@ -84,10 +82,13 @@
         <span class="yarn-tagline__card">
           {%- if section.settings.style == 'photo' and tl_image != blank -%}
             <span class="yarn-tagline__photo">{{ tl_image | image_url: width: 480 | image_tag: widths: '240, 360, 480', sizes: '(min-width: 990px) 170px, 110px', loading: 'lazy', alt: '' }}</span>
+          {%- elsif section.settings.style == 'photo' -%}
+            <span class="yarn-tagline__photo yarn-tagline__photo--icon">{%- render 'yarn-facet-icon', group: tl_icon_group, value: tl_icon_value, uid: block.id -%}</span>
           {%- else -%}
             <span class="yarn-tagline__icon">{%- render 'yarn-facet-icon', group: tl_icon_group, value: tl_icon_value, uid: block.id -%}</span>
           {%- endif -%}
           <span class="yarn-tagline__name">{{ tl_name | escape }}</span>
+          {%- if tl_count == 0 -%}<span class="yarn-tagline__soon">{{ 'sections.header.coming_soon' | t }}</span>{%- endif -%}
           {%- if tl_hint != blank and section.settings.style != 'photo' -%}<span class="yarn-tagline__hint">{{ tl_hint | escape }}</span>{%- endif -%}
         </span>
       </a>

@@ -53,6 +53,10 @@
 .yarn-tagline--photo .yarn-tagline__card { gap: var(--yarn-space-2); padding: 6px 6px 9px; border-radius: 3px; }
 .yarn-tagline__photo { display: block; width: 100%; aspect-ratio: 1; border-radius: 1px; background: var(--yarn-bg-sunken); overflow: hidden; }
 .yarn-tagline__photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* 还没有商品的吊牌：照片位放导航同款小图标，名字下方一枚「准备中」浅黄胶囊（同页头）。 */
+.yarn-tagline__photo--icon { display: grid; place-items: center; }
+.yarn-tagline__photo--icon .yfi { width: 46%; height: auto; }
+.yarn-tagline__soon { align-self: center; padding: 1px 8px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-butter); color: var(--yarn-text-primary); font-size: var(--yarn-fs-12); line-height: 1.4; }
 
 @media (min-width: 750px) {
   .yarn-tagline { padding: 72px 0 80px; }
