@@ -10,7 +10,6 @@
         "slide-yarn": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/a8da93f2614e1610a1632194ca1d008c.png",
             "scene": "yarn",
             "focus": 50,
             "tone": "dark",
