@@ -294,7 +294,10 @@
       ],
       "settings": {
         "collection": "yarn",
-        "style": "photo"
+        "style": "photo",
+        "subheading": "迷ったら「はじめての毛糸」から。",
+        "subheading_zh": "不知道从哪开始？先看「新手推荐」。",
+        "subheading_en": "Not sure? Start with beginner picks."
       }
     },
     "sale-picks": {

@@ -33,6 +33,7 @@
   {%- else -%}
     {%- assign nfl_query = 'ycb_' | append: nfl_group | append: '=' | append: nfl_value -%}
     {%- assign nfl_key = 'yarn_collection.facet_' | append: nfl_group | append: '_' | append: nfl_value -%}
+    {%- if nfl_pair == 'grams:big' -%}{%- assign nfl_key = 'yarn_collection.nav_big' -%}{%- endif -%}
   {%- endif -%}
   <li>
     <a id="{{ id_prefix }}-{{ nfl_group }}-{{ nfl_value }}" href="{{ base_url }}?{{ nfl_query }}" class="{{ link_class }}">{%- render 'yarn-facet-icon', group: nfl_group, value: nfl_value, uid: id_prefix -%}<span>{{ nfl_key | t }}</span></a>

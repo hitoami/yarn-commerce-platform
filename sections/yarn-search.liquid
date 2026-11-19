@@ -34,6 +34,9 @@
           assign category_query = 'ycb_' | append: category_group | append: '=' | append: category_value
           assign category_key = 'yarn_collection.facet_' | append: category_group | append: '_' | append: category_value
         endif
+        if block.settings.filter == 'grams:big'
+          assign category_key = 'yarn_collection.nav_big'
+        endif
         assign category_name = category_key | t
         assign category_count = 0
         assign category_image = block.settings.image
