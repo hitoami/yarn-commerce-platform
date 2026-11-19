@@ -31,7 +31,7 @@ Issue #39 已实现最小账号收藏服务代码（`services/favorites`），�
 | Capability | Source of truth | Notes |
 | --- | --- | --- |
 | Product, Variant, price | Shopify | 不在自有数据库中复制真值 |
-| Inventory | Shopify | 单品和 Kit Component 引用同一 Variant 库存；Kit 可售量由组件库存共同约束 |
+| Inventory | Shopify | 毛线、材料包、成品各按自己的 Variant 库存；材料包是独立库存，不从毛线库存扣减（2026-11-14 用户决定） |
 | Cart, Checkout | Shopify | 支付与结账路径不自建 |
 | Order, refund | Shopify | 自有系统可保存 Shopify ID 和派生状态 |
 | Project 公开内容 | Shopify Metaobjects / Metafields initially | 名称、难度、时间、教程和关联商品 |

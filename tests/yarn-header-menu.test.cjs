@@ -135,6 +135,29 @@ test('header computes the yarn facets once; yarn opens three filter groups and �
   assert.match(headerCss, /\.yarn-drawer-facets \.menu-drawer__menu-item \{ min-height: var\(--yarn-touch\); \}/);
 });
 
+test('织什么 opens with a 新手友好 entry (with a tag) that only shows when beginner yarns exist (#365)', () => {
+  const facets = fs.readFileSync('snippets/yarn-facets.liquid', 'utf8');
+  assert.match(facets, /if product\.metafields\.yarn\.beginner_reason\.value != blank\s*echo 'beginner:yes '/);
+  const links = fs.readFileSync('snippets/yarn-nav-facet-links.liquid', 'utf8');
+  const beginnerAt = links.indexOf("group == 'works' and facets contains ' beginner:yes '");
+  assert.ok(beginnerAt > -1 && beginnerAt < links.indexOf('for nfl_value in nfl_values'), 'beginner entry comes before the works options');
+  assert.match(links, /href="\{\{ base_url \}\}\?ycb_beginner=1"/);
+  assert.match(links, /'yarn_collection\.beginner' \| t/);
+  assert.match(links, /class="yarn-nav-beginner__tag">\{\{ 'yarn_collection\.nav_beginner_tag' \| t \}\}/);
+  const expected = { ja: ['初心者向け', 'おすすめ'], 'zh-CN': ['新手友好', '推荐'], 'en.default': ['Beginner-friendly', 'Pick'] };
+  for (const [locale, [name, tag]] of Object.entries(expected)) {
+    const copy = JSON.parse(fs.readFileSync(`locales/${locale}.json`, 'utf8').replace(/^\/\*[\s\S]*?\*\//, '')).yarn_collection;
+    assert.equal(copy.beginner, name, locale);
+    assert.equal(copy.nav_beginner_tag, tag, locale);
+  }
+  assert.match(fs.readFileSync('snippets/yarn-facet-icon.liquid', 'utf8'), /elsif group == 'beginner'/);
+  assert.match(headerCss, /\.yarn-nav-beginner__tag \{[^}]*background: var\(--yarn-tint-sage\);/);
+  // 新手筛选打开时卡片改成 flex，不能盖掉筛选写上的 hidden。
+  const browseCss = fs.readFileSync('assets/yarn-collection-browse.css', 'utf8');
+  assert.doesNotMatch(browseCss, /\[data-ycb-beginner-on\] \.ycb-grid__item \{ display:/);
+  assert.match(browseCss, /\[data-ycb-beginner-on\] \.ycb-grid__item:not\(\[hidden\]\) \{ display: flex;/);
+});
+
 test('desktop header docks with a drop-in and compact bar, honouring reduced motion (#131)', () => {
   assert.match(header, /this\.desktopQuery = window\.matchMedia\('\(min-width: 1340px\)'\)/);
   assert.match(header, /if \(this\.desktopQuery\.matches\) \{\s*this\.dock\(scrollTop\);/);

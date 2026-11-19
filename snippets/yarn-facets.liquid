@@ -6,6 +6,7 @@
     棉 ≥50% 或未写百分比的棉 → cotton；其余 → synthetic。
   - 花色、织什么：商品字段 yarn.color_type / yarn.works（后台中文选项，可多选），在这里换成英文标记。
   - 克重：yarn.ball_weight_g，≤50g small，51–149g mid，≥150g big（大容量）。
+  - 新手友好（#365）：填了 yarn.beginner_reason 的标 beginner:yes，页头「想织什么」据此决定是否显示「新手友好」入口。
   用法：{%- capture tokens -%}{%- render 'yarn-facets', product: p -%}{%- endcapture -%}
 {%- endcomment -%}
 {%- liquid
@@ -101,6 +102,10 @@
         echo 'works:doll '
     endcase
   endfor
+
+  if product.metafields.yarn.beginner_reason.value != blank
+    echo 'beginner:yes '
+  endif
 
   if yf_w > 0
     if yf_w <= 50

@@ -1069,6 +1069,7 @@
     "facet_grams_any": "指定なし",
     "facet_grams_small": "50g以下",
     "facet_grams_mid": "51〜149g",
-    "facet_grams_big": "大玉（150g以上）"
+    "facet_grams_big": "大玉（150g以上）",
+    "nav_beginner_tag": "おすすめ"
   }
 }
