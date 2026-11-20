@@ -24,63 +24,42 @@ module.exports = {
       { selector: '.yarn-home-catalog__grid .yx-product-card', minimum: 4, label: '首页真实毛线商品卡' },
     ] },
     { key: 'yarn-collection', path: '/collections/yarn', requiredContent: [
-      { selector: '.ycb-chip', minimum: 2, label: '全部 / 粗细胶囊' },
+      { selector: '.ycb-circle', minimum: 2, label: '想织什么圆图' },
       { selector: '.ycb-grid .yx-product-card', minimum: 4, label: '目录真实毛线商品卡' },
     ], flows: [
-      // #366：粗细胶囊就地筛列表并更新款数；数量随商品变化，只断言「有」和「被筛掉了一些」。
-      { key: 'thick', label: '粗细胶囊', steps: [
-        { waitFor: '[data-ycb-chip="thick:fine"]' },
-        { click: '[data-ycb-chip="thick:fine"]' },
-        { waitFor: '[data-ycb-chip="thick:fine"].ycb-chip--active' },
+      // 2026-11-20 分类页：展开「再按 … 筛选」，同一行可多选，选中的显示为可清除标签。
+      { key: 'refine', label: '细筛', steps: [
+        { click: '[data-ycb-refine-toggle]' },
+        { waitFor: '.ycb-refine.is-open [data-ycb-opt="thick:fine"]' },
+        { click: '[data-ycb-opt="thick:fine"]' },
+        { waitFor: '[data-ycb-opt="thick:fine"][aria-pressed="true"]' },
         { expect: '.ycb-active__chip', minimum: 1, label: '可清除的粗细标签' },
         { expect: '.ycb-grid .yx-product-card', minimum: 1, label: '选「轻柔细线」后仍有商品' },
         { expect: '[data-ycb-grid] > li[hidden]', present: true, minimum: 1, label: '其他粗细的商品被筛掉' },
         { noOverflow: true },
         { shot: true },
       ] },
-      // #284：新手友好胶囊只列有新手理由的毛线，卡片下出现理由。
-      { key: 'beginner', label: '新手友好', steps: [
-        { waitFor: '[data-ycb-chip="beginner:yes"]' },
-        { click: '[data-ycb-chip="beginner:yes"]' },
-        { waitFor: '[data-ycb-chip="beginner:yes"].ycb-chip--active' },
-        { expect: '.ycb-grid .yx-product-card', minimum: 1, label: '新手友好的毛线' },
-        { expect: '.ycb-reason', minimum: 1, label: '卡片下的新手理由' },
-        { expect: '[data-ycb-grid] > li[hidden]', present: true, minimum: 1, label: '其他毛线被筛掉' },
-        { noOverflow: true },
-        { shot: true },
-      ] },
-      { key: 'map', label: '手感地图', steps: [
-        { click: '[data-ycb-view="map"]' },
-        { waitFor: '.ycb-ball' },
-        { expect: '.ycb-map__row', minimum: 3, label: '三档粗细（与胶囊一致）' },
-        { expect: '.ycb-ball', minimum: 10, label: '地图上的线球' },
-        { click: '.ycb-ball' },
-        { waitFor: '.ycb-pop__go' },
-        { noOverflow: true },
-        { shot: true },
-      ] },
     ] },
-    // #355：导航下拉的每一项都是「毛线目录 + ycb_<组>=<值>」；打开后有可清除的筛选标签，只显示符合的毛线。
-    { key: 'yarn-nav-filter', path: '/collections/yarn?ycb_works=hat', flows: [
-      { key: 'works-hat', label: '织什么 › 帽子', steps: [
-        { waitFor: '.ycb-active__chip' },
-        { expect: '.ycb-grid .yx-product-card', minimum: 1, label: '适合织帽子的毛线' },
+    // 导航 / 首页带入口进来：标题换成入口，圆图圈出当前分类，只显示符合的毛线。
+    { key: 'yarn-entry', path: '/collections/yarn?ycb_color=variegated', flows: [
+      { key: 'entry-variegated', label: '入口 · 段染渐变', steps: [
+        { waitFor: '[data-ycb-circle="color:variegated"].is-current' },
+        { expect: '.ycb-grid .yx-product-card', minimum: 1, label: '段染渐变的毛线' },
         { expect: '[data-ycb-grid] > li[hidden]', present: true, minimum: 1, label: '其他毛线被筛掉' },
         { noOverflow: true },
         { shot: true },
       ] },
     ] },
-    // #366：带导航筛选时「显示更多」只露出符合条件的商品；没有符合的商品时显示空状态、不挂「显示更多」。
-    { key: 'yarn-filter-more', path: '/collections/yarn?ycb_fiber=mohair', flows: [
-      { key: 'mohair-more', label: '马海毛 · 显示更多', steps: [
-        { waitFor: '.ycb-active__chip' },
-        { expect: '.ycb-grid .yx-product-card', minimum: 1, label: '马海毛毛线' },
-        { expect: '[data-ycb-grid] > li[hidden]', present: true, minimum: 1, label: '非马海毛被筛掉' },
-        { expect: '[data-ycb-next]', present: true, minimum: 0, maximum: 0, label: '不再有会加入未筛商品的翻页链接' },
+    // #284：新手推荐入口只列有新手理由的毛线，卡片下出现理由。
+    { key: 'yarn-beginner', path: '/collections/yarn?ycb_beginner=1', flows: [
+      { key: 'beginner', label: '新手推荐', steps: [
+        { waitFor: '.ycb-reason' },
+        { expect: '.ycb-grid .yx-product-card', minimum: 1, label: '新手推荐的毛线' },
+        { expect: '[data-ycb-grid] > li[hidden]', present: true, minimum: 1, label: '其他毛线被筛掉' },
         { shot: true },
       ] },
     ] },
-    { key: 'yarn-filter-empty', path: '/collections/yarn?ycb_fiber=mohair&ycb_grams=big&ycb_thick=fine', flows: [
+    { key: 'yarn-filter-empty', path: '/collections/yarn?ycb_works=bag&ycb_thick=fine', flows: [
       { key: 'empty', label: '组合筛选无结果', steps: [
         { waitFor: '[data-ycb-none]:not([hidden])' },
         { expect: '.ycb-more__button', minimum: 0, maximum: 0, label: '空结果不挂「显示更多」' },
@@ -134,7 +113,7 @@ module.exports = {
     '.product__title', '.product__description', '.product__text', '.rte', '.price', '.yp-kitstory',
     '.product-form__input legend', '.product-form__input label', '.product-form__input option',
     '.cart-item__name', '.cart-item__details', '.cart-notification-product',
-    '.ycb-head__title', '.ycb-head__intro', '.ycb-chip__name',
+    '.ycb-head__title', '.ycb-head__intro', '.ycb-circle__name',
     '.header__menu-item', '.menu-drawer__menu-item', '.list-menu__item', '.footer-block__details-content',
     '.predictive-search', '.yx-project-pick__title', '.yx-project-pick__yarn', '.yx-season-page__toc', '.yx-season-page__name', '.yx-season-page__facts', '.yx-season-page__note', '.yarn-favorite', '[data-proof-content]',
   ],
