@@ -162,3 +162,23 @@
   .ycb-drawer { inset: 0 0 0 auto; width: min(420px, 100%); max-height: none; height: 100%; border-radius: var(--yarn-radius-panel) 0 0 var(--yarn-radius-panel); }
   .ycb-drawer form { max-height: none; height: 100%; }
 }
+
+/* 电脑上细筛更紧凑（锦晨 2026-11-20「特别占地方」）：按钮 36px、去掉虚线；宽屏（≥1200px）再两组并排：
+   粗细|花色、材质|克重 各占半行，织什么后面跟新手。手机仍是一组一行、44px 触控高度。 */
+@media (min-width: 990px) {
+  .ycb-refine.is-open .ycb-rows { padding-block: 6px var(--yarn-space-4); }
+  .ycb-row { grid-template-columns: 4.5em minmax(0, 1fr); gap: var(--yarn-space-2); padding-block: 4px; border-top: 0; }
+  .ycb-row__options { gap: 6px; }
+  .ycb-opt { gap: 6px; min-height: 36px; padding: 0 12px 0 8px; }
+  .ycb-opt .yfi { width: 22px; height: 18px; }
+}
+@media (min-width: 1200px) {
+  .ycb-refine.is-open .ycb-rows { display: flex; flex-wrap: wrap; column-gap: var(--yarn-space-5); row-gap: 4px; }
+  .ycb-row { flex: 0 0 calc(50% - var(--yarn-space-5) / 2); }
+  .ycb-row[data-ycb-row="thick"] { order: 1; }
+  .ycb-row[data-ycb-row="color"] { order: 2; }
+  .ycb-row[data-ycb-row="fiber"] { order: 3; }
+  .ycb-row[data-ycb-row="grams"] { order: 4; }
+  .ycb-row[data-ycb-row="works"] { order: 5; flex-basis: auto; }
+  .ycb-row[data-ycb-row="beginner"] { order: 6; flex-basis: auto; }
+}
