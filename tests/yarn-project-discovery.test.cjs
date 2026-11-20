@@ -48,7 +48,7 @@ test('homepage follows the #131 IA: yarn first, then season feature, yarn sets a
   }
   assert.equal(index.sections['sale-picks'].settings.collection, 'sale');
   assert.equal(index.sections['sale-picks'].settings.mode, 'sale');
-  assert.equal(index.sections['sale-picks'].settings.layout, 'rail');
+  assert.equal(index.sections['sale-picks'].settings.layout, 'grid');
   assert.equal(index.sections['picks-featured'].settings.collection, 'home-featured');
   assert.equal(index.sections['picks-featured'].settings.all_collection, 'yarn');
   assert.equal(index.sections['picks-featured'].settings.mode, 'collection');
