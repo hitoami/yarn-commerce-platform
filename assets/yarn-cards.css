@@ -33,6 +33,7 @@
 }
 .yx-product-card__title, .yx-catalog-card .card__heading a { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .yx-product-card__spec { display: block; font-size: var(--yarn-fs-14); line-height: 1.45; color: var(--yarn-text-muted); }
+.yx-product-card__line { display: -webkit-box; margin-top: 6px; overflow: hidden; color: var(--yarn-text-primary); font-size: var(--yarn-fs-13); line-height: 1.6; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .yx-product-card__price, .yx-catalog-card .price {
   color: var(--yarn-accent); font-size: var(--yarn-fs-20); font-weight: 500; line-height: 1.3; letter-spacing: 0;
 }

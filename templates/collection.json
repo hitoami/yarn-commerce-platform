@@ -38,16 +38,171 @@
             "label_zh": "¥1500以上",
             "label_en": "¥1,500 and up"
           }
+        },
+        "entry-beginner-yes": {
+          "type": "entry",
+          "settings": {
+            "filter": "beginner:yes",
+            "title": "はじめての毛糸",
+            "title_zh": "新手推荐",
+            "title_en": "Beginner picks",
+            "lead": "太めで割れにくく、編み目が見やすい糸を集めました。はじめての一本に。",
+            "lead_zh": "线粗、不分股、针目看得清，第一次织也好上手。",
+            "lead_en": "Thick, smooth yarns with stitches that are easy to see — good for a first project."
+          }
+        },
+        "entry-color-variegated": {
+          "type": "entry",
+          "settings": {
+            "filter": "color:variegated",
+            "title": "段染め・グラデーション",
+            "title_zh": "段染渐变",
+            "title_en": "Gradient & variegated",
+            "lead": "1本の糸に何色も入っていて、編むだけで色が移り変わります。糸を替えなくても模様が出るので、マフラーやブランケット、バッグに。",
+            "lead_zh": "一根线里有好几种颜色，织着织着颜色自己变化。不用换线，简单的针法也能织出花纹和渐变，适合围巾、毯子和包包。",
+            "lead_en": "Several colours in one strand, so the colour changes as you knit. Patterns appear without changing yarn — great for scarves, blankets and bags."
+          }
+        },
+        "entry-color-solid": {
+          "type": "entry",
+          "settings": {
+            "filter": "color:solid",
+            "title": "単色",
+            "title_zh": "纯色",
+            "title_en": "Solid colours",
+            "lead": "すっきりした色で合わせやすい糸。模様編みや配色、作品のメインカラーに。",
+            "lead_zh": "颜色干净耐看，最容易搭配。想织花样、拼色，或者给作品配一个主色，都从纯色开始。",
+            "lead_en": "Clean, easy-to-match colours for stitch patterns, colourwork or a main colour."
+          }
+        },
+        "entry-thick-fine": {
+          "type": "entry",
+          "settings": {
+            "filter": "thick:fine",
+            "title": "やわらか細糸",
+            "title_zh": "轻柔细线",
+            "title_en": "Light & fine yarn",
+            "lead": "軽くてやわらか、編み目が細やか。春夏のウェアやショール、小さなモチーフやあみぐるみに。",
+            "lead_zh": "细一点的线，织出来轻薄柔软，针目细致。适合春夏衣物、披肩，和钩小花、小玩偶这类精致小物。",
+            "lead_en": "Light and soft with fine stitches — for spring and summer wear, shawls, small motifs and amigurumi."
+          }
+        },
+        "entry-thick-medium": {
+          "type": "entry",
+          "settings": {
+            "filter": "thick:medium",
+            "title": "ほどよい太さの毛糸",
+            "title_zh": "粗细适中",
+            "title_en": "Medium-weight yarn",
+            "lead": "いちばん使いやすい太さ。セーターや帽子、マフラーに。編み目が見やすく、はじめてでも編みやすい糸です。",
+            "lead_zh": "不粗不细，最常用的一档。毛衣、帽子、围巾都合适，针目看得清，第一次织也好上手。",
+            "lead_en": "The most versatile weight for sweaters, hats and scarves, with stitches that are easy to see."
+          }
+        },
+        "entry-thick-chunky": {
+          "type": "entry",
+          "settings": {
+            "filter": "thick:chunky",
+            "title": "ふっくら太糸",
+            "title_zh": "蓬蓬粗线",
+            "title_en": "Chunky yarn",
+            "lead": "太い糸と太い針で、さくさく編めて仕上がりはふっくら。週末だけで帽子やマフラーが編めます。",
+            "lead_zh": "粗线配粗针，织得快、作品厚实。一个周末就能织完一顶帽子或一条围巾。",
+            "lead_en": "Thick yarn on big needles knits up fast and cosy — a hat or scarf in a weekend."
+          }
+        },
+        "entry-works-scarf": {
+          "type": "entry",
+          "settings": {
+            "filter": "works:scarf",
+            "title": "マフラーを編む毛糸",
+            "title_zh": "织围巾的毛线",
+            "title_en": "Yarn for scarves",
+            "lead": "首にふれるので、やわらかくチクチクしない糸を。段染めやグラデーションなら、糸を替えずに模様が出ます。",
+            "lead_zh": "围巾贴着脖子，线要软、不扎。段染和渐变线不用换线就有花纹，第一次织围巾也能很好看。",
+            "lead_en": "Scarves sit against your neck, so choose soft, non-itchy yarn. Gradient yarns make patterns without changing colour."
+          }
+        },
+        "entry-works-hat": {
+          "type": "entry",
+          "settings": {
+            "filter": "works:hat",
+            "title": "帽子を編む毛糸",
+            "title_zh": "织帽子的毛线",
+            "title_en": "Yarn for hats",
+            "lead": "伸縮性があってあたたかい糸を。太めの糸なら早く編めて、1〜2玉で足ります。",
+            "lead_zh": "帽子要有弹性、保暖，粗一点的线织得快，一两团就够。",
+            "lead_en": "Choose warm yarn with some stretch. Chunkier yarn is quicker, and one or two balls is enough."
+          }
+        },
+        "entry-works-doll": {
+          "type": "entry",
+          "settings": {
+            "filter": "works:doll",
+            "title": "あみぐるみの毛糸",
+            "title_zh": "钩玩偶的毛线",
+            "title_en": "Yarn for amigurumi",
+            "lead": "形がきれいに出て、発色のよい糸を。コットン混やふわふわの糸がおすすめです。",
+            "lead_zh": "玩偶要好成型、颜色鲜，棉混纺和绒绒线都很合适。",
+            "lead_en": "Yarn that holds its shape in bright colours — cotton blends and fluffy yarns work well."
+          }
+        },
+        "entry-works-bag": {
+          "type": "entry",
+          "settings": {
+            "filter": "works:bag",
+            "title": "バッグを編む毛糸",
+            "title_zh": "织包包的毛线",
+            "title_en": "Yarn for bags",
+            "lead": "形がくずれにくく丈夫な糸を。中空コットンやバッグ用の糸なら、編み目がくっきり出ます。",
+            "lead_zh": "包包要挺括、耐用，空心棉线和包包线钩出来纹路清晰、不易变形。",
+            "lead_en": "Sturdy yarn that keeps its shape — hollow cotton and bag yarns give crisp stitches."
+          }
+        },
+        "entry-works-sweater": {
+          "type": "entry",
+          "settings": {
+            "filter": "works:sweater",
+            "title": "セーターを編む毛糸",
+            "title_zh": "织毛衣的毛线",
+            "title_en": "Yarn for sweaters",
+            "lead": "肌に直接ふれるので、やわらかく伸縮性のある糸を。ウールやウール混が定番です。",
+            "lead_zh": "毛衣要贴身穿，选柔软、不扎、有弹性的线，羊毛和羊毛混纺最常用。",
+            "lead_en": "Worn close to the skin, so pick soft, springy yarn — wool and wool blends are classic."
+          }
+        },
+        "entry-works-blanket": {
+          "type": "entry",
+          "settings": {
+            "filter": "works:blanket",
+            "title": "ブランケットを編む毛糸",
+            "title_zh": "织毯子的毛线",
+            "title_en": "Yarn for blankets",
+            "lead": "たくさん使うので、大玉なら糸継ぎが少なくて済みます。段染めなら色の変化も楽しめます。",
+            "lead_zh": "毯子用量大，大团的线不用频繁接线，段染线还能自己织出层次。",
+            "lead_en": "Blankets use a lot of yarn — big balls mean fewer joins, and variegated yarn adds depth."
+          }
         }
       },
       "block_order": [
+        "entry-beginner-yes",
+        "entry-color-variegated",
+        "entry-color-solid",
+        "entry-thick-fine",
+        "entry-thick-medium",
+        "entry-thick-chunky",
+        "entry-works-scarf",
+        "entry-works-hat",
+        "entry-works-doll",
+        "entry-works-bag",
+        "entry-works-sweater",
+        "entry-works-blanket",
         "chip-low",
         "chip-mid",
         "chip-high"
       ],
       "settings": {
         "category_filters": "filter.p.m.yarn.texture,filter.p.m.yarn.use",
-        "category_order": "gradient,fluffy,loop-fancy,fine-airy,basic-solid,amigurumi,bags-home,spring-summer-cotton",
         "products_per_page": 12,
         "handmade_collections": "finished-goods",
         "kits_url": "shopify://pages/kits"
