@@ -42,8 +42,8 @@
 /* 与上方品牌介绍连成一块：共用页面底色、去掉顶部留白，并且不参与首页区块交替色带的计数（见 yarn-home-mobile.css Issue 336）。 */
 body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:has(.hitoami-story) + .shopify-section:has(.yarn-home-guide--cat) { background: var(--yarn-bg-page); padding-top: 0; }
 /* 品牌介绍落在偶数位（淡陶土色带）时，常见问题跟着用色带，里面的浅色面板改白面。 */
-body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:nth-child(even of :not(:has(.hitoami-hero, yarn-scroll-cat, .yarn-home-guide--cat))):has(.hitoami-story) + .shopify-section:has(.yarn-home-guide--cat) { background: var(--yarn-bg-band); }
-body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:nth-child(even of :not(:has(.hitoami-hero, yarn-scroll-cat, .yarn-home-guide--cat))):has(.hitoami-story) + .shopify-section:has(.yarn-home-guide--cat) > * { --yarn-bg-band: var(--yarn-bg-surface); }
+body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:nth-child(even of :not(:has(.hitoami-hero, .yarn-home-guide--cat))):has(.hitoami-story) + .shopify-section:has(.yarn-home-guide--cat) { background: var(--yarn-bg-band); }
+body:has(.hitoami-hero--catalog) #MainContent > .shopify-section:nth-child(even of :not(:has(.hitoami-hero, .yarn-home-guide--cat))):has(.hitoami-story) + .shopify-section:has(.yarn-home-guide--cat) > * { --yarn-bg-band: var(--yarn-bg-surface); }
 
 @media (min-width: 750px) {
   .yarn-home-guide--cat .yarn-faq-chat__note { font-size: var(--yarn-fs-15); }
