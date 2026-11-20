@@ -61,8 +61,14 @@
     {%- render 'yarn-favorite-button', entity_type: 'product', entity_id: card_product.id, entity_title: card_product.title, modifier: 'yx-card-fav' -%}
   </div>
   <div class="yx-product-card__body">
-    {%- if card_reason != blank -%}
-      <span class="yx-product-card__meta-row">{%- render 'yarn-card-meta', meta_product: card_product -%}<span class="yx-product-card__badge">{{ 'yarn_project.card_badge_beginner' | t }}</span></span>
+    {%- comment -%}分类定稿（2026-11-19）：白胚线（yarn.undyed 为真）在卡片上带「白胚 · 可自己染」小标记，不做入口。{%- endcomment -%}
+    {%- assign card_undyed = false -%}
+    {%- if card_product.metafields.yarn.undyed.value == true -%}{%- assign card_undyed = true -%}{%- endif -%}
+    {%- if card_reason != blank or card_undyed -%}
+      <span class="yx-product-card__meta-row">{%- render 'yarn-card-meta', meta_product: card_product -%}
+        {%- if card_reason != blank -%}<span class="yx-product-card__badge">{{ 'yarn_project.card_badge_beginner' | t }}</span>{%- endif -%}
+        {%- if card_undyed -%}<span class="yx-product-card__badge yx-product-card__badge--undyed">{{ 'yarn_project.card_badge_undyed' | t }}</span>{%- endif -%}
+      </span>
     {%- else -%}
       {%- render 'yarn-card-meta', meta_product: card_product -%}
     {%- endif -%}

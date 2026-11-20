@@ -1,7 +1,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const { applyBand, activeBand, nextPageUrl } = require('../assets/yarn-collection-browse.js');
+const { applyBand, activeBand, readState, writeState, matches, countOptions, isFiltered } = require('../assets/yarn-collection-browse.js');
 
 const params = (value) => new URLSearchParams(value);
 const bands = ['filter.v.price.lte=499', 'filter.v.price.gte=500&filter.v.price.lte=1499', 'filter.v.price.gte=1500'];
@@ -24,12 +24,6 @@ test('the active band survives Shopify rewriting 500 as 500.0 and never matches 
   assert.equal(activeBand(params(''), bands), null);
 });
 
-test('show more only appends pages of the same collection and keeps the draft preview', () => {
-  const href = 'https://shop.example/zh/collections/yarn?preview_theme_id=42';
-  assert.equal(nextPageUrl('/zh/collections/yarn?page=2', href).searchParams.get('preview_theme_id'), '42');
-  for (const target of ['https://evil.example/zh/collections/yarn?page=2', '/zh/collections/other?page=2']) assert.throws(() => nextPageUrl(target, href));
-});
-
 test('the collection template uses the catalogue section with the approved category order and LINE help', () => {
   const template = JSON.parse(fs.readFileSync('templates/collection.json', 'utf8').replace(/^\s*\/\*[\s\S]*?\*\//, ''));
   assert.deepEqual(template.order.map((key) => template.sections[key].type), ['yarn-collection-browse', 'yarn-line-contact']);
@@ -38,76 +32,101 @@ test('the collection template uses the catalogue section with the approved categ
   assert.equal(browse.settings.handmade_collections, 'finished-goods');
 });
 
-test('catalogue section reuses the shared yarn card, hides empty categories and never invents placeholder products', () => {
+test('catalogue section reuses the shared yarn card and never invents placeholder products', () => {
   const liquid = fs.readFileSync('sections/yarn-collection-browse.liquid', 'utf8');
   assert.match(liquid, /render 'yarn-pick-card', card_product: product/);
-  assert.match(liquid, /value\.count == 0 and value\.active == false/);
   assert.match(liquid, /collection\.all_products_count == 0/);
   const placeholder = liquid.slice(liquid.indexOf('ycb-grid--placeholder'), liquid.indexOf('ycb-exits'));
   assert.doesNotMatch(placeholder, /product\.|price|money/);
   assert.doesNotMatch(liquid.split('{% schema %}')[0], /\| t: count:/, 'count triggers Shopify plural keys');
 });
 
-const { metresPer100g, weightBand, readState, writeState, matchesFacets } = require('../assets/yarn-collection-browse.js');
+const NONE = { thick: '', color: '', fiber: '', works: '', grams: '', feature: '' };
+const items = [
+  ' thick:fine fiber:wool_blend color:solid grams:small feature:fluffy ',
+  ' thick:fine fiber:wool works:hat beginner:yes grams:mid ',
+  ' thick:medium fiber:wool works:hat grams:big ',
+  ' thick:chunky fiber:synthetic grams:big beginner:yes ',
+  ' fiber:cotton ',
+];
 
-test('243: weight comes only from grams and metres in the localized spec line', () => {
-  assert.equal(metresPer100g('50g · 約75m'), 150);
-  assert.equal(metresPer100g('100g · 约160m'), 160);
-  assert.equal(metresPer100g('50g · Approx. 330m'), 660);
-  assert.equal(metresPer100g('50g｜约120m/团（±2m）'), 240);
-  assert.equal(metresPer100g('200g · 约458±20m'), 229);
-  assert.equal(metresPer100g('350g｜6股｜约1750米；500g｜6股｜约2500米'), 500);
-  for (const missing of ['50g', '50g（±2g）', '330～350g/筒', '规格见商品详情', '', undefined]) assert.equal(metresPer100g(missing), null);
-  assert.deepEqual([68, 100, 101, 200, 350, 351, 800, 1040, null].map(weightBand), [0, 0, 1, 1, 2, 3, 3, 4, null]);
-});
-
-test('243: view and weight survive category links; compare and "you are here" do not', () => {
-  const state = readState(new URLSearchParams('ycb_view=map&ycb_weight=3&ycb_cmp=fluffy,loop-fancy&ycb_here=mvp-yarn-01'));
-  const noFacets = { thick: '', color: '', fiber: '', works: '', grams: '' };
-  assert.deepEqual(state, { facets: noFacets, view: 'map', weight: 3, beginner: false, cmp: ['fluffy', 'loop-fancy'], here: 'mvp-yarn-01' });
-  const link = writeState(new URLSearchParams('filter.p.m.yarn.texture=gid%3A1'), state, { keepVisit: false });
-  assert.equal(link.toString(), 'filter.p.m.yarn.texture=gid%3A1&ycb_view=map&ycb_weight=3');
-  assert.equal(readState(new URLSearchParams('ycb_weight=9')).weight, null);
-  assert.equal(readState(new URLSearchParams('ycb_weight=0')).weight, 0);
-});
-
-test('284: the beginner filter is kept in the URL and survives category links like the weight filter', () => {
-  const state = readState(new URLSearchParams('ycb_beginner=1&ycb_weight=1'));
-  assert.equal(state.beginner, true);
-  assert.equal(readState(new URLSearchParams('ycb_beginner=yes')).beginner, false);
-  const link = writeState(new URLSearchParams('filter.p.m.yarn.texture=gid%3A1'), state, { keepVisit: false });
-  assert.equal(link.get('ycb_beginner'), '1');
-  assert.equal(link.get('ycb_weight'), '1');
-});
-
-test('284: beginner chip only renders when a yarn has a beginner reason; the header no longer links it (#355)', () => {
-  const section = fs.readFileSync('sections/yarn-collection-browse.liquid', 'utf8');
-  assert.match(section, /if cb_beginner_first != blank/);
-  assert.match(section, /data-ycb-beginner-item/);
-  // #355（用户 2026-11-14）：导航下拉不放「第一次织毛线」，新手友好只在毛线目录的胶囊里。
-  for (const file of ['sections/header.liquid', 'snippets/yarn-header-menu.liquid', 'snippets/yarn-header-drawer.liquid']) {
-    assert.doesNotMatch(fs.readFileSync(file, 'utf8'), /yarn-beginner-first|first_time|ycb_beginner/, file);
+test('366: one filter set — the old category chips, 5-band weight and 「全部分类」 are gone', () => {
+  const section = fs.readFileSync('sections/yarn-collection-browse.liquid', 'utf8').split('{% schema %}')[0];
+  for (const gone of ['data-ycb-cat=', 'data-ycb-weight', 'data-ycb-cats-open', 'all_categories', 'yarn-beginner-first']) assert.ok(!section.includes(gone), gone);
+  const map = fs.readFileSync('snippets/yarn-collection-map.liquid', 'utf8');
+  for (const gone of ['data-ycb-weight-sheet', 'data-ycb-cats-sheet', 'band_']) assert.ok(!map.includes(gone), gone);
+  // 顶部胶囊名字与导航一致（同一组文案键），抽屉选项与 yarn-nav-facet-links 同一组值。
+  assert.match(section, /data-ycb-chip="thick:\{\{ cb_value \}\}"/);
+  assert.match(section, /'yarn_collection\.facet_thick_' \| append: cb_value/);
+  const nav = fs.readFileSync('snippets/yarn-nav-facet-links.liquid', 'utf8');
+  // 分类定稿（2026-11-19）：花色只分纯色 / 段染渐变，马海毛并进羊毛混纺；毛茸茸、钩针用线是「特点」。
+  for (const [group, values] of Object.entries({ thick: 'fine,medium,chunky', color: 'solid,variegated', fiber: 'wool,wool_blend,cotton,synthetic', works: 'sweater,hat,scarf,blanket,bag,doll' })) {
+    assert.ok(nav.includes(values.split(',').map((v) => `${group}:${v}`).join(',')), group);
+    assert.ok(section.includes(`${group}:${values}`), group);
   }
+  assert.ok(section.includes('feature:fluffy,crochet'));
+  for (const gone of ['gradient', 'heather', 'rainbow', 'mohair']) assert.ok(!section.includes(`,${gone}`) && !nav.includes(`:${gone}`), gone);
+  // 「显示更多」不再请求未筛过的下一页。
+  assert.doesNotMatch(fs.readFileSync('assets/yarn-collection-browse.js', 'utf8'), /data-ycb-next\]'\)\?\.addEventListener|nextPageUrl/);
 });
 
-test('355: navigation filters ride the URL, survive category links and match whole facet tokens', () => {
+test('366: filters match whole tokens and combine across groups', () => {
   const state = readState(new URLSearchParams('ycb_fiber=wool&ycb_works=hat&ycb_color=<script>'));
-  assert.deepEqual(state.facets, { thick: '', color: '', fiber: 'wool', works: 'hat', grams: '' });
-  const link = writeState(new URLSearchParams('filter.p.m.yarn.texture=gid%3A1'), state, { keepVisit: false });
-  assert.equal(link.toString(), 'filter.p.m.yarn.texture=gid%3A1&ycb_fiber=wool&ycb_works=hat');
-  // 「羊毛」不能把「羊毛混纺」也筛进来；多组条件同时满足才显示。
-  assert.equal(matchesFacets(' fiber:wool_blend works:hat ', state.facets), false);
-  assert.equal(matchesFacets(' thick:fine fiber:wool works:sweater works:hat ', state.facets), true);
-  assert.equal(matchesFacets(' fiber:wool ', state.facets), false);
-  assert.equal(matchesFacets('', readState(new URLSearchParams('')).facets), true);
+  assert.deepEqual(state.facets, { ...NONE, fiber: 'wool', works: 'hat' });
+  assert.equal(matches(' fiber:wool_blend works:hat ', state), false, '「羊毛」不能把「羊毛混纺」也筛进来');
+  assert.equal(matches(' thick:fine fiber:wool works:sweater works:hat ', state), true);
+  assert.equal(matches(' fiber:wool ', state), false);
+  assert.equal(matches('', readState(new URLSearchParams(''))), true);
+  assert.equal(matches(' fiber:wool ', readState(new URLSearchParams('ycb_beginner=1'))), false);
+  assert.equal(isFiltered(readState(new URLSearchParams('ycb_view=map'))), false);
+  assert.equal(isFiltered(readState(new URLSearchParams('ycb_thick=fine'))), true);
+  // 首页「毛茸茸」「钩针用线」吊牌带 ycb_feature；一款毛线可以同时是两者。
+  const fluffy = readState(new URLSearchParams('ycb_feature=fluffy'));
+  assert.equal(matches(' feature:fluffy feature:crochet ', fluffy), true);
+  assert.equal(matches(' feature:crochet ', fluffy), false);
 });
 
-test('355: list cards carry yarn-facets tokens; ball weight / big balls live only in the filter drawer', () => {
+test('366: counts follow the other active filters (navigation and the collection page agree)', () => {
+  const none = countOptions(items, readState(new URLSearchParams('')));
+  assert.equal(none.all, 5);
+  assert.equal(none['thick:fine'], 2);
+  assert.equal(none['beginner:yes'], 2);
+  const wool = countOptions(items, readState(new URLSearchParams('ycb_fiber=wool')));
+  assert.equal(wool.all, 2);
+  assert.equal(wool['thick:fine'], 1, '粗细的款数只算羊毛');
+  assert.equal(wool['thick:chunky'] || 0, 0);
+  assert.equal(wool['fiber:wool_blend'], 1, '同组的其他选项不被本组条件压成 0');
+  const fine = countOptions(items, readState(new URLSearchParams('ycb_thick=fine')));
+  assert.equal(fine['thick:medium'], 1);
+  assert.equal(fine.all, 2);
+});
+
+test('366: state rides the URL; old weight / compare params are dropped and "you are here" stays out of links', () => {
+  const state = readState(new URLSearchParams('ycb_view=map&ycb_thick=fine&ycb_beginner=1&ycb_here=mvp-yarn-01'));
+  assert.deepEqual(state, { facets: { ...NONE, thick: 'fine' }, view: 'map', beginner: true, here: 'mvp-yarn-01' });
+  const link = writeState(new URLSearchParams('filter.v.availability=1&ycb_weight=3&ycb_cmp=a,b'), state, { keepVisit: false });
+  assert.equal(link.toString(), 'filter.v.availability=1&ycb_view=map&ycb_beginner=1&ycb_thick=fine');
+  assert.equal(writeState(new URLSearchParams(), state).get('ycb_here'), 'mvp-yarn-01');
+  assert.equal(readState(new URLSearchParams('ycb_beginner=yes')).beginner, false);
+});
+
+test('284: beginner chip only renders when a yarn has a beginner reason; the header links it from 想织什么 (#365)', () => {
+  const section = fs.readFileSync('sections/yarn-collection-browse.liquid', 'utf8');
+  assert.match(section, /cb_tokens contains ' beginner:yes '/);
+  assert.match(section, /data-ycb-chip="beginner:yes"/);
+});
+
+test('355: list cards carry yarn-facets tokens; ball weight / big balls live in the filter drawer', () => {
   const section = fs.readFileSync('sections/yarn-collection-browse.liquid', 'utf8');
   assert.match(section, /data-ycb-facets="\{%- render 'yarn-facets', product: product -%\}"/);
-  assert.match(section, /name="ycb_grams" value="\{\{ cb_grams_value \}\}" data-ycb-grams/);
+  assert.match(section, /name="ycb_\{\{ cb_group \}\}" value="\{\{ cb_value \}\}" data-ycb-facet-input/);
+  assert.match(section, /grams:small,mid,big/);
   assert.match(section, /data-ycb-facet="\{\{ cb_facet_pair\[0\] \}\}:\{\{ cb_facet_value \}\}"/);
   const facets = fs.readFileSync('snippets/yarn-facets.liquid', 'utf8');
-  for (const field of ['ball_length_m', 'ball_weight_g', 'composition', 'color_type', 'works']) assert.match(facets, new RegExp(`metafields\\.yarn\\.${field}`), field);
+  for (const field of ['thickness', 'ball_length_m', 'ball_weight_g', 'composition', 'color_type', 'works', 'fluffy', 'crochet']) assert.match(facets, new RegExp(`metafields\\.yarn\\.${field}`), field);
   for (const word of ['ウール', 'wool', 'モヘア', 'コットン', 'cotton', '綿']) assert.ok(facets.includes(word), word);
+});
+
+test('366: collection pages use the translated collection name in <title>', () => {
+  assert.match(fs.readFileSync('layout/theme.liquid', 'utf8'), /template\.name == 'collection' and collection\.title != blank/);
 });

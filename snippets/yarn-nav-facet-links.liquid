@@ -1,33 +1,38 @@
 {%- comment -%}
   #355 导航下拉里一组筛选链接（桌面浮层与手机抽屉共用）：每项链到毛线目录并带 ycb_<组>=<值>；
   facets 是页头对毛线目录全部商品算出的 yarn-facets 标记，没有商品的项不输出，所以不会点到空结果。
-  各组的选项与顺序只在这里定义（Issue #355 确认）；文案键 yarn_collection.facet_<组>_<值>。
-  #365「想织什么」第一项是「新手友好」（带「推荐」小标签），进毛线目录并打开新手筛选 ycb_beginner=1；没有填新手理由的毛线就不输出。
+  各组的选项与顺序只在这里定义（分类定稿 2026-11-19）；文案键 yarn_collection.facet_<组>_<值>。
+  「想织什么」第一项是「新手推荐」（#365，ycb_beginner=1），和作品项之间一条细线；没有填新手理由的毛线就不输出。
+  2026-11-19 锦晨决定不做第三层快捷入口，导航只有粗细 / 花色 / 材质三栏和「想织什么」。
   用法：{%- render 'yarn-nav-facet-links', group: 'thick', facets: nav_facets, base_url: url, link_class: '…', id_prefix: '…' -%}
 {%- endcomment -%}
 {%- liquid
   case group
     when 'thick'
-      assign nfl_values = 'fine,medium,chunky'
+      assign nfl_values = 'thick:fine,thick:medium,thick:chunky'
     when 'color'
-      assign nfl_values = 'solid,variegated,gradient,heather,rainbow'
+      assign nfl_values = 'color:solid,color:variegated'
     when 'fiber'
-      assign nfl_values = 'wool,wool_blend,mohair,synthetic,cotton'
+      assign nfl_values = 'fiber:wool,fiber:wool_blend,fiber:cotton,fiber:synthetic'
     when 'works'
-      assign nfl_values = 'sweater,hat,scarf,blanket,bag,doll'
+      assign nfl_values = 'beginner:yes,works:sweater,works:hat,works:scarf,works:blanket,works:bag,works:doll'
   endcase
   assign nfl_values = nfl_values | split: ','
 -%}
-{%- if group == 'works' and facets contains ' beginner:yes ' -%}
-  <li class="yarn-nav-beginner">
-    <a id="{{ id_prefix }}-beginner" href="{{ base_url }}?ycb_beginner=1" class="{{ link_class }}">{%- render 'yarn-facet-icon', group: 'beginner', value: 'yes', uid: id_prefix -%}<span>{{ 'yarn_collection.beginner' | t }}</span><span class="yarn-nav-beginner__tag">{{ 'yarn_collection.nav_beginner_tag' | t }}</span></a>
-  </li>
-{%- endif -%}
-{%- for nfl_value in nfl_values -%}
-  {%- assign nfl_token = ' ' | append: group | append: ':' | append: nfl_value | append: ' ' -%}
+{%- for nfl_pair in nfl_values -%}
+  {%- assign nfl_token = ' ' | append: nfl_pair | append: ' ' -%}
   {%- unless facets contains nfl_token -%}{%- continue -%}{%- endunless -%}
-  {%- assign nfl_key = 'yarn_collection.facet_' | append: group | append: '_' | append: nfl_value -%}
-  <li>
-    <a id="{{ id_prefix }}-{{ group }}-{{ nfl_value }}" href="{{ base_url }}?ycb_{{ group }}={{ nfl_value }}" class="{{ link_class }}">{%- render 'yarn-facet-icon', group: group, value: nfl_value, uid: id_prefix -%}<span>{{ nfl_key | t }}</span></a>
+  {%- assign nfl_parts = nfl_pair | split: ':' -%}
+  {%- assign nfl_group = nfl_parts[0] -%}
+  {%- assign nfl_value = nfl_parts[1] -%}
+  {%- if nfl_group == 'beginner' -%}
+    {%- assign nfl_query = 'ycb_beginner=1' -%}
+    {%- assign nfl_key = 'yarn_collection.beginner' -%}
+  {%- else -%}
+    {%- assign nfl_query = 'ycb_' | append: nfl_group | append: '=' | append: nfl_value -%}
+    {%- assign nfl_key = 'yarn_collection.facet_' | append: nfl_group | append: '_' | append: nfl_value -%}
+  {%- endif -%}
+  <li{% if nfl_group == 'beginner' %} class="yarn-nav-beginner"{% endif %}>
+    <a id="{{ id_prefix }}-{{ nfl_group }}-{{ nfl_value }}" href="{{ base_url }}?{{ nfl_query }}" class="{{ link_class }}">{%- render 'yarn-facet-icon', group: nfl_group, value: nfl_value, uid: id_prefix -%}<span>{{ nfl_key | t }}</span></a>
   </li>
 {%- endfor -%}

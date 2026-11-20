@@ -49,6 +49,8 @@
 .yx-product-card__meta-row { display: flex; align-items: center; gap: 8px; }
 .yx-product-card__meta-row .yx-card-meta { flex: 1; min-width: 0; }
 .yx-product-card__badge { flex: none; margin-left: auto; padding: 2px 9px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: var(--yarn-fs-12); font-weight: 500; line-height: 1.4; }
+.yx-product-card__badge + .yx-product-card__badge { margin-left: 0; }
+.yx-product-card__badge--undyed { background: var(--yarn-tint-butter); }
 .yx-product-card__reason { display: block; font-size: var(--yarn-fs-14); line-height: 1.45; color: var(--yarn-text-secondary); }
 .yx-project-picks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
 .yx-project-pick { display: flex; flex-direction: column; gap: 8px; color: var(--yarn-text-heading); text-decoration: none; }
@@ -316,8 +318,8 @@
   .yx-card-cart *, .yx-card-cart[data-state='error'], #cart-icon-bubble.is-bumping *, [data-favorites-header].is-bumping * { animation: none !important; }
 }
 @media (max-width: 749px) {
-  .yarn-favorite.yx-card-fav { top: 6px; right: 6px; width: 38px; height: 38px; }
-  .yarn-favorite.yx-card-fav::before { content: ''; position: absolute; inset: -3px; }
+  /* Issue 366：手机上收藏按钮仍保持 44px 可点区域（--yarn-touch），只把心形缩小一点。 */
+  .yarn-favorite.yx-card-fav { top: 6px; right: 6px; }
   .yarn-favorite.yx-card-fav svg { width: 19px; height: 19px; }
   .yx-card-cart { min-width: 40px; height: 40px; padding-inline: 9px; font-size: var(--yarn-fs-13); }
   .yx-card-cart::before { content: ''; position: absolute; inset: -2px; }

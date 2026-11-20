@@ -1,5 +1,7 @@
-/* #85 毛线目录：筛选抽屉、排序与「显示更多」。没有 JS 时，表单与链接按原生 GET 直接跳转。
-   #243 手感地图：粗细胶囊、全部分类面板与地图都在这里，对已载入的全部商品做；状态记在网址 ycb_* 参数上。 */
+/* #85 毛线目录：筛选抽屉、排序与「显示更多」。没有 JS 时，表单与链接按原生 GET 直接跳转，列表显示这一页的全部商品。
+   #366 只留一套筛选，与页头导航同源：每张卡带 yarn-facets 标记（" thick:fine fiber:wool works:hat "），
+   粗细、花色、材质、织什么、克重、新手友好都在这里按标记筛；胶囊与抽屉的款数、选中状态、计数和「显示更多」都按当前筛选算。
+   价格带与现货是 Search & Discovery，提交抽屉后刷新页面。#243 手感地图的三行与粗细胶囊同一套分档。状态记在网址 ycb_* 参数上。 */
 (() => {
   const PRICE_KEYS = ['filter.v.price.gte', 'filter.v.price.lte'];
 
@@ -23,35 +25,10 @@
     return bands.find(same) ?? null;
   }
 
-  // Only same-origin pages of this collection may be appended.
-  function nextPageUrl(href, currentHref) {
-    const url = new URL(href, currentHref);
-    const current = new URL(currentHref);
-    if (url.origin !== current.origin || url.pathname !== current.pathname) throw new Error('Invalid collection page URL');
-    const preview = current.searchParams.get('preview_theme_id');
-    if (preview) url.searchParams.set('preview_theme_id', preview);
-    return url;
-  }
-
-  // Grams per 100 g → metres, read from the localized spec line (50g · 約75m / 约75m / Approx. 75m / 约1750米).
-  function metresPer100g(spec) {
-    const grams = /(\d+)\s*g/i.exec(spec || '');
-    const metres = /(?:约|約|approx\.?)\s*([\d,]+)(?:\s*±\s*\d+)?\s*(?:m(?![a-z])|米)/i.exec(spec || '');
-    if (!grams || !metres || Number(grams[1]) <= 0) return null;
-    return Math.round((Number(metres[1].replace(/,/g, '')) * 100) / Number(grams[1]));
-  }
-
-  // Five weight bands, thickest first: ≤100m, ≤200m, ≤350m, ≤800m, >800m per 100 g.
-  const BAND_LIMITS = [100, 200, 350, 800];
-  function weightBand(per) {
-    if (per == null) return null;
-    const index = BAND_LIMITS.findIndex((limit) => per <= limit);
-    return index === -1 ? BAND_LIMITS.length : index;
-  }
-
-  // #355 navigation filters: one value per group, matched against the item's yarn-facets tokens (e.g. "fiber:wool").
-  const FACET_GROUPS = ['thick', 'color', 'fiber', 'works', 'grams'];
-  const STATE_KEYS = ['ycb_view', 'ycb_weight', 'ycb_beginner', 'ycb_cmp', 'ycb_here', ...FACET_GROUPS.map((group) => `ycb_${group}`)];
+  // Navigation filters: one value per group. "beginner" is the 新手友好 chip (token beginner:yes, URL ycb_beginner=1).
+  const FACET_GROUPS = ['thick', 'color', 'fiber', 'works', 'grams', 'feature'];
+  const THICK_ROWS = ['chunky', 'medium', 'fine'];
+  const STATE_KEYS = ['ycb_view', 'ycb_beginner', 'ycb_here', ...FACET_GROUPS.map((group) => `ycb_${group}`)];
   function readFacets(params) {
     return Object.fromEntries(FACET_GROUPS.map((group) => {
       const value = params.get(`ycb_${group}`) || '';
@@ -59,240 +36,323 @@
     }));
   }
   const facetsActive = (facets) => FACET_GROUPS.filter((group) => facets[group]);
-  // Tokens come from the yarn-facets snippet: " thick:fine fiber:wool works:hat ".
-  const matchesFacets = (tokens, facets) => facetsActive(facets).every((group) => ` ${tokens} `.includes(` ${group}:${facets[group]} `));
+  const hasToken = (tokens, token) => ` ${tokens} `.includes(` ${token} `);
   function readState(params) {
-    const weight = Number(params.get('ycb_weight'));
     return {
       facets: readFacets(params),
       view: params.get('ycb_view') === 'map' ? 'map' : 'list',
-      weight: params.get('ycb_weight') !== null && Number.isInteger(weight) && weight >= 0 && weight <= BAND_LIMITS.length ? weight : null,
       beginner: params.get('ycb_beginner') === '1',
-      cmp: (params.get('ycb_cmp') || '').split(',').filter(Boolean).slice(0, 3),
       here: params.get('ycb_here') || '',
     };
   }
-  // Category links keep the view and weight; compare and "you are here" belong to one visit only.
+  const isFiltered = (state) => state.beginner || facetsActive(state.facets).length > 0;
+
+  // Whether an item's tokens pass every active filter; `skip` leaves one group out so its options can be counted.
+  function matches(tokens, state, skip = null) {
+    if (skip !== 'beginner' && state.beginner && !hasToken(tokens, 'beginner:yes')) return false;
+    return facetsActive(state.facets).every((group) => group === skip || hasToken(tokens, `${group}:${state.facets[group]}`));
+  }
+
+  // How many items each option would show, given the other active filters (faceted counts).
+  function countOptions(tokenList, state) {
+    const counts = { all: 0, 'beginner:yes': 0 };
+    tokenList.forEach((tokens) => {
+      if (matches(tokens, state)) counts.all += 1;
+      if (matches(tokens, state, 'beginner') && hasToken(tokens, 'beginner:yes')) counts['beginner:yes'] += 1;
+      FACET_GROUPS.forEach((group) => {
+        if (!matches(tokens, state, group)) return;
+        ` ${tokens} `.split(' ').filter((token) => token.startsWith(`${group}:`)).forEach((token) => { counts[token] = (counts[token] || 0) + 1; });
+      });
+    });
+    return counts;
+  }
+
+  // "You are here" belongs to one visit only; links and form submits drop it.
   function writeState(params, state, { keepVisit = true } = {}) {
     const next = new URLSearchParams(params);
     STATE_KEYS.forEach((key) => next.delete(key));
+    ['ycb_weight', 'ycb_cmp'].forEach((key) => next.delete(key));
     if (state.view === 'map') next.set('ycb_view', 'map');
-    if (state.weight !== null) next.set('ycb_weight', String(state.weight));
     if (state.beginner) next.set('ycb_beginner', '1');
     FACET_GROUPS.forEach((group) => { if (state.facets?.[group]) next.set(`ycb_${group}`, state.facets[group]); });
-    if (keepVisit && state.cmp.length > 1) next.set('ycb_cmp', state.cmp.join(','));
     if (keepVisit && state.here) next.set('ycb_here', state.here);
     return next;
   }
 
-  if (typeof module !== 'undefined') module.exports = { applyBand, activeBand, nextPageUrl, metresPer100g, weightBand, readState, writeState, matchesFacets };
+  if (typeof module !== 'undefined') module.exports = { applyBand, activeBand, readState, writeState, matches, countOptions, isFiltered };
   if (typeof document === 'undefined') return;
+
+  const NO_FACETS = Object.fromEntries(FACET_GROUPS.map((group) => [group, '']));
+  const el = (tag, className, text) => Object.assign(document.createElement(tag), className ? { className } : {}, text != null ? { textContent: text } : {});
+  const fill = (template, values) => Object.entries(values).reduce((text, [key, value]) => text.replace(`__${key}__`, value), template || '');
 
   function connect(root) {
     root.querySelectorAll('[data-ycb]').forEach((section) => {
       if (section.dataset.connected) return;
       section.dataset.connected = 'true';
-      const drawer = section.querySelector('[data-ycb-drawer]');
-      const filterForm = section.querySelector('[data-ycb-filter-form]');
-      const current = new URLSearchParams(window.location.search);
-
-      section.querySelector('[data-ycb-open]')?.addEventListener('click', () => drawer?.showModal());
-      section.querySelector('[data-ycb-close]')?.addEventListener('click', () => drawer?.close());
-      drawer?.addEventListener('click', (event) => { if (event.target === drawer) drawer.close(); });
-
-      const gramsNow = readFacets(current).grams;
-      section.querySelectorAll('[data-ycb-grams]').forEach((input) => { input.checked = input.value === gramsNow; });
-
-      const bands = Array.from(section.querySelectorAll('[data-ycb-band]'));
-      const active = activeBand(current, bands.map((input) => input.value).filter(Boolean));
-      bands.forEach((input) => { input.checked = active ? input.value === active : !input.value; });
-
-      filterForm?.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const params = new URLSearchParams(new FormData(filterForm));
-        const band = filterForm.querySelector('[data-ycb-band]:checked')?.value || '';
-        const before = readState(new URLSearchParams(window.location.search));
-        const grams = readFacets(params).grams;
-        const next = writeState(applyBand(params, band), { ...before, facets: { ...before.facets, grams }, cmp: [], here: '' });
-        if (current.has('preview_theme_id')) next.set('preview_theme_id', current.get('preview_theme_id'));
-        window.location.assign(`${filterForm.getAttribute('action')}${next.size ? `?${next}` : ''}`);
-      });
-
-      const sort = section.querySelector('[data-ycb-sort]');
-      sort?.addEventListener('change', () => sort.form.requestSubmit());
-      sort?.form.addEventListener('submit', () => {
-        const state = readState(new URLSearchParams(window.location.search));
-        writeState(new URLSearchParams(), state, { keepVisit: false }).forEach((value, key) => {
-          const input = Object.assign(document.createElement('input'), { type: 'hidden', name: key, value });
-          sort.form.append(input);
-        });
-      });
-
-      const grid = section.querySelector('[data-ycb-grid]');
-      const status = section.querySelector('[data-ycb-status]');
-      section.querySelector('[data-ycb-more]')?.addEventListener('click', async (event) => {
-        const link = event.target.closest('[data-ycb-next]');
-        if (!link || !grid) return;
-        event.preventDefault();
-        link.setAttribute('aria-busy', 'true');
-        try {
-          const url = nextPageUrl(link.getAttribute('href'), window.location.href);
-          url.searchParams.set('section_id', section.dataset.sectionId);
-          const response = await fetch(url, { credentials: 'same-origin', headers: { Accept: 'text/html' } });
-          if (!response.ok) throw new Error('Collection page failed');
-          const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
-          const items = doc.querySelectorAll('[data-ycb-grid] > li');
-          if (!items.length) throw new Error('Collection page is empty');
-          const added = Array.from(items, (item) => document.importNode(item, true));
-          grid.append(...added);
-          const nextStatus = doc.querySelector('[data-ycb-status]');
-          if (status && nextStatus) status.textContent = nextStatus.textContent;
-          const nextLink = doc.querySelector('[data-ycb-next]');
-          if (nextLink) link.setAttribute('href', nextLink.getAttribute('href'));
-          else link.remove();
-          added[0].querySelector('a')?.focus({ preventScroll: true });
-        } catch (error) {
-          // Fall back to a normal page load so the shopper still reaches the next products.
-          window.location.assign(link.href);
-        } finally {
-          link.removeAttribute('aria-busy');
-        }
-      });
-
-      const map = section.querySelector('[data-ycb-map]');
-      if (map && grid) setupMap(section, map, grid);
+      setup(section);
     });
   }
 
-  const STRAND = [7, 5, 3.5, 2, 1];
-  const strandSvg = (band) => `<svg class="yarn-strand" width="34" height="14" viewBox="0 0 34 14" aria-hidden="true" focusable="false"><path d="M2 7 C 10 1, 24 13, 32 7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="${STRAND[band]}"/></svg>`;
-  const el = (tag, className, text) => Object.assign(document.createElement(tag), className ? { className } : {}, text != null ? { textContent: text } : {});
-
-  function setupMap(section, map, grid) {
-    const T = map.dataset;
-    const fill = (template, n) => template.replace('__N__', n);
-    const board = map.querySelector('[data-ycb-board]');
-    const pop = map.querySelector('[data-ycb-pop]');
+  function setup(section) {
+    const drawer = section.querySelector('[data-ycb-drawer]');
+    const filterForm = section.querySelector('[data-ycb-filter-form]');
+    const grid = section.querySelector('[data-ycb-grid]');
+    const map = section.querySelector('[data-ycb-map]');
     const more = section.querySelector('[data-ycb-more]');
+    const reveal = section.querySelector('[data-ycb-reveal]');
+    const status = section.querySelector('[data-ycb-status]');
     const count = section.querySelector('[data-ycb-count]');
-    const countText = count?.textContent;
-    const sortForm = section.querySelector('[data-ycb-sort-form]');
+    const total = section.querySelector('[data-ycb-total]');
+    const none = section.querySelector('[data-ycb-none]');
     const active = section.querySelector('[data-ycb-active]');
-    const weightSheet = section.querySelector('[data-ycb-weight-sheet]');
-    const bands = Array.from(weightSheet.querySelectorAll('[data-ycb-weight]:not([data-ycb-weight=""])'), (button) => ({
-      name: button.querySelector('.ycb-weight__name').textContent.trim(),
-      range: button.querySelector('small').textContent.trim(),
-    }));
-    const catsSheet = section.querySelector('[data-ycb-cats-sheet]');
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const sortForm = section.querySelector('[data-ycb-sort-form]');
+    const countTemplate = map?.dataset.tCount || '';
+    const step = Number(grid?.dataset.ycbStep) || 12;
+    const label = (token) => section.querySelector(`[data-ycb-facet="${token}"]`)?.textContent.trim() || '';
+    const preview = new URLSearchParams(window.location.search).get('preview_theme_id');
+    const shopFiltered = Array.from(new URLSearchParams(window.location.search).keys()).some((key) => key.startsWith('filter.'));
     let state = readState(new URLSearchParams(window.location.search));
-    let items = null;
-    let loading = null;
+    let items = [];
+    let limit = step;
 
-    section.querySelectorAll('[data-ycb-js]').forEach((node) => { if (node !== map) node.hidden = false; });
-    section.querySelectorAll('a.ycb-chip').forEach((link) => { link.dataset.base = link.getAttribute('href'); });
+    section.querySelectorAll('[data-ycb-js]').forEach((node) => { if (node !== map && node !== reveal) node.hidden = false; });
+    section.querySelector('[data-ycb-next]')?.remove();
+    section.querySelectorAll('.ycb-grid__item--later').forEach((li) => li.classList.remove('ycb-grid__item--later'));
+
+    section.querySelector('[data-ycb-open]')?.addEventListener('click', () => { syncDrawer(); drawer?.showModal(); });
+    section.querySelector('[data-ycb-close]')?.addEventListener('click', () => drawer?.close());
+    drawer?.addEventListener('click', (event) => { if (event.target === drawer) drawer.close(); });
+
+    const bands = Array.from(section.querySelectorAll('[data-ycb-band]'));
+    const band = activeBand(new URLSearchParams(window.location.search), bands.map((input) => input.value).filter(Boolean));
+    bands.forEach((input) => { input.checked = band ? input.value === band : !input.value; });
+
+    // Price and stock need the server; when only navigation filters changed, apply them here without reloading.
+    filterForm?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const params = new URLSearchParams(new FormData(filterForm));
+      const facets = readFacets(params);
+      const chosenBand = filterForm.querySelector('[data-ycb-band]:checked')?.value || '';
+      const next = writeState(applyBand(params, chosenBand), { ...state, facets, here: '' });
+      const shopKeys = (search) => Array.from(new URLSearchParams(search)).filter(([key]) => key.startsWith('filter.')).map((pair) => pair.join('=')).sort().join('&');
+      drawer.close();
+      if (shopKeys(next) === shopKeys(window.location.search)) {
+        update({ facets, here: '' });
+        return;
+      }
+      if (preview) next.set('preview_theme_id', preview);
+      window.location.assign(`${filterForm.getAttribute('action')}${next.size ? `?${next}` : ''}`);
+    });
+
+    const sort = section.querySelector('[data-ycb-sort]');
+    sort?.addEventListener('change', () => sort.form.requestSubmit());
+    sort?.form.addEventListener('submit', () => {
+      writeState(new URLSearchParams(), state, { keepVisit: false }).forEach((value, key) => {
+        sort.form.append(Object.assign(document.createElement('input'), { type: 'hidden', name: key, value }));
+      });
+    });
+
+    if (!grid) return;
 
     const readItem = (li) => {
       const title = li.querySelector('.yx-product-card__title');
-      const band = weightBand(metresPer100g(li.dataset.ycbSpec));
       return {
-        li, band, facets: li.dataset.ycbFacets || '', handle: li.dataset.ycbItem, beginner: li.hasAttribute('data-ycb-beginner-item'), cats: (li.dataset.ycbCats || '').split(' ').filter(Boolean),
+        li, tokens: li.dataset.ycbFacets || '', handle: li.dataset.ycbItem,
         img: li.dataset.ycbImg || '', spec: li.dataset.ycbSpec || '', name: title?.textContent.trim() || '', url: title?.getAttribute('href') || '#',
         price: li.querySelector('.yx-product-card__price')?.textContent.replace(/\s+/g, ' ').trim() || '',
       };
     };
+    items = Array.from(grid.children, readItem);
 
-    // The map, weight and compare need every product, not just the first page.
-    function loadAll() {
-      if (items) return Promise.resolve(items);
-      if (loading) return loading;
-      const pages = Number(T.pages) || 1;
-      const done = (lis) => { items = lis.map(readItem); if (more) more.hidden = true; return items; };
-      if (pages <= 1) return Promise.resolve(done(Array.from(grid.children)));
-      map.querySelector('[data-ycb-map-status]').textContent = T.tLoading;
-      loading = Promise.all(Array.from({ length: pages }, async (_, index) => {
-        const url = new URL(window.location.href);
-        url.searchParams.set('page', String(index + 1));
-        url.searchParams.set('section_id', section.dataset.sectionId);
-        const response = await fetch(url, { credentials: 'same-origin', headers: { Accept: 'text/html' } });
-        if (!response.ok) throw new Error('Collection page failed');
-        const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
-        return Array.from(doc.querySelectorAll('[data-ycb-grid] > li'), (li) => document.importNode(li, true));
-      })).then((pagesOfItems) => {
-        const lis = pagesOfItems.flat();
-        grid.replaceChildren(...lis);
-        return done(lis);
-      }).catch(() => done(Array.from(grid.children)));
-      return loading;
+    // More than one server page (over 48 products): fetch the rest once so filters and counts see every product.
+    async function loadRest() {
+      const pages = Number(grid.dataset.ycbPages) || 1;
+      if (pages <= 1) return;
+      grid.setAttribute('aria-busy', 'true');
+      try {
+        const rest = await Promise.all(Array.from({ length: pages - 1 }, async (_, index) => {
+          const url = new URL(window.location.href);
+          url.searchParams.set('page', String(index + 2));
+          url.searchParams.set('section_id', section.dataset.sectionId);
+          const response = await fetch(url, { credentials: 'same-origin', headers: { Accept: 'text/html' } });
+          if (!response.ok) throw new Error('Collection page failed');
+          const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+          return Array.from(doc.querySelectorAll('[data-ycb-grid] > li'), (li) => document.importNode(li, true));
+        }));
+        const lis = rest.flat();
+        lis.forEach((li) => li.classList.remove('ycb-grid__item--later'));
+        grid.append(...lis);
+        items = items.concat(lis.map(readItem));
+      } catch (error) {
+        // Keep the first page; the counts then cover only what is loaded.
+      } finally {
+        grid.removeAttribute('aria-busy');
+      }
     }
 
-    const catName = (handle) => section.querySelector(`[data-ycb-cat="${CSS.escape(handle)}"] .ycb-chip__name`)?.textContent.trim() || handle;
-    const categoryActive = () => Boolean(section.querySelector('[data-ycb-cat] .ycb-chip--active'));
+    function syncDrawer() {
+      const counts = countOptions(items.map((item) => item.tokens), state);
+      section.querySelectorAll('[data-ycb-facet-input]').forEach((input) => {
+        const group = input.name.replace('ycb_', '');
+        input.checked = input.value === (state.facets[group] || '');
+        const counter = input.parentElement.querySelector('[data-ycb-option-count]');
+        if (!counter) return;
+        const n = counts[`${group}:${input.value}`] || 0;
+        counter.textContent = n;
+        input.disabled = n === 0 && !input.checked;
+      });
+    }
+
+    function renderChips(counts) {
+      const allLink = section.querySelector('[data-ycb-all]');
+      const allOn = !isFiltered(state) && !shopFiltered;
+      allLink?.classList.toggle('ycb-chip--active', allOn);
+      if (allOn) allLink?.setAttribute('aria-current', 'true'); else allLink?.removeAttribute('aria-current');
+      // 筛选按钮上的数字 = 价格 / 现货（服务器算好）+ 抽屉里选中的导航筛选组数。
+      const pillCount = section.querySelector('[data-ycb-filter-count]');
+      if (pillCount) {
+        const n = Number(pillCount.dataset.ycbShopN || 0) + facetsActive(state.facets).length;
+        pillCount.querySelector('[data-ycb-filter-n]').textContent = n;
+        pillCount.hidden = n === 0;
+      }
+      section.querySelectorAll('[data-ycb-chip]').forEach((chip) => {
+        const [group, value] = chip.dataset.ycbChip.split(':');
+        const on = group === 'beginner' ? state.beginner : state.facets[group] === value;
+        chip.classList.toggle('ycb-chip--active', on);
+        chip.setAttribute('aria-pressed', String(on));
+        const n = counts[chip.dataset.ycbChip] || 0;
+        chip.querySelector('[data-ycb-chip-count]').textContent = n;
+        chip.toggleAttribute('data-ycb-zero', n === 0 && !on);
+        const next = group === 'beginner' ? { ...state, beginner: !on } : { ...state, facets: { ...state.facets, [group]: on ? '' : value } };
+        const params = writeState(new URLSearchParams(window.location.search), next, { keepVisit: false });
+        chip.href = `${window.location.pathname}${params.size ? `?${params}` : ''}`;
+      });
+    }
+
+    function renderActive() {
+      active.querySelectorAll('[data-ycb-tag]').forEach((tag) => tag.remove());
+      const tag = (text, clear) => {
+        const button = el('button', 'ycb-active__chip', `${text} ✕`);
+        button.type = 'button';
+        button.dataset.ycbTag = '';
+        button.setAttribute('aria-label', `${text} · ${map?.dataset.tClear || ''}`);
+        button.addEventListener('click', clear);
+        active.append(button);
+      };
+      if (state.beginner) tag(label('beginner:yes'), () => update({ beginner: false }));
+      facetsActive(state.facets).forEach((group) => {
+        const text = label(`${group}:${state.facets[group]}`);
+        if (text) tag(text, () => update({ facets: { ...state.facets, [group]: '' } }));
+      });
+      active.hidden = !active.children.length;
+    }
+
+    function renderList() {
+      const matched = items.filter((item) => matches(item.tokens, state));
+      items.forEach((item) => { item.li.hidden = true; });
+      matched.slice(0, limit).forEach((item) => { item.li.hidden = false; });
+      const shown = Math.min(limit, matched.length);
+      const isMap = state.view === 'map';
+      if (none) none.hidden = matched.length > 0 || isMap;
+      if (more) more.hidden = matched.length === 0 || isMap;
+      if (status) status.textContent = fill(more?.dataset.tShown, { S: shown, T: matched.length });
+      if (reveal) reveal.hidden = shown >= matched.length;
+      if (count && countTemplate) count.textContent = fill(countTemplate, { N: matched.length });
+      if (total) total.textContent = fill(total.dataset.t, { N: matched.length });
+      return matched;
+    }
+
+    function renderChrome() {
+      section.querySelectorAll('[data-ycb-view]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.ycbView === state.view)));
+      const isMap = state.view === 'map';
+      if (map) map.hidden = !isMap;
+      grid.hidden = isMap;
+      if (sortForm) sortForm.hidden = isMap;
+      section.toggleAttribute('data-ycb-beginner-on', state.beginner);
+      const params = writeState(new URLSearchParams(window.location.search), state);
+      window.history.replaceState(null, '', `${window.location.pathname}${params.size ? `?${params}` : ''}`);
+    }
+
+    function render() {
+      renderChrome();
+      renderChips(countOptions(items.map((item) => item.tokens), state));
+      renderActive();
+      const matched = renderList();
+      if (map && state.view === 'map') renderMap(matched);
+    }
+
+    function update(change) {
+      state = { ...state, ...change };
+      limit = step;
+      render();
+    }
+
+    reveal?.addEventListener('click', () => {
+      const before = limit;
+      limit += step;
+      renderList();
+      const first = items.filter((item) => matches(item.tokens, state))[before];
+      first?.li.querySelector('a')?.focus({ preventScroll: true });
+    });
+
+    // Chips filter in place; the 全部 chip clears navigation filters, and also price / stock / category when those are set.
+    section.querySelectorAll('[data-ycb-chip]').forEach((chip) => chip.addEventListener('click', (event) => {
+      event.preventDefault();
+      const [group, value] = chip.dataset.ycbChip.split(':');
+      if (group === 'beginner') update({ beginner: !state.beginner, here: '' });
+      else update({ facets: { ...state.facets, [group]: state.facets[group] === value ? '' : value }, here: '' });
+    }));
+    section.querySelector('[data-ycb-all]')?.addEventListener('click', (event) => {
+      if (shopFiltered) return;
+      event.preventDefault();
+      update({ facets: { ...NO_FACETS }, beginner: false, here: '' });
+    });
+    section.querySelectorAll('[data-ycb-view]').forEach((button) => button.addEventListener('click', () => update({ view: button.dataset.ycbView })));
+
+    // Hand-feel map: three rows, the same thickness bands as the chips.
+    const board = map?.querySelector('[data-ycb-board]');
+    const pop = map?.querySelector('[data-ycb-pop]');
+    const gutters = map ? Object.fromEntries(Array.from(map.querySelector('[data-ycb-gutters]').content.children, (gut) => [gut.dataset.ycbGutter, gut])) : {};
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const thickOf = (item) => THICK_ROWS.find((row) => hasToken(item.tokens, `thick:${row}`)) || null;
 
     function ball(item, named) {
       const button = el('button', `ycb-ball${named ? ' ycb-ball--named' : ''}${item.handle === state.here ? ' is-here' : ''}`);
       button.type = 'button';
       button.setAttribute('aria-label', item.name);
-      if (item.img) {
-        const img = el('img');
-        Object.assign(img, { src: item.img, alt: '', width: 56, height: 56 });
-        button.append(img);
-      } else button.append(el('span', 'ycb-ball__blank'));
-      if (item.handle === state.here) button.append(el('span', 'ycb-ball__here', T.tHere));
+      if (item.img) button.append(Object.assign(el('img'), { src: item.img, alt: '', width: 56, height: 56 }));
+      else button.append(el('span', 'ycb-ball__blank'));
+      if (item.handle === state.here) button.append(el('span', 'ycb-ball__here', map.dataset.tHere));
       else if (named) button.append(el('span', 'ycb-ball__name', item.name));
       button.addEventListener('click', () => openPop(item, button.closest('.ycb-map__row')));
       return button;
     }
 
-    function gutter(index) {
-      const gut = el('div', 'ycb-map__gut');
-      gut.innerHTML = strandSvg(index);
-      gut.append(el('b', '', bands[index].name), el('small', '', bands[index].range));
-      return gut;
-    }
-
-    function renderBoard() {
+    function renderMap(matched) {
       pop.hidden = true;
       map.append(pop);
       board.replaceChildren();
-      const placed = items.filter((item) => item.band !== null && (!state.beginner || item.beginner) && matchesFacets(item.facets, state.facets));
-      const rows = bands.map((_, index) => index).filter((index) => state.weight === null || state.weight === index);
-      const compare = state.cmp.length > 1;
-      board.classList.toggle('ycb-map__board--compare', compare);
-      if (compare) {
-        const head = el('div', 'ycb-map__row ycb-map__head');
-        head.append(el('div', 'ycb-map__gut'), ...state.cmp.map((handle) => el('div', 'ycb-map__col', catName(handle))));
-        board.append(head);
-      }
-      const named = compare ? false : categoryActive() || state.weight !== null || state.beginner || facetsActive(state.facets).length > 0;
-      rows.forEach((index) => {
-        const row = el('div', 'ycb-map__row');
-        row.append(gutter(index));
-        if (compare) {
-          state.cmp.forEach((handle) => {
-            const col = el('div', 'ycb-map__col');
-            const inCol = placed.filter((item) => item.band === index && item.cats.includes(handle));
-            if (inCol.length) col.append(...inCol.map((item) => ball(item, false)));
-            else col.append(el('span', 'ycb-map__none', '—'));
-            row.append(col);
-          });
-        } else {
-          const inRow = placed.filter((item) => item.band === index);
-          const balls = el('div', 'ycb-map__balls');
-          if (inRow.length) balls.append(...inRow.map((item) => ball(item, named)));
-          else balls.append(el('span', 'ycb-map__none', T.tEmpty));
-          row.append(balls);
-          if (inRow.length) {
-            const toList = el('button', 'ycb-map__tolist', `${fill(T.tCount, inRow.length)} ›`);
-            toList.type = 'button';
-            toList.addEventListener('click', () => update({ view: 'list', weight: index }));
-            row.append(toList);
-          }
+      const named = isFiltered(state);
+      const rows = THICK_ROWS.filter((row) => !state.facets.thick || state.facets.thick === row);
+      rows.forEach((row) => {
+        const line = el('div', 'ycb-map__row');
+        line.append(gutters[row].cloneNode(true));
+        const inRow = matched.filter((item) => thickOf(item) === row);
+        const balls = el('div', 'ycb-map__balls');
+        if (inRow.length) balls.append(...inRow.map((item) => ball(item, named)));
+        else balls.append(el('span', 'ycb-map__none', map.dataset.tEmpty));
+        line.append(balls);
+        if (inRow.length) {
+          const toList = el('button', 'ycb-map__tolist', `${fill(countTemplate, { N: inRow.length })} ›`);
+          toList.type = 'button';
+          toList.addEventListener('click', () => update({ view: 'list', facets: { ...state.facets, thick: row } }));
+          line.append(toList);
         }
-        board.append(row);
+        board.append(line);
       });
-      const missing = items.filter((item) => (!state.beginner || item.beginner) && matchesFacets(item.facets, state.facets)).length - placed.length;
-      map.querySelector('[data-ycb-map-status]').textContent = missing > 0 ? fill(T.tMissing, missing) : '';
+      const missing = matched.filter((item) => !thickOf(item)).length;
+      map.querySelector('[data-ycb-map-status]').textContent = missing > 0 ? fill(map.dataset.tMissing, { N: missing }) : '';
       const here = board.querySelector('.is-here');
       if (here) here.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
     }
@@ -307,157 +367,10 @@
       pop.hidden = false;
       pop.querySelector('[data-ycb-pop-go]').focus({ preventScroll: true });
     }
-    pop.querySelector('[data-ycb-pop-close]').addEventListener('click', () => { pop.hidden = true; });
+    pop?.querySelector('[data-ycb-pop-close]').addEventListener('click', () => { pop.hidden = true; });
 
-    function renderList() {
-      if (!items) return;
-      let shown = 0;
-      items.forEach((item) => {
-        const visible = (state.weight === null || item.band === state.weight) && (!state.beginner || item.beginner) && matchesFacets(item.facets, state.facets);
-        item.li.hidden = !visible;
-        if (visible) shown += 1;
-      });
-      const filtered = state.weight !== null || state.beginner || facetsActive(state.facets).length > 0;
-      const none = section.querySelector('[data-ycb-none]');
-      if (none) none.hidden = shown > 0 || state.view === 'map';
-      if (count) count.textContent = filtered ? fill(T.tCount, shown) : countText;
-    }
-
-    function renderChrome() {
-      section.querySelectorAll('[data-ycb-view]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.ycbView === state.view)));
-      const isMap = state.view === 'map';
-      map.hidden = !isMap;
-      grid.hidden = isMap;
-      if (sortForm) sortForm.hidden = isMap;
-      const beginnerButton = section.querySelector('[data-ycb-beginner]');
-      beginnerButton?.classList.toggle('ycb-chip--active', state.beginner);
-      beginnerButton?.setAttribute('aria-pressed', String(state.beginner));
-      section.toggleAttribute('data-ycb-beginner-on', state.beginner);
-      const weightButton = section.querySelector('[data-ycb-weight-open]');
-      weightButton?.classList.toggle('ycb-chip--active', state.weight !== null);
-      const weightValue = section.querySelector('[data-ycb-weight-value]');
-      if (weightValue) weightValue.textContent = state.weight === null ? '' : bands[state.weight].name;
-      weightSheet?.querySelectorAll('[data-ycb-weight]').forEach((button) => {
-        const value = button.dataset.ycbWeight === '' ? null : Number(button.dataset.ycbWeight);
-        button.setAttribute('aria-pressed', String(value === state.weight));
-        const counter = button.querySelector('[data-ycb-weight-count]');
-        if (counter && items) counter.textContent = items.filter((item) => item.band === value).length;
-      });
-      active.replaceChildren();
-      const chip = (label, clear) => {
-        const button = el('button', 'ycb-active__chip', `${label} ✕`);
-        button.type = 'button';
-        button.setAttribute('aria-label', `${label} · ${T.tClear}`);
-        button.addEventListener('click', clear);
-        active.append(button);
-      };
-      if (state.beginner && beginnerButton) chip(beginnerButton.querySelector('.ycb-chip__name').textContent.trim(), () => update({ beginner: false }));
-      if (state.weight !== null) chip(`${bands[state.weight].name}`, () => update({ weight: null }));
-      facetsActive(state.facets).forEach((group) => {
-        const label = section.querySelector(`[data-ycb-facet="${group}:${state.facets[group]}"]`)?.textContent.trim();
-        if (label) chip(label, () => update({ facets: { ...state.facets, [group]: '' } }));
-      });
-      if (state.cmp.length > 1) chip(`${T.tCompareOn} ${state.cmp.map(catName).join(' × ')}`, () => update({ cmp: [] }));
-      active.hidden = !active.children.length;
-      const params = writeState(new URLSearchParams(window.location.search), state);
-      window.history.replaceState(null, '', `${window.location.pathname}${params.size ? `?${params}` : ''}`);
-      section.querySelectorAll('a.ycb-chip[data-base]').forEach((link) => {
-        const url = new URL(link.dataset.base, window.location.href);
-        const preview = new URLSearchParams(window.location.search).get('preview_theme_id');
-        const next = writeState(url.searchParams, state, { keepVisit: false });
-        if (preview) next.set('preview_theme_id', preview);
-        link.href = `${url.pathname}${next.size ? `?${next}` : ''}`;
-      });
-    }
-
-    async function update(change) {
-      state = { ...state, ...change };
-      renderChrome();
-      // 要全部商品时先标「载入中」，列表变淡，载完筛好再恢复，避免先闪出全部商品。
-      if (state.view === 'map' || state.weight !== null || state.beginner || facetsActive(state.facets).length > 0 || state.cmp.length > 1) {
-        if (!items) grid.setAttribute('aria-busy', 'true');
-        await loadAll();
-      }
-      renderChrome();
-      renderList();
-      grid.removeAttribute('aria-busy');
-      if (state.view === 'map') renderBoard();
-    }
-
-    section.querySelectorAll('[data-ycb-view]').forEach((button) => button.addEventListener('click', () => update({ view: button.dataset.ycbView })));
-    section.querySelector('[data-ycb-beginner]')?.addEventListener('click', () => update({ beginner: !state.beginner }));
-
-    section.querySelectorAll('[data-ycb-sheet-close]').forEach((button) => button.addEventListener('click', () => button.closest('dialog').close()));
-    [weightSheet, catsSheet].forEach((sheet) => sheet?.addEventListener('click', (event) => { if (event.target === sheet) sheet.close(); }));
-
-    section.querySelector('[data-ycb-weight-open]')?.addEventListener('click', () => {
-      weightSheet.showModal();
-      loadAll().then(renderChrome);
-    });
-    weightSheet?.querySelectorAll('[data-ycb-weight]').forEach((button) => button.addEventListener('click', () => {
-      weightSheet.close();
-      update({ weight: button.dataset.ycbWeight === '' ? null : Number(button.dataset.ycbWeight) });
-    }));
-
-    // All categories: the same chips grouped by texture / use; tick 2–3 to compare them side by side on the map.
-    const catsBody = catsSheet?.querySelector('[data-ycb-cats-body]');
-    const goButton = catsSheet?.querySelector('[data-ycb-cmp-go]');
-    const ticked = () => Array.from(catsBody.querySelectorAll('input:checked'), (input) => input.value);
-    const syncGo = () => {
-      const n = ticked().length;
-      goButton.textContent = fill(T.tCompare, Math.max(n, 2));
-      goButton.disabled = n < 2;
-    };
-    function buildCats() {
-      if (catsBody.children.length) return;
-      const groups = new Map();
-      section.querySelectorAll('[data-ycb-cat]').forEach((li) => {
-        if (!groups.has(li.dataset.ycbGroup)) groups.set(li.dataset.ycbGroup, []);
-        groups.get(li.dataset.ycbGroup).push(li);
-      });
-      groups.forEach((lis, group) => {
-        const title = { texture: T.tGroupTexture, use: T.tGroupUse }[group];
-        if (title) catsBody.append(el('h3', 'ycb-cats__group', title));
-        const list = el('ul', 'ycb-cats');
-        list.setAttribute('role', 'list');
-        lis.forEach((li) => {
-          const entry = el('li', 'ycb-cats__item');
-          const link = li.querySelector('a').cloneNode(true);
-          link.classList.add('ycb-cats__link');
-          const label = el('label', 'ycb-cats__tick');
-          const input = Object.assign(el('input'), { type: 'checkbox', value: li.dataset.ycbCat, checked: state.cmp.includes(li.dataset.ycbCat) });
-          input.setAttribute('aria-label', `${T.tCompareOn} ${catName(li.dataset.ycbCat)}`);
-          input.addEventListener('change', () => {
-            if (ticked().length > 3) input.checked = false;
-            syncGo();
-          });
-          label.append(input, el('span', '', T.tCompareOn));
-          entry.append(link, label);
-          list.append(entry);
-        });
-        catsBody.append(list);
-      });
-      syncGo();
-    }
-    section.querySelector('[data-ycb-cats-open]')?.addEventListener('click', () => { buildCats(); catsSheet.showModal(); });
-    catsSheet?.querySelector('[data-ycb-cmp-clear]').addEventListener('click', () => {
-      catsBody.querySelectorAll('input:checked').forEach((input) => { input.checked = false; });
-      syncGo();
-      if (state.cmp.length) update({ cmp: [] });
-    });
-    goButton?.addEventListener('click', () => {
-      const cmp = ticked();
-      catsSheet.close();
-      // Compare needs the whole catalogue: leave any category filter behind.
-      const current = new URLSearchParams(window.location.search);
-      if (Array.from(current.keys()).some((key) => key.startsWith('filter.'))) {
-        const next = writeState(new URLSearchParams(), { ...state, view: 'map', cmp, here: '' });
-        if (current.has('preview_theme_id')) next.set('preview_theme_id', current.get('preview_theme_id'));
-        window.location.assign(`${window.location.pathname}?${next}`);
-      } else update({ view: 'map', cmp });
-    });
-
-    update({});
+    render();
+    if (Number(grid.dataset.ycbPages) > 1) loadRest().then(render);
   }
 
   connect(document);
