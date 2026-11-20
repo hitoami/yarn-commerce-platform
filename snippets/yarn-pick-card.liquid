@@ -28,7 +28,7 @@
         assign card_name = card_name | remove_first: card_head | remove_first: '】'
       endif
     endif
-    assign card_name = card_name | split: '｜' | first | strip
+    assign card_name = card_name | split: '｜' | first | split: '|' | first | strip
     if card_name == blank
       assign card_name = card_product.title
     endif
@@ -69,43 +69,46 @@
         {{ card_image | image_url: width: 600 | image_tag: widths: '300, 450, 600', sizes: card_sizes, loading: 'lazy', alt: card_image.alt | default: card_product.title }}
       {%- endif -%}
     {%- endif -%}
-    {%- if card_off > 0 -%}<span class="yx-product-card__off">-{{ card_off }}%</span>{%- endif -%}
-    {%- if card_stock != blank -%}<span class="yx-product-card__stock{% if card_product.available == false %} yx-product-card__stock--out{% endif %}">{{ card_stock }}</span>{%- endif -%}
+    {%- assign card_undyed = false -%}
+    {%- if card_product.metafields.yarn.undyed.value == true -%}{%- assign card_undyed = true -%}{%- endif -%}
+    {%- if card_off > 0 or card_stock != blank or beginner or card_undyed -%}
+      <div class="yx-product-card__media-badges">
+        {%- if card_off > 0 -%}<span class="yx-product-card__off">-{{ card_off }}%</span>{%- endif -%}
+        {%- if card_stock != blank -%}<span class="yx-product-card__stock{% if card_product.available == false %} yx-product-card__stock--out{% endif %}">{{ card_stock }}</span>{%- endif -%}
+        {%- if beginner -%}<span class="yx-product-card__badge">{{ 'yarn_project.card_badge_beginner' | t }}</span>{%- endif -%}
+        {%- if card_undyed -%}<span class="yx-product-card__badge yx-product-card__badge--undyed">{{ 'yarn_project.card_badge_undyed' | t }}</span>{%- endif -%}
+      </div>
+    {%- endif -%}
     {%- render 'yarn-favorite-button', entity_type: 'product', entity_id: card_product.id, entity_title: card_product.title, modifier: 'yx-card-fav' -%}
   </div>
   <div class="yx-product-card__body">
-    {%- comment -%}分类定稿（2026-11-19）：白胚线（yarn.undyed 为真）在卡片上带「白胚 · 可自己染」小标记，不做入口。{%- endcomment -%}
-    {%- assign card_undyed = false -%}
-    {%- if card_product.metafields.yarn.undyed.value == true -%}{%- assign card_undyed = true -%}{%- endif -%}
-    {%- if beginner or card_undyed -%}
-      <span class="yx-product-card__meta-row">{%- render 'yarn-card-meta', meta_product: card_product -%}
-        {%- if beginner -%}<span class="yx-product-card__badge">{{ 'yarn_project.card_badge_beginner' | t }}</span>{%- endif -%}
-        {%- if card_undyed -%}<span class="yx-product-card__badge yx-product-card__badge--undyed">{{ 'yarn_project.card_badge_undyed' | t }}</span>{%- endif -%}
+    <div class="yx-product-card__head">
+      <a class="yx-product-card__title yx-product-card__link" href="{{ card_product.url }}">{{ card_name | escape }}</a>
+      <span class="yx-product-card__price{% if card_product.available == false or card_product.price <= 0 %} yx-product-card__price--muted{% endif %}">
+        {%- if card_product.price <= 0 -%}{{ 'yarn_project.kit_not_on_sale' | t }}{%- else -%}{{ card_product.price | money }}{%- endif -%}
       </span>
-    {%- else -%}
-      {%- render 'yarn-card-meta', meta_product: card_product -%}
-    {%- endif -%}
-    <a class="yx-product-card__title yx-product-card__link" href="{{ card_product.url }}">{{ card_name | escape }}</a>
-    {%- if handmade -%}
-      <span class="yx-product-card__spec">{{ 'yarn_project.card_handmade_note' | t }}</span>
-    {%- else -%}
-      {%- capture card_colors %}{% render 'yarn-card-color-count', count_product: card_product %}{% endcapture -%}
-      {%- assign card_colors = card_colors | strip -%}
-      <span class="yx-product-card__spec">{% if card_material != blank %}{{ card_material | escape }} · {% endif %}{% render 'yarn-card-spec', product: card_product %}{% if card_colors != blank %}<span class="yx-product-card__spec-colors"> · {{ card_colors }}</span>{% endif %}</span>
-    {%- endif -%}
+    </div>
+    <div class="yx-product-card__sub">
+      {%- if handmade -%}
+        <span class="yx-product-card__spec">{{ 'yarn_project.card_handmade_note' | t }}</span>
+      {%- else -%}
+        {%- capture card_colors %}{% render 'yarn-card-color-count', count_product: card_product %}{% endcapture -%}
+        {%- assign card_colors = card_colors | strip -%}
+        <span class="yx-product-card__spec">{% if card_material != blank %}{{ card_material | escape }} · {% endif %}{% render 'yarn-card-spec', product: card_product %}</span>
+      {%- endif -%}
+      {%- if card_product.price > 0 and card_product.compare_at_price > card_product.price -%}
+        <s class="yx-product-card__was">{{ card_product.compare_at_price | money }}</s>
+      {%- elsif handmade != true and card_colors != blank -%}
+        <span class="yx-product-card__colors">{{ card_colors }}</span>
+      {%- endif -%}
+    </div>
     {%- if card_line and card_product.metafields.yarn.card_line.value != blank -%}
       <span class="yx-product-card__line">{{ card_product.metafields.yarn.card_line.value | escape }}</span>
     {%- endif -%}
-    <div class="yx-product-card__buy">
-      <span class="yx-product-card__price{% if card_product.available == false or card_product.price <= 0 %} yx-product-card__price--muted{% endif %}">
-        {% if card_product.price <= 0 %}{{ 'yarn_project.kit_not_on_sale' | t }}{% else %}
-        {%- if card_product.compare_at_price > card_product.price -%}
-          <s class="yx-product-card__was">{{ card_product.compare_at_price | money }}</s>
-        {%- endif -%}
-        {{ card_product.price | money }}{% endif %}
-      </span>
-      {%- render 'yarn-card-cart', cart_product: card_product -%}
-    </div>
+    {%- capture card_cart_html -%}{%- render 'yarn-card-cart', cart_product: card_product -%}{%- endcapture -%}
+    {%- if card_cart_html != blank -%}
+      <div class="yx-product-card__buy">{{ card_cart_html }}</div>
+    {%- endif -%}
     {%- render 'yarn-card-buy', buy_product: card_product -%}
     {%- if layout == 'row' -%}<span class="yx-product-card__more">{{ 'yarn_project.season_view_yarn' | t }} <span aria-hidden="true">→</span></span>{%- endif -%}
   </div>

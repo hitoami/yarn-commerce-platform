@@ -49,7 +49,7 @@
       {%- if section.settings.all_link != blank -%}<a class="yx-picks__all" href="{% render 'yarn-local-url', url: section.settings.all_link %}">{{ 'yarn_project.card_view_all' | t }} →</a>{%- endif -%}
     </div>
     {%- if pp_steps != blank -%}<ol class="yx-picks__steps" role="list">{{ pp_steps }}</ol>{%- endif -%}
-    <div class="yx-project-picks">{{ pp_cards }}</div>
+    <div class="yx-project-picks" style="--yx-project-cols: {{ pp_shown | at_most: 4 }};">{{ pp_cards }}</div>
   </div>
 </section>
 {%- elsif request.design_mode -%}
