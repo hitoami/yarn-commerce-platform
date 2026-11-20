@@ -1,10 +1,11 @@
 {%- comment -%}
   材料包教程领取提醒（#177 R3，用户 2026-10-17 决定用通用文案）。只在购物车里有从材料包加入的毛线时显示，
   判断依据是材料包加购已写入的隐藏行属性 _Kit（sections/yarn-kit-detail.liquid），不新增数据、不写作品名。
+  #369：材料包是独立商品后，商品类型为「材料包」的条目也算（例如从商品页直接加购，没有 _Kit）。
 {%- endcomment -%}
 {%- assign kit_in_cart = false -%}
 {%- for kit_item in cart.items -%}
-  {%- if kit_item.properties['_Kit'] != blank -%}{%- assign kit_in_cart = true -%}{%- break -%}{%- endif -%}
+  {%- if kit_item.properties['_Kit'] != blank or kit_item.product.type == '材料包' -%}{%- assign kit_in_cart = true -%}{%- break -%}{%- endif -%}
 {%- endfor -%}
 {%- if kit_in_cart -%}
   <div class="yarn-cart-kit">
