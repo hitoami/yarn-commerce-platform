@@ -119,9 +119,9 @@ body:has(.hitoami-hero--catalog) .yarn-entries__flourish { display: none; } /* n
   /* Yarn-set picks (shown only once a project passes the public gate). */
   body:has(.hitoami-hero--catalog) .yx-picks { padding-block: 72px; }
   body:has(.hitoami-hero--catalog) .yx-project-pick { gap: 10px; }
-  body:has(.hitoami-hero--catalog) .yx-project-pick__media { aspect-ratio: 282 / 352; border-radius: var(--yarn-radius-media); }
-  body:has(.hitoami-hero--catalog) .yx-project-pick__badge { left: 12px; top: 12px; padding: 4px 10px; font-weight: 500; }
-  body:has(.hitoami-hero--catalog) .yx-project-pick__title { font-weight: 500; line-height: 1.5; }
+  body:has(.hitoami-hero--catalog) .yx-project-pick__media { aspect-ratio: 1; border-radius: var(--yarn-card-radius); }
+  body:has(.hitoami-hero--catalog) .yx-project-pick__badge { left: 8px; top: 8px; padding: 3px 10px; font-weight: 500; }
+  body:has(.hitoami-hero--catalog) .yx-project-pick__title { font-weight: 500; line-height: 1.4; }
   body:has(.hitoami-hero--catalog) .yx-project-pick__meta { font-weight: 500; }
   body:has(.hitoami-hero--catalog) .hitoami-story:not(:has(.hitoami-story__media)) { grid-template-columns: 1fr; max-width: 800px; }
 }
