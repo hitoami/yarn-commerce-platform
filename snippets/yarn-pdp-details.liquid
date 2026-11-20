@@ -111,9 +111,8 @@
 {%- assign care_lines = y.care.value -%}
 
 {%- liquid
-  # #182 v2：手机把规格、参考用量、新手提示、洗涤收成带插画图标的折叠行；第一行默认展开。
+  # #182 v2：手机把规格、参考用量、洗涤收成带插画图标的折叠行；第一行默认展开。
   assign acc_open = true
-  assign beginner_reason = y.beginner_reason.value
 -%}
 <div class="yp-yarn-details">
   {%- if work_cards contains 'yx-project-pick' -%}
@@ -162,14 +161,6 @@
           <p class="visually-hidden" role="status" data-usage-status></p>
         </section>
       </yarn-usage-estimate>
-    </details>
-    {%- assign acc_open = false -%}
-  {%- endif -%}
-
-  {%- if beginner_reason != blank -%}
-    <details class="yp-acc__item"{% if acc_open %} open{% endif %}>
-      <summary class="yp-acc__summary">{% render 'yarn-spot-icon', name: 'bulb', size: 44, base: 'cream' %}<h2 class="yp-acc__title">{{ 'yarn_pdp.beginner_heading' | t }}</h2><span class="svg-wrapper yp-acc__caret" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span></summary>
-      <p class="yp-acc__text" data-proof-content>{{ beginner_reason | escape }}</p>
     </details>
     {%- assign acc_open = false -%}
   {%- endif -%}

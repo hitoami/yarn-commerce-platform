@@ -11,11 +11,47 @@
   "sections": {
     "main": {
       "type": "main-list-collections",
+      "blocks": {
+        "cat-yarn": {
+          "type": "category",
+          "settings": {
+            "collection": "yarn",
+            "title": "毛糸",
+            "title_zh": "毛线",
+            "title_en": "Yarn"
+          }
+        },
+        "cat-kits": {
+          "type": "category",
+          "settings": {
+            "page": "kits",
+            "kits_cover": true,
+            "title": "編みキット",
+            "title_zh": "编织包",
+            "title_en": "Knitting kits"
+          }
+        },
+        "cat-finished": {
+          "type": "category",
+          "settings": {
+            "collection": "finished-goods",
+            "fallback_asset": "hitoami-finished-mobile.webp",
+            "title": "手編みの完成品",
+            "title_zh": "成品",
+            "title_en": "Handmade pieces"
+          }
+        }
+      },
+      "block_order": [
+        "cat-yarn",
+        "cat-kits",
+        "cat-finished"
+      ],
       "settings": {
         "sort": "alphabetical",
         "image_ratio": "square",
-        "columns_desktop": 4,
-        "columns_mobile": "2"
+        "columns_desktop": 3,
+        "columns_mobile": "1"
       }
     }
   },

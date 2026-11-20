@@ -1,11 +1,13 @@
-{% comment %} 品类角标(卡片家族):按商品 tag 判品类,套用 yx-badge 家族;无匹配品类不渲染。 {% endcomment %}
+{% comment %} 品类角标(卡片家族):经 yarn-product-kind 判品类,套用 yx-badge 家族;无匹配品类不渲染。 {% endcomment %}
 {%- capture yx_badge_label %}{% render 'yarn-product-kind-label', kind_product: badge_product %}{% endcapture -%}
+{%- capture yx_badge_kind %}{% render 'yarn-product-kind', product: badge_product %}{% endcapture -%}
 {%- liquid
   assign yx_badge_label = yx_badge_label | strip
+  assign yx_badge_kind = yx_badge_kind | strip
   assign yx_badge_class = ''
-  if badge_product.tags contains '編みものキット'
+  if yx_badge_kind == 'kit'
     assign yx_badge_class = ' yx-badge--kit'
-  elsif badge_product.tags contains '完成品'
+  elsif yx_badge_kind == 'finished'
     assign yx_badge_class = ' yx-badge--finished'
   endif
 -%}

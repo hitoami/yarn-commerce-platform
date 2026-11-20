@@ -1,9 +1,8 @@
 {% comment %}
   本季主推专题页(#131,page.season 模板):首页「本季主推」入口卡点进来的一页。版式按 Figma「02 季节主推」画布（2026-10-16 用户指定）。
   杂志式:开头为刊名 + 大标题 + 导语 + 封面大图，下方一排带小图的目录;每款毛线一段，3 张成品图（1 大 2 小）与介绍左右交替;商品资料排成细线规格表。
-  选品:优先用「选品列表」（按列表顺序）；列表为空时，取所选集合（留空用 毛线 集合）里带指定标签的商品（前 50 件中取前 N 件）。
-  标签只用于选品,不显示在页面上,也不出现「爆款」「热销」等字样。
-  每款介绍:有同一商品的「毛线介绍」block 时用 block 三语文案与配图（上传图优先，其次 block 里填的 Theme 素材文件名，都没有时用商品主图）。
+  选品:唯一数据源为本区块的「毛线介绍」blocks（按 block 顺序，跳过草稿/归档/已下架商品，最多 products_to_show 款），不再用重复的 products 列表或 tag 兜底。
+  每款介绍:用 block 三语文案与配图（上传图优先，其次 block 里填的 Theme 素材文件名，都没有时用商品主图）。
   介绍下方放首页商品卡的横排版（yarn-pick-card layout: 'row'，用户 2026-10-16 在 Figma 整体效果候选中选定 E），名称、规格、价格只取 Shopify，整卡进入商品页;专题页不直接加购，也不显示色样（商品没有颜色规格）。
   三语文案经 yarn-setting-text 取:纯键名为日文默认,_zh/_en 为中英设置;通用按钮用 Theme locales。
   画布图片的来源见 docs/design/approved/131-season-canvas.source.md。
@@ -11,26 +10,16 @@
   成品图每张都是按钮，点开 yarn-season-lightbox 全屏看大图（滑动 / ‹ › / 缩略图切换，✕、Esc、下滑关闭），大图用 data-full 的高清地址。
 {% endcomment %}
 {%- liquid
-  assign sp_collection = section.settings.collection | default: collections['yarn']
-  assign sp_tag = section.settings.tag | strip
-  assign sp_handles = ''
-  if section.settings.products != blank
-    for sp_product in section.settings.products
-      assign sp_handles = sp_handles | append: sp_product.handle | append: ','
-    endfor
-  elsif sp_collection != blank
-    for sp_product in sp_collection.products limit: 50
-      if sp_tag == blank or sp_product.tags contains sp_tag
-        assign sp_handles = sp_handles | append: sp_product.handle | append: ','
+  assign sp_max = section.settings.products_to_show
+  assign sp_count = 0
+  for block in section.blocks
+    if block.type == 'note' and block.settings.product != blank
+      assign sp_count = sp_count | plus: 1
+      if sp_count >= sp_max
+        break
       endif
-    endfor
-  endif
-  assign sp_handles = sp_handles | split: ','
-  assign sp_count = sp_handles.size
-  if sp_count > section.settings.products_to_show
-    assign sp_count = section.settings.products_to_show
-  endif
-  assign sp_last = sp_count | minus: 1
+    endif
+  endfor
   capture sp_eyebrow
     render 'yarn-setting-text', settings: section.settings, key: 'eyebrow'
   endcapture
@@ -56,11 +45,15 @@
       {%- elsif section.settings.source_image -%}
         <img src="{{ 'hitoami-source-oil-loop-800.webp' | asset_url }}" srcset="{{ 'hitoami-source-oil-loop-400.webp' | asset_url }} 400w, {{ 'hitoami-source-oil-loop-800.webp' | asset_url }} 790w" sizes="(min-width: 750px) 55vw, 100vw" width="790" height="885" loading="eager" fetchpriority="high" alt="">
       {%- else -%}
-        {%- for sp_at in (0..sp_last) limit: 4 -%}
-          {%- assign sp_cover = all_products[sp_handles[sp_at]].featured_image -%}
+        {%- assign sp_mosaic = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type != 'note' or block.settings.product == blank -%}{%- continue -%}{%- endif -%}
+          {%- assign sp_cover = block.settings.product.featured_image -%}
           {%- if sp_cover != blank -%}
-            {%- if forloop.first -%}{%- assign sp_w = 1200 -%}{%- else -%}{%- assign sp_w = 600 -%}{%- endif -%}
+            {%- assign sp_mosaic = sp_mosaic | plus: 1 -%}
+            {%- if sp_mosaic == 1 -%}{%- assign sp_w = 1200 -%}{%- else -%}{%- assign sp_w = 600 -%}{%- endif -%}
             {{ sp_cover | image_url: width: sp_w | image_tag: widths: '300, 600, 900, 1200', sizes: '(min-width: 750px) 30vw, 50vw', loading: 'eager', alt: '' }}
+            {%- if sp_mosaic >= 4 or sp_mosaic >= sp_count -%}{%- break -%}{%- endif -%}
           {%- endif -%}
         {%- endfor -%}
       {%- endif -%}
@@ -73,15 +66,19 @@
     {%- if sp_count > 1 -%}
       <nav class="yx-season-page__toc" aria-label="{{ 'yarn_project.season_contents' | t }}">
         <ol>
-          {%- for sp_at in (0..sp_last) -%}
-            {%- assign sp_item = all_products[sp_handles[sp_at]] -%}
+          {%- assign sp_toc_index = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type != 'note' or block.settings.product == blank -%}{%- continue -%}{%- endif -%}
+            {%- assign sp_toc_index = sp_toc_index | plus: 1 -%}
+            {%- if sp_toc_index > sp_count -%}{%- break -%}{%- endif -%}
+            {%- assign sp_item = block.settings.product -%}
             {%- assign sp_thumb = sp_item.metafields.yarn.card_image.value | default: sp_item.featured_image -%}
             <li>
-              <a href="#SeasonYarn-{{ forloop.index }}">
+              <a href="#SeasonYarn-{{ sp_toc_index }}">
                 <span class="yx-season-page__toc-thumb">
                   {%- if sp_thumb != blank -%}{{ sp_thumb | image_url: width: 240 | image_tag: widths: '120, 240', sizes: '96px', loading: 'eager', alt: '' }}{%- endif -%}
                 </span>
-                <span class="yx-season-page__toc-num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                <span class="yx-season-page__toc-num">{{ sp_toc_index | prepend: '0' | slice: -2, 2 }}</span>
                 <span class="yx-season-page__toc-name">{{ sp_item.title | escape }}</span>
                 <svg class="yx-season-page__toc-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3v10M4 9l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </a>
@@ -94,27 +91,23 @@
 
   {%- if sp_count == 0 -%}
     <p class="yx-season-page__empty">{{ 'yarn_project.catalog_preparing' | t }}</p>
-    {%- if request.design_mode -%}<p class="yx-season-page__empty">本季主推：所选集合里没有带「{{ sp_tag | escape }}」标签的商品。</p>{%- endif -%}
+    {%- if request.design_mode -%}<p class="yx-season-page__empty">本季主推：请在左侧添加「毛线介绍」块并选择已上架商品。</p>{%- endif -%}
   {%- else -%}
     <ol class="yx-season-page__list">
-      {%- for sp_at in (0..sp_last) -%}
-        {%- assign sp_item = all_products[sp_handles[sp_at]] -%}
-        {%- assign sp_note = blank -%}
-        {%- assign sp_lead = blank -%}
-        {%- assign sp_block = blank -%}
-        {%- for block in section.blocks -%}
-          {%- if block.settings.product.handle == sp_item.handle -%}
-            {%- assign sp_block = block -%}
-            {%- capture sp_note -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'note' -%}{%- endcapture -%}
-            {%- capture sp_lead -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'lead' -%}{%- endcapture -%}
-          {%- endif -%}
-        {%- endfor -%}
+      {%- assign sp_index = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type != 'note' or block.settings.product == blank -%}{%- continue -%}{%- endif -%}
+        {%- assign sp_index = sp_index | plus: 1 -%}
+        {%- if sp_index > sp_count -%}{%- break -%}{%- endif -%}
+        {%- assign sp_item = block.settings.product -%}
+        {%- capture sp_note -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'note' -%}{%- endcapture -%}
+        {%- capture sp_lead -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'lead' -%}{%- endcapture -%}
         {%- comment -%} 3 个图位：每个图位先用 block 上传图，其次 block 填的 Theme 素材文件名（逗号分隔，按图位顺序）。{%- endcomment -%}
-        {%- assign sp_assets = sp_block.settings.assets | remove: ' ' | split: ',' -%}
+        {%- assign sp_assets = block.settings.assets | remove: ' ' | split: ',' -%}
         {%- capture sp_gallery -%}
           {%- for sp_slot in (1..3) -%}
             {%- assign sp_slot_at = sp_slot | minus: 1 -%}
-            {%- if sp_slot == 1 -%}{%- assign sp_pick = sp_block.settings.image -%}{%- else -%}{%- assign sp_key = 'image_' | append: sp_slot -%}{%- assign sp_pick = sp_block.settings[sp_key] -%}{%- endif -%}
+            {%- if sp_slot == 1 -%}{%- assign sp_pick = block.settings.image -%}{%- else -%}{%- assign sp_key = 'image_' | append: sp_slot -%}{%- assign sp_pick = block.settings[sp_key] -%}{%- endif -%}
             {%- if sp_slot == 1 -%}{%- assign sp_w = 1200 -%}{%- assign sp_sizes = '(min-width: 750px) 34vw, 61vw' -%}{%- else -%}{%- assign sp_w = 800 -%}{%- assign sp_sizes = '(min-width: 750px) 23vw, 39vw' -%}{%- endif -%}
             {%- assign sp_full = blank -%}
             {%- assign sp_fallback = blank -%}
@@ -141,9 +134,9 @@
           {%- endfor -%}
         {%- endcapture -%}
         {%- assign sp_shots = sp_gallery | split: 'yx-season-page__shot"' | size | minus: 1 -%}
-        {%- assign sp_num = forloop.index | prepend: '0' | slice: -2, 2 -%}
-        {%- assign sp_mod = forloop.index | modulo: 2 -%}
-        <li class="yx-season-page__yarn{% if sp_mod == 0 %} yx-season-page__yarn--flip{% endif %}" id="SeasonYarn-{{ forloop.index }}">
+        {%- assign sp_num = sp_index | prepend: '0' | slice: -2, 2 -%}
+        {%- assign sp_mod = sp_index | modulo: 2 -%}
+        <li class="yx-season-page__yarn{% if sp_mod == 0 %} yx-season-page__yarn--flip{% endif %}" id="SeasonYarn-{{ sp_index }}" {{ block.shopify_attributes }}>
           <figure class="yx-season-page__figure">
             <div class="yx-season-page__media yx-season-page__media--{{ sp_shots | at_least: 1 | at_most: 3 }}" data-season-gallery data-caption="{{ sp_item.title | escape }}">{{ sp_gallery | replace: '__SHOTS__', sp_shots }}</div>
             <figcaption class="visually-hidden">No.{{ sp_num }} — {{ sp_item.title | escape }}</figcaption>
@@ -186,9 +179,6 @@
     { "type": "checkbox", "id": "source_image", "label": "使用本次油画圈圈线原图作为封面", "default": false },
     { "type": "image_picker", "id": "image", "label": "封面大图", "info": "未上传时依次用下面的 Theme 素材、油画圈圈线原图，或选品前 4 款毛线主图拼贴。" },
     { "type": "text", "id": "cover_asset", "label": "封面 · Theme 素材文件名", "info": "例如 season-2026aw-cover.jpg；上传封面大图后不再使用。" },
-    { "type": "product_list", "id": "products", "label": "选品列表", "limit": 12, "info": "按列表顺序显示；留空时按下面的集合与标签选品。" },
-    { "type": "collection", "id": "collection", "label": "选品集合", "info": "留空时使用「毛线」集合。" },
-    { "type": "text", "id": "tag", "label": "选品标签", "default": "预订爆款", "info": "选品列表为空时，只取集合里带这个标签的商品；标签不会显示在页面上。" },
     { "type": "range", "id": "products_to_show", "min": 2, "max": 12, "step": 1, "default": 7, "label": "最多显示几款" },
     { "type": "text", "id": "eyebrow", "label": "日文 · 刊名（目录旁）", "default": "今季の特集" },
     { "type": "text", "id": "eyebrow_zh", "label": "中文 · 刊名（目录旁）", "default": "本季专题" },

@@ -140,7 +140,7 @@ test('header computes the yarn facets once; yarn opens three filter groups and �
 
 test('织什么 opens with 新手推荐 (#365); no third-layer 推荐 column (2026-11-19)', () => {
   const facets = fs.readFileSync('snippets/yarn-facets.liquid', 'utf8');
-  assert.match(facets, /if product\.metafields\.yarn\.beginner_reason\.value != blank\s*echo 'beginner:yes '/);
+  assert.match(facets, /if yf_beginner_handles contains product\.handle\s*echo 'beginner:yes '/);
   const links = fs.readFileSync('snippets/yarn-nav-facet-links.liquid', 'utf8');
   assert.ok(links.includes("when 'works'\n      assign nfl_values = 'beginner:yes,works:"), '新手推荐是想织什么第一项');
   assert.ok(!links.includes("when 'picks'"), '不做推荐栏');
@@ -152,10 +152,8 @@ test('织什么 opens with 新手推荐 (#365); no third-layer 推荐 column (20
   }
   assert.match(fs.readFileSync('snippets/yarn-facet-icon.liquid', 'utf8'), /elsif group == 'beginner'/);
   assert.match(headerCss, /\.yarn-nav-beginner \{[^}]*border-bottom: 1px solid var\(--yarn-border-subtle\);/);
-  // 新手筛选打开时卡片改成 flex，不能盖掉筛选写上的 hidden。
   const browseCss = fs.readFileSync('assets/yarn-collection-browse.css', 'utf8');
-  assert.doesNotMatch(browseCss, /\[data-ycb-beginner-on\] \.ycb-grid__item \{ display:/);
-  assert.match(browseCss, /\[data-ycb-beginner-on\] \.ycb-grid__item:not\(\[hidden\]\) \{ display: flex;/);
+  assert.doesNotMatch(browseCss, /ycb-reason/);
 });
 
 test('desktop header docks with a drop-in and compact bar, honouring reduced motion (#131)', () => {

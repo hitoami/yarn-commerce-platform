@@ -7,7 +7,7 @@
   毛线 = 毛线集合（默认 yarn）的商品，卡片与首页 / 目录同一张 yarn-pick-card；材料包 = 通过 yarn-kit-visible 的 yarn_project；
   手工成品 = 成品集合（默认 finished-goods）。成品集合为空时标签显示「准备中」并禁用。
   「毛线分类」block 把关键词连到毛线目录的同一筛选（导航同一套 ycb_* 参数，分类定稿 2026-11-19），只在关键词正好对应分类名称或别名时显示；
-  名称取 Theme locales 里导航的同一个名字，款数与默认小图用 yarn-facets 对毛线集合（前 50 件）算出，一件都没有的不显示。
+  名称取 Theme locales 里导航的同一个名字，款数与默认小图用同一份 paginate by 250 算出，一件都没有的不显示。
 {%- endcomment -%}
 {%- liquid
   assign yarn_collection = collections[section.settings.yarn_collection]
@@ -17,54 +17,80 @@
     assign finished_coming_soon = false
   endif
   assign kits_url = section.settings.kits_url | default: routes.all_products_collection_url
+  assign search_beginner_handles = '' | split: ','
+  if collections['beginner-picks'] != blank
+    assign search_beginner_handles = collections['beginner-picks'].products | map: 'handle'
+  endif
+  assign search_yarn_grid = ''
+  assign search_yarn_next = ''
+  assign search_categories = ''
 -%}
-{%- capture search_categories -%}
-  {%- if yarn_collection != blank -%}
-    {%- for block in section.blocks -%}
-      {%- if block.type != 'category' -%}{%- continue -%}{%- endif -%}
-      {%- liquid
-        assign category_filter = block.settings.filter | split: ':'
-        assign category_group = category_filter[0]
-        assign category_value = category_filter[1]
-        assign category_token = ' ' | append: block.settings.filter | append: ' '
-        if category_group == 'beginner'
-          assign category_query = 'ycb_beginner=1'
-          assign category_key = 'yarn_collection.beginner'
-        else
-          assign category_query = 'ycb_' | append: category_group | append: '=' | append: category_value
-          assign category_key = 'yarn_collection.facet_' | append: category_group | append: '_' | append: category_value
-        endif
-        if block.settings.filter == 'grams:big'
-          assign category_key = 'yarn_collection.nav_big'
-        endif
-        assign category_name = category_key | t
-        assign category_count = 0
-        assign category_image = block.settings.image
-        for category_product in yarn_collection.products limit: 50
-          capture category_tokens
-            render 'yarn-facets', product: category_product
-          endcapture
-          if category_tokens contains category_token
-            assign category_count = category_count | plus: 1
-            if category_image == blank
-              assign category_image = category_product.metafields.yarn.card_image.value | default: category_product.featured_image
-            endif
+{%- if yarn_collection != blank -%}
+  {%- paginate yarn_collection.products by 250 -%}
+    {%- capture search_yarn_tokens -%}
+      {%- for category_product in yarn_collection.products -%}
+        {%- render 'yarn-facets', product: category_product, beginner_handles: search_beginner_handles -%}
+        {{- '|' -}}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- assign search_token_rows = search_yarn_tokens | split: '|' -%}
+    {%- capture search_categories -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type != 'category' -%}{%- continue -%}{%- endif -%}
+        {%- liquid
+          assign category_filter = block.settings.filter | split: ':'
+          assign category_group = category_filter[0]
+          assign category_value = category_filter[1]
+          assign category_token = ' ' | append: block.settings.filter | append: ' '
+          if category_group == 'beginner'
+            assign category_query = 'ycb_beginner=1'
+            assign category_key = 'yarn_collection.beginner'
+          else
+            assign category_query = 'ycb_' | append: category_group | append: '=' | append: category_value
+            assign category_key = 'yarn_collection.facet_' | append: category_group | append: '_' | append: category_value
           endif
-        endfor
-        if category_count == 0
-          continue
-        endif
-      -%}
-      <li>
-        <a class="yd-search__chip" href="{{ yarn_collection.url }}?{{ category_query }}" data-search-category data-category-name="{{ category_name | escape }}" data-category-aliases="{{ block.settings.aliases | escape }}" {{ block.shopify_attributes }}>
-          <span class="yd-search__chip-photo">{%- if category_image != blank -%}{{ category_image | image_url: width: 120 | image_tag: widths: '80, 120', sizes: '40px', loading: 'lazy', alt: '' }}{%- endif -%}</span>
-          <span class="yd-search__chip-name">{{ category_name | escape }}</span>
-          <span class="yd-search__chip-count">{{ category_count }}</span>
-        </a>
-      </li>
-    {%- endfor -%}
-  {%- endif -%}
-{%- endcapture -%}
+          if block.settings.filter == 'grams:big'
+            assign category_key = 'yarn_collection.nav_big'
+          endif
+          assign category_name = category_key | t
+          assign category_count = 0
+          assign category_image = block.settings.image
+          for category_row in search_token_rows
+            if category_row contains category_token
+              assign category_count = category_count | plus: 1
+              if category_image == blank
+                assign category_product = yarn_collection.products[forloop.index0]
+                assign category_image = category_product.metafields.yarn.card_image.value | default: category_product.featured_image
+              endif
+            endif
+          endfor
+          if category_count == 0
+            continue
+          endif
+        -%}
+        <li>
+          <a class="yd-search__chip" href="{{ yarn_collection.url }}?{{ category_query }}" data-search-category data-category-name="{{ category_name | escape }}" data-category-aliases="{{ block.settings.aliases | escape }}" {{ block.shopify_attributes }}>
+            <span class="yd-search__chip-photo">{%- if category_image != blank -%}{{ category_image | image_url: width: 120 | image_tag: widths: '80, 120', sizes: '40px', loading: 'lazy', alt: '' }}{%- endif -%}</span>
+            <span class="yd-search__chip-name">{{ category_name | escape }}</span>
+            <span class="yd-search__chip-count">{{ category_count }}</span>
+          </a>
+        </li>
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- capture search_yarn_grid -%}
+      <div class="yd-search__grid" data-search-catalog="yarn">
+        {%- for search_product in yarn_collection.products -%}
+          {%- assign search_is_beginner = false -%}
+          {%- if search_beginner_handles contains search_product.handle -%}{%- assign search_is_beginner = true -%}{%- endif -%}
+          {%- render 'yarn-search-product', search_product: search_product, group: 'yarn', is_beginner: search_is_beginner -%}
+        {%- endfor -%}
+      </div>
+    {%- endcapture -%}
+    {%- capture search_yarn_next -%}
+      {%- if paginate.next -%}<a data-search-next="yarn" href="{{ paginate.next.url | escape }}&amp;section_id={{ section.id | url_encode }}" hidden>{{ 'yarn_project.more' | t }}</a>{%- endif -%}
+    {%- endcapture -%}
+  {%- endpaginate -%}
+{%- endif -%}
 <yarn-discovery-search class="yd-search" data-search-url="{{ routes.search_url }}" data-section-id="{{ section.id }}">
   <header class="yd-search__bar">
     <a class="yd-search__back" href="{{ routes.root_url }}" data-search-back aria-label="{{ 'yarn_discovery.back' | t }}">{{ 'icon-arrow.svg' | inline_asset_content }}</a>
@@ -149,14 +175,8 @@
         <a class="yd-search__group-link" href="{{ yarn_collection.url }}" data-search-category-link data-template="{{ 'yarn_discovery.category_link' | t: name: '[name]' | escape }}" hidden></a>
       </div>
       {%- if yarn_collection != blank -%}
-        {% paginate yarn_collection.products by 250 %}
-          <div class="yd-search__grid" data-search-catalog="yarn">
-            {%- for search_product in yarn_collection.products -%}
-              {%- render 'yarn-search-product', search_product: search_product, group: 'yarn' -%}
-            {%- endfor -%}
-          </div>
-          {% if paginate.next %}<a data-search-next="yarn" href="{{ paginate.next.url | escape }}&amp;section_id={{ section.id | url_encode }}" hidden>{{ 'yarn_project.more' | t }}</a>{% endif %}
-        {% endpaginate %}
+        {{ search_yarn_grid }}
+        {{ search_yarn_next }}
       {%- endif -%}
       <button class="yd-search__more" type="button" data-search-show-all data-template="{{ 'yarn_discovery.show_all_yarn' | t: count: '[count]' | escape }}" hidden></button>
     </section>

@@ -988,6 +988,7 @@
     "tax_included": "税込価格",
     "preparing_badge": "準備中",
     "preparing_text": "最初の作品を編んで撮影しているところです。販売開始後は、実物の写真・サイズ・価格・在庫をここに表示します。",
+    "empty_collection": "現在このページに商品はありません。対象の商品が追加されるとここに表示されます。",
     "placeholder_photo": "作品写真",
     "exit_yarn": "毛糸を選ぶ",
     "exit_kits": "材料セットを見る",

@@ -1,9 +1,11 @@
 {%- comment -%}One specification role across cards. Missing data links readers to product facts; never infer yarn weight from shipping weight.{%- endcomment -%}
+{%- capture spec_kind -%}{%- render 'yarn-product-kind', product: product -%}{%- endcapture -%}
+{%- assign spec_kind = spec_kind | strip -%}
 {%- if product.metafields.yarn.spec_line.value != blank -%}
   {{- product.metafields.yarn.spec_line.value | escape -}}
-{%- elsif product.tags contains '編みものキット' -%}
+{%- elsif spec_kind == 'kit' -%}
   {{- 'yarn_project.card_spec_kit' | t -}}
-{%- elsif product.tags contains '完成品' -%}
+{%- elsif spec_kind == 'finished' -%}
   {{- 'yarn_project.card_spec_finished' | t -}}
 {%- else -%}
   {{- 'yarn_project.card_spec_product' | t -}}
