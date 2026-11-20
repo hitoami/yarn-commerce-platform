@@ -1,7 +1,9 @@
-/* #85 毛线目录：筛选抽屉、排序与「显示更多」。没有 JS 时，表单与链接按原生 GET 直接跳转，列表显示这一页的全部商品。
-   #366 只留一套筛选，与页头导航同源：每张卡带 yarn-facets 标记（" thick:fine fiber:wool works:hat "），
-   粗细、花色、材质、织什么、克重、新手友好都在这里按标记筛；胶囊与抽屉的款数、选中状态、计数和「显示更多」都按当前筛选算。
-   价格带与现货是 Search & Discovery，提交抽屉后刷新页面。#243 手感地图的三行与粗细胶囊同一套分档。状态记在网址 ycb_* 参数上。 */
+/* 毛线目录（分类页，锦晨 2026-11-20 选定样稿 v2）。
+   顾客从首页 / 导航带着一个入口进来（如 ?ycb_color=variegated），页头标题和说明换成这个入口；一排圆图切换同组的其他分类；
+   「筛选」默认收起（全部毛线默认展开），展开后其余几组各占一行，同一行可多选（取并集），不同行取交集；数字是在其他已选条件下还剩几款，0 款变灰。
+   结果少于 4 款时列出「放宽一个条件」的毛线。状态记在网址 ycb_* 参数上：入口那一组写在最前面，重新打开页面仍认得入口。
+   每张卡带 yarn-facets 标记（" thick:fine fiber:wool works:hat "）。价格带与现货仍是 Search & Discovery，在抽屉里提交后刷新页面。
+   没有 JS 时，表单与链接按原生 GET 跳转，列表显示这一页的全部商品。 */
 (() => {
   const PRICE_KEYS = ['filter.v.price.gte', 'filter.v.price.lte'];
 
@@ -25,32 +27,41 @@
     return bands.find(same) ?? null;
   }
 
-  // Navigation filters: one value per group. "beginner" is the 新手友好 chip (token beginner:yes, URL ycb_beginner=1).
   const FACET_GROUPS = ['thick', 'color', 'fiber', 'works', 'grams', 'feature'];
-  const THICK_ROWS = ['chunky', 'medium', 'fine'];
-  const STATE_KEYS = ['ycb_view', 'ycb_beginner', 'ycb_here', ...FACET_GROUPS.map((group) => `ycb_${group}`)];
+  const STATE_KEYS = ['ycb_beginner', ...FACET_GROUPS.map((group) => `ycb_${group}`)];
+  const RETIRED_KEYS = ['ycb_view', 'ycb_here', 'ycb_weight', 'ycb_cmp'];
+  const VALUE = /^[a-z_]{1,24}$/;
+  const noFacets = () => Object.fromEntries(FACET_GROUPS.map((group) => [group, []]));
+
   function readFacets(params) {
     return Object.fromEntries(FACET_GROUPS.map((group) => {
-      const value = params.get(`ycb_${group}`) || '';
-      return [group, /^[a-z_]{1,24}$/.test(value) ? value : ''];
+      const values = (params.get(`ycb_${group}`) || '').split(',').filter((value) => VALUE.test(value));
+      return [group, [...new Set(values)]];
     }));
   }
-  const facetsActive = (facets) => FACET_GROUPS.filter((group) => facets[group]);
+  const facetsActive = (facets) => FACET_GROUPS.filter((group) => facets[group]?.length);
   const hasToken = (tokens, token) => ` ${tokens} `.includes(` ${token} `);
+
+  // The entry is the first ycb_* filter in the URL when it holds one value: that is what the customer clicked to get here.
+  function readEntry(params) {
+    for (const [key, value] of params) {
+      if (key === 'ycb_beginner') return value === '1' ? 'beginner:yes' : '';
+      const group = key.startsWith('ycb_') ? key.slice(4) : '';
+      if (FACET_GROUPS.includes(group)) return VALUE.test(value) ? `${group}:${value}` : '';
+    }
+    return '';
+  }
+
   function readState(params) {
-    return {
-      facets: readFacets(params),
-      view: params.get('ycb_view') === 'map' ? 'map' : 'list',
-      beginner: params.get('ycb_beginner') === '1',
-      here: params.get('ycb_here') || '',
-    };
+    return { facets: readFacets(params), beginner: params.get('ycb_beginner') === '1', entry: readEntry(params) };
   }
   const isFiltered = (state) => state.beginner || facetsActive(state.facets).length > 0;
 
-  // Whether an item's tokens pass every active filter; `skip` leaves one group out so its options can be counted.
+  // Whether an item passes every active filter. Values inside one group are alternatives (OR); groups combine (AND).
+  // `skip` leaves one group out so its options can be counted.
   function matches(tokens, state, skip = null) {
     if (skip !== 'beginner' && state.beginner && !hasToken(tokens, 'beginner:yes')) return false;
-    return facetsActive(state.facets).every((group) => group === skip || hasToken(tokens, `${group}:${state.facets[group]}`));
+    return facetsActive(state.facets).every((group) => group === skip || state.facets[group].some((value) => hasToken(tokens, `${group}:${value}`)));
   }
 
   // How many items each option would show, given the other active filters (faceted counts).
@@ -67,22 +78,22 @@
     return counts;
   }
 
-  // "You are here" belongs to one visit only; links and form submits drop it.
-  function writeState(params, state, { keepVisit = true } = {}) {
+  // The entry's group goes first so a reload or a shared link keeps the same page title.
+  function writeState(params, state) {
     const next = new URLSearchParams(params);
-    STATE_KEYS.forEach((key) => next.delete(key));
-    ['ycb_weight', 'ycb_cmp'].forEach((key) => next.delete(key));
-    if (state.view === 'map') next.set('ycb_view', 'map');
-    if (state.beginner) next.set('ycb_beginner', '1');
-    FACET_GROUPS.forEach((group) => { if (state.facets?.[group]) next.set(`ycb_${group}`, state.facets[group]); });
-    if (keepVisit && state.here) next.set('ycb_here', state.here);
+    [...STATE_KEYS, ...RETIRED_KEYS].forEach((key) => next.delete(key));
+    const [entryGroup] = (state.entry || '').split(':');
+    const order = entryGroup === 'beginner' ? ['beginner', ...FACET_GROUPS] : [entryGroup, 'beginner', ...FACET_GROUPS];
+    [...new Set(order.filter(Boolean))].forEach((group) => {
+      if (group === 'beginner') { if (state.beginner) next.set('ycb_beginner', '1'); return; }
+      if (state.facets?.[group]?.length) next.set(`ycb_${group}`, state.facets[group].join(','));
+    });
     return next;
   }
 
-  if (typeof module !== 'undefined') module.exports = { applyBand, activeBand, readState, writeState, matches, countOptions, isFiltered };
+  if (typeof module !== 'undefined') module.exports = { applyBand, activeBand, readState, writeState, matches, countOptions, isFiltered, readEntry };
   if (typeof document === 'undefined') return;
 
-  const NO_FACETS = Object.fromEntries(FACET_GROUPS.map((group) => [group, '']));
   const el = (tag, className, text) => Object.assign(document.createElement(tag), className ? { className } : {}, text != null ? { textContent: text } : {});
   const fill = (template, values) => Object.entries(values).reduce((text, [key, value]) => text.replace(`__${key}__`, value), template || '');
 
@@ -98,7 +109,6 @@
     const drawer = section.querySelector('[data-ycb-drawer]');
     const filterForm = section.querySelector('[data-ycb-filter-form]');
     const grid = section.querySelector('[data-ycb-grid]');
-    const map = section.querySelector('[data-ycb-map]');
     const more = section.querySelector('[data-ycb-more]');
     const reveal = section.querySelector('[data-ycb-reveal]');
     const status = section.querySelector('[data-ycb-status]');
@@ -106,21 +116,26 @@
     const total = section.querySelector('[data-ycb-total]');
     const none = section.querySelector('[data-ycb-none]');
     const active = section.querySelector('[data-ycb-active]');
-    const sortForm = section.querySelector('[data-ycb-sort-form]');
-    const countTemplate = map?.dataset.tCount || '';
+    const refine = section.querySelector('[data-ycb-refine]');
+    const near = section.querySelector('[data-ycb-near]');
+    const nearGrid = section.querySelector('[data-ycb-near-grid]');
+    const title = section.querySelector('[data-ycb-title]');
+    const lead = section.querySelector('[data-ycb-lead]');
+    const crumb = section.querySelector('[data-ycb-crumb-entry]');
     const step = Number(grid?.dataset.ycbStep) || 12;
     const label = (token) => section.querySelector(`[data-ycb-facet="${token}"]`)?.textContent.trim() || '';
+    const entries = Object.fromEntries(Array.from(section.querySelector('[data-ycb-entries]')?.content.children || [], (node) => [node.dataset.entry, node]));
     const preview = new URLSearchParams(window.location.search).get('preview_theme_id');
-    const shopFiltered = Array.from(new URLSearchParams(window.location.search).keys()).some((key) => key.startsWith('filter.'));
+    const defaults = { title: title?.dataset.default ?? title?.textContent ?? '', lead: lead?.dataset.default ?? lead?.innerHTML ?? '' };
     let state = readState(new URLSearchParams(window.location.search));
     let items = [];
     let limit = step;
 
-    section.querySelectorAll('[data-ycb-js]').forEach((node) => { if (node !== map && node !== reveal) node.hidden = false; });
+    section.querySelectorAll('[data-ycb-js]').forEach((node) => { if (node !== reveal) node.hidden = false; });
     section.querySelector('[data-ycb-next]')?.remove();
     section.querySelectorAll('.ycb-grid__item--later').forEach((li) => li.classList.remove('ycb-grid__item--later'));
 
-    section.querySelector('[data-ycb-open]')?.addEventListener('click', () => { syncDrawer(); drawer?.showModal(); });
+    section.querySelector('[data-ycb-open]')?.addEventListener('click', () => drawer?.showModal());
     section.querySelector('[data-ycb-close]')?.addEventListener('click', () => drawer?.close());
     drawer?.addEventListener('click', (event) => { if (event.target === drawer) drawer.close(); });
 
@@ -128,19 +143,11 @@
     const band = activeBand(new URLSearchParams(window.location.search), bands.map((input) => input.value).filter(Boolean));
     bands.forEach((input) => { input.checked = band ? input.value === band : !input.value; });
 
-    // Price and stock need the server; when only navigation filters changed, apply them here without reloading.
+    // Price and stock need the server: submit the drawer as a normal GET, carrying the in-page filters along.
     filterForm?.addEventListener('submit', (event) => {
       event.preventDefault();
-      const params = new URLSearchParams(new FormData(filterForm));
-      const facets = readFacets(params);
       const chosenBand = filterForm.querySelector('[data-ycb-band]:checked')?.value || '';
-      const next = writeState(applyBand(params, chosenBand), { ...state, facets, here: '' });
-      const shopKeys = (search) => Array.from(new URLSearchParams(search)).filter(([key]) => key.startsWith('filter.')).map((pair) => pair.join('=')).sort().join('&');
-      drawer.close();
-      if (shopKeys(next) === shopKeys(window.location.search)) {
-        update({ facets, here: '' });
-        return;
-      }
+      const next = writeState(applyBand(new URLSearchParams(new FormData(filterForm)), chosenBand), state);
       if (preview) next.set('preview_theme_id', preview);
       window.location.assign(`${filterForm.getAttribute('action')}${next.size ? `?${next}` : ''}`);
     });
@@ -148,21 +155,14 @@
     const sort = section.querySelector('[data-ycb-sort]');
     sort?.addEventListener('change', () => sort.form.requestSubmit());
     sort?.form.addEventListener('submit', () => {
-      writeState(new URLSearchParams(), state, { keepVisit: false }).forEach((value, key) => {
+      writeState(new URLSearchParams(), state).forEach((value, key) => {
         sort.form.append(Object.assign(document.createElement('input'), { type: 'hidden', name: key, value }));
       });
     });
 
     if (!grid) return;
 
-    const readItem = (li) => {
-      const title = li.querySelector('.yx-product-card__title');
-      return {
-        li, tokens: li.dataset.ycbFacets || '', handle: li.dataset.ycbItem,
-        img: li.dataset.ycbImg || '', spec: li.dataset.ycbSpec || '', name: title?.textContent.trim() || '', url: title?.getAttribute('href') || '#',
-        price: li.querySelector('.yx-product-card__price')?.textContent.replace(/\s+/g, ' ').trim() || '',
-      };
-    };
+    const readItem = (li) => ({ li, tokens: li.dataset.ycbFacets || '', handle: li.dataset.ycbItem });
     items = Array.from(grid.children, readItem);
 
     // More than one server page (over 48 products): fetch the rest once so filters and counts see every product.
@@ -191,95 +191,136 @@
       }
     }
 
-    function syncDrawer() {
-      const counts = countOptions(items.map((item) => item.tokens), state);
-      section.querySelectorAll('[data-ycb-facet-input]').forEach((input) => {
-        const group = input.name.replace('ycb_', '');
-        input.checked = input.value === (state.facets[group] || '');
-        const counter = input.parentElement.querySelector('[data-ycb-option-count]');
-        if (!counter) return;
-        const n = counts[`${group}:${input.value}`] || 0;
-        counter.textContent = n;
-        input.disabled = n === 0 && !input.checked;
+    const entryGroup = () => (state.entry || '').split(':')[0];
+
+    // Page head: the entry's own title and words; without an entry, the collection's.
+    function renderHead() {
+      const node = entries[state.entry];
+      const entryLabel = label(state.entry);
+      if (title) title.textContent = node?.dataset.title || entryLabel || defaults.title;
+      if (lead) lead.innerHTML = node ? node.innerHTML : (state.entry ? '' : defaults.lead);
+      if (lead) lead.hidden = !lead.textContent.trim();
+      if (crumb) { crumb.hidden = !state.entry; crumb.querySelector('[data-ycb-crumb-label]').textContent = entryLabel; }
+      document.title = `${title?.textContent || ''} – ${document.title.split(' – ').pop()}`;
+    }
+
+    // Circle row: only on a category entry, showing that entry's siblings (CSS picks the row from data-ycb-group).
+    // 全部毛线 and 新手推荐 have no siblings to switch to, so no circles there.
+    function renderCircles(counts) {
+      if (state.entry) section.setAttribute('data-ycb-group', entryGroup()); else section.removeAttribute('data-ycb-group');
+      const baseCounts = countOptions(items.map((item) => item.tokens), { facets: noFacets(), beginner: false, entry: '' });
+      section.querySelectorAll('[data-ycb-circle]').forEach((link) => {
+        const token = link.dataset.ycbCircle;
+        const on = token === 'all' ? !state.entry : token === state.entry;
+        link.classList.toggle('is-current', on);
+        if (on) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
+        const n = token === 'all' ? items.length : baseCounts[token] || 0;
+        const counter = link.querySelector('[data-ycb-circle-count]');
+        if (counter) counter.textContent = fill(counter.dataset.t, { N: n });
+      });
+      return counts;
+    }
+
+    // Refine rows: every group except the entry's, multi-select inside a row.
+    function renderRefine(counts) {
+      section.querySelectorAll('[data-ycb-row]').forEach((row) => {
+        let shown = 0;
+        row.querySelectorAll('[data-ycb-opt]').forEach((button) => {
+          const [group, value] = button.dataset.ycbOpt.split(':');
+          // The entry's own group is the page itself, so its options leave the rows (新手推荐 sits in the 特点 row).
+          button.hidden = group === entryGroup();
+          if (!button.hidden) shown += 1;
+          const on = group === 'beginner' ? state.beginner : state.facets[group]?.includes(value);
+          const n = counts[button.dataset.ycbOpt] || 0;
+          button.setAttribute('aria-pressed', String(Boolean(on)));
+          button.disabled = n === 0 && !on;
+          button.querySelector('[data-ycb-opt-count]').textContent = n;
+        });
+        row.hidden = shown === 0;
       });
     }
 
-    function renderChips(counts) {
-      const allLink = section.querySelector('[data-ycb-all]');
-      const allOn = !isFiltered(state) && !shopFiltered;
-      allLink?.classList.toggle('ycb-chip--active', allOn);
-      if (allOn) allLink?.setAttribute('aria-current', 'true'); else allLink?.removeAttribute('aria-current');
-      // 筛选按钮上的数字 = 价格 / 现货（服务器算好）+ 抽屉里选中的导航筛选组数。
-      const pillCount = section.querySelector('[data-ycb-filter-count]');
-      if (pillCount) {
-        const n = Number(pillCount.dataset.ycbShopN || 0) + facetsActive(state.facets).length;
-        pillCount.querySelector('[data-ycb-filter-n]').textContent = n;
-        pillCount.hidden = n === 0;
-      }
-      section.querySelectorAll('[data-ycb-chip]').forEach((chip) => {
-        const [group, value] = chip.dataset.ycbChip.split(':');
-        const on = group === 'beginner' ? state.beginner : state.facets[group] === value;
-        chip.classList.toggle('ycb-chip--active', on);
-        chip.setAttribute('aria-pressed', String(on));
-        const n = counts[chip.dataset.ycbChip] || 0;
-        chip.querySelector('[data-ycb-chip-count]').textContent = n;
-        chip.toggleAttribute('data-ycb-zero', n === 0 && !on);
-        const next = group === 'beginner' ? { ...state, beginner: !on } : { ...state, facets: { ...state.facets, [group]: on ? '' : value } };
-        const params = writeState(new URLSearchParams(window.location.search), next, { keepVisit: false });
-        chip.href = `${window.location.pathname}${params.size ? `?${params}` : ''}`;
-      });
-    }
-
+    // Picked refine options as removable tags (the entry itself is the page, not a tag).
     function renderActive() {
-      active.querySelectorAll('[data-ycb-tag]').forEach((tag) => tag.remove());
+      active.querySelectorAll('[data-ycb-tag], [data-ycb-clear]').forEach((node) => node.remove());
       const tag = (text, clear) => {
-        const button = el('button', 'ycb-active__chip', `${text} ✕`);
+        const button = el('button', 'ycb-active__chip', text);
         button.type = 'button';
         button.dataset.ycbTag = '';
-        button.setAttribute('aria-label', `${text} · ${map?.dataset.tClear || ''}`);
+        button.append(el('span', 'ycb-active__x', '×'));
+        button.setAttribute('aria-label', `${text} · ${active.dataset.tRemove || ''}`);
         button.addEventListener('click', clear);
         active.append(button);
       };
-      if (state.beginner) tag(label('beginner:yes'), () => update({ beginner: false }));
-      facetsActive(state.facets).forEach((group) => {
-        const text = label(`${group}:${state.facets[group]}`);
-        if (text) tag(text, () => update({ facets: { ...state.facets, [group]: '' } }));
-      });
+      if (state.beginner && state.entry !== 'beginner:yes') tag(label('beginner:yes'), () => update({ beginner: false }));
+      facetsActive(state.facets).forEach((group) => state.facets[group].forEach((value) => {
+        if (`${group}:${value}` === state.entry) return;
+        tag(label(`${group}:${value}`), () => update({ facets: { ...state.facets, [group]: state.facets[group].filter((v) => v !== value) } }));
+      }));
+      const picked = active.querySelectorAll('[data-ycb-tag]').length;
+      if (picked) {
+        const clear = el('button', 'ycb-active__clear', active.dataset.tClear || '');
+        clear.type = 'button';
+        clear.dataset.ycbClear = '';
+        clear.addEventListener('click', () => update(entryOnly()));
+        active.append(clear);
+      }
       active.hidden = !active.children.length;
+      return picked;
     }
 
-    function renderList() {
+    function entryOnly() {
+      const facets = noFacets();
+      const [group, value] = (state.entry || '').split(':');
+      if (FACET_GROUPS.includes(group)) facets[group] = [value];
+      return { facets, beginner: state.entry === 'beginner:yes' };
+    }
+
+    function renderList(picked) {
       const matched = items.filter((item) => matches(item.tokens, state));
       items.forEach((item) => { item.li.hidden = true; });
       matched.slice(0, limit).forEach((item) => { item.li.hidden = false; });
       const shown = Math.min(limit, matched.length);
-      const isMap = state.view === 'map';
-      if (none) none.hidden = matched.length > 0 || isMap;
-      if (more) more.hidden = matched.length === 0 || isMap;
+      if (none) none.hidden = matched.length > 0;
+      if (more) more.hidden = matched.length === 0;
       if (status) status.textContent = fill(more?.dataset.tShown, { S: shown, T: matched.length });
       if (reveal) reveal.hidden = shown >= matched.length;
-      if (count && countTemplate) count.textContent = fill(countTemplate, { N: matched.length });
+      if (count) count.textContent = fill(count.dataset.t, { N: matched.length });
       if (total) total.textContent = fill(total.dataset.t, { N: matched.length });
-      return matched;
+      renderNear(matched, picked);
     }
 
-    function renderChrome() {
-      section.querySelectorAll('[data-ycb-view]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.ycbView === state.view)));
-      const isMap = state.view === 'map';
-      if (map) map.hidden = !isMap;
-      grid.hidden = isMap;
-      if (sortForm) sortForm.hidden = isMap;
-      section.toggleAttribute('data-ycb-beginner-on', state.beginner);
+    // Fewer than 4 results after refining: show yarns that miss only one of the picked conditions.
+    function renderNear(matched, picked) {
+      if (!near) return;
+      nearGrid.replaceChildren();
+      if (!picked || matched.length >= 4) { near.hidden = true; return; }
+      const taken = new Set(matched.map((item) => item.handle));
+      const refinedGroups = facetsActive(state.facets).filter((group) => group !== entryGroup());
+      if (state.beginner && state.entry !== 'beginner:yes') refinedGroups.push('beginner');
+      const relaxed = items.filter((item) => !taken.has(item.handle) && refinedGroups.some((group) => matches(item.tokens, state, group))).slice(0, 4);
+      relaxed.forEach((item) => {
+        const copy = item.li.cloneNode(true);
+        copy.hidden = false;
+        copy.removeAttribute('data-ycb-item');
+        nearGrid.append(copy);
+      });
+      near.hidden = relaxed.length === 0;
+    }
+
+    function syncUrl() {
       const params = writeState(new URLSearchParams(window.location.search), state);
       window.history.replaceState(null, '', `${window.location.pathname}${params.size ? `?${params}` : ''}`);
     }
 
     function render() {
-      renderChrome();
-      renderChips(countOptions(items.map((item) => item.tokens), state));
-      renderActive();
-      const matched = renderList();
-      if (map && state.view === 'map') renderMap(matched);
+      const counts = countOptions(items.map((item) => item.tokens), state);
+      renderHead();
+      renderCircles(counts);
+      renderRefine(counts);
+      section.toggleAttribute('data-ycb-beginner-on', state.beginner);
+      renderList(renderActive());
+      syncUrl();
     }
 
     function update(change) {
@@ -291,83 +332,48 @@
     reveal?.addEventListener('click', () => {
       const before = limit;
       limit += step;
-      renderList();
+      renderList(active.querySelectorAll('[data-ycb-tag]').length);
       const first = items.filter((item) => matches(item.tokens, state))[before];
       first?.li.querySelector('a')?.focus({ preventScroll: true });
     });
 
-    // Chips filter in place; the 全部 chip clears navigation filters, and also price / stock / category when those are set.
-    section.querySelectorAll('[data-ycb-chip]').forEach((chip) => chip.addEventListener('click', (event) => {
+    // The refine rows start open on 全部毛线 (nothing picked yet, so they are the way in) and closed on an entry.
+    function setOpen(open) {
+      refine?.classList.toggle('is-open', open);
+      section.querySelector('[data-ycb-refine-toggle]')?.setAttribute('aria-expanded', String(open));
+    }
+
+    // Circles switch the entry in place and drop the refine options.
+    section.querySelectorAll('[data-ycb-circle]').forEach((link) => link.addEventListener('click', (event) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey) return;
       event.preventDefault();
-      const [group, value] = chip.dataset.ycbChip.split(':');
-      if (group === 'beginner') update({ beginner: !state.beginner, here: '' });
-      else update({ facets: { ...state.facets, [group]: state.facets[group] === value ? '' : value }, here: '' });
+      const token = link.dataset.ycbCircle;
+      const facets = noFacets();
+      let entry = '';
+      if (token !== 'all') {
+        const [group, value] = token.split(':');
+        facets[group] = [value];
+        entry = token;
+      }
+      setOpen(!entry);
+      update({ facets, beginner: false, entry });
     }));
-    section.querySelector('[data-ycb-all]')?.addEventListener('click', (event) => {
-      if (shopFiltered) return;
-      event.preventDefault();
-      update({ facets: { ...NO_FACETS }, beginner: false, here: '' });
+
+    section.querySelector('[data-ycb-refine-toggle]')?.addEventListener('click', (event) => {
+      const open = !refine.classList.contains('is-open');
+      refine.classList.toggle('is-open', open);
+      event.currentTarget.setAttribute('aria-expanded', String(open));
     });
-    section.querySelectorAll('[data-ycb-view]').forEach((button) => button.addEventListener('click', () => update({ view: button.dataset.ycbView })));
 
-    // Hand-feel map: three rows, the same thickness bands as the chips.
-    const board = map?.querySelector('[data-ycb-board]');
-    const pop = map?.querySelector('[data-ycb-pop]');
-    const gutters = map ? Object.fromEntries(Array.from(map.querySelector('[data-ycb-gutters]').content.children, (gut) => [gut.dataset.ycbGutter, gut])) : {};
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const thickOf = (item) => THICK_ROWS.find((row) => hasToken(item.tokens, `thick:${row}`)) || null;
+    section.querySelectorAll('[data-ycb-opt]').forEach((button) => button.addEventListener('click', () => {
+      const [group, value] = button.dataset.ycbOpt.split(':');
+      if (group === 'beginner') { update({ beginner: !state.beginner }); return; }
+      const values = state.facets[group] || [];
+      update({ facets: { ...state.facets, [group]: values.includes(value) ? values.filter((v) => v !== value) : [...values, value] } });
+    }));
 
-    function ball(item, named) {
-      const button = el('button', `ycb-ball${named ? ' ycb-ball--named' : ''}${item.handle === state.here ? ' is-here' : ''}`);
-      button.type = 'button';
-      button.setAttribute('aria-label', item.name);
-      if (item.img) button.append(Object.assign(el('img'), { src: item.img, alt: '', width: 56, height: 56 }));
-      else button.append(el('span', 'ycb-ball__blank'));
-      if (item.handle === state.here) button.append(el('span', 'ycb-ball__here', map.dataset.tHere));
-      else if (named) button.append(el('span', 'ycb-ball__name', item.name));
-      button.addEventListener('click', () => openPop(item, button.closest('.ycb-map__row')));
-      return button;
-    }
-
-    function renderMap(matched) {
-      pop.hidden = true;
-      map.append(pop);
-      board.replaceChildren();
-      const named = isFiltered(state);
-      const rows = THICK_ROWS.filter((row) => !state.facets.thick || state.facets.thick === row);
-      rows.forEach((row) => {
-        const line = el('div', 'ycb-map__row');
-        line.append(gutters[row].cloneNode(true));
-        const inRow = matched.filter((item) => thickOf(item) === row);
-        const balls = el('div', 'ycb-map__balls');
-        if (inRow.length) balls.append(...inRow.map((item) => ball(item, named)));
-        else balls.append(el('span', 'ycb-map__none', map.dataset.tEmpty));
-        line.append(balls);
-        if (inRow.length) {
-          const toList = el('button', 'ycb-map__tolist', `${fill(countTemplate, { N: inRow.length })} ›`);
-          toList.type = 'button';
-          toList.addEventListener('click', () => update({ view: 'list', facets: { ...state.facets, thick: row } }));
-          line.append(toList);
-        }
-        board.append(line);
-      });
-      const missing = matched.filter((item) => !thickOf(item)).length;
-      map.querySelector('[data-ycb-map-status]').textContent = missing > 0 ? fill(map.dataset.tMissing, { N: missing }) : '';
-      const here = board.querySelector('.is-here');
-      if (here) here.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
-    }
-
-    function openPop(item, row) {
-      pop.querySelector('[data-ycb-pop-image]').src = item.img;
-      pop.querySelector('[data-ycb-pop-name]').textContent = item.name;
-      pop.querySelector('[data-ycb-pop-spec]').textContent = item.spec;
-      pop.querySelector('[data-ycb-pop-price]').textContent = item.price;
-      pop.querySelector('[data-ycb-pop-go]').href = item.url;
-      row.after(pop);
-      pop.hidden = false;
-      pop.querySelector('[data-ycb-pop-go]').focus({ preventScroll: true });
-    }
-    pop?.querySelector('[data-ycb-pop-close]').addEventListener('click', () => { pop.hidden = true; });
+    // Arriving with refine options already in the URL (a shared link): open the rows so they can be seen.
+    if (!state.entry || (active && facetsActive(state.facets).some((group) => group !== entryGroup()))) setOpen(true);
 
     render();
     if (Number(grid.dataset.ycbPages) > 1) loadRest().then(render);
