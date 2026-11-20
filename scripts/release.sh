@@ -3,7 +3,8 @@
 # 需要当次人工批准（AGENTS.md 生产安全）。先合并 main → production 的 PR，再运行：
 #   scripts/release.sh "<内容> (PR-<编号>)"
 # 加 --check 只比对线上设置文件，不推送、不发布。
-# 线上主题的设置文件与 production 不一致时停止，不推送。
+# 线上主题的设置文件里有仓库从没出现过的内容（= 有人在 Shopify 后台改过）时停止，不推送。
+# 只是本次发布要改的文件（线上还是 production 某个旧版本）不算后台改动。
 set -euo pipefail
 
 STORE="${SHOPIFY_STORE:-tutaka-54.myshopify.com}"
@@ -49,20 +50,32 @@ echo "线上主题：$LIVE_ID"
 npx shopify theme pull --store "$STORE" --theme "$LIVE_ID" --path "$WORK/live" \
   --only 'config/*.json' --only 'templates/*.json' --only 'sections/*.json' >/dev/null
 # 按 JSON 内容比对：Shopify 拉下来的文件开头多一段自动生成注释。
+# 线上文件和 production 不同，但等于 production 历史上某个版本（多半就是上次发布的样子）→ 是本次要发布的改动，放行；
+# 和历史上任何版本都对不上 → 后台改动，停下。线上有、仓库历史里从来没有的文件同样算后台改动。
 node - "$WORK/live" "$WORK/code" <<'EOF'
 const fs = require('node:fs');
 const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 const [live, code] = process.argv.slice(2);
-const read = file => JSON.stringify(JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\s*\/\*[\s\S]*?\*\//, '')));
-const changed = fs.readdirSync(live, { recursive: true })
-  .filter(file => file.endsWith('.json'))
-  .filter(file => !fs.existsSync(path.join(code, file)) || read(path.join(live, file)) !== read(path.join(code, file)));
-if (changed.length) {
-  console.error(`线上主题有后台改动，production 会覆盖它们。先把这些文件并回仓库再发布：\n${changed.join('\n')}`);
+const norm = text => JSON.stringify(JSON.parse(text.replace(/^\s*\/\*[\s\S]*?\*\//, '')));
+const git = args => execFileSync('git', args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+const pastVersions = file => git(['log', '-n', '50', '--format=%H', 'origin/production', '--', file]).split('\n').filter(Boolean)
+  .map(commit => { try { return norm(git(['show', `${commit}:${file}`])); } catch { return null; } });
+const releasing = [];
+const edited = [];
+for (const file of fs.readdirSync(live, { recursive: true }).filter(name => name.endsWith('.json'))) {
+  const now = norm(fs.readFileSync(path.join(live, file), 'utf8'));
+  const target = path.join(code, file);
+  if (fs.existsSync(target) && norm(fs.readFileSync(target, 'utf8')) === now) continue;
+  (pastVersions(file).includes(now) ? releasing : edited).push(file);
+}
+if (edited.length) {
+  console.error(`线上主题有后台改动，production 会覆盖它们。先把这些文件并回仓库再发布：\n${edited.join('\n')}`);
   process.exit(1);
 }
+if (releasing.length) console.log(`本次发布会更新：${releasing.join('、')}（线上仍是 production 的旧版本，不是后台改动）`);
 EOF
-echo "线上设置文件与 production 一致。"
+echo "线上设置文件没有后台改动。"
 [ -n "$CHECK" ] && exit 0
 
 # 两份 release 主题轮流用，避免主题数到 Shopify 上限 20：覆盖最近一份未发布的 release 主题（上一版，
@@ -77,9 +90,9 @@ else
   "$(dirname "$0")/prune-themes.sh" 1
   NEW_ID="$(npx shopify theme push --store "$STORE" --path "$WORK/code" --unpublished --theme "$NAME" --json | json 'v.theme.id')"
 fi
-echo "已推送：$NEW_ID（$NAME）"
+echo "已推送：${NEW_ID}（${NAME}）"
 npx shopify theme publish --store "$STORE" --theme "$NEW_ID" --force >/dev/null
 
 NOW_ID="$(npx shopify theme list --store "$STORE" --role live --json | json 'v[0].id')"
 [ "$NOW_ID" = "$NEW_ID" ] || { echo "发布后线上仍是 $NOW_ID" >&2; exit 1; }
-echo "已上线：$NAME（$NEW_ID）。回滚：重新发布 $LIVE_ID。"
+echo "已上线：${NAME}（${NEW_ID}）。回滚：重新发布 ${LIVE_ID}。"

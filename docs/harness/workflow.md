@@ -44,7 +44,7 @@ flowchart LR
 
 1. 开 `main` → `production` 的 PR 并合并。
 2. 运行 `scripts/release.sh "<内容> (PR-<编号>)"`（先用 `--check` 只比对）。脚本会：
-   - 拉取线上主题的设置文件，按 JSON 内容与 `production` 比对；有差异就停下，先把后台改动并回仓库；
+   - 拉取线上主题的设置文件，按 JSON 内容与 `production` 比对：和 `production` 历史上任何版本都对不上的才算后台改动，有就停下，先并回仓库；只是本次发布要改的文件会放行并列出来；
    - 把 `production` 推到上一份 release 主题（两份轮流覆盖，主题数不增长），改名为 `hitoami release <日期> <内容> (PR-<编号>)`；
    - 发布并确认它是 live。
 3. 在线上地址跑 `node scripts/proof.cjs --live`（设置 `PROOF_BASE_URL`），在对应 Issue 记下新主题名称、ID 和回滚方式。
