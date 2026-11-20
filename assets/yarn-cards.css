@@ -49,6 +49,8 @@
 .yx-product-card__meta-row { display: flex; align-items: center; gap: 8px; }
 .yx-product-card__meta-row .yx-card-meta { flex: 1; min-width: 0; }
 .yx-product-card__badge { flex: none; margin-left: auto; padding: 2px 9px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: var(--yarn-fs-12); font-weight: 500; line-height: 1.4; }
+.yx-product-card__badge + .yx-product-card__badge { margin-left: 0; }
+.yx-product-card__badge--undyed { background: var(--yarn-tint-butter); }
 .yx-product-card__reason { display: block; font-size: var(--yarn-fs-14); line-height: 1.45; color: var(--yarn-text-secondary); }
 .yx-project-picks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
 .yx-project-pick { display: flex; flex-direction: column; gap: 8px; color: var(--yarn-text-heading); text-decoration: none; }
@@ -156,6 +158,14 @@
   .yx-teaser__text p { font-size: var(--yarn-fs-18); }
 }
 .yx-picks__grid { display: grid; grid-template-columns: repeat(var(--yx-cols, 4), minmax(0, 1fr)); gap: 24px; }
+/* 首页限时折扣：一排横滑，露出下一张的一点边，看得出还能滑。 */
+.yx-picks--rail .yx-picks__grid { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: calc((100% - 5 * 24px) / 5.35); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; padding-bottom: 8px; scrollbar-width: thin; }
+.yx-picks--rail .yx-picks__grid > * { scroll-snap-align: start; }
+.yx-picks__empty { margin: 0; padding: 20px 0; border-top: 1px solid var(--yarn-border-subtle); border-bottom: 1px solid var(--yarn-border-subtle); color: var(--yarn-text-muted); font-size: var(--yarn-fs-15); }
+.yx-reviews__empty { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 24px 0; border-top: 1px solid var(--yarn-border-subtle); border-bottom: 1px solid var(--yarn-border-subtle); }
+.yx-reviews__empty p { margin: 0; color: var(--yarn-text-muted); font-size: var(--yarn-fs-15); }
+.yx-reviews__cta { display: inline-flex; align-items: center; min-height: var(--yarn-touch); padding: 0 22px; border: 1px solid var(--yarn-border-card); border-radius: var(--yarn-radius-pill); color: var(--yarn-text-heading); font-size: var(--yarn-fs-15); text-decoration: none; white-space: nowrap; }
+.yx-reviews__cta:hover { border-color: var(--yarn-text-heading); }
 .yx-picks__body--with-exit { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
 .yx-picks__body--with-exit .yx-picks__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .yx-picks--duo:not(:has(.yx-picks__exit)) .yx-product-card { flex-direction: row; }
@@ -167,6 +177,7 @@
   .yx-project-pick { scroll-snap-align: start; }
   .yx-picks { padding: 0 0 40px; }
   .section-yarn-entry-circles + .shopify-section .yx-picks { padding-top: 40px; }
+  .yx-picks--rail .yx-picks__grid { grid-auto-columns: 42%; gap: 12px; margin-inline: -16px; padding-inline: 16px; scrollbar-width: none; }
   .yx-picks > .page-width { padding-inline: 16px; }
   .yx-picks__head { gap: 10px; margin-bottom: 12px; }
   /* Phones: title and view-all share the first row, the note runs full width below. */
@@ -316,8 +327,8 @@
   .yx-card-cart *, .yx-card-cart[data-state='error'], #cart-icon-bubble.is-bumping *, [data-favorites-header].is-bumping * { animation: none !important; }
 }
 @media (max-width: 749px) {
-  .yarn-favorite.yx-card-fav { top: 6px; right: 6px; width: 38px; height: 38px; }
-  .yarn-favorite.yx-card-fav::before { content: ''; position: absolute; inset: -3px; }
+  /* Issue 366：手机上收藏按钮仍保持 44px 可点区域（--yarn-touch），只把心形缩小一点。 */
+  .yarn-favorite.yx-card-fav { top: 6px; right: 6px; }
   .yarn-favorite.yx-card-fav svg { width: 19px; height: 19px; }
   .yx-card-cart { min-width: 40px; height: 40px; padding-inline: 9px; font-size: var(--yarn-fs-13); }
   .yx-card-cart::before { content: ''; position: absolute; inset: -2px; }

@@ -7,6 +7,7 @@
   beginner:读 metafield yarn.beginner_reason;有理由才显示「新手友好」标签,理由代替规格行;没有理由不显示标签。
   layout: 'row'(#131 本季专题，用户 2026-10-16 选定 Figma 候选 E):同一张卡改为横排，图片在左，文字在右，并在价格下加「查看商品 →」;样式与数据不变。
   handmade(#131):手工成品。规格行换成「手工制作」说明;库存由 Shopify 跟踪且 10 件及以下时左上角显示「仅剩 N 件」,卖完显示「售罄」。
+  clean_title(首页重排 2026-11-19):标题去掉开头【材质】与「｜」后的规格,材质放到规格行最前面;alt 仍用完整标题。
   eager(#189):首屏里的卡片（列表前几张）不懒加载，第一行加 fetchpriority=high，避免 LCP 图片迟迟不开始下载。
   其他商品(#177 R4):已定价但不可售时左上角显示「缺货」,价格降为灰色;未定价沿用「暂未开售」。没有标签 = 能买。
 {% endcomment %}
@@ -19,6 +20,21 @@
   assign card_off = 0
   if show_discount and card_product.compare_at_price > card_product.price
     assign card_off = card_product.compare_at_price | minus: card_product.price | times: 100 | divided_by: card_product.compare_at_price
+  endif
+  assign card_name = card_product.title
+  assign card_material = blank
+  if clean_title
+    if card_name contains '】'
+      assign card_head = card_name | split: '】' | first
+      if card_head contains '【'
+        assign card_material = card_head | split: '【' | last | strip
+        assign card_name = card_name | remove_first: card_head | remove_first: '】'
+      endif
+    endif
+    assign card_name = card_name | split: '｜' | first | strip
+    if card_name == blank
+      assign card_name = card_product.title
+    endif
   endif
   assign card_sizes = '(min-width: 750px) 300px, 45vw'
   if layout == 'row'
@@ -61,12 +77,18 @@
     {%- render 'yarn-favorite-button', entity_type: 'product', entity_id: card_product.id, entity_title: card_product.title, modifier: 'yx-card-fav' -%}
   </div>
   <div class="yx-product-card__body">
-    {%- if card_reason != blank -%}
-      <span class="yx-product-card__meta-row">{%- render 'yarn-card-meta', meta_product: card_product -%}<span class="yx-product-card__badge">{{ 'yarn_project.card_badge_beginner' | t }}</span></span>
+    {%- comment -%}分类定稿（2026-11-19）：白胚线（yarn.undyed 为真）在卡片上带「白胚 · 可自己染」小标记，不做入口。{%- endcomment -%}
+    {%- assign card_undyed = false -%}
+    {%- if card_product.metafields.yarn.undyed.value == true -%}{%- assign card_undyed = true -%}{%- endif -%}
+    {%- if card_reason != blank or card_undyed -%}
+      <span class="yx-product-card__meta-row">{%- render 'yarn-card-meta', meta_product: card_product -%}
+        {%- if card_reason != blank -%}<span class="yx-product-card__badge">{{ 'yarn_project.card_badge_beginner' | t }}</span>{%- endif -%}
+        {%- if card_undyed -%}<span class="yx-product-card__badge yx-product-card__badge--undyed">{{ 'yarn_project.card_badge_undyed' | t }}</span>{%- endif -%}
+      </span>
     {%- else -%}
       {%- render 'yarn-card-meta', meta_product: card_product -%}
     {%- endif -%}
-    <a class="yx-product-card__title yx-product-card__link" href="{{ card_product.url }}">{{ card_product.title | escape }}</a>
+    <a class="yx-product-card__title yx-product-card__link" href="{{ card_product.url }}">{{ card_name | escape }}</a>
     {%- if card_reason != blank -%}
       <span class="yx-product-card__reason">{{ card_reason | escape }}</span>
     {%- elsif handmade -%}
@@ -74,7 +96,7 @@
     {%- else -%}
       {%- capture card_colors %}{% render 'yarn-card-color-count', count_product: card_product %}{% endcapture -%}
       {%- assign card_colors = card_colors | strip -%}
-      <span class="yx-product-card__spec">{% render 'yarn-card-spec', product: card_product %}{% if card_colors != blank %}<span class="yx-product-card__spec-colors"> · {{ card_colors }}</span>{% endif %}</span>
+      <span class="yx-product-card__spec">{% if card_material != blank %}{{ card_material | escape }} · {% endif %}{% render 'yarn-card-spec', product: card_product %}{% if card_colors != blank %}<span class="yx-product-card__spec-colors"> · {{ card_colors }}</span>{% endif %}</span>
     {%- endif -%}
     <div class="yx-product-card__buy">
       <span class="yx-product-card__price{% if card_product.available == false or card_product.price <= 0 %} yx-product-card__price--muted{% endif %}">

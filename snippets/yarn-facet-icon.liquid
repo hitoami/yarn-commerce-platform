@@ -4,8 +4,18 @@
   材质、想织什么（用户 2026-11-14 选定不带脸版）：小绵羊 / 羊毛＋线团 / 绒毛线团 / 亮面线轴 / 棉花；毛衣 / 毛线帽 / 围巾 / 波浪条纹毯 / 手提包 / 钩织小兔。
   这两组的颜色用 .f-* / .s-* 类（填色 / 描边）。uid 让桌面与抽屉里的渐变 / 裁切 id 不重复。
   新手友好（#365）：两片叶子的小芽。
+  推荐栏（分类定稿 2026-11-19）：毛茸茸借用马海毛的绒毛线团，大团毛线借用纯色线团，钩针用线是一支钩针穿过小线团。
   用法：{%- render 'yarn-facet-icon', group: 'color', value: 'solid', uid: 'YarnHeaderMenu' -%}
 {%- endcomment -%}
+{%- liquid
+  if group == 'feature' and value == 'fluffy'
+    assign group = 'fiber'
+    assign value = 'mohair'
+  elsif group == 'grams'
+    assign group = 'color'
+    assign value = 'solid'
+  endif
+-%}
 {%- assign yfi_id = uid | append: '-yfi-' | append: value -%}
 {%- if group == 'thick' -%}
   {%- case value -%}
@@ -17,17 +27,11 @@
 {%- elsif group == 'color' -%}
   <svg class="yfi" viewBox="0 0 28 24" width="28" height="24" aria-hidden="true" focusable="false">
     <defs><clipPath id="{{ yfi_id }}-c"><circle cx="11.5" cy="12" r="8.6"/></clipPath>
-      {%- if value == 'gradient' -%}<linearGradient id="{{ yfi_id }}-g" x1="0" x2="1" y1="0" y2="1"><stop offset="0" class="yfi-stop-cream"/><stop offset="1" class="yfi-stop-clay"/></linearGradient>{%- endif -%}
     </defs>
     <g clip-path="url(#{{ yfi_id }}-c)">
       {%- case value -%}
         {%- when 'solid' -%}<rect class="yfi-clay" x="2" y="3" width="20" height="18"/>
         {%- when 'variegated' -%}<rect class="yfi-clay" x="2" y="3" width="20" height="6"/><rect class="yfi-cream" x="2" y="9" width="20" height="6"/><rect class="yfi-sage" x="2" y="15" width="20" height="6"/>
-        {%- when 'gradient' -%}<rect fill="url(#{{ yfi_id }}-g)" x="2" y="3" width="20" height="18"/>
-        {%- when 'heather' -%}<rect class="yfi-blush" x="2" y="3" width="20" height="18"/>
-          {%- assign yfi_dots = '6,7 10,5.6 14.5,7 18,9 5,11.5 9,10 13,11.6 17.4,13 7,15.4 11,14.6 15,16 9.4,18.4 13.6,19' | split: ' ' -%}
-          {%- for yfi_dot in yfi_dots -%}{%- assign yfi_xy = yfi_dot | split: ',' -%}{%- assign yfi_odd = forloop.index | modulo: 2 -%}<circle class="{% if yfi_odd == 1 %}yfi-clay{% else %}yfi-sage{% endif %}" cx="{{ yfi_xy[0] }}" cy="{{ yfi_xy[1] }}" r="0.8"/>{%- endfor -%}
-        {%- when 'rainbow' -%}<rect class="yfi-clay" x="2" y="3" width="20" height="4"/><rect class="yfi-butter" x="2" y="7" width="20" height="3.6"/><rect class="yfi-sage" x="2" y="10.6" width="20" height="3.6"/><rect class="yfi-mist" x="2" y="14.2" width="20" height="3.6"/><rect class="yfi-blush" x="2" y="17.8" width="20" height="4"/>
       {%- endcase -%}
     </g>
     <circle class="yfi-ink" cx="11.5" cy="12" r="8.6"/>
@@ -56,4 +60,6 @@
   </svg>
 {%- elsif group == 'beginner' -%}
   <svg class="yfi yfi--art" viewBox="0 0 28 24" width="28" height="24" aria-hidden="true" focusable="false"><path class="s-ink" d="M14 21 V 11.6 M8.4 21 H 19.6" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path class="f-sage s-ink" d="M14 13.4 C 13.6 9, 10.2 6.6, 5.6 7 C 5.6 11.4, 9 14, 14 13.4 Z" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path class="f-sage s-ink" d="M14 11.6 C 14.2 7, 17.6 4, 22.6 4.4 C 22.8 9, 19.2 12, 14 11.6 Z" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+{%- elsif group == 'feature' -%}
+  <svg class="yfi yfi--art" viewBox="0 0 28 24" width="28" height="24" aria-hidden="true" focusable="false"><circle class="f-butter s-ink" cx="9.4" cy="13.6" r="6.4" stroke-width="1.3"/><path class="s-ink" d="M4.4 11 C 7.4 9, 11.6 9, 14.6 11.2 M3.4 14.6 C 7 12.4, 12 12.4, 15.6 15 M5 18 C 8.2 16.2, 11.6 16.2, 14.2 18" fill="none" stroke-width="1.1" stroke-linecap="round" stroke-opacity=".55"/><path class="s-ink" d="M11.6 19.6 L 23 5.4" fill="none" stroke-width="3.4" stroke-linecap="round"/><path class="s-clay" d="M11.6 19.6 L 23 5.4" fill="none" stroke-width="1.6" stroke-linecap="round"/><path class="s-ink" d="M23 5.4 C 24 3.8, 26.2 4.4, 25.2 6.2" fill="none" stroke-width="1.3" stroke-linecap="round"/></svg>
 {%- endif -%}

@@ -114,9 +114,12 @@ test('header computes the yarn facets once; yarn opens three filter groups and �
   }
   const links = fs.readFileSync('snippets/yarn-nav-facet-links.liquid', 'utf8');
   assert.match(links, /unless facets contains nfl_token/, 'options without products are not rendered');
-  assert.match(links, /href="\{\{ base_url \}\}\?ycb_\{\{ group \}\}=\{\{ nfl_value \}\}"/);
-  for (const [group, values] of Object.entries({ thick: 'fine,medium,chunky', color: 'solid,variegated,gradient,heather,rainbow', fiber: 'wool,wool_blend,mohair,synthetic,cotton', works: 'sweater,hat,scarf,blanket,bag,doll' })) {
-    assert.ok(links.includes(`when '${group}'\n      assign nfl_values = '${values}'`), group);
+  assert.match(links, /href="\{\{ base_url \}\}\?\{\{ nfl_query \}\}"/);
+  assert.match(links, /assign nfl_query = 'ycb_' \| append: nfl_group \| append: '=' \| append: nfl_value/);
+  // 分类定稿（2026-11-19）：花色只分纯色 / 段染渐变，马海毛并进羊毛混纺。
+  for (const [group, values] of Object.entries({ thick: 'fine,medium,chunky', color: 'solid,variegated', fiber: 'wool,wool_blend,cotton,synthetic', works: 'sweater,hat,scarf,blanket,bag,doll' })) {
+    const listed = (group === 'works' ? 'beginner:yes,' : '') + values.split(',').map((v) => `${group}:${v}`).join(',');
+    assert.ok(links.includes(`when '${group}'\n      assign nfl_values = '${listed}'`), group);
     for (const locale of ['ja', 'zh-CN', 'en.default']) {
       const copy = JSON.parse(fs.readFileSync(`locales/${locale}.json`, 'utf8').replace(/^\/\*[\s\S]*?\*\//, '')).yarn_collection;
       assert.ok(copy[`facet_group_${group}`], `${locale} group ${group}`);
@@ -127,31 +130,28 @@ test('header computes the yarn facets once; yarn opens three filter groups and �
   // 用户 2026-11-14：紧凑三栏浮层挂在按钮下方；粗细是手绘波浪线、花色是小毛线球，颜色只用 token。
   assert.match(headerCss, /\.yarn-main-menu \.mega-menu__content\.yarn-mega__content \{[^}]*width: max-content;/);
   assert.match(headerCss, /\.yarn-mega__group \+ \.yarn-mega__group \{ border-left: 1px solid var\(--yarn-border-subtle\); \}/);
-  assert.match(links, /render 'yarn-facet-icon', group: group, value: nfl_value, uid: id_prefix/);
+  assert.match(links, /render 'yarn-facet-icon', group: nfl_group, value: nfl_value, uid: id_prefix/);
   const icon = fs.readFileSync('snippets/yarn-facet-icon.liquid', 'utf8');
   assert.doesNotMatch(icon.replace(/\{%- comment -%\}[\s\S]*?\{%- endcomment -%\}/, ''), /(fill|stroke|stop-color)="#/i, 'icon colours come from CSS tokens');
-  for (const value of ['solid', 'variegated', 'gradient', 'heather', 'rainbow']) assert.match(icon, new RegExp(`when '${value}'`), value);
+  for (const value of ['solid', 'variegated']) assert.match(icon, new RegExp(`when '${value}'`), value);
   assert.match(icon, /id="\{\{ yfi_id \}\}-c"/, 'clip ids are unique per menu (desktop / drawer)');
   assert.match(headerCss, /\.yarn-drawer-facets \.menu-drawer__menu-item \{ min-height: var\(--yarn-touch\); \}/);
 });
 
-test('织什么 opens with a 新手友好 entry (with a tag) that only shows when beginner yarns exist (#365)', () => {
+test('织什么 opens with 新手推荐 (#365); no third-layer 推荐 column (2026-11-19)', () => {
   const facets = fs.readFileSync('snippets/yarn-facets.liquid', 'utf8');
   assert.match(facets, /if product\.metafields\.yarn\.beginner_reason\.value != blank\s*echo 'beginner:yes '/);
   const links = fs.readFileSync('snippets/yarn-nav-facet-links.liquid', 'utf8');
-  const beginnerAt = links.indexOf("group == 'works' and facets contains ' beginner:yes '");
-  assert.ok(beginnerAt > -1 && beginnerAt < links.indexOf('for nfl_value in nfl_values'), 'beginner entry comes before the works options');
-  assert.match(links, /href="\{\{ base_url \}\}\?ycb_beginner=1"/);
-  assert.match(links, /'yarn_collection\.beginner' \| t/);
-  assert.match(links, /class="yarn-nav-beginner__tag">\{\{ 'yarn_collection\.nav_beginner_tag' \| t \}\}/);
-  const expected = { ja: ['初心者向け', 'おすすめ'], 'zh-CN': ['新手友好', '推荐'], 'en.default': ['Beginner-friendly', 'Pick'] };
-  for (const [locale, [name, tag]] of Object.entries(expected)) {
+  assert.ok(links.includes("when 'works'\n      assign nfl_values = 'beginner:yes,works:"), '新手推荐是想织什么第一项');
+  assert.ok(!links.includes("when 'picks'"), '不做推荐栏');
+  assert.match(links, /assign nfl_query = 'ycb_beginner=1'/);
+  assert.match(links, /<li\{% if nfl_group == 'beginner' %\} class="yarn-nav-beginner"/);
+  for (const [locale, name] of Object.entries({ ja: 'はじめての毛糸', 'zh-CN': '新手推荐', 'en.default': 'Beginner picks' })) {
     const copy = JSON.parse(fs.readFileSync(`locales/${locale}.json`, 'utf8').replace(/^\/\*[\s\S]*?\*\//, '')).yarn_collection;
     assert.equal(copy.beginner, name, locale);
-    assert.equal(copy.nav_beginner_tag, tag, locale);
   }
   assert.match(fs.readFileSync('snippets/yarn-facet-icon.liquid', 'utf8'), /elsif group == 'beginner'/);
-  assert.match(headerCss, /\.yarn-nav-beginner__tag \{[^}]*background: var\(--yarn-tint-sage\);/);
+  assert.match(headerCss, /\.yarn-nav-beginner \{[^}]*border-bottom: 1px solid var\(--yarn-border-subtle\);/);
   // 新手筛选打开时卡片改成 flex，不能盖掉筛选写上的 hidden。
   const browseCss = fs.readFileSync('assets/yarn-collection-browse.css', 'utf8');
   assert.doesNotMatch(browseCss, /\[data-ycb-beginner-on\] \.ycb-grid__item \{ display:/);

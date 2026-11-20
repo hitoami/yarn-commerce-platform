@@ -318,8 +318,6 @@
 .yfi-butter { fill: var(--yarn-decor-art-line); }
 .yfi-blush { fill: var(--yarn-decor-yarn-blush); }
 .yfi-mist { fill: var(--yarn-decor-yarn-mist); }
-.yfi-stop-cream { stop-color: var(--yarn-tint-butter); }
-.yfi-stop-clay { stop-color: var(--yarn-home-logo); }
 .header-wrapper .yarn-drawer-facets .menu-drawer__menu-item { gap: 12px; }
 /* 材质 / 想织什么的小插画：f- 填色、s- 描边（线宽写在 SVG 上）。 */
 .yfi--art path:not([class*='f-']) { fill: none; }
@@ -337,9 +335,8 @@
 .header-wrapper .yarn-drawer-facets__title { margin: 0; padding: 8px 0 4px; color: var(--yarn-text-muted); font-size: var(--yarn-fs-13); line-height: 1.4; }
 .header-wrapper .yarn-drawer-facets .menu-drawer__menu-item { min-height: var(--yarn-touch); }
 .header-wrapper .yarn-drawer-facets__list { margin: 0; padding: 0; }
-/* Issue 365「想织什么」第一项「新手友好」：小标签与作品项之间一条细分隔线。 */
+/* Issue 365「想织什么」第一项「新手推荐」与作品项之间一条细分隔线。 */
 .yarn-nav-beginner { margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid var(--yarn-border-subtle); }
-.yarn-nav-beginner__tag { flex: none; padding: 1px 8px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-sage); color: var(--yarn-text-primary); font-size: var(--yarn-fs-12); font-weight: 500; line-height: 1.4; white-space: nowrap; }
 
 .header-wrapper .yarn-drawer-row {
   display: flex;
@@ -728,14 +725,16 @@
   .header-wrapper .yarn-drawer-row { min-height: 52px; padding: 12px 0; }
   .header-wrapper .menu-drawer__menu li + li { margin-top: 0; }
   /* Issue 355：毛线 / 织什么的子面板和抽屉一样铺满整屏，内容与主菜单同宽、同左边距，长了在面板里滚动。 */
+  /* Issue 366：面板高度按可视区域（dvh，与抽屉同一个变量）算，只由内层滚动，内容不会滚到页头胶囊后面；
+     原来按整屏（inset: 0）算，真机上算进了 Safari 底栏，最后一项（棉类）被挡住一截。 */
   .js .header-wrapper .menu-drawer__submenu {
     position: fixed;
-    inset: 0;
+    inset: 0 0 auto;
+    height: var(--viewport-height, 100dvh);
     padding-top: calc(var(--header-bottom-position, 78px) + 4px);
-    overflow-y: auto;
-    overscroll-behavior: contain;
+    overflow: hidden;
   }
-  .header-wrapper .menu-drawer__inner-submenu { box-sizing: border-box; width: 100%; max-width: 560px; margin: 0 auto; padding: 8px 24px calc(24px + env(safe-area-inset-bottom)); }
+  .header-wrapper .menu-drawer__inner-submenu { box-sizing: border-box; width: 100%; max-width: 560px; margin: 0 auto; padding: 8px 24px calc(40px + env(safe-area-inset-bottom)); overscroll-behavior: contain; }
   .header-wrapper .menu-drawer__inner-submenu .menu-drawer__close-button { margin: 0 0 4px; padding: 0; background: none; font-size: var(--yarn-fs-15); }
   .header-wrapper .yarn-drawer-facets .menu-drawer__menu-item { padding: 0; font-size: var(--yarn-fs-16); }
 }
