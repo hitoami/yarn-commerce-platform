@@ -52,6 +52,10 @@ test('homepage follows the #131 IA: yarn first, then season feature, yarn sets a
   assert.equal(index.sections['picks-featured'].settings.tag, '本店推荐');
   assert.equal(index.sections['picks-beginner'].settings.mode, 'beginner');
   assert.equal(index.sections.reviews.type, 'yarn-home-reviews');
+  // 锦晨 2026-11-19：编织包不再显示「选作品 → 买齐毛线 → LINE 领教程」三步（和现在材料包的定义不一致）。
+  for (const n of [1, 2, 3]) for (const suf of ['', '_zh', '_en']) {
+    assert.equal(index.sections['project-picks'].settings[`step_${n}${suf}`], '', `step_${n}${suf}`);
+  }
   assert.equal(index.sections['tag-line'], undefined);
   assert.equal(index.sections.hero.type, 'hitoami-hero');
   assert.equal(index.sections.story.type, 'hitoami-story');
