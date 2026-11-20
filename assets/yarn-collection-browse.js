@@ -1,6 +1,6 @@
 /* 毛线目录（分类页，锦晨 2026-11-20 选定样稿 v2）。
    顾客从首页 / 导航带着一个入口进来（如 ?ycb_color=variegated），页头标题和说明换成这个入口；一排圆图切换同组的其他分类；
-   「再按 … 筛选」默认收起，展开后其余几组各占一行，同一行可多选（取并集），不同行取交集；数字是在其他已选条件下还剩几款，0 款变灰。
+   「筛选」默认收起（全部毛线默认展开），展开后其余几组各占一行，同一行可多选（取并集），不同行取交集；数字是在其他已选条件下还剩几款，0 款变灰。
    结果少于 4 款时列出「放宽一个条件」的毛线。状态记在网址 ycb_* 参数上：入口那一组写在最前面，重新打开页面仍认得入口。
    每张卡带 yarn-facets 标记（" thick:fine fiber:wool works:hat "）。价格带与现货仍是 Search & Discovery，在抽屉里提交后刷新页面。
    没有 JS 时，表单与链接按原生 GET 跳转，列表显示这一页的全部商品。 */
@@ -223,11 +223,9 @@
 
     // Refine rows: every group except the entry's, multi-select inside a row.
     function renderRefine(counts) {
-      const groups = [];
       section.querySelectorAll('[data-ycb-row]').forEach((row) => {
         const group = row.dataset.ycbRow;
         row.hidden = group === entryGroup();
-        if (!row.hidden) groups.push(row.querySelector('[data-ycb-row-label]').textContent.trim());
         row.querySelectorAll('[data-ycb-opt]').forEach((button) => {
           const [, value] = button.dataset.ycbOpt.split(':');
           const on = group === 'beginner' ? state.beginner : state.facets[group]?.includes(value);
@@ -237,9 +235,6 @@
           button.querySelector('[data-ycb-opt-count]').textContent = n;
         });
       });
-      const toggleLabel = section.querySelector('[data-ycb-refine-label]');
-      const template = state.entry ? toggleLabel?.dataset.t : toggleLabel?.dataset.tAll || toggleLabel?.dataset.t;
-      if (toggleLabel) toggleLabel.textContent = fill(template, { G: groups.join(toggleLabel.dataset.sep || '、') });
     }
 
     // Picked refine options as removable tags (the entry itself is the page, not a tag).

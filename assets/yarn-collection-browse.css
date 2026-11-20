@@ -183,3 +183,12 @@
   .ycb-row[data-ycb-row="works"] > * { order: 5; }
   .ycb-row[data-ycb-row="beginner"] > * { order: 6; }
 }
+
+/* 「价格 · 库存」和排序是工具，不是筛选项：电脑上去掉胶囊外框，做成文字按钮，和下面的选项分开（锦晨 2026-11-20）。手机仍是图标圆钮。 */
+@media (min-width: 750px) {
+  .ycb-pill { min-height: 36px; padding: 0 4px; border: 0; border-radius: 0; background-color: transparent; color: var(--yarn-text-heading); font-weight: 500; }
+  .ycb-pill:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .ycb-sort__select { padding-right: 18px; background-position: calc(100% - 9px) 52%, calc(100% - 4px) 52%; }
+  .ycb-refine__right { gap: var(--yarn-space-4); }
+  .ycb-refine__count { margin-right: 0; }
+}
