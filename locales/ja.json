@@ -1052,7 +1052,6 @@
     "switch_by": "{{ group }}で切り替え",
     "near_title": "条件をひとつゆるめると、こんな糸も",
     "more_filters": "価格・在庫",
-    "beginner_group": "初心者",
     "facet_group_grams": "玉の重さ",
     "facet_thick_fine": "やわらか細糸",
     "facet_thick_medium": "ほどよい太さ",

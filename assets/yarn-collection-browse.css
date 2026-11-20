@@ -164,7 +164,7 @@
 }
 
 /* 细筛整齐（锦晨 2026-11-20「占地方」「乱糟糟」）：选项只留文字和款数（图标留给圆图和导航），
-   电脑上按钮 36px、去掉虚线；宽屏（≥1200px）两组并排，四列网格对齐：粗细|花色、材质|克重、织什么|新手。手机仍 44px 触控高度。 */
+   电脑上按钮 36px、去掉虚线；宽屏（≥1200px）两组并排，四列网格对齐：粗细|花色、材质|克重、织什么|特点（新手推荐在特点里）。手机仍 44px 触控高度。 */
 .ycb-opt .yfi { display: none; }
 .ycb-opt { padding: 0 14px; }
 @media (min-width: 990px) {
@@ -181,7 +181,7 @@
   .ycb-row[data-ycb-row="fiber"] > * { order: 3; }
   .ycb-row[data-ycb-row="grams"] > * { order: 4; }
   .ycb-row[data-ycb-row="works"] > * { order: 5; }
-  .ycb-row[data-ycb-row="beginner"] > * { order: 6; }
+  .ycb-row[data-ycb-row="feature"] > * { order: 6; }
 }
 
 /* 「价格 · 库存」和排序是工具，不是筛选项：电脑上去掉胶囊外框，做成文字按钮，和下面的选项分开（锦晨 2026-11-20）。手机仍是图标圆钮。 */

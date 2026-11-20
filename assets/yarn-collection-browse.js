@@ -224,16 +224,19 @@
     // Refine rows: every group except the entry's, multi-select inside a row.
     function renderRefine(counts) {
       section.querySelectorAll('[data-ycb-row]').forEach((row) => {
-        const group = row.dataset.ycbRow;
-        row.hidden = group === entryGroup();
+        let shown = 0;
         row.querySelectorAll('[data-ycb-opt]').forEach((button) => {
-          const [, value] = button.dataset.ycbOpt.split(':');
+          const [group, value] = button.dataset.ycbOpt.split(':');
+          // The entry's own group is the page itself, so its options leave the rows (新手推荐 sits in the 特点 row).
+          button.hidden = group === entryGroup();
+          if (!button.hidden) shown += 1;
           const on = group === 'beginner' ? state.beginner : state.facets[group]?.includes(value);
           const n = counts[button.dataset.ycbOpt] || 0;
           button.setAttribute('aria-pressed', String(Boolean(on)));
           button.disabled = n === 0 && !on;
           button.querySelector('[data-ycb-opt-count]').textContent = n;
         });
+        row.hidden = shown === 0;
       });
     }
 
