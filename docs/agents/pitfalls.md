@@ -10,7 +10,7 @@
 
 ## 发布
 
-- **模板 JSON 会挡住发布**：`scripts/release.sh` 发现线上 `templates/*.json` 和 production 不一致就停。新文案、新链接放进 section schema 的默认值，不改 `templates/*.json`。
+- **后台改动会挡住发布**：`scripts/release.sh` 发现线上 `config` / `templates` / `sections` 的 JSON 和 production 历史上任何版本都对不上（= 有人在 Shopify 后台改过）就停，先把这些文件并回仓库。本次发布自己改的模板（线上仍是上次发布的样子）会放行并列出来。
 - **发布要几分钟**：别用 `| tail` 等结果；脚本开头会打印完整日志路径（`~/.cache/hitoami-release-*.log`），看它判断进度。
 - 主题名最多 50 个字符（脚本会提前拦下）。
 
