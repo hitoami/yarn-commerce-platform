@@ -1,5 +1,5 @@
 /* Issue 340（用户 2026-11-07 选定）：三语都用圆润风格——日文 Kiwi Maru 标题 + Zen Maru Gothic 正文（#326 原样），
-   中文 Huninn（标题正文同一款，只有 400 一档），英文 Nunito 标题 + Source Sans 3 正文。字体只在这里按语言指定，页面只引用 --yarn-display / --yarn-body。 */
+   中文思源黑体 Noto Sans SC（标题正文同一款，400 / 500；2026-11-20 取代缺简体字的 Huninn），英文 Nunito 标题 + Source Sans 3 正文。字体只在这里按语言指定，页面只引用 --yarn-display / --yarn-body。 */
 :root {
   --yarn-display: 'Kiwi Maru', 'Zen Maru Gothic', serif;
   --yarn-body: 'Zen Maru Gothic', sans-serif;
@@ -10,9 +10,9 @@
   --yarn-body: 'Source Sans 3', 'Zen Maru Gothic', sans-serif;
 }
 :root:lang(zh) {
-  /* Huninn 是台湾字形，逗号句号居中；theme.liquid 另载只含 ，。、：；！？ 的 Noto Sans SC 子集放在最前面，标点按简体习惯靠左下。 */
-  --yarn-display: 'Noto Sans SC', 'Huninn', sans-serif;
-  --yarn-body: 'Noto Sans SC', 'Huninn', sans-serif;
+  /* 2026-11-20：思源黑体简体字全、标点按简体习惯靠左下；不再用 Huninn（繁体字形，缺简体字时混进系统字体）。 */
+  --yarn-display: 'Noto Sans SC', sans-serif;
+  --yarn-body: 'Noto Sans SC', sans-serif;
 }
 /* Issue 311：衬线标题字体只加载 500 一档；禁止浏览器把 600 / 700 伪加粗（会发糊、发硬），没加载的字重回落到最接近的真实字重。 */
 html { font-synthesis-weight: none; }
@@ -162,7 +162,7 @@ h5, .h5 { font-size: var(--yarn-fs-14); }
   --yarn-fs-40: 40px;
   --yarn-fs-section: clamp(24px, 2.5vw, 32px);
   --yarn-fs-display: clamp(32px, 4vw, 52px);
-  /* 字重只用两档：400 常规；500 强调、按钮、价格、标题。中文 Huninn 只有 400，500 也显示为 400。 */
+  /* 字重只用两档：400 常规；500 强调、按钮、价格、标题。 */
   --yarn-lh-heading: 1.35;
   --yarn-lh-body: 1.8;
   --yarn-leading: 1.5;
