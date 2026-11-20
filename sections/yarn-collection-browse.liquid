@@ -16,8 +16,12 @@
   if cb_handmade_handles contains collection.handle
     assign cb_handmade = true
   endif
-  assign cb_preparing = false
+  assign cb_empty = false
   if collection.all_products_count == 0
+    assign cb_empty = true
+  endif
+  assign cb_preparing = false
+  if cb_empty and cb_handmade
     assign cb_preparing = true
   endif
   assign cb_other_active = 0
@@ -70,7 +74,7 @@
       {%- endif -%}
       <div class="ycb-head__intro" data-ycb-lead{% if collection.description == blank %} hidden{% endif %}>{{ collection.description }}</div>
     </div>
-    {%- unless cb_preparing -%}
+    {%- unless cb_empty -%}
       <p class="ycb-head__total"><span data-ycb-total data-t="{{ 'yarn_collection.count_all' | t: n: '__N__' | escape }}">{{ 'yarn_collection.count_all' | t: n: collection.products_count }}</span> · {{ 'yarn_collection.tax_included' | t }}</p>
     {%- endunless -%}
   </header>
@@ -104,18 +108,22 @@
     })();
   </script>
 
-  {%- if cb_preparing -%}
+  {%- if cb_empty -%}
     <div class="ycb-preparing">
-      <p class="ycb-preparing__text">{{ 'yarn_collection.preparing_text' | t }}</p>
-      <ul class="ycb-grid ycb-grid--placeholder" role="list" aria-hidden="true">
-        {%- for i in (1..4) -%}
-          <li class="ycb-placeholder">
-            <span class="ycb-placeholder__image">{{ 'yarn_collection.placeholder_photo' | t }}</span>
-            <span class="ycb-placeholder__row"><span class="ycb-placeholder__bar"></span><span>{{ 'yarn_collection.preparing_badge' | t }}</span></span>
-            <span class="ycb-placeholder__bar ycb-placeholder__bar--short"></span>
-          </li>
-        {%- endfor -%}
-      </ul>
+      {%- if cb_preparing -%}
+        <p class="ycb-preparing__text">{{ 'yarn_collection.preparing_text' | t }}</p>
+        <ul class="ycb-grid ycb-grid--placeholder" role="list" aria-hidden="true">
+          {%- for i in (1..4) -%}
+            <li class="ycb-placeholder">
+              <span class="ycb-placeholder__image">{{ 'yarn_collection.placeholder_photo' | t }}</span>
+              <span class="ycb-placeholder__row"><span class="ycb-placeholder__bar"></span><span>{{ 'yarn_collection.preparing_badge' | t }}</span></span>
+              <span class="ycb-placeholder__bar ycb-placeholder__bar--short"></span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- else -%}
+        <p class="ycb-preparing__text">{{ 'yarn_collection.empty_collection' | t }}</p>
+      {%- endif -%}
       <div class="ycb-exits">
         {%- if collections['yarn'] != blank and collection.handle != 'yarn' -%}
           <a class="ycb-exit" href="{{ collections['yarn'].url }}">{{ 'yarn_collection.exit_yarn' | t }} <span aria-hidden="true">→</span></a>
