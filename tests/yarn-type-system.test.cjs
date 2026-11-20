@@ -34,8 +34,9 @@ test('each language loads the rounded fonts its tokens name', () => {
   const tokens = read('assets/yarn-design-tokens.css');
   const layout = read('layout/theme.liquid');
   assert.match(tokens, /:root:lang\(en\) \{[^}]*--yarn-display: 'Nunito'[^}]*--yarn-body: 'Source Sans 3'/);
-  assert.match(tokens, /:root:lang\(zh\) \{[^}]*--yarn-display: 'Noto Sans SC', 'Huninn'[^}]*--yarn-body: 'Noto Sans SC', 'Huninn'/);
-  assert.match(layout, /family=Huninn&display=swap/);
-  assert.match(layout, /family=Noto\+Sans\+SC:wght@400;500&text=/, 'zh punctuation subset only, never the full Noto Sans SC');
+  // 2026-11-20：中文整页用思源黑体（Huninn 缺简体字，会混进系统字体）。
+  assert.match(tokens, /:root:lang\(zh\) \{[^}]*--yarn-display: 'Noto Sans SC', sans-serif;[^}]*--yarn-body: 'Noto Sans SC', sans-serif;/);
+  assert.match(layout, /family=Noto\+Sans\+SC:wght@400;500&display=swap/);
+  assert.doesNotMatch(layout, /family=Huninn/);
   assert.match(layout, /family=Nunito:wght@500&family=Source\+Sans\+3:wght@400;500&/);
 });

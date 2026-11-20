@@ -272,9 +272,9 @@ components:
 
 ## Typography
 
-- **字体（#340，2026-11-07 用户审 PR #335 后决定：三语统一为圆润风格，取代 #168 的衬线标题与 #326 只改日文）**：日文 Kiwi Maru 标题 + Zen Maru Gothic 正文（#326 原样）；中文 Huninn（标题与正文同一款，只有 400 一档）；英文 Nunito 标题 + Source Sans 3 正文，英文页里夹带的日文回退 Zen Maru Gothic。Huninn 是台湾字形、逗号句号居中，中文页另载只含「，。、：；！？」的 Noto Sans SC 子集并排在字体栈最前，标点按简体习惯靠左下。字体只在 `yarn-design-tokens.css` 按 `:lang()` 指定 `--yarn-display` / `--yarn-body`（同时覆盖 Rise 的 `--font-heading-family` / `--font-body-family`），由 `layout/theme.liquid` 按语言从 Google Fonts 加载，正式托管方式待定。页面只写这两个变量，不写字体名。
+- **字体（#340，2026-11-07 用户审 PR #335 后决定：三语统一为圆润风格，取代 #168 的衬线标题与 #326 只改日文）**：日文 Kiwi Maru 标题 + Zen Maru Gothic 正文（#326 原样）；中文思源黑体 Noto Sans SC（标题与正文同一款，400 / 500；2026-11-20 锦晨决定取代 Huninn——Huninn 是繁体字形，缺「线织时选编」等常用简体字，浏览器用系统字体补，同一行字忽大忽小）；英文 Nunito 标题 + Source Sans 3 正文，英文页里夹带的日文回退 Zen Maru Gothic。字体只在 `yarn-design-tokens.css` 按 `:lang()` 指定 `--yarn-display` / `--yarn-body`（同时覆盖 Rise 的 `--font-heading-family` / `--font-body-family`），由 `layout/theme.liquid` 按语言从 Google Fonts 加载，正式托管方式待定。页面只写这两个变量，不写字体名。
 - **字号（#340）**：全站只用 10 档 + 2 档大字，页面写 `var(--yarn-fs-*)`，不写数字：12 角标、徽章 / 13 规格与辅助说明 / 14 小正文、控件 / 15 正文 / 16 卡片标题、按钮、输入框 / 18 小标题 / 20 卡片价格 / 24 区块标题（手机）、商品详情价格 / 32 区块标题（桌面）、页面标题（手机）/ 40 页面标题（桌面）；`--yarn-fs-section`（24→32px 随屏宽）用于区块标题，`--yarn-fs-display`（32→52px）只给首屏与专题封面大字。最小 12px。Rise 的 h1–h5 也映射到这一阶梯（h1 32 / 40、h2 24 / 32、h3 18 / 20、h4 16、h5 14）。
-- **字重（#340）**：只用 400 常规与 500 中粗（强调、按钮、价格、标题、`<b>` / `<strong>`），三语显示一致；中文 Huninn 没有 500，强调靠颜色与字号。全站 `font-synthesis-weight: none`，不伪加粗（#311）。
+- **字重（#340）**：只用 400 常规与 500 中粗（强调、按钮、价格、标题、`<b>` / `<strong>`），三语显示一致。全站 `font-synthesis-weight: none`，不伪加粗（#311）。
 - **行高与字距**：标题 `--yarn-lh-heading` 1.35；正文 `--yarn-lh-body` 中日 1.8、英 1.6。日文页整页开启 `palt`；Kiwi Maru / Zen Maru Gothic 的 Google Fonts 版不带该特性，所以日文标题统一 `letter-spacing: -0.05em`（集中写在 `yarn-design-tokens.css`，新增标题字体规则须同步加入该选择器列表，`tests/yarn-ja-fonts.test.cjs` 检查），正文不调。表单控件统一继承页面字体（不落到系统 Arial）。
 - 下文各页面、组件段落里早于 #340 写下的字号与字重，以本节为准：字号按最近一档取整（≤12 → 12，28 → 32，36 → 40，21 → 20），600 / 700 / 900 一律为 500。
 - `tests/yarn-type-system.test.cjs` 检查：页面 CSS 与 Liquid 只用 `--yarn-fs-*` 字号、400 / 500 字重和两个字体变量；三语字体按上文加载。
