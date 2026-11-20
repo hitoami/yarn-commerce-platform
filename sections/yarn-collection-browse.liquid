@@ -6,7 +6,7 @@
   顾客从首页 / 导航带着入口进来（如 ?ycb_color=variegated），标题、说明和面包屑换成这个入口（「入口」区块在主题编辑器里写三语标题、说明、圆图）；
   一排圆图切换同组的其他分类（只在粗细 / 花色 / 材质 / 织什么入口显示；「全部毛线」和新手入口没有圆图）；「筛选」默认收起（「全部毛线」直接展开），展开后其余几组各占一行，同一行可多选（取并集），
   不同行取交集，数字是其他已选条件下还剩几款，0 款变灰；结果少于 4 款时列出「放宽一个条件」的毛线。都由 assets/yarn-collection-browse.js 处理。
-  价格带与现货仍是 Search & Discovery（「价格 · 库存」抽屉，提交后刷新页面）。首页旧圆图、详情页带来的 filter.p.m.yarn.texture / yarn.use 显示为可清除标签。
+  价格带与现货仍是 Search & Discovery（「价格 · 库存」抽屉，提交后刷新页面）。
   一次渲染至多 48 款，浏览器里每次露出 products_per_page 款；超过 48 款时 JS 先载入其余页再筛。没有 JS 时直接列出这一页的全部商品。
 {%- endcomment -%}
 {%- liquid
@@ -39,12 +39,16 @@
   assign cb_sort_keys = 'manual,best-selling,price-ascending,price-descending,created-descending' | split: ','
   assign cb_step = section.settings.products_per_page
 
-  # 圆图与细筛的初始款数：对当前（已按价格、现货筛过的）商品数 yarn-facets 标记；浏览器里再按其他筛选重算。
+  # 圆图与细筛的初始款数：对当前页商品算 yarn-facets 标记；所有圆图与细筛选项均输出，超过 48 件时由 JS 载入其余页后统一重算并隐藏 0 款项。
+  assign cb_beginner_handles = '' | split: ','
+  if collections['beginner-picks'] != blank
+    assign cb_beginner_handles = collections['beginner-picks'].products | map: 'handle'
+  endif
   assign cb_tokens = ''
   unless cb_handmade
     capture cb_tokens
       for cb_product in collection.products limit: 48
-        render 'yarn-facets', product: cb_product
+        render 'yarn-facets', product: cb_product, beginner_handles: cb_beginner_handles
         echo '|'
       endfor
     endcapture
@@ -144,7 +148,6 @@
               </li>
               {%- for cb_value in cb_circle_values -%}
                 {%- assign cb_token = ' ' | append: cb_circle_group | append: ':' | append: cb_value | append: ' ' -%}
-                {%- unless cb_tokens contains cb_token -%}{%- continue -%}{%- endunless -%}
                 {%- assign cb_circle_image = blank -%}
                 {%- assign cb_filter = cb_circle_group | append: ':' | append: cb_value -%}
                 {%- for block in section.blocks -%}
@@ -162,7 +165,7 @@
                 {%- assign cb_n = 0 -%}
                 {%- for cb_row in cb_token_rows -%}{%- if cb_row contains cb_token -%}{%- assign cb_n = cb_n | plus: 1 -%}{%- endif -%}{%- endfor -%}
                 {%- assign cb_value_key = 'yarn_collection.facet_' | append: cb_circle_group | append: '_' | append: cb_value -%}
-                <li>
+                <li{% if cb_n == 0 %} hidden{% endif %}>
                   <a class="ycb-circle" href="{{ collection.url }}?ycb_{{ cb_circle_group }}={{ cb_value }}" data-ycb-circle="{{ cb_filter }}">
                     <span class="ycb-circle__photo">{%- if cb_circle_image != blank -%}{{ cb_circle_image | image_url: width: 200 | image_tag: widths: '120, 200', sizes: '76px', loading: 'lazy', alt: '' }}{%- endif -%}</span>
                     <span class="ycb-circle__name">{{ cb_value_key | t }}</span>
@@ -221,7 +224,7 @@
         </div>
       </div>
       {%- unless cb_handmade -%}
-        {%- comment -%}细筛：每组一行（与导航同一套选项），入口所在那一组由 JS 隐藏；只列这个集合里有的值。{%- endcomment -%}
+        {%- comment -%}细筛：每组一行（与导航同一套选项），入口所在那一组由 JS 隐藏；全部选项输出，JS 载入全部商品后自动隐藏 0 款项。{%- endcomment -%}
         <div class="ycb-rows" id="CollectionRefine-{{ section.id }}">
           {%- assign cb_row_groups = 'thick:fine,medium,chunky|color:solid,variegated|fiber:wool,wool_blend,cotton,synthetic|works:sweater,hat,scarf,blanket,bag,doll|grams:small,mid,big|feature:fluffy,crochet' | split: '|' -%}
           {%- comment -%}新手推荐不单独占一行（只有一个选项），放进「特点」一行的最前面，和毛茸茸、钩针用线并列。{%- endcomment -%}
@@ -231,20 +234,18 @@
             {%- assign cb_group_pair = cb_group_def | split: ':' -%}
             {%- assign cb_group = cb_group_pair[0] -%}
             {%- assign cb_group_token = ' ' | append: cb_group | append: ':' -%}
-            {%- unless cb_tokens contains cb_group_token or cb_group == 'feature' and cb_has_beginner -%}{%- continue -%}{%- endunless -%}
             {%- assign cb_group_values = cb_group_pair[1] | split: ',' -%}
             {%- assign cb_legend_key = 'yarn_collection.facet_group_' | append: cb_group -%}
-            <div class="ycb-row" data-ycb-row="{{ cb_group }}">
+            <div class="ycb-row" data-ycb-row="{{ cb_group }}"{% unless cb_tokens contains cb_group_token or cb_group == 'feature' and cb_has_beginner %} hidden{% endunless %}>
               <p class="ycb-row__label" data-ycb-row-label>{{ cb_legend_key | t }}</p>
               <div class="ycb-row__options">
-                {%- if cb_group == 'feature' and cb_has_beginner -%}
-                  <button class="ycb-opt" type="button" data-ycb-opt="beginner:yes" aria-pressed="false"><span>{{ 'yarn_collection.beginner' | t }}</span><span class="ycb-opt__count" data-ycb-opt-count></span></button>
+                {%- if cb_group == 'feature' -%}
+                  <button class="ycb-opt" type="button" data-ycb-opt="beginner:yes" aria-pressed="false"{% unless cb_has_beginner %} hidden{% endunless %}><span>{{ 'yarn_collection.beginner' | t }}</span><span class="ycb-opt__count" data-ycb-opt-count></span></button>
                 {%- endif -%}
                 {%- for cb_value in cb_group_values -%}
                   {%- assign cb_token = cb_group_token | append: cb_value | append: ' ' -%}
-                  {%- unless cb_tokens contains cb_token -%}{%- continue -%}{%- endunless -%}
                   {%- assign cb_value_key = 'yarn_collection.facet_' | append: cb_group | append: '_' | append: cb_value -%}
-                  <button class="ycb-opt" type="button" data-ycb-opt="{{ cb_group }}:{{ cb_value }}" aria-pressed="false">
+                  <button class="ycb-opt" type="button" data-ycb-opt="{{ cb_group }}:{{ cb_value }}" aria-pressed="false"{% unless cb_tokens contains cb_token %} hidden{% endunless %}>
                     {%- unless cb_group == 'grams' and cb_value != 'big' -%}{%- render 'yarn-facet-icon', group: cb_group, value: cb_value, uid: 'CollectionRows' -%}{%- endunless -%}
                     <span>{{ cb_value_key | t }}</span><span class="ycb-opt__count" data-ycb-opt-count></span>
                   </button>
@@ -280,18 +281,17 @@
         <ul class="ycb-grid{% if cb_handmade %} ycb-grid--handmade{% endif %}" role="list" data-ycb-grid data-ycb-step="{{ cb_step }}" data-ycb-pages="{{ paginate.pages }}">
           {%- for product in collection.products -%}
             {%- assign cb_item_image = product.metafields.yarn.card_image.value | default: product.featured_image -%}
+            {%- assign cb_item_beginner = false -%}
+            {%- if cb_beginner_handles contains product.handle -%}{%- assign cb_item_beginner = true -%}{%- endif -%}
             {%- comment -%}有 JS 时先只露出第一屏（products_per_page 款），其余由「显示更多」按当前筛选露出。{%- endcomment -%}
-            <li class="ycb-grid__item{% if forloop.index > cb_step %} ycb-grid__item--later{% endif %}" data-ycb-item="{{ product.handle }}" data-ycb-spec="{{ product.metafields.yarn.spec_line.value | escape }}" data-ycb-facets="{%- render 'yarn-facets', product: product -%}"{% if cb_item_image != blank %} data-ycb-img="{{ cb_item_image | image_url: width: 160 }}"{% endif %}>
+            <li class="ycb-grid__item{% if forloop.index > cb_step %} ycb-grid__item--later{% endif %}" data-ycb-item="{{ product.handle }}" data-ycb-spec="{{ product.metafields.yarn.spec_line.value | escape }}" data-ycb-facets="{%- render 'yarn-facets', product: product, beginner_handles: cb_beginner_handles -%}"{% if cb_item_image != blank %} data-ycb-img="{{ cb_item_image | image_url: width: 160 }}"{% endif %}>
               {%- comment -%}#189：第一行（手机 2 张、桌面 4 张）是首屏 LCP 候选，不懒加载。{%- endcomment -%}
               {%- assign cb_eager = false -%}
               {%- if forloop.index <= 4 -%}{%- assign cb_eager = true -%}{%- endif -%}
               {%- if cb_handmade -%}
                 {%- render 'yarn-pick-card', card_product: product, handmade: true, eager: cb_eager -%}
               {%- else -%}
-                {%- render 'yarn-pick-card', card_product: product, eager: cb_eager, clean_title: true, card_line: true -%}
-              {%- endif -%}
-              {%- if product.metafields.yarn.beginner_reason.value != blank -%}
-                <p class="ycb-reason"><span class="yx-product-card__badge">{{ 'yarn_project.card_badge_beginner' | t }}</span> {{ product.metafields.yarn.beginner_reason.value | escape }}</p>
+                {%- render 'yarn-pick-card', card_product: product, beginner: cb_item_beginner, eager: cb_eager, clean_title: true, card_line: true -%}
               {%- endif -%}
             </li>
           {%- endfor -%}
@@ -370,7 +370,7 @@
 {
   "name": "毛线目录（筛选 + 商品）",
   "settings": [
-    { "type": "text", "id": "category_filters", "label": "分类筛选参数（显示为可清除标签）", "default": "filter.p.m.yarn.texture,filter.p.m.yarn.use", "info": "逗号分隔；首页圆图、详情页「同类毛线」带来的分类筛选，在胶囊下显示为可清除的标签" },
+    { "type": "text", "id": "category_filters", "label": "分类筛选参数（显示为可清除标签）", "info": "逗号分隔；如有旧版 Search & Discovery 参数需要平铺为可清除标签可填在此" },
     { "type": "range", "id": "products_per_page", "label": "每次露出商品数", "min": 8, "max": 24, "step": 4, "default": 12 },
     { "type": "text", "id": "handmade_collections", "label": "按手工成品显示的集合 handle", "default": "finished-goods", "info": "逗号分隔；这些集合的卡片显示「手工制作」与余量" },
     { "type": "url", "id": "kits_url", "label": "「看材料包」链接（集合为空时显示）" }

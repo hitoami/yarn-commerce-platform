@@ -28,7 +28,10 @@
       class="collection-list grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
       role="list"
     >
+      {%- comment -%}shortcut: skipped seo.hidden collections still count toward paginate_by (30); fine while total collections << 30.{%- endcomment -%}
       {%- for collection in collections -%}
+        {%- assign collection_hidden = collection.metafields.seo.hidden.value | append: '' -%}
+        {%- if collection_hidden == '1' -%}{%- continue -%}{%- endif -%}
         <li
           class="collection-list__item grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
           {% if settings.animations_reveal_on_scroll %}

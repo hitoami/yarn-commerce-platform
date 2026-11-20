@@ -46,10 +46,15 @@ test('homepage follows the #131 IA: yarn first, then season feature, yarn sets a
     assert.equal(index.sections[id].settings.show_empty, true, id);
     assert.equal(index.sections[id].settings.clean_title, true, id);
   }
+  assert.equal(index.sections['sale-picks'].settings.collection, 'sale');
   assert.equal(index.sections['sale-picks'].settings.mode, 'sale');
   assert.equal(index.sections['sale-picks'].settings.layout, 'rail');
-  assert.equal(index.sections['picks-featured'].settings.mode, 'tag');
-  assert.equal(index.sections['picks-featured'].settings.tag, '本店推荐');
+  assert.equal(index.sections['picks-featured'].settings.collection, 'home-featured');
+  assert.equal(index.sections['picks-featured'].settings.all_collection, 'yarn');
+  assert.equal(index.sections['picks-featured'].settings.mode, 'collection');
+  assert.equal(index.sections['picks-featured'].settings.tag, undefined);
+  assert.equal(index.sections['picks-beginner'].settings.collection, 'beginner-picks');
+  assert.equal(index.sections['picks-beginner'].settings.all_collection, 'yarn');
   assert.equal(index.sections['picks-beginner'].settings.mode, 'beginner');
   assert.equal(index.sections.reviews.type, 'yarn-home-reviews');
   // 锦晨 2026-11-19：编织包不再显示「选作品 → 买齐毛线 → LINE 领教程」三步（和现在材料包的定义不一致）。
@@ -84,31 +89,33 @@ test('homepage follows the #131 IA: yarn first, then season feature, yarn sets a
   // 没有商品时的说明行也不得出现商品资料。
   const empty = picks.slice(picks.indexOf('{%- elsif picks_count == 0 and section.settings.show_empty -%}'), picks.indexOf('{%- elsif picks_count == 0 -%}'));
   assert.doesNotMatch(empty, /price|card_product|yarn-pick-card|inventory/);
-  // 新手推荐只取填了理由的商品；本店精选只取带标签的商品。
-  assert.match(picks, /picks_mode == 'beginner' and pick_product\.metafields\.yarn\.beginner_reason\.value != blank/);
-  assert.match(picks, /pick_product\.tags contains picks_tag/);
+  // 首页精选与新手推荐走专属手动集合，不再依赖 tag 或 beginner_reason；「查看全部」走集合本地化 URL。
+  assert.doesNotMatch(picks, /product\.tags|beginner_reason/);
+  assert.match(picks, /collections\[section\.settings\.all_collection\] \| default: picks_collection/);
   // 顾客评论只放真实评价：没有评论应用区块时只显示「还没有评价」。
   const reviews = fs.readFileSync('sections/yarn-home-reviews.liquid', 'utf8');
   assert.match(reviews, /"blocks": \[ \{ "type": "@app" \} \]/);
   assert.doesNotMatch(reviews.split('{% schema %}')[0], /★|rating|4\.9/);
   assert.doesNotMatch(placeholder, /price|card_product|yarn-pick-card|inventory/);
-  assert.match(pickCard, /metafields\.yarn\.beginner_reason/);
-  assert.match(pickCard, /\{%- if card_reason != blank -%\}/);
+  assert.doesNotMatch(pickCard, /beginner_reason/);
+  assert.match(pickCard, /\{%- if beginner -%\}<span class="yx-product-card__badge">/);
   assert.match(pickCard, /card_variant\.inventory_management == 'shopify'/);
-  // 本季主推：首页只放一张整块可点的入口卡，7 款毛线在专题页（page.season）；价格为 0 或多颜色时不在专题页直接加购。
-  assert.doesNotMatch(seasonCard, /data-group|sf_note/);
+  // 本季主推：首页只放一张整块可点的入口卡，专题页（page.season）以 section.blocks 为唯一数据源，不再读 products 列表或 tag。
+  assert.doesNotMatch(seasonCard, /data-group|sf_note|product\.tags/);
   assert.match(seasonCard, /<\{\{ sf_tag \}\} class="yx-season"/);
-  // #131（用户 2026-10-16）：专题页选品与顺序按 Figma「02 季节主推」画布，用选品列表锁定；标签只在列表为空时兜底。
   const seasonTemplate = JSON.parse(fs.readFileSync('templates/page.season.json', 'utf8')).sections.main;
-  assert.deepEqual(seasonTemplate.settings.products, ['mvp-yarn-26', 'mvp-yarn-24', 'mvp-yarn-18', 'mvp-yarn-16', 'mvp-yarn-11', 'mvp-yarn-05', 'mvp-yarn-04']);
-  assert.deepEqual(seasonTemplate.block_order.map(id => seasonTemplate.blocks[id].settings.product), seasonTemplate.settings.products);
+  assert.equal(seasonTemplate.settings.products, undefined);
+  assert.equal(seasonTemplate.settings.tag, undefined);
+  assert.equal(seasonTemplate.settings.collection, undefined);
+  assert.ok(seasonTemplate.block_order.length > 0);
   for (const id of seasonTemplate.block_order) {
+    assert.ok(seasonTemplate.blocks[id].settings.product, id);
     for (const asset of seasonTemplate.blocks[id].settings.assets.split(',')) assert.ok(fs.existsSync(`assets/${asset}`), asset);
   }
   assert.ok(fs.existsSync(`assets/${seasonTemplate.settings.cover_asset}`));
-  assert.equal(seasonTemplate.settings.tag, 'catalog-2026-10-season');
-  assert.match(season, /sp_product\.tags contains sp_tag/);
-  assert.doesNotMatch(season.match(/<ol class="yx-season-page__list">[\s\S]*<\/ol>/)[0], /sp_tag/);
+  assert.doesNotMatch(season, /all_products\[|product\.tags|section\.settings\.products\b/);
+  assert.match(season, /block\.type != 'note' or block\.settings\.product == blank/);
+  assert.match(season, /id="SeasonYarn-\{\{ sp_index \}\}" \{\{ block\.shopify_attributes \}\}/);
   // #131（用户 2026-10-16 选 E）：专题页每款用首页商品卡的横排版，不直接加购。
   assert.match(season, /render 'yarn-pick-card', card_product: sp_item, layout: 'row'/);
   assert.doesNotMatch(season, /form 'product'/);

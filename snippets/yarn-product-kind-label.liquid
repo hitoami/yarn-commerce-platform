@@ -1,16 +1,18 @@
 {%- comment -%}
-  品类文案的唯一来源:按商品 tag 取主题 locale 文案。
-  不输出 Shopify 的 product.type —— 该字段不可翻译,原值混着日文与中文,会漏到另一语言的页面。
+  品类文案的唯一来源:经 yarn-product-kind（读 product.type / 集合）取主题 locale 文案。
   无匹配品类时返回空,由调用方决定是否降级。
 {%- endcomment -%}
+{%- capture kind_key -%}{%- render 'yarn-product-kind', product: kind_product -%}{%- endcapture -%}
 {%- liquid
-  if kind_product.tags contains '毛糸'
-    echo 'yarn_project.card_badge_yarn' | t
-  elsif kind_product.tags contains '編みものキット'
-    echo 'yarn_project.card_badge_kit' | t
-  elsif kind_product.tags contains '完成品'
-    echo 'yarn_project.card_badge_finished' | t
-  elsif kind_product.tags contains '編み物道具'
-    echo 'yarn_project.card_badge_tools' | t
-  endif
+  assign kind_key = kind_key | strip
+  case kind_key
+    when 'yarn'
+      echo 'yarn_project.card_badge_yarn' | t
+    when 'kit'
+      echo 'yarn_project.card_badge_kit' | t
+    when 'finished'
+      echo 'yarn_project.card_badge_finished' | t
+    when 'tools'
+      echo 'yarn_project.card_badge_tools' | t
+  endcase
 -%}

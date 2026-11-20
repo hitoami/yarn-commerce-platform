@@ -1,10 +1,11 @@
+{%- capture resolved_kind -%}{%- render 'yarn-product-kind', product: product -%}{%- endcapture -%}
 {%- liquid
   assign declared_kind = product.metafields.yarn.discovery_kind.value
-  assign kind_text = product.type | append: ' ' | append: product.tags | downcase
+  assign resolved_kind = resolved_kind | strip
   assign title_text = product.title | downcase
   if declared_kind == 'finished' or declared_kind == 'materials'
     echo declared_kind
-  elsif kind_text contains '完成品' or kind_text contains '成品' or kind_text contains 'finished'
+  elsif resolved_kind == 'finished'
     echo 'finished'
   elsif title_text contains '完成品' or title_text contains '成品' or title_text contains 'finished'
     echo 'finished'

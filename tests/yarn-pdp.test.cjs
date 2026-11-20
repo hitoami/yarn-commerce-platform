@@ -30,7 +30,8 @@ test('sticky total follows the shop money format in minor units', () => {
 
 test('only yarn products get the new layout, and it stays on the native product form', () => {
   const section = read('sections/main-product.liquid');
-  assert.match(section, /if product\.tags contains '毛糸' or yarn_collection_handles contains 'yarn'\s+assign yarn_pdp = true/);
+  assert.match(section, /render 'yarn-product-kind', product: product/);
+  assert.match(section, /if product_kind == 'yarn' or yarn_collection_handles contains 'yarn'\s+assign yarn_pdp = true/);
   assert.match(section, /\{%-? if yarn_pdp -?%\}\s+\{% render 'yarn-pdp-details'/);
   const sticky = read('snippets/yarn-pdp-sticky-buy.liquid');
   assert.doesNotMatch(sticky, /<form|name="(id|quantity)"|form=/, 'sticky bar must not become a second form');

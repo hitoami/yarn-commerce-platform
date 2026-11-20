@@ -15,13 +15,21 @@
   endif
   assign kit_story_product = blank
   for component in project.components.value
-    if component.variant.value.product.tags contains '編みものキット'
+    capture comp_kind
+      render 'yarn-product-kind', product: component.variant.value.product
+    endcapture
+    assign comp_kind = comp_kind | strip
+    if comp_kind == 'kit'
       assign kit_story_product = component.variant.value.product
     endif
   endfor
   if kit_story_product == blank
     for mat_product in project.materials.value
-      if mat_product.tags contains '編みものキット'
+      capture mat_kind
+        render 'yarn-product-kind', product: mat_product
+      endcapture
+      assign mat_kind = mat_kind | strip
+      if mat_kind == 'kit'
         assign kit_story_product = mat_product
       endif
     endfor
@@ -120,12 +128,20 @@
             {% liquid
               assign has_kit_component = false
               for component in project.components.value
-                if component.variant.value.product.tags contains '編みものキット'
+                capture comp_kind
+                  render 'yarn-product-kind', product: component.variant.value.product
+                endcapture
+                assign comp_kind = comp_kind | strip
+                if comp_kind == 'kit'
                   assign has_kit_component = true
                 endif
               endfor
               for product in project.materials.value
-                if product.tags contains '編みものキット'
+                capture mat_kind
+                  render 'yarn-product-kind', product: product
+                endcapture
+                assign mat_kind = mat_kind | strip
+                if mat_kind == 'kit'
                   assign has_kit_component = true
                 endif
               endfor

@@ -8,28 +8,20 @@
 
 {%- capture localized_title -%}{%- render 'yarn-product-title', product: product -%}{%- endcapture -%}
 {%- capture localized_description -%}{%- render 'yarn-product-description', product: product -%}{%- endcapture -%}
+{%- capture resolved_kind -%}{%- render 'yarn-product-kind', product: product -%}{%- endcapture -%}
 
 {%- liquid
   assign localized_title = localized_title | strip
   assign localized_description = localized_description | strip_html | strip_newlines | strip
-  assign product_tags = product.tags | join: ' '
+  assign resolved_kind = resolved_kind | strip
   assign search_text = localized_title | append: ' ' | append: localized_description
   assign search_text = search_text | append: ' ' | append: product.title
   assign search_text = search_text | append: ' ' | append: product.type
-  assign search_text = search_text | append: ' ' | append: product_tags
   assign search_text = search_text | append: ' ' | append: product.handle
 
-  assign facet_type = blank
-  if product.tags contains '毛糸'
-    assign facet_type = 'yarn'
-  elsif product.tags contains '編みものキット'
-    assign facet_type = 'kit'
-  elsif product.tags contains '完成品'
-    assign facet_type = 'finished'
-  elsif product.tags contains '編み物道具'
+  assign facet_type = resolved_kind
+  if facet_type == 'tools'
     assign facet_type = 'tool'
-  elsif product.tags contains 'ギフトセット'
-    assign facet_type = 'bundle'
   endif
 
   assign facet_project = blank
