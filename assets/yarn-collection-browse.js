@@ -206,32 +206,38 @@
 
     // Circle row: only on a category entry, showing that entry's siblings (CSS picks the row from data-ycb-group).
     // 全部毛线 and 新手推荐 have no siblings to switch to, so no circles there.
-    function renderCircles(counts) {
+    function renderCircles(baseCounts) {
       if (state.entry) section.setAttribute('data-ycb-group', entryGroup()); else section.removeAttribute('data-ycb-group');
-      const baseCounts = countOptions(items.map((item) => item.tokens), { facets: noFacets(), beginner: false, entry: '' });
       section.querySelectorAll('[data-ycb-circle]').forEach((link) => {
         const token = link.dataset.ycbCircle;
         const on = token === 'all' ? !state.entry : token === state.entry;
         link.classList.toggle('is-current', on);
         if (on) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
         const n = token === 'all' ? items.length : baseCounts[token] || 0;
+        if (link.parentElement) link.parentElement.hidden = token !== 'all' && n === 0 && !on;
+        const photo = link.querySelector('.ycb-circle__photo');
+        if (token !== 'all' && photo && !photo.querySelector('img') && n > 0) {
+          const match = items.find((item) => hasToken(item.tokens, token) && item.li.dataset.ycbImg);
+          if (match) photo.append(Object.assign(document.createElement('img'), { src: match.li.dataset.ycbImg, alt: '', loading: 'lazy' }));
+        }
         const counter = link.querySelector('[data-ycb-circle-count]');
         if (counter) counter.textContent = fill(counter.dataset.t, { N: n });
       });
-      return counts;
     }
 
     // Refine rows: every group except the entry's, multi-select inside a row.
-    function renderRefine(counts) {
+    // Options with 0 matches across the entire collection stay hidden (covers items loaded past page 1).
+    function renderRefine(counts, baseCounts) {
       section.querySelectorAll('[data-ycb-row]').forEach((row) => {
         let shown = 0;
         row.querySelectorAll('[data-ycb-opt]').forEach((button) => {
-          const [group, value] = button.dataset.ycbOpt.split(':');
-          // The entry's own group is the page itself, so its options leave the rows (新手推荐 sits in the 特点 row).
-          button.hidden = group === entryGroup();
-          if (!button.hidden) shown += 1;
+          const opt = button.dataset.ycbOpt;
+          const [group, value] = opt.split(':');
           const on = group === 'beginner' ? state.beginner : state.facets[group]?.includes(value);
-          const n = counts[button.dataset.ycbOpt] || 0;
+          // The entry's own group is the page itself, so its options leave the rows (新手推荐 sits in the 特点 row).
+          button.hidden = group === entryGroup() || ((baseCounts[opt] || 0) === 0 && !on);
+          if (!button.hidden) shown += 1;
+          const n = counts[opt] || 0;
           button.setAttribute('aria-pressed', String(Boolean(on)));
           button.disabled = n === 0 && !on;
           button.querySelector('[data-ycb-opt-count]').textContent = n;
@@ -314,11 +320,12 @@
     }
 
     function render() {
-      const counts = countOptions(items.map((item) => item.tokens), state);
+      const tokenList = items.map((item) => item.tokens);
+      const baseCounts = countOptions(tokenList, { facets: noFacets(), beginner: false, entry: '' });
+      const counts = countOptions(tokenList, state);
       renderHead();
-      renderCircles(counts);
-      renderRefine(counts);
-      section.toggleAttribute('data-ycb-beginner-on', state.beginner);
+      renderCircles(baseCounts);
+      renderRefine(counts, baseCounts);
       renderList(renderActive());
       syncUrl();
     }

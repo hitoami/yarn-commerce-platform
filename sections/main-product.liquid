@@ -1,9 +1,10 @@
+{%- capture product_kind -%}{%- render 'yarn-product-kind', product: product -%}{%- endcapture -%}
 {%- liquid
   # Issue #120：毛线使用独立的手机构图；编织包 / 成品详情页不变。
-  # 新选品（#116）在「毛线」集合里但没有 毛糸 tag，两者任一成立即视为毛线。
+  assign product_kind = product_kind | strip
   assign yarn_pdp = false
   assign yarn_collection_handles = product.collections | map: 'handle'
-  if product.tags contains '毛糸' or yarn_collection_handles contains 'yarn'
+  if product_kind == 'yarn' or yarn_collection_handles contains 'yarn'
     assign yarn_pdp = true
   endif
 -%}
@@ -135,7 +136,7 @@
                   {%- if yarn_pdp -%}
                     <p class="yp-yarn-badges">
                       <span class="yp-yarn-badge yp-yarn-badge--yarn">{{ 'yarn_project.card_badge_yarn' | t }}</span>
-                      {%- if product.metafields.yarn.beginner_reason.value != blank -%}
+                      {%- if yarn_collection_handles contains 'beginner-picks' -%}
                         <span class="yp-yarn-badge yp-yarn-badge--beginner">{{ 'yarn_project.card_badge_beginner' | t }}</span>
                       {%- endif -%}
                     </p>
@@ -255,13 +256,13 @@
                   </p>
                 {%- when 'description' -%}
                   <div class="product__description rte quick-add-hidden" {{ block.shopify_attributes }}>
-                    {% if product.tags contains '編みものキット' %}
+                    {% if product_kind == 'kit' %}
                       {{ 'yarn-kit-story.css' | asset_url | stylesheet_tag }}
                       {{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
                       {% comment %}Full kit narrative follows the purchase section.{% endcomment %}
                     {% elsif yarn_pdp %}
                       {% comment %}Rendered after the price; see the price block.{% endcomment %}
-                    {% elsif product.tags contains '完成品' %}
+                    {% elsif product_kind == 'finished' %}
                       {{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
                       {% assign show_product_details = true %}
                     {% else %}
@@ -607,7 +608,7 @@
                     section_id: section.id,
                     show_pickup_availability: true
                   -%}
-                  {%- if product.tags contains '編みものキット' -%}
+                  {%- if product_kind == 'kit' -%}
                     {%- render 'yarn-kit-crosslinks', product: product, kind: 'yarn' -%}
                   {%- endif -%}
                 {%- when 'rating' -%}
@@ -814,7 +815,7 @@
         </div>
       </div>
 
-      {%- if product.tags contains '編みものキット' -%}
+      {%- if product_kind == 'kit' -%}
         <div class="yarn-kit-story-full">
           {% render 'yarn-kit-story', product: product, part: 'about', fallback: 'raw' %}
           {% render 'yarn-kit-story', product: product, part: 'body', fallback: 'none', show_fact_icons: true %}
@@ -828,7 +829,7 @@
 
       {% if show_product_details and product.description != blank %}
         <section class="yarn-product-details-full product__description rte">
-          <h2>{% if product.tags contains '完成品' %}{{ 'yarn_project.finished_spec_heading' | t }}{% else %}{{ 'yarn_project.yarn_spec_heading' | t }}{% endif %}</h2>
+          <h2>{% if product_kind == 'finished' %}{{ 'yarn_project.finished_spec_heading' | t }}{% else %}{{ 'yarn_project.yarn_spec_heading' | t }}{% endif %}</h2>
           {% render 'yarn-product-description', product: product %}
         </section>
       {% endif %}

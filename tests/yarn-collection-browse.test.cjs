@@ -37,7 +37,7 @@ test('the collection template uses the catalogue section, one entry per nav / ho
 
 test('catalogue section reuses the shared yarn card and never invents placeholder products', () => {
   const liquid = fs.readFileSync('sections/yarn-collection-browse.liquid', 'utf8');
-  assert.match(liquid, /render 'yarn-pick-card', card_product: product, eager: cb_eager, clean_title: true, card_line: true/);
+  assert.match(liquid, /render 'yarn-pick-card', card_product: product, beginner: cb_item_beginner, eager: cb_eager, clean_title: true, card_line: true/);
   assert.match(liquid, /collection\.all_products_count == 0/);
   const placeholder = liquid.slice(liquid.indexOf('ycb-grid--placeholder'), liquid.indexOf('ycb-exits'));
   assert.doesNotMatch(placeholder, /product\.|price|money/);
@@ -109,16 +109,20 @@ test('state rides the URL with the entry first; retired map / compare params are
   assert.equal(writeState(params(''), { facets: { ...NONE, fiber: ['wool', 'cotton'] }, beginner: false, entry: '' }).toString(), 'ycb_fiber=wool%2Ccotton');
 });
 
-test('284: beginner row only renders when a yarn has a beginner reason; reasons show when it is on', () => {
+test('beginner option reads beginner-picks collection; all circles and refine options render for multi-page JS counting', () => {
   const section = fs.readFileSync('sections/yarn-collection-browse.liquid', 'utf8');
-  assert.match(section, /cb_tokens contains ' beginner:yes '/);
+  assert.match(section, /collections\['beginner-picks'\]\.products \| map: 'handle'/);
   assert.match(section, /data-ycb-opt="beginner:yes"/);
-  assert.match(fs.readFileSync('assets/yarn-collection-browse.css', 'utf8'), /\.ycb\[data-ycb-beginner-on\] \.ycb-reason \{ display: block; \}/);
+  assert.doesNotMatch(section, /beginner_reason|ycb-reason/);
+  assert.doesNotMatch(section, /unless cb_tokens contains cb_token -%\}\{%- continue/);
+  const js = fs.readFileSync('assets/yarn-collection-browse.js', 'utf8');
+  assert.match(js, /link\.parentElement\.hidden = token !== 'all' && n === 0 && !on/);
+  assert.match(js, /button\.hidden = group === entryGroup\(\) \|\| \(\(baseCounts\[opt\] \|\| 0\) === 0 && !on\)/);
 });
 
 test('355: list cards carry yarn-facets tokens; price and stock live in the drawer', () => {
   const section = fs.readFileSync('sections/yarn-collection-browse.liquid', 'utf8');
-  assert.match(section, /data-ycb-facets="\{%- render 'yarn-facets', product: product -%\}"/);
+  assert.match(section, /data-ycb-facets="\{%- render 'yarn-facets', product: product, beginner_handles: cb_beginner_handles -%\}"/);
   assert.match(section, /grams:small,mid,big/);
   assert.match(section, /data-ycb-facet="\{\{ cb_facet_pair\[0\] \}\}:\{\{ cb_facet_value \}\}"/);
   assert.match(section, /'yarn_collection\.more_filters' \| t/);

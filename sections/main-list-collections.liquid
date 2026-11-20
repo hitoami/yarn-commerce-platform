@@ -23,12 +23,126 @@
       assign paginate_by = 28
     endif
   -%}
+  {%- if section.blocks.size > 0 -%}
+    <ul
+      class="collection-list grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
+      role="list"
+    >
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign entry_collection = block.settings.collection
+          assign entry_page = block.settings.page
+          assign entry_url = ''
+          if entry_collection != blank
+            assign entry_url = entry_collection.url
+          elsif entry_page != blank
+            assign entry_url = entry_page.url
+          endif
+          if entry_url == blank
+            continue
+          endif
+          assign entry_image = block.settings.image
+          if entry_image == blank and entry_collection != blank
+            assign entry_image = entry_collection.featured_image
+          endif
+          if entry_image == blank and block.settings.kits_cover
+            for project in shop.metaobjects.yarn_project.values
+              if project.cover.value != blank
+                capture kit_vis
+                  render 'yarn-kit-visible', project: project
+                endcapture
+                if kit_vis == 'true'
+                  assign entry_image = project.cover.value
+                  break
+                endif
+              endif
+            endfor
+          endif
+          assign ratio = 1
+          if section.settings.image_ratio == 'portrait'
+            assign ratio = 0.8
+          elsif section.settings.image_ratio == 'adapt' and entry_image != blank and entry_image.aspect_ratio != blank
+            assign ratio = entry_image.aspect_ratio
+          endif
+          assign card_color_scheme = settings.collection_card_color_scheme
+          assign card_style = settings.collection_card_style
+        -%}
+        {%- capture entry_title -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'title', allow_blank: true -%}{%- endcapture -%}
+        {%- assign entry_title = entry_title | strip -%}
+        {%- if entry_title == blank -%}
+          {%- assign entry_title = entry_collection.title | default: entry_page.title -%}
+        {%- endif -%}
+        <li
+          class="collection-list__item grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          {% if settings.animations_reveal_on_scroll %}
+            data-cascade
+            style="--animation-order: {{ forloop.index }};"
+          {% endif %}
+          {{ block.shopify_attributes }}
+        >
+          <div class="card-wrapper animate-arrow collection-card-wrapper">
+            <div
+              class="card card--{{ card_style }} card--media{% if card_style == 'card' %} color-{{ card_color_scheme }} gradient{% endif %}"
+              style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
+            >
+              <div
+                class="card__inner {% if card_style == 'standard' %}color-{{ card_color_scheme }} gradient{% endif %} ratio"
+                style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
+              >
+                <div class="card__media">
+                  <div class="media media--transparent media--hover-effect">
+                    {%- if entry_image != blank -%}
+                      {{
+                        entry_image
+                        | image_url: width: 1200
+                        | image_tag:
+                          widths: '330, 535, 750, 1000',
+                          sizes: '(min-width: 750px) calc((100vw - 10rem) / 3), calc(100vw - 3rem)',
+                          loading: 'lazy',
+                          class: 'motion-reduce',
+                          alt: entry_title
+                      }}
+                    {%- elsif block.settings.fallback_asset != blank -%}
+                      <img
+                        src="{{ block.settings.fallback_asset | asset_url }}"
+                        alt="{{ entry_title | escape }}"
+                        width="900"
+                        height="1350"
+                        loading="lazy"
+                        class="motion-reduce"
+                        style="object-position: center 75%;"
+                      >
+                    {%- endif -%}
+                  </div>
+                </div>
+              </div>
+              <div class="card__content">
+                <div class="card__information">
+                  <h3 class="card__heading">
+                    <a href="{{ entry_url }}" class="full-unstyled-link">
+                      {{- entry_title | escape -}}
+                      <span class="icon-wrap">
+                        {{- 'icon-arrow.svg' | inline_asset_content -}}
+                      </span>
+                    </a>
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- else -%}
   {%- paginate collections by paginate_by -%}
     <ul
       class="collection-list grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
       role="list"
     >
+      {%- comment -%}shortcut: skipped seo.hidden collections still count toward paginate_by (30); fine while total collections << 30.{%- endcomment -%}
       {%- for collection in collections -%}
+        {%- assign collection_hidden = collection.metafields.seo.hidden.value | append: '' -%}
+        {%- if collection_hidden == '1' -%}{%- continue -%}{%- endif -%}
         <li
           class="collection-list__item grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
           {% if settings.animations_reveal_on_scroll %}
@@ -46,6 +160,7 @@
     </ul>
     {% render 'pagination', paginate: paginate %}
   {%- endpaginate -%}
+  {%- endif -%}
 </div>
 {% schema %}
 {
@@ -134,6 +249,22 @@
       ],
       "default": "2",
       "label": "t:sections.main-list-collections.settings.columns_mobile.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "主分类入口",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "产品系列" },
+        { "type": "page", "id": "page", "label": "页面（如编织包 /pages/kits）" },
+        { "type": "image_picker", "id": "image", "label": "封面图（留空自动取系列图或默认图）" },
+        { "type": "checkbox", "id": "kits_cover", "label": "无封面图时取首个编织包封面", "default": false },
+        { "type": "text", "id": "fallback_asset", "label": "无封面图时的主题内置图文件名" },
+        { "type": "text", "id": "title", "label": "日文 · 标题" },
+        { "type": "text", "id": "title_zh", "label": "中文 · 标题" },
+        { "type": "text", "id": "title_en", "label": "英文 · 标题" }
+      ]
     }
   ]
 }

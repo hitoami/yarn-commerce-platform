@@ -1,0 +1,31 @@
+{%- comment -%}
+  商品大类的唯一解析入口（不再读 product.tags）：
+  按 Shopify 原生 product.type（标准中文：毛线 / 编织包 / 手工成品 / 工具）精确匹配，兼容过渡期中/日/英历史值；
+  未命中时退回商品所属公开集合 handle（yarn / knit-kits / finished-goods / tools），都不中输出空。
+{%- endcomment -%}
+{%- liquid
+  assign pk_type = product.type | strip | downcase
+  case pk_type
+    when '毛线', '毛線', '毛线/纱线', '纱线', '毛糸', 'yarn'
+      echo 'yarn'
+    when '编织包', '材料包', '編みものキット', 'kit', 'knit kit'
+      echo 'kit'
+    when '手工成品', '完成品', '成品', 'finished', 'handmade'
+      echo 'finished'
+    when '工具', '道具', '编织工具', '編み物道具', 'tool', 'tools'
+      echo 'tools'
+    when '礼盒', '礼品套装', 'ギフトセット', 'bundle'
+      echo 'bundle'
+    else
+      assign pk_handles = product.collections | map: 'handle'
+      if pk_handles contains 'knit-kits'
+        echo 'kit'
+      elsif pk_handles contains 'finished-goods'
+        echo 'finished'
+      elsif pk_handles contains 'tools'
+        echo 'tools'
+      elsif pk_handles contains 'yarn'
+        echo 'yarn'
+      endif
+  endcase
+-%}

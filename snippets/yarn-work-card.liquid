@@ -1,21 +1,24 @@
 {%- comment -%}Translations belong to the caller's section schema; covered by the discovery contract test.{%- endcomment -%}
 {% # theme-check-disable TranslationKeyExists %}
 {%- capture work_title -%}{%- render 'yarn-product-title', product: product -%}{%- endcapture -%}
+{%- capture work_kind_key -%}{%- render 'yarn-product-kind', product: product -%}{%- endcapture -%}
 {%- liquid
+  assign work_kind_key = work_kind_key | strip
   assign work_kind = 'sections.yarn-project-discovery.details' | t
   assign work_action = work_kind
-  if product.tags contains '編みものキット'
-    assign work_kind = 'sections.yarn-project-discovery.kit_label' | t
-    assign work_action = 'sections.yarn-project-discovery.materials' | t
-  elsif product.tags contains '毛糸'
-    assign work_kind = 'sections.yarn-project-discovery.yarn' | t
-  elsif product.tags contains '編み物道具'
-    assign work_kind = 'sections.yarn-project-discovery.tool' | t
-  elsif product.tags contains '完成品'
-    assign work_kind = 'sections.yarn-project-discovery.finished' | t
-  elsif product.tags contains 'ギフトセット'
-    assign work_kind = 'sections.yarn-project-discovery.bundle' | t
-  endif
+  case work_kind_key
+    when 'kit'
+      assign work_kind = 'sections.yarn-project-discovery.kit_label' | t
+      assign work_action = 'sections.yarn-project-discovery.materials' | t
+    when 'yarn'
+      assign work_kind = 'sections.yarn-project-discovery.yarn' | t
+    when 'tools'
+      assign work_kind = 'sections.yarn-project-discovery.tool' | t
+    when 'finished'
+      assign work_kind = 'sections.yarn-project-discovery.finished' | t
+    when 'bundle'
+      assign work_kind = 'sections.yarn-project-discovery.bundle' | t
+  endcase
 -%}
 <li class="yarn-work" data-yarn-catalog-item {% render 'yarn-discovery-card-attributes', product: product %}>
   <a class="yarn-work__link" href="{{ product.url }}">
@@ -25,7 +28,7 @@
       {% endif %}
     </div>
     <h3>{{ work_title | strip | escape }}</h3>
-    <div class="yarn-work__meta"><span{% if product.tags contains '編みものキット' %} class="yarn-work__kit-label"{% endif %}>{{ work_kind }}</span><span class="yarn-work__action">{{ work_action }}<span aria-hidden="true">{{ 'icon-arrow.svg' | inline_asset_content }}</span></span></div>
+    <div class="yarn-work__meta"><span{% if work_kind_key == 'kit' %} class="yarn-work__kit-label"{% endif %}>{{ work_kind }}</span><span class="yarn-work__action">{{ work_action }}<span aria-hidden="true">{{ 'icon-arrow.svg' | inline_asset_content }}</span></span></div>
   </a>
 </li>
 {% # theme-check-enable TranslationKeyExists %}

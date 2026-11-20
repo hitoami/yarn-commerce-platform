@@ -202,7 +202,7 @@
         "chip-high"
       ],
       "settings": {
-        "category_filters": "filter.p.m.yarn.texture,filter.p.m.yarn.use",
+        "category_filters": "",
         "products_per_page": 12,
         "handmade_collections": "finished-goods",
         "kits_url": "shopify://pages/kits"

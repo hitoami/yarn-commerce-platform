@@ -11,9 +11,9 @@
   - 花色：yarn.color_type，纯色 → solid，段染 / 渐变 / 混色 / 彩虹色 / 段染渐变 → variegated。
   - 织什么：yarn.works（后台中文选项，可多选），在这里换成英文标记。
   - 克重：yarn.ball_weight_g，≤50g small，51–149g mid，≥150g big（大团）。
-  - 新手推荐（#365）：填了 yarn.beginner_reason 的标 beginner:yes。
+  - 新手推荐（#365）：属于手动集合 beginner-picks 的毛线标 beginner:yes（调用方可预传 beginner_handles 避免重复读取集合）。
   - 特点：yarn.fluffy 为真 → feature:fluffy（毛茸茸），yarn.crochet 为真 → feature:crochet（钩针用线），可以同时有。
-  用法：{%- capture tokens -%}{%- render 'yarn-facets', product: p -%}{%- endcapture -%}
+  用法：{%- capture tokens -%}{%- render 'yarn-facets', product: p, beginner_handles: handles -%}{%- endcapture -%}
 {%- endcomment -%}
 {%- liquid
   assign yf_w = product.metafields.yarn.ball_weight_g.value | plus: 0
@@ -119,7 +119,11 @@
     endcase
   endfor
 
-  if product.metafields.yarn.beginner_reason.value != blank
+  assign yf_beginner_handles = beginner_handles
+  if yf_beginner_handles == nil and collections['beginner-picks'] != blank
+    assign yf_beginner_handles = collections['beginner-picks'].products | map: 'handle'
+  endif
+  if yf_beginner_handles contains product.handle
     echo 'beginner:yes '
   endif
   if product.metafields.yarn.fluffy.value == true

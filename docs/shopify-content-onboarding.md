@@ -45,9 +45,13 @@ Shopify Product、Variant、价格和库存始终是交易事实来源。作品�
 ## 中文、日文和英文
 
 1. 中文主内容在 Project、作品配件或 Product 本身维护。
-2. 在 [Translate & Adapt](https://admin.shopify.com/store/tutaka-54/apps/translate-and-adapt) 维护日文和英文叙述字段。
-3. Project 的类别、难度、发布范围，以及配件的供给方式是稳定枚举，不翻译成另一套内部值。
-4. 输入后移出字段并保存，再重新打开确认内容仍在。语言已发布只表示路径可访问，不代表所有字段已经翻译或完成前台验收。
+2. 在 [Translate & Adapt](https://admin.shopify.com/store/tutaka-54/apps/translate-and-adapt) 维护日文和英文叙述字段（标题、描述、`yarn.spec_line`、`yarn.card_line`）。
+3. **禁止翻译的内部/筛选字段**：
+   - 商品「产品类型（Product type）」统一填 `毛线` / `编织包` / `手工成品` / `工具`，不在 Translate & Adapt 里翻译（前台三语角标由主题 `locales` 负责）；
+   - 毛线筛选元字段（`yarn.thickness`、`yarn.color_type`、`yarn.works`、`yarn.fluffy`、`yarn.crochet`、`yarn.undyed`）填固定值，不翻译；
+   - Project 的类别、难度、发布范围，以及配件的供给方式是稳定枚举，不翻译。
+4. **商品标签（Tags）不再使用**：品类归类靠 `Product type` 驱动自动产品系列（`yarn` / `knit-kits` / `finished-goods` / `tools`）；首页「本店精选」和「新手推荐」通过隐藏手动集合 `home-featured` / `beginner-picks`（`seo.hidden = 1`）勾选并拖拽排序；「限时折扣」通过自动集合 `sale`（原价不为空）+ 真实划线价驱动；「本季主推」由专题页 `page.season` 的 blocks 维护。
+5. 输入后移出字段并保存，再重新打开确认内容仍在。语言已发布只表示路径可访问，不代表所有字段已经翻译或完成前台验收。
 
 ## Inspiration 的当前边界
 

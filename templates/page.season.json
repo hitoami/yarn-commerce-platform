@@ -105,17 +105,6 @@
         "yarn-07"
       ],
       "settings": {
-        "products": [
-          "mvp-yarn-26",
-          "mvp-yarn-24",
-          "mvp-yarn-18",
-          "mvp-yarn-16",
-          "mvp-yarn-11",
-          "mvp-yarn-05",
-          "mvp-yarn-04"
-        ],
-        "collection": "yarn",
-        "tag": "catalog-2026-10-season",
         "products_to_show": 7,
         "cover_asset": "season-2026aw-cover.jpg",
         "source_image": false,

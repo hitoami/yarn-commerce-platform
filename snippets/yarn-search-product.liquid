@@ -1,30 +1,37 @@
 {%- comment -%}
   #149 搜索结果里的毛线 / 成品卡：与首页和目录同一张 yarn-pick-card，外层只加搜索与收藏需要的数据;收藏爱心与加入购物车按钮由卡片自带(#161)。
-  可搜文字：本商品自己的名称、描述、标签、规格行，以及所属毛线分类（yarn.texture / yarn.use 引用的 yarn_entry）名称。
+  可搜文字：本商品的名称、描述、规格行、成分/粗细/花色/织什么等 Metafield，以及由 product.type 映射的三语品类词（不再读 product.tags）。
 {%- endcomment -%}
+{%- capture search_kind -%}{%- render 'yarn-product-kind', product: search_product -%}{%- endcapture -%}
 {%- liquid
-  assign search_entries = ''
-  assign search_field_keys = 'texture,use' | split: ','
-  for search_field_key in search_field_keys
-    assign search_field = search_product.metafields.yarn[search_field_key]
-    if search_field == blank
-      continue
-    endif
-    if search_field.type contains 'list'
-      for search_entry in search_field.value
-        assign search_entries = search_entries | append: ' ' | append: search_entry.name.value
-      endfor
-    else
-      assign search_entries = search_entries | append: ' ' | append: search_field.value.name.value
-    endif
-  endfor
-  assign search_text = search_product.description | strip_html | strip_newlines | append: ' ' | append: search_product.metafields.yarn.spec_line.value | append: search_entries
+  assign search_kind = search_kind | strip
+  assign search_kind_words = ''
+  case search_kind
+    when 'yarn'
+      assign search_kind_words = '毛线 毛線 毛糸 yarn'
+    when 'kit'
+      assign search_kind_words = '编织包 材料包 編みものキット kit'
+    when 'finished'
+      assign search_kind_words = '手工成品 完成品 handmade finished'
+    when 'tools'
+      assign search_kind_words = '工具 道具 編み物道具 tools'
+    when 'bundle'
+      assign search_kind_words = '礼盒 礼品套装 ギフトセット bundle'
+  endcase
+  assign search_colors = search_product.metafields.yarn.color_type.value | join: ' '
+  assign search_works = search_product.metafields.yarn.works.value | join: ' '
+  assign search_text = search_product.description | strip_html | strip_newlines
+  assign search_text = search_text | append: ' ' | append: search_product.metafields.yarn.spec_line.value
+  assign search_text = search_text | append: ' ' | append: search_product.metafields.yarn.composition.value
+  assign search_text = search_text | append: ' ' | append: search_product.metafields.yarn.thickness.value
+  assign search_text = search_text | append: ' ' | append: search_product.metafields.yarn.card_line.value
+  assign search_text = search_text | append: ' ' | append: search_colors | append: ' ' | append: search_works
 -%}
 <div class="yd-search__item" data-discovery-card data-entity-type="product" data-entity-id="{{ search_product.id }}" data-group="{{ group }}"
-  data-title="{{ search_product.title | escape }}" data-summary="{{ search_text | escape }}" data-tags="{{ search_product.tags | join: ' ' | escape }}">
+  data-title="{{ search_product.title | escape }}" data-summary="{{ search_text | strip | escape }}" data-tags="{{ search_kind_words | escape }}">
   {%- if group == 'finished' -%}
     {%- render 'yarn-pick-card', card_product: search_product, handmade: true -%}
   {%- else -%}
-    {%- render 'yarn-pick-card', card_product: search_product -%}
+    {%- render 'yarn-pick-card', card_product: search_product, beginner: is_beginner -%}
   {%- endif -%}
 </div>

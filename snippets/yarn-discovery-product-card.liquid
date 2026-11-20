@@ -9,7 +9,7 @@
   assign product_search_text = product.description | strip_html | append: ' ' | append: product.metafields.yarn.discovery_uses.value
 -%}
 <article class="yp-card yp-product-card" data-discovery-card data-entity-type="product" data-entity-id="{{ product.id }}"
-  data-title="{{ product.title | escape }}" data-summary="{{ product_search_text | escape }}" data-tags="{{ product.tags | join: ' ' | escape }}"
+  data-title="{{ product.title | escape }}" data-summary="{{ product_search_text | escape }}" data-tags=""
   data-category="{{ product.metafields.yarn.discovery_categories.value | join: ',' | escape }}" data-purchase="{{ product_kind }}">
   <a class="yp-card__link" href="{{ product.url }}">
     <div class="yp-card__image{% if product.featured_image == blank %} yp-card__image--placeholder{% endif %}">

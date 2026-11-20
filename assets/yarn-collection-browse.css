@@ -87,13 +87,6 @@
 .ycb-empty h2 { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: var(--yarn-fs-20); font-weight: 500; }
 .ycb-empty p { margin: 0 0 var(--yarn-space-2); color: var(--yarn-text-secondary); font-size: var(--yarn-fs-14); line-height: 1.7; }
 
-/* Issue 284 新手推荐：打开后卡片下显示新手理由；平时不显示。:not([hidden]) 让筛掉的卡片仍然隐藏（Issue 365）。 */
-.ycb-reason { display: none; margin: 8px 0 0; color: var(--yarn-text-secondary); font-size: var(--yarn-fs-13); line-height: 1.6; }
-.ycb-reason .yx-product-card__badge { margin: 0 4px 0 0; }
-.ycb[data-ycb-beginner-on] .ycb-reason { display: block; }
-.ycb[data-ycb-beginner-on] .ycb-grid__item:not([hidden]) { display: flex; flex-direction: column; }
-.ycb[data-ycb-beginner-on] .ycb-grid__item > .yx-product-card { flex: 1; height: auto; }
-
 /* 集合还没有商品：占位卡（DESIGN.md 成品区规则），不含商品名、价格或库存。 */
 .ycb-preparing { display: grid; gap: var(--yarn-space-5); }
 .ycb-preparing__text { margin: 0; color: var(--yarn-text-secondary); font-size: var(--yarn-fs-14); line-height: 1.7; }
