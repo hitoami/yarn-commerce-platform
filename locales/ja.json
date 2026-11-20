@@ -1051,6 +1051,7 @@
     "all_short": "すべて",
     "switch_by": "{{ group }}で切り替え",
     "refine_by": "{{ groups }}で絞り込む",
+    "filter_by": "{{ groups }}で絞り込む",
     "list_sep": "・",
     "near_title": "条件をひとつゆるめると、こんな糸も",
     "more_filters": "価格・在庫",

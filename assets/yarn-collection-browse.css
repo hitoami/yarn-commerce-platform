@@ -17,7 +17,12 @@
 .ycb-badge { justify-self: start; padding: 3px 10px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-butter); color: var(--yarn-text-primary); font-size: var(--yarn-fs-12); font-weight: 500; }
 
 /* 圆图：同组分类横向切换，当前那个圈起来。手机一排横滑。 */
-.ycb-circles { margin-bottom: var(--yarn-space-5); }
+.ycb-circles { display: none; margin-bottom: var(--yarn-space-5); }
+/* 圆图只出现在分类入口：粗细 / 花色 / 材质 / 织什么各显示自己那一排；全部毛线和新手入口没有可切换的同组分类。 */
+.ycb[data-ycb-group="thick"] [data-ycb-circles="thick"],
+.ycb[data-ycb-group="color"] [data-ycb-circles="color"],
+.ycb[data-ycb-group="fiber"] [data-ycb-circles="fiber"],
+.ycb[data-ycb-group="works"] [data-ycb-circles="works"] { display: block; }
 .ycb-circles__title { margin: 0 0 var(--yarn-space-3); color: var(--yarn-text-muted); font-size: var(--yarn-fs-13); }
 .ycb-circles ul { display: flex; gap: var(--yarn-space-4); margin: 0 calc(-1 * var(--yarn-gutter)); padding: 4px var(--yarn-gutter) 6px; overflow-x: auto; scrollbar-width: none; }
 .ycb-circles ul::-webkit-scrollbar { display: none; }

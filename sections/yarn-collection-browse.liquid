@@ -4,7 +4,7 @@
 {%- comment -%}
   #85 毛线目录。2026-11-20 锦晨选定「分类页」样稿 v2（取代 #366 的顶部胶囊与 #243 手感地图）：
   顾客从首页 / 导航带着入口进来（如 ?ycb_color=variegated），标题、说明和面包屑换成这个入口（「入口」区块在主题编辑器里写三语标题、说明、圆图）；
-  一排圆图切换同组的其他分类（没有入口时是「想织什么」）；「再按 … 筛选」默认收起，展开后其余几组各占一行，同一行可多选（取并集），
+  一排圆图切换同组的其他分类（只在粗细 / 花色 / 材质 / 织什么入口显示；「全部毛线」和新手入口没有圆图）；「再按 … 筛选」默认收起（「全部毛线」直接展开，标题是「按 … 筛选」），展开后其余几组各占一行，同一行可多选（取并集），
   不同行取交集，数字是其他已选条件下还剩几款，0 款变灰；结果少于 4 款时列出「放宽一个条件」的毛线。都由 assets/yarn-collection-browse.js 处理。
   价格带与现货仍是 Search & Discovery（「价格 · 库存」抽屉，提交后刷新页面）。首页旧圆图、详情页带来的 filter.p.m.yarn.texture / yarn.use 显示为可清除标签。
   一次渲染至多 48 款，浏览器里每次露出 products_per_page 款；超过 48 款时 JS 先载入其余页再筛。没有 JS 时直接列出这一页的全部商品。
@@ -86,10 +86,15 @@
       var first = Array.from(new URLSearchParams(location.search)).find(function (pair) { return pair[0].indexOf('ycb_') === 0; });
       if (!first) return;
       var entry = first[0] === 'ycb_beginner' ? 'beginner:yes' : first[0].slice(4) + ':' + first[1];
+      section.setAttribute('data-ycb-group', entry.split(':')[0]);
       var node = section.querySelector('[data-ycb-entries]').content.querySelector('[data-entry="' + entry + '"]');
       if (!node) return;
-      section.querySelector('[data-ycb-title]').textContent = node.dataset.title;
+      var title = section.querySelector('[data-ycb-title]');
       var lead = section.querySelector('[data-ycb-lead]');
+      {%- comment -%}先记下集合自己的标题和说明，点「全部」时 JS 换回来。{%- endcomment -%}
+      title.setAttribute('data-default', title.textContent);
+      lead.setAttribute('data-default', lead.innerHTML);
+      title.textContent = node.dataset.title;
       lead.textContent = node.textContent;
       lead.hidden = !node.textContent.trim();
     })();
@@ -127,7 +132,7 @@
           {%- assign cb_circle_values = cb_circle_pair[1] | split: ',' -%}
           {%- assign cb_group_key = 'yarn_collection.facet_group_' | append: cb_circle_group -%}
           {%- assign cb_group_name = cb_group_key | t -%}
-          <nav class="ycb-circles" data-ycb-circles="{{ cb_circle_group }}" aria-label="{{ 'yarn_collection.switch_by' | t: group: cb_group_name }}"{% unless cb_circle_group == 'works' %} hidden{% endunless %}>
+          <nav class="ycb-circles" data-ycb-circles="{{ cb_circle_group }}" aria-label="{{ 'yarn_collection.switch_by' | t: group: cb_group_name }}">
             <p class="ycb-circles__title">{{ 'yarn_collection.switch_by' | t: group: cb_group_name }}</p>
             <ul role="list">
               <li>
@@ -175,7 +180,7 @@
       <div class="ycb-refine__bar">
         {%- unless cb_handmade -%}
           <button class="ycb-refine__toggle" type="button" data-ycb-refine-toggle aria-expanded="false" aria-controls="CollectionRefine-{{ section.id }}" data-ycb-js hidden>
-            <span data-ycb-refine-label data-t="{{ 'yarn_collection.refine_by' | t: groups: '__G__' | escape }}" data-sep="{{ 'yarn_collection.list_sep' | t }}">{{ 'yarn_collection.filter' | t }}</span>
+            <span data-ycb-refine-label data-t="{{ 'yarn_collection.refine_by' | t: groups: '__G__' | escape }}" data-t-all="{{ 'yarn_collection.filter_by' | t: groups: '__G__' | escape }}" data-sep="{{ 'yarn_collection.list_sep' | t }}">{{ 'yarn_collection.filter' | t }}</span>
             <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
           </button>
         {%- endunless -%}

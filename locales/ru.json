@@ -1075,6 +1075,7 @@
     "all_short": "All",
     "switch_by": "Switch by {{ group }}",
     "refine_by": "Filter by {{ groups }}",
+    "filter_by": "Filter by {{ groups }}",
     "list_sep": ", ",
     "near_title": "Loosen one filter to see these",
     "more_filters": "Price & stock",

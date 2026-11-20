@@ -126,7 +126,7 @@
     const label = (token) => section.querySelector(`[data-ycb-facet="${token}"]`)?.textContent.trim() || '';
     const entries = Object.fromEntries(Array.from(section.querySelector('[data-ycb-entries]')?.content.children || [], (node) => [node.dataset.entry, node]));
     const preview = new URLSearchParams(window.location.search).get('preview_theme_id');
-    const defaults = { title: title?.textContent || '', lead: lead?.innerHTML || '' };
+    const defaults = { title: title?.dataset.default ?? title?.textContent ?? '', lead: lead?.dataset.default ?? lead?.innerHTML ?? '' };
     let state = readState(new URLSearchParams(window.location.search));
     let items = [];
     let limit = step;
@@ -204,10 +204,10 @@
       document.title = `${title?.textContent || ''} – ${document.title.split(' – ').pop()}`;
     }
 
-    // Circle row: the entry's own group (or 想织什么 when there is none), the entry ringed.
+    // Circle row: only on a category entry, showing that entry's siblings (CSS picks the row from data-ycb-group).
+    // 全部毛线 and 新手推荐 have no siblings to switch to, so no circles there.
     function renderCircles(counts) {
-      const group = ['thick', 'color', 'fiber', 'works'].includes(entryGroup()) ? entryGroup() : 'works';
-      section.querySelectorAll('[data-ycb-circles]').forEach((row) => { row.hidden = row.dataset.ycbCircles !== group; });
+      if (state.entry) section.setAttribute('data-ycb-group', entryGroup()); else section.removeAttribute('data-ycb-group');
       const baseCounts = countOptions(items.map((item) => item.tokens), { facets: noFacets(), beginner: false, entry: '' });
       section.querySelectorAll('[data-ycb-circle]').forEach((link) => {
         const token = link.dataset.ycbCircle;
@@ -238,7 +238,8 @@
         });
       });
       const toggleLabel = section.querySelector('[data-ycb-refine-label]');
-      if (toggleLabel) toggleLabel.textContent = fill(toggleLabel.dataset.t, { G: groups.join(toggleLabel.dataset.sep || '、') });
+      const template = state.entry ? toggleLabel?.dataset.t : toggleLabel?.dataset.tAll || toggleLabel?.dataset.t;
+      if (toggleLabel) toggleLabel.textContent = fill(template, { G: groups.join(toggleLabel.dataset.sep || '、') });
     }
 
     // Picked refine options as removable tags (the entry itself is the page, not a tag).
@@ -338,6 +339,12 @@
       first?.li.querySelector('a')?.focus({ preventScroll: true });
     });
 
+    // The refine rows start open on 全部毛线 (nothing picked yet, so they are the way in) and closed on an entry.
+    function setOpen(open) {
+      refine?.classList.toggle('is-open', open);
+      section.querySelector('[data-ycb-refine-toggle]')?.setAttribute('aria-expanded', String(open));
+    }
+
     // Circles switch the entry in place and drop the refine options.
     section.querySelectorAll('[data-ycb-circle]').forEach((link) => link.addEventListener('click', (event) => {
       if (event.metaKey || event.ctrlKey || event.shiftKey) return;
@@ -350,8 +357,7 @@
         facets[group] = [value];
         entry = token;
       }
-      refine?.classList.remove('is-open');
-      section.querySelector('[data-ycb-refine-toggle]')?.setAttribute('aria-expanded', 'false');
+      setOpen(!entry);
       update({ facets, beginner: false, entry });
     }));
 
@@ -369,10 +375,7 @@
     }));
 
     // Arriving with refine options already in the URL (a shared link): open the rows so they can be seen.
-    if (active && facetsActive(state.facets).some((group) => group !== entryGroup())) {
-      refine?.classList.add('is-open');
-      section.querySelector('[data-ycb-refine-toggle]')?.setAttribute('aria-expanded', 'true');
-    }
+    if (!state.entry || (active && facetsActive(state.facets).some((group) => group !== entryGroup()))) setOpen(true);
 
     render();
     if (Number(grid.dataset.ycbPages) > 1) loadRest().then(render);
