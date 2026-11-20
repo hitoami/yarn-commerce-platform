@@ -34,12 +34,12 @@ test('all literal and dynamic UI translations exist in the three section locales
 test('homepage follows the #131 IA: yarn first, then season feature, yarn sets and handmade pieces', () => {
   // #131（2026-10-10 锦晨确认）：活动图 → 品牌介绍（附 LINE）→ 挑毛线 → 本季主推（编辑专题）→ 用我们的毛线可以织（材料包）→ 手工成品精选。
   // #180 独立新手指引合并进作品区；导览条、新手友好编织包、底部 LINE 帮助条停用而不删除，编辑器里可重新打开。
-  // 滚动进度小猫（#151）是底边固定的装饰层，不占版面顺序，放在最后。
+  // 滚动进度小猫（#151）2026-11-20 锦晨要求去掉。
   const live = index.order.filter(id => !index.sections[id].disabled);
   // 品牌与常见问题合并（锦晨 2026-11-14 选定原型方向 B「店员猫答疑」）：常见问题紧接品牌介绍，LINE 入口移到常见问题底部；整块放在页脚前。
   // 首页重排（锦晨 2026-11-19，样稿 v6 极简商品卡）：首屏 → 限时折扣 → 本店精选 → 本季主推 → 新手推荐 → 编织包 → 手工成品 → 顾客评论 → 品牌故事与常见问题。
   // 不放分类入口（晾衣绳吊牌删除、质感圆图停用）；各模块都显示，没有商品时显示一行说明。
-  assert.deepEqual(live, ['hero', 'sale-picks', 'picks-featured', 'season', 'picks-beginner', 'project-picks', 'picks-finished', 'reviews', 'story', 'faq', 'scroll-cat']);
+  assert.deepEqual(live, ['hero', 'sale-picks', 'picks-featured', 'season', 'picks-beginner', 'project-picks', 'picks-finished', 'reviews', 'story', 'faq']);
   for (const retired of ['guide', 'guide-strip', 'beginner-kits', 'line-support', 'filter-switch', 'yarn-hero', 'yarn-entries']) assert.equal(index.sections[retired].disabled, true, retired);
   for (const id of ['sale-picks', 'picks-featured', 'picks-beginner']) {
     assert.equal(index.sections[id].type, 'yarn-picks', id);
@@ -57,6 +57,7 @@ test('homepage follows the #131 IA: yarn first, then season feature, yarn sets a
     assert.equal(index.sections['project-picks'].settings[`step_${n}${suf}`], '', `step_${n}${suf}`);
   }
   assert.equal(index.sections['tag-line'], undefined);
+  assert.equal(index.sections['scroll-cat'], undefined);
   assert.equal(index.sections.hero.type, 'hitoami-hero');
   assert.equal(index.sections.story.type, 'hitoami-story');
   assert.equal(index.sections.season.type, 'yarn-season-feature');

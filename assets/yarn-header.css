@@ -703,7 +703,6 @@
   /* 抽屉已铺满整屏，Rise 原本铺在页面上的半透明遮罩不再需要，否则会盖在抽屉上并挡住点击。 */
   .header-wrapper .header__icon--menu[aria-expanded='true']::before { content: none; }
   /* 页面小猫（z-index 4）在页头之上，抽屉打开时先藏起来。 */
-  body:has(#Details-menu-drawer-container[open]) yarn-scroll-cat { visibility: hidden; }
   .header-wrapper .menu-drawer__inner-container,
   .header-wrapper .menu-drawer__navigation-container { height: auto; overflow: visible; }
   .header-wrapper .menu-drawer__navigation { box-sizing: border-box; width: 100%; max-width: 560px; margin: 0 auto; padding: 8px 24px calc(16px + env(safe-area-inset-bottom)); } /* 24 = 首屏与分类区的手机左边距 */
