@@ -1,0 +1,166 @@
+{%- comment -%}
+  统一单行胶囊下拉筛选菜单（搜索页 & Collection 页共用）。
+  严格与 Header 导航 1:1 对齐：粗细 / 花色 / 材质 / 想织什么 / 特点与克重 / 价格与现货。
+  每个选项带原版 Header 手绘小图标（yarn-facet-icon）与动态款数；JS 按页面入口自动隐藏当前入口组并更新计数。
+  参数：uid（唯一前缀，防 SVG clipPath id 冲突）、blocks（可选，用于读取 price_band 价格带块）。
+{%- endcomment -%}
+{%- liquid
+  assign yfb_uid = uid | default: 'FilterBar'
+  assign yfb_core_groups = 'thick:fine,medium,chunky|color:solid,variegated|fiber:wool,wool_blend,cotton,synthetic|works:sweater,hat,scarf,blanket,bag,doll' | split: '|'
+  assign yfb_has_price_blocks = false
+  if blocks != blank
+    for block in blocks
+      if block.type == 'price_band'
+        assign yfb_has_price_blocks = true
+        break
+      endif
+    endfor
+  endif
+-%}
+<span class="yfb__label">{{ 'yarn_collection.filter' | t }}：</span>
+{%- for group_def in yfb_core_groups -%}
+  {%- assign pair = group_def | split: ':' -%}
+  {%- assign grp = pair[0] -%}
+  {%- assign vals = pair[1] | split: ',' -%}
+  {%- if grp == 'works' -%}
+    {%- assign grp_label = 'yarn_collection.nav_works' | t -%}
+  {%- else -%}
+    {%- assign grp_key = 'yarn_collection.facet_group_' | append: grp -%}
+    {%- assign grp_label = grp_key | t -%}
+  {%- endif -%}
+  <details class="yfb__menu" data-yfb-menu="{{ grp }}" data-ycb-row="{{ grp }}">
+    <summary class="yfb__trigger">
+      <span class="yfb__trigger-label">{{ grp_label }}</span>
+      <span class="yfb__trigger-count" data-yfb-menu-count hidden></span>
+      <svg class="yfb__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </summary>
+    <div class="yfb__popover">
+      <div class="yfb__pop-head">
+        <span data-yfb-selected data-t="{{ 'yarn_collection.selected_count' | t: n: '__N__' | escape }}">{{ 'yarn_collection.selected_count' | t: n: 0 }}</span>
+        <button class="yfb__pop-reset" type="button" data-yfb-reset="{{ grp }}">{{ 'yarn_collection.reset' | t }}</button>
+      </div>
+      <div class="yfb__pop-list">
+        {%- for val in vals -%}
+          {%- assign val_key = 'yarn_collection.facet_' | append: grp | append: '_' | append: val -%}
+          <button class="yfb__opt" type="button" data-ycb-opt="{{ grp }}:{{ val }}" data-yfb-opt="{{ grp }}:{{ val }}" aria-pressed="false">
+            <span class="yfb__opt-left">
+              <span class="yfb__check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              {%- render 'yarn-facet-icon', group: grp, value: val, uid: yfb_uid -%}
+              <span class="yfb__opt-name">{{ val_key | t }}</span>
+            </span>
+            <span class="yfb__opt-count" data-ycb-opt-count data-yfb-opt-count></span>
+          </button>
+        {%- endfor -%}
+      </div>
+    </div>
+  </details>
+{%- endfor -%}
+
+<details class="yfb__menu" data-yfb-menu="feature_grams" data-ycb-row="feature">
+  <summary class="yfb__trigger">
+    <span class="yfb__trigger-label">{{ 'yarn_collection.facet_group_feature_grams' | t }}</span>
+    <span class="yfb__trigger-count" data-yfb-menu-count hidden></span>
+    <svg class="yfb__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </summary>
+  <div class="yfb__popover">
+    <div class="yfb__pop-head">
+      <span data-yfb-selected data-t="{{ 'yarn_collection.selected_count' | t: n: '__N__' | escape }}">{{ 'yarn_collection.selected_count' | t: n: 0 }}</span>
+      <button class="yfb__pop-reset" type="button" data-yfb-reset="feature_grams">{{ 'yarn_collection.reset' | t }}</button>
+    </div>
+    <div class="yfb__pop-list">
+      <p class="yfb__pop-subhead">{{ 'yarn_collection.facet_group_feature' | t }}</p>
+      <button class="yfb__opt" type="button" data-ycb-opt="beginner:yes" data-yfb-opt="beginner:yes" aria-pressed="false">
+        <span class="yfb__opt-left">
+          <span class="yfb__check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          {%- render 'yarn-facet-icon', group: 'beginner', value: 'yes', uid: yfb_uid -%}
+          <span class="yfb__opt-name">{{ 'yarn_collection.beginner' | t }}</span>
+        </span>
+        <span class="yfb__opt-count" data-ycb-opt-count data-yfb-opt-count></span>
+      </button>
+      {%- assign feature_vals = 'fluffy,crochet' | split: ',' -%}
+      {%- for val in feature_vals -%}
+        {%- assign val_key = 'yarn_collection.facet_feature_' | append: val -%}
+        <button class="yfb__opt" type="button" data-ycb-opt="feature:{{ val }}" data-yfb-opt="feature:{{ val }}" aria-pressed="false">
+          <span class="yfb__opt-left">
+            <span class="yfb__check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            {%- render 'yarn-facet-icon', group: 'feature', value: val, uid: yfb_uid -%}
+            <span class="yfb__opt-name">{{ val_key | t }}</span>
+          </span>
+          <span class="yfb__opt-count" data-ycb-opt-count data-yfb-opt-count></span>
+        </button>
+      {%- endfor -%}
+      <p class="yfb__pop-subhead">{{ 'yarn_collection.facet_group_grams' | t }}</p>
+      {%- assign gram_vals = 'small,mid,big' | split: ',' -%}
+      {%- for val in gram_vals -%}
+        {%- assign val_key = 'yarn_collection.facet_grams_' | append: val -%}
+        <button class="yfb__opt" type="button" data-ycb-opt="grams:{{ val }}" data-yfb-opt="grams:{{ val }}" aria-pressed="false">
+          <span class="yfb__opt-left">
+            <span class="yfb__check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            {%- if val == 'big' -%}{%- assign yfb_grams_uid = yfb_uid | append: '-g' -%}{%- render 'yarn-facet-icon', group: 'grams', value: 'big', uid: yfb_grams_uid -%}{%- endif -%}
+            <span class="yfb__opt-name">{{ val_key | t }}</span>
+          </span>
+          <span class="yfb__opt-count" data-ycb-opt-count data-yfb-opt-count></span>
+        </button>
+      {%- endfor -%}
+    </div>
+  </div>
+</details>
+
+<details class="yfb__menu" data-yfb-menu="price_stock">
+  <summary class="yfb__trigger">
+    <span class="yfb__trigger-label">{{ 'yarn_collection.price_and_stock' | t }}</span>
+    <span class="yfb__trigger-count" data-yfb-menu-count hidden></span>
+    <svg class="yfb__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </summary>
+  <div class="yfb__popover">
+    <div class="yfb__pop-head">
+      <span data-yfb-selected data-t="{{ 'yarn_collection.selected_count' | t: n: '__N__' | escape }}">{{ 'yarn_collection.selected_count' | t: n: 0 }}</span>
+      <button class="yfb__pop-reset" type="button" data-yfb-reset="price_stock">{{ 'yarn_collection.reset' | t }}</button>
+    </div>
+    <div class="yfb__pop-list">
+      <button class="yfb__opt" type="button" data-yfb-stock="1" aria-pressed="false">
+        <span class="yfb__opt-left">
+          <span class="yfb__check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="yfb__opt-name">{{ 'yarn_collection.in_stock_only' | t }}</span>
+        </span>
+        <span class="yfb__opt-count" data-yfb-stock-count></span>
+      </button>
+      <p class="yfb__pop-subhead">{{ 'yarn_collection.price' | t }}</p>
+      {%- if yfb_has_price_blocks -%}
+        {%- for block in blocks -%}
+          {%- if block.type != 'price_band' -%}{%- continue -%}{%- endif -%}
+          {%- capture band_label -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'label' -%}{%- endcapture -%}
+          <button class="yfb__opt" type="button" data-yfb-price="{{ block.settings.param | escape }}" aria-pressed="false" {{ block.shopify_attributes }}>
+            <span class="yfb__opt-left">
+              <span class="yfb__check yfb__check--radio" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="yfb__opt-name">{{ band_label | strip | escape }}</span>
+            </span>
+            <span class="yfb__opt-count" data-yfb-price-count></span>
+          </button>
+        {%- endfor -%}
+      {%- else -%}
+        <button class="yfb__opt" type="button" data-yfb-price="filter.v.price.lte=499" aria-pressed="false">
+          <span class="yfb__opt-left">
+            <span class="yfb__check yfb__check--radio" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="yfb__opt-name">&lt; ¥500</span>
+          </span>
+          <span class="yfb__opt-count" data-yfb-price-count></span>
+        </button>
+        <button class="yfb__opt" type="button" data-yfb-price="filter.v.price.gte=500&amp;filter.v.price.lte=1499" aria-pressed="false">
+          <span class="yfb__opt-left">
+            <span class="yfb__check yfb__check--radio" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="yfb__opt-name">¥500–1,499</span>
+          </span>
+          <span class="yfb__opt-count" data-yfb-price-count></span>
+        </button>
+        <button class="yfb__opt" type="button" data-yfb-price="filter.v.price.gte=1500" aria-pressed="false">
+          <span class="yfb__opt-left">
+            <span class="yfb__check yfb__check--radio" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="yfb__opt-name">¥1,500+</span>
+          </span>
+          <span class="yfb__opt-count" data-yfb-price-count></span>
+        </button>
+      {%- endif -%}
+    </div>
+  </div>
+</details>

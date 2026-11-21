@@ -1079,6 +1079,22 @@
     "nav_big": "大团毛线",
     "thick_range_chunky": "≤200m",
     "thick_range_medium": "≤350m",
-    "thick_range_fine": ">350m"
+    "thick_range_fine": ">350m",
+    "facet_group_feature_grams": "特点与克重",
+    "price_and_stock": "价格与现货",
+    "in_stock_only": "仅看现货",
+    "selected_count": "已选 {{ n }} 项",
+    "reset": "重置",
+    "sort_relevance": "相关度",
+    "directory_title": "商品目录",
+    "directory_lead": "毛线、材料包与手织成品，选一个入口开始逛",
+    "directory_by_dim": "直接按维度挑毛线",
+    "directory_view_all_yarn": "查看全部 {{ n }} 款毛线 →",
+    "directory_yarn_group": "毛线分类",
+    "directory_yarn_hint": "按线本身的手感、花色与成分进入",
+    "directory_works_hint": "选好作品，直接看适合的线",
+    "directory_yarn_desc": "按粗细、花色与材质慢慢挑，进入后可叠加筛选。",
+    "directory_kits_desc": "配齐同款毛线与 LINE 教程，照着成品图就能织。",
+    "directory_finished_desc": "第一批手作围巾与小物正在编织与拍摄，敬请期待。"
   }
 }

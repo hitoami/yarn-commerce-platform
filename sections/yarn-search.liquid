@@ -1,13 +1,12 @@
 {{ 'yarn-cards.css' | asset_url | stylesheet_tag }}
 {{ 'yarn-discovery.css' | asset_url | stylesheet_tag }}
+{{ 'yarn-filter-bar.css' | asset_url | stylesheet_tag }}
 {{ 'yarn-search.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'yarn-search.js' | asset_url }}" defer="defer"></script>
 {%- comment -%}
-  #149 搜索结果按「毛线 / 材料包 / 手工成品」分组（2026-10-16 用户决定，取代「有成品 / 可买材料 / 仅灵感」与包袋等分类）。
-  毛线 = 毛线集合（默认 yarn）的商品，卡片与首页 / 目录同一张 yarn-pick-card；材料包 = 通过 yarn-kit-visible 的 yarn_project；
+  #149 搜索结果按「毛线 / 材料包 / 手工成品」分组，并在结果上方接入与 Collection 页一致的 6 维度单行胶囊筛选条与胶囊排序。
+  毛线 = 毛线集合（默认 yarn）的商品，卡片与目录同一张 yarn-pick-card（clean_title: true）；材料包 = 通过 yarn-kit-visible 的 yarn_project；
   手工成品 = 成品集合（默认 finished-goods）。成品集合为空时标签显示「准备中」并禁用。
-  「毛线分类」block 把关键词连到毛线目录的同一筛选（导航同一套 ycb_* 参数，分类定稿 2026-11-19），只在关键词正好对应分类名称或别名时显示；
-  名称取 Theme locales 里导航的同一个名字，款数与默认小图用同一份 paginate by 250 算出，一件都没有的不显示。
 {%- endcomment -%}
 {%- liquid
   assign yarn_collection = collections[section.settings.yarn_collection]
@@ -24,6 +23,11 @@
   assign search_yarn_grid = ''
   assign search_yarn_next = ''
   assign search_categories = ''
+  assign search_filter_uid = 'SearchFilter-' | append: section.id
+  assign sort_rel_label = 'yarn_collection.sort_relevance' | t
+  assign sort_pa_label = 'yarn_collection.sort_price_ascending' | t
+  assign sort_pd_label = 'yarn_collection.sort_price_descending' | t
+  assign sort_new_label = 'yarn_collection.sort_created_descending' | t
 -%}
 {%- if yarn_collection != blank -%}
   {%- paginate yarn_collection.products by 250 -%}
@@ -82,7 +86,7 @@
         {%- for search_product in yarn_collection.products -%}
           {%- assign search_is_beginner = false -%}
           {%- if search_beginner_handles contains search_product.handle -%}{%- assign search_is_beginner = true -%}{%- endif -%}
-          {%- render 'yarn-search-product', search_product: search_product, group: 'yarn', is_beginner: search_is_beginner -%}
+          {%- render 'yarn-search-product', search_product: search_product, group: 'yarn', is_beginner: search_is_beginner, beginner_handles: search_beginner_handles -%}
         {%- endfor -%}
       </div>
     {%- endcapture -%}
@@ -91,31 +95,90 @@
     {%- endcapture -%}
   {%- endpaginate -%}
 {%- endif -%}
-<yarn-discovery-search class="yd-search" data-search-url="{{ routes.search_url }}" data-section-id="{{ section.id }}">
-  <header class="yd-search__bar">
-    <a class="yd-search__back" href="{{ routes.root_url }}" data-search-back aria-label="{{ 'yarn_discovery.back' | t }}">{{ 'icon-arrow.svg' | inline_asset_content }}</a>
-    <h1 data-search-title data-title="{{ 'yarn_discovery.search' | t }}" data-favorites-title="{{ 'yarn_discovery.favorites' | t }}">{{ 'yarn_discovery.search' | t }}</h1>
-    <a class="yd-search__favorites" href="{{ routes.search_url }}?browse=favorites" data-favorites-link>{{ 'yarn_discovery.favorites' | t }}</a>
-  </header>
-  <form class="yd-search__form" action="{{ routes.search_url }}" method="get" role="search" data-search-form>
-    <div class="yd-search__field">
-      <button class="yd-search__icon" type="submit" aria-label="{{ 'yarn_discovery.search' | t }}">{{ 'icon-search.svg' | inline_asset_content }}</button>
-      <div>
-        <label class="visually-hidden" for="DiscoveryQuery-{{ section.id }}">{{ 'yarn_discovery.search_placeholder' | t }}</label>
-        <input id="DiscoveryQuery-{{ section.id }}" name="q" type="search" value="{{ search.terms | escape }}" placeholder="{{ 'yarn_discovery.search_placeholder' | t }}" autocomplete="off">
-        <p>{{ 'yarn_discovery.search_scope' | t }}</p>
+<yarn-discovery-search class="yd-search" data-search-url="{{ routes.search_url }}" data-section-id="{{ section.id }}"
+  data-group-thick="{{ 'yarn_collection.facet_group_thick' | t | escape }}"
+  data-group-color="{{ 'yarn_collection.facet_group_color' | t | escape }}"
+  data-group-fiber="{{ 'yarn_collection.facet_group_fiber' | t | escape }}"
+  data-group-works="{{ 'yarn_collection.nav_works' | t | escape }}"
+  data-group-grams="{{ 'yarn_collection.facet_group_grams' | t | escape }}"
+  data-group-feature="{{ 'yarn_collection.facet_group_feature' | t | escape }}"
+  data-label-stock="{{ 'yarn_collection.in_stock_only' | t | escape }}"
+  data-label-price="{{ 'yarn_collection.price' | t | escape }}">
+  <div class="yd-search__hero">
+    <header class="yd-search__bar">
+      <a class="yd-search__back" href="{{ routes.root_url }}" data-search-back aria-label="{{ 'yarn_discovery.back' | t }}">{{ 'icon-arrow.svg' | inline_asset_content }}</a>
+      <h1 data-search-title data-title="{{ 'yarn_discovery.search' | t }}" data-favorites-title="{{ 'yarn_discovery.favorites' | t }}">{{ 'yarn_discovery.search' | t }}</h1>
+      <a class="yd-search__favorites" href="{{ routes.search_url }}?browse=favorites" data-favorites-link>{{ 'yarn_discovery.favorites' | t }}</a>
+    </header>
+    <form class="yd-search__form" action="{{ routes.search_url }}" method="get" role="search" data-search-form>
+      <div class="yd-search__field">
+        <button class="yd-search__icon" type="submit" aria-label="{{ 'yarn_discovery.search' | t }}">{{ 'icon-search.svg' | inline_asset_content }}</button>
+        <div>
+          <label class="visually-hidden" for="DiscoveryQuery-{{ section.id }}">{{ 'yarn_discovery.search_placeholder' | t }}</label>
+          <input id="DiscoveryQuery-{{ section.id }}" name="q" type="search" value="{{ search.terms | escape }}" placeholder="{{ 'yarn_discovery.search_placeholder' | t }}" autocomplete="off">
+          <p>{{ 'yarn_discovery.search_scope' | t }}</p>
+        </div>
+        <button class="yd-search__icon yd-search__clear" type="button" data-search-clear aria-label="{{ 'yarn_discovery.clear_search' | t }}" {% if search.terms == blank %}hidden{% endif %}><span>{{ 'icon-close.svg' | inline_asset_content }}</span></button>
       </div>
-      <button class="yd-search__icon yd-search__clear" type="button" data-search-clear aria-label="{{ 'yarn_discovery.clear_search' | t }}" {% if search.terms == blank %}hidden{% endif %}><span>{{ 'icon-close.svg' | inline_asset_content }}</span></button>
+    </form>
+    <nav class="yd-search__tabs" aria-label="{{ 'yarn_discovery.groups_label' | t }}">
+      <button class="yd-search__tab" type="button" data-search-tab="" aria-pressed="true">{{ 'yarn_discovery.group_all' | t }} <span data-search-tab-count></span></button>
+      <button class="yd-search__tab" type="button" data-search-tab="yarn" aria-pressed="false">{{ 'yarn_discovery.group_yarn' | t }} <span data-search-tab-count></span></button>
+      <button class="yd-search__tab" type="button" data-search-tab="kit" aria-pressed="false">{{ 'yarn_discovery.group_kit' | t }} <span data-search-tab-count></span></button>
+      <button class="yd-search__tab" type="button" data-search-tab="finished" aria-pressed="false"{% if finished_coming_soon %} disabled{% endif %}>{{ 'yarn_discovery.group_finished' | t }} {% if finished_coming_soon %}<span class="yd-search__soon">{{ 'yarn_discovery.coming_soon' | t }}</span>{% else %}<span data-search-tab-count></span>{% endif %}</button>
+    </nav>
+  </div>
+
+  <div class="yd-search__toolbar yfb" data-search-toolbar hidden>
+    <div class="yfb__bar">
+      <div class="yfb__filters">
+        {%- render 'yarn-filter-menus', uid: search_filter_uid -%}
+      </div>
+      <div class="yfb__meta">
+        <p class="yfb__count" data-search-count aria-live="polite" data-template="{{ 'yarn_discovery.result_line' | t: count: '[count]', query: '[query]' | escape }}" data-short-template="{{ 'yarn_collection.count_all' | t: n: '[count]' | escape }}" hidden></p>
+        <details class="yfb__menu yfb__menu--sort" data-yfb-menu="sort">
+          <summary class="yfb__trigger yfb__trigger--sort" aria-label="{{ 'yarn_collection.sort' | t }}">
+            <span data-search-sort-label data-t="{{ 'yarn_collection.sort_option' | t: name: '__N__' | escape }}">{{ 'yarn_collection.sort_option' | t: name: sort_rel_label }}</span>
+            <svg class="yfb__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </summary>
+          <div class="yfb__popover">
+            <div class="yfb__pop-list">
+              <button class="yfb__opt" type="button" data-search-sort-opt="" data-sort-name="{{ sort_rel_label | escape }}" aria-pressed="true">
+                <span class="yfb__opt-left">
+                  <span class="yfb__check yfb__check--radio" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span class="yfb__opt-name">{{ sort_rel_label }}</span>
+                </span>
+              </button>
+              <button class="yfb__opt" type="button" data-search-sort-opt="price-ascending" data-sort-name="{{ sort_pa_label | escape }}" aria-pressed="false">
+                <span class="yfb__opt-left">
+                  <span class="yfb__check yfb__check--radio" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span class="yfb__opt-name">{{ sort_pa_label }}</span>
+                </span>
+              </button>
+              <button class="yfb__opt" type="button" data-search-sort-opt="price-descending" data-sort-name="{{ sort_pd_label | escape }}" aria-pressed="false">
+                <span class="yfb__opt-left">
+                  <span class="yfb__check yfb__check--radio" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span class="yfb__opt-name">{{ sort_pd_label }}</span>
+                </span>
+              </button>
+              <button class="yfb__opt" type="button" data-search-sort-opt="created-descending" data-sort-name="{{ sort_new_label | escape }}" aria-pressed="false">
+                <span class="yfb__opt-left">
+                  <span class="yfb__check yfb__check--radio" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span class="yfb__opt-name">{{ sort_new_label }}</span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </details>
+      </div>
     </div>
-  </form>
-  <nav class="yd-search__tabs" aria-label="{{ 'yarn_discovery.groups_label' | t }}">
-    <button class="yd-search__tab" type="button" data-search-tab="" aria-pressed="true">{{ 'yarn_discovery.group_all' | t }} <span data-search-tab-count></span></button>
-    <button class="yd-search__tab" type="button" data-search-tab="yarn" aria-pressed="false">{{ 'yarn_discovery.group_yarn' | t }} <span data-search-tab-count></span></button>
-    <button class="yd-search__tab" type="button" data-search-tab="kit" aria-pressed="false">{{ 'yarn_discovery.group_kit' | t }} <span data-search-tab-count></span></button>
-    <button class="yd-search__tab" type="button" data-search-tab="finished" aria-pressed="false"{% if finished_coming_soon %} disabled{% endif %}>{{ 'yarn_discovery.group_finished' | t }} {% if finished_coming_soon %}<span class="yd-search__soon">{{ 'yarn_discovery.coming_soon' | t }}</span>{% else %}<span data-search-tab-count></span>{% endif %}</button>
-  </nav>
+    <div class="yfb__active" data-search-active hidden>
+      <div class="yfb__filters" data-search-active-tags></div>
+      <button class="yfb__clear" type="button" data-search-clear-filters>{{ 'yarn_collection.clear_all' | t }}</button>
+    </div>
+  </div>
+
   <p class="yd-search__status" data-search-loading role="status" hidden>{{ 'yarn_project.loading' | t }}</p>
-  <p class="yd-search__count" data-search-count aria-live="polite" data-template="{{ 'yarn_discovery.result_line' | t: count: '[count]', query: '[query]' | escape }}" hidden></p>
   <section class="yd-search__error" data-search-error hidden role="alert">
     <h2>{{ 'yarn_discovery.load_error' | t }}</h2>
     <p>{{ 'yarn_discovery.load_error_hint' | t }}</p>
@@ -124,6 +187,7 @@
   <section class="yd-search__empty" data-search-empty hidden>
     <h2 data-search-empty-title data-title="{{ 'yarn_discovery.empty' | t }}" data-query-template="{{ 'yarn_discovery.empty_query' | t: query: '[query]' | escape }}">{{ 'yarn_discovery.empty' | t }}</h2>
     <p>{{ 'yarn_discovery.empty_hint' | t }}</p>
+    <button class="yd-search__action" type="button" data-search-empty-clear hidden>{{ 'yarn_collection.clear_all' | t }}</button>
   </section>
   <p class="yd-search__local-note" data-favorites-local-note hidden>{{ 'yarn_discovery.favorites_local_note' | t }}</p>
   <section class="yd-search__empty" data-favorites-empty hidden>
@@ -171,7 +235,7 @@
   <div data-search-results hidden>
     <section class="yd-search__group" data-search-group="yarn" aria-labelledby="SearchYarn-{{ section.id }}">
       <div class="yd-search__group-head">
-        <h2 id="SearchYarn-{{ section.id }}">{{ 'yarn_discovery.group_yarn' | t }}</h2>
+        <h2 id="SearchYarn-{{ section.id }}">{{ 'yarn_discovery.group_yarn' | t }} <span class="yd-search__group-count" data-search-group-count="yarn"></span></h2>
         <a class="yd-search__group-link" href="{{ yarn_collection.url }}" data-search-category-link data-template="{{ 'yarn_discovery.category_link' | t: name: '[name]' | escape }}" hidden></a>
       </div>
       {%- if yarn_collection != blank -%}
@@ -182,7 +246,7 @@
     </section>
     <section class="yd-search__group" data-search-group="kit" aria-labelledby="SearchKits-{{ section.id }}">
       <div class="yd-search__group-head">
-        <h2 id="SearchKits-{{ section.id }}">{{ 'yarn_discovery.group_kit' | t }}</h2>
+        <h2 id="SearchKits-{{ section.id }}">{{ 'yarn_discovery.group_kit' | t }} <span class="yd-search__group-count" data-search-group-count="kit"></span></h2>
         <a class="yd-search__group-link" href="{{ kits_url }}">{{ 'yarn_discovery.all_kits' | t }}</a>
       </div>
       {% paginate shop.metaobjects.yarn_project.values by 250 %}
@@ -190,8 +254,36 @@
           {%- for project in shop.metaobjects.yarn_project.values -%}
             {%- capture kit_visible -%}{%- render 'yarn-kit-visible', project: project -%}{%- endcapture -%}
             {%- if kit_visible != 'true' -%}{%- continue -%}{%- endif -%}
+            {%- liquid
+              assign kit_total_minor = 0
+              assign kit_avail_count = 0
+              assign kit_kind_count = 0
+              assign kit_prices_ok = true
+              for kit_comp in project.components.value
+                if kit_comp.component_type.value == '毛线' and kit_comp.variant.value != blank
+                  assign kv = kit_comp.variant.value
+                  assign kq = kit_comp.quantity.value | default: 1
+                  assign kit_kind_count = kit_kind_count | plus: 1
+                  if kv.price <= 0
+                    assign kit_prices_ok = false
+                  elsif kv.available
+                    assign kit_avail_count = kit_avail_count | plus: 1
+                  endif
+                  assign kline = kv.price | times: kq
+                  assign kit_total_minor = kit_total_minor | plus: kline
+                endif
+              endfor
+              assign kit_is_avail = true
+              if kit_kind_count > 0 and kit_avail_count == 0
+                assign kit_is_avail = false
+              endif
+              unless kit_prices_ok
+                assign kit_total_minor = 0
+              endunless
+            -%}
             <div class="yd-search__item" data-discovery-card data-entity-type="project" data-entity-id="{{ project.system.id }}" data-group="kit"
-              data-title="{{ project.title.value | escape }}" data-summary="{{ project.summary.value | escape }}" data-tags="">
+              data-title="{{ project.title.value | escape }}" data-summary="{{ project.summary.value | escape }}" data-tags=""
+              data-facets="" data-price="{{ kit_total_minor | divided_by: 100.0 }}" data-available="{{ kit_is_avail }}" data-created="0">
               {%- render 'yarn-project-pick-card', project: project -%}
               {%- render 'yarn-favorite-button', entity_type: 'project', entity_id: project.system.id, entity_title: project.title.value -%}
             </div>
@@ -203,13 +295,13 @@
     {%- unless finished_coming_soon -%}
       <section class="yd-search__group" data-search-group="finished" aria-labelledby="SearchFinished-{{ section.id }}">
         <div class="yd-search__group-head">
-          <h2 id="SearchFinished-{{ section.id }}">{{ 'yarn_discovery.group_finished' | t }}</h2>
+          <h2 id="SearchFinished-{{ section.id }}">{{ 'yarn_discovery.group_finished' | t }} <span class="yd-search__group-count" data-search-group-count="finished"></span></h2>
           <a class="yd-search__group-link" href="{{ finished_collection.url }}">{{ 'yarn_discovery.all_finished' | t }}</a>
         </div>
         {% paginate finished_collection.products by 250 %}
           <div class="yd-search__grid" data-search-catalog="finished">
             {%- for search_product in finished_collection.products -%}
-              {%- render 'yarn-search-product', search_product: search_product, group: 'finished' -%}
+              {%- render 'yarn-search-product', search_product: search_product, group: 'finished', beginner_handles: search_beginner_handles -%}
             {%- endfor -%}
           </div>
           {% if paginate.next %}<a data-search-next="finished" href="{{ paginate.next.url | escape }}&amp;section_id={{ section.id | url_encode }}" hidden>{{ 'yarn_project.more' | t }}</a>{% endif %}

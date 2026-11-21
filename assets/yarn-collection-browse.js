@@ -1,13 +1,10 @@
-/* 毛线目录（分类页，锦晨 2026-11-20 选定样稿 v2）。
-   顾客从首页 / 导航带着一个入口进来（如 ?ycb_color=variegated），页头标题和说明换成这个入口；一排圆图切换同组的其他分类；
-   「筛选」默认收起（全部毛线默认展开），展开后其余几组各占一行，同一行可多选（取并集），不同行取交集；数字是在其他已选条件下还剩几款，0 款变灰。
-   结果少于 4 款时列出「放宽一个条件」的毛线。状态记在网址 ycb_* 参数上：入口那一组写在最前面，重新打开页面仍认得入口。
-   每张卡带 yarn-facets 标记（" thick:fine fiber:wool works:hat "）。价格带与现货仍是 Search & Discovery，在抽屉里提交后刷新页面。
-   没有 JS 时，表单与链接按原生 GET 跳转，列表显示这一页的全部商品。 */
+/* 毛线目录（2026-11-20 Woobles 轻下拉胶囊 + 暖色波浪页头）：
+   与 Header 1:1 对齐的 6 个下拉胶囊（粗细 / 花色 / 材质 / 想织什么 / 特点与克重 / 价格与现货）；
+   入口所在组自动隐去，同一组内多选取并集，不同组取交集；价格区间与「仅看现货」即时筛选并同步 URL 参数。 */
 (() => {
   const PRICE_KEYS = ['filter.v.price.gte', 'filter.v.price.lte'];
+  const STOCK_KEY = 'filter.v.availability';
 
-  // A price band replaces both bounds; "any price" clears them. Other filters stay as submitted.
   function applyBand(params, band) {
     const next = new URLSearchParams(params);
     PRICE_KEYS.forEach((key) => next.delete(key));
@@ -17,7 +14,6 @@
     return next;
   }
 
-  // The band matching the current URL, comparing numbers because Shopify rewrites 500 as 500.0.
   function activeBand(params, bands) {
     const same = (band) => PRICE_KEYS.every((key) => {
       const a = params.get(key);
@@ -25,6 +21,24 @@
       return a === null || b === null ? a === b : Number(a) === Number(b);
     });
     return bands.find(same) ?? null;
+  }
+
+  function parseBand(band) {
+    if (!band) return null;
+    const p = new URLSearchParams(band);
+    return {
+      gte: p.has('filter.v.price.gte') ? Number(p.get('filter.v.price.gte')) : null,
+      lte: p.has('filter.v.price.lte') ? Number(p.get('filter.v.price.lte')) : null,
+    };
+  }
+
+  function matchesPrice(price, band) {
+    const range = parseBand(band);
+    if (!range) return true;
+    if (price == null || Number.isNaN(price)) return false;
+    if (range.gte !== null && price < range.gte) return false;
+    if (range.lte !== null && price > range.lte) return false;
+    return true;
   }
 
   const FACET_GROUPS = ['thick', 'color', 'fiber', 'works', 'grams', 'feature'];
@@ -42,7 +56,6 @@
   const facetsActive = (facets) => FACET_GROUPS.filter((group) => facets[group]?.length);
   const hasToken = (tokens, token) => ` ${tokens} `.includes(` ${token} `);
 
-  // The entry is the first ycb_* filter in the URL when it holds one value: that is what the customer clicked to get here.
   function readEntry(params) {
     for (const [key, value] of params) {
       if (key === 'ycb_beginner') return value === '1' ? 'beginner:yes' : '';
@@ -53,32 +66,44 @@
   }
 
   function readState(params) {
-    return { facets: readFacets(params), beginner: params.get('ycb_beginner') === '1', entry: readEntry(params) };
+    return {
+      facets: readFacets(params),
+      beginner: params.get('ycb_beginner') === '1',
+      entry: readEntry(params),
+      inStock: params.get(STOCK_KEY) === '1',
+      priceBand: '',
+    };
   }
-  const isFiltered = (state) => state.beginner || facetsActive(state.facets).length > 0;
+  const isFiltered = (state) => state.beginner || facetsActive(state.facets).length > 0 || Boolean(state.inStock) || Boolean(state.priceBand);
 
-  // Whether an item passes every active filter. Values inside one group are alternatives (OR); groups combine (AND).
-  // `skip` leaves one group out so its options can be counted.
   function matches(tokens, state, skip = null) {
     if (skip !== 'beginner' && state.beginner && !hasToken(tokens, 'beginner:yes')) return false;
     return facetsActive(state.facets).every((group) => group === skip || state.facets[group].some((value) => hasToken(tokens, `${group}:${value}`)));
   }
 
-  // How many items each option would show, given the other active filters (faceted counts).
+  function matchesItem(item, state, skip = null) {
+    if (!matches(item.tokens, state, skip)) return false;
+    if (skip !== 'stock' && state.inStock && !item.available) return false;
+    if (skip !== 'price' && state.priceBand && !matchesPrice(item.price, state.priceBand)) return false;
+    return true;
+  }
+
   function countOptions(tokenList, state) {
     const counts = { all: 0, 'beginner:yes': 0 };
-    tokenList.forEach((tokens) => {
-      if (matches(tokens, state)) counts.all += 1;
-      if (matches(tokens, state, 'beginner') && hasToken(tokens, 'beginner:yes')) counts['beginner:yes'] += 1;
+    tokenList.forEach((entry) => {
+      const isObj = entry && typeof entry === 'object';
+      const tokens = isObj ? entry.tokens : entry;
+      const ok = (skip) => (isObj ? matchesItem(entry, state, skip) : matches(tokens, state, skip));
+      if (ok(null)) counts.all += 1;
+      if (ok('beginner') && hasToken(tokens, 'beginner:yes')) counts['beginner:yes'] += 1;
       FACET_GROUPS.forEach((group) => {
-        if (!matches(tokens, state, group)) return;
+        if (!ok(group)) return;
         ` ${tokens} `.split(' ').filter((token) => token.startsWith(`${group}:`)).forEach((token) => { counts[token] = (counts[token] || 0) + 1; });
       });
     });
     return counts;
   }
 
-  // The entry's group goes first so a reload or a shared link keeps the same page title.
   function writeState(params, state) {
     const next = new URLSearchParams(params);
     [...STATE_KEYS, ...RETIRED_KEYS].forEach((key) => next.delete(key));
@@ -91,7 +116,7 @@
     return next;
   }
 
-  if (typeof module !== 'undefined') module.exports = { applyBand, activeBand, readState, writeState, matches, countOptions, isFiltered, readEntry };
+  if (typeof module !== 'undefined') module.exports = { applyBand, activeBand, parseBand, matchesPrice, readState, writeState, matches, matchesItem, countOptions, isFiltered, readEntry };
   if (typeof document === 'undefined') return;
 
   const el = (tag, className, text) => Object.assign(document.createElement(tag), className ? { className } : {}, text != null ? { textContent: text } : {});
@@ -106,17 +131,13 @@
   }
 
   function setup(section) {
-    const drawer = section.querySelector('[data-ycb-drawer]');
-    const filterForm = section.querySelector('[data-ycb-filter-form]');
     const grid = section.querySelector('[data-ycb-grid]');
     const more = section.querySelector('[data-ycb-more]');
     const reveal = section.querySelector('[data-ycb-reveal]');
     const status = section.querySelector('[data-ycb-status]');
     const count = section.querySelector('[data-ycb-count]');
-    const total = section.querySelector('[data-ycb-total]');
     const none = section.querySelector('[data-ycb-none]');
     const active = section.querySelector('[data-ycb-active]');
-    const refine = section.querySelector('[data-ycb-refine]');
     const near = section.querySelector('[data-ycb-near]');
     const nearGrid = section.querySelector('[data-ycb-near-grid]');
     const title = section.querySelector('[data-ycb-title]');
@@ -124,10 +145,16 @@
     const crumb = section.querySelector('[data-ycb-crumb-entry]');
     const step = Number(grid?.dataset.ycbStep) || 12;
     const label = (token) => section.querySelector(`[data-ycb-facet="${token}"]`)?.textContent.trim() || '';
+    const groupLabel = (grp) => section.querySelector(`[data-ycb-group-label="${grp}"]`)?.textContent.trim() || '';
     const entries = Object.fromEntries(Array.from(section.querySelector('[data-ycb-entries]')?.content.children || [], (node) => [node.dataset.entry, node]));
-    const preview = new URLSearchParams(window.location.search).get('preview_theme_id');
     const defaults = { title: title?.dataset.default ?? title?.textContent ?? '', lead: lead?.dataset.default ?? lead?.innerHTML ?? '' };
-    let state = readState(new URLSearchParams(window.location.search));
+    const menus = Array.from(section.querySelectorAll('[data-yfb-menu]'));
+    const priceButtons = Array.from(section.querySelectorAll('[data-yfb-price]'));
+    const stockButton = section.querySelector('[data-yfb-stock]');
+
+    const initialParams = new URLSearchParams(window.location.search);
+    let state = readState(initialParams);
+    state.priceBand = activeBand(initialParams, priceButtons.map((b) => b.dataset.yfbPrice)) || '';
     let items = [];
     let limit = step;
 
@@ -135,37 +162,41 @@
     section.querySelector('[data-ycb-next]')?.remove();
     section.querySelectorAll('.ycb-grid__item--later').forEach((li) => li.classList.remove('ycb-grid__item--later'));
 
-    section.querySelector('[data-ycb-open]')?.addEventListener('click', () => drawer?.showModal());
-    section.querySelector('[data-ycb-close]')?.addEventListener('click', () => drawer?.close());
-    drawer?.addEventListener('click', (event) => { if (event.target === drawer) drawer.close(); });
+    // One open popover at a time + click outside / Escape closes
+    menus.forEach((menu) => menu.addEventListener('toggle', () => {
+      if (!menu.open) return;
+      menus.forEach((other) => { if (other !== menu) other.open = false; });
+    }));
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('[data-yfb-menu]')) menus.forEach((m) => { m.open = false; });
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') menus.forEach((m) => { m.open = false; });
+    });
 
-    const bands = Array.from(section.querySelectorAll('[data-ycb-band]'));
-    const band = activeBand(new URLSearchParams(window.location.search), bands.map((input) => input.value).filter(Boolean));
-    bands.forEach((input) => { input.checked = band ? input.value === band : !input.value; });
-
-    // Price and stock need the server: submit the drawer as a normal GET, carrying the in-page filters along.
-    filterForm?.addEventListener('submit', (event) => {
+    section.querySelectorAll('[data-ycb-sort-opt]').forEach((link) => link.addEventListener('click', (event) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey) return;
       event.preventDefault();
-      const chosenBand = filterForm.querySelector('[data-ycb-band]:checked')?.value || '';
-      const next = writeState(applyBand(new URLSearchParams(new FormData(filterForm)), chosenBand), state);
-      if (preview) next.set('preview_theme_id', preview);
-      window.location.assign(`${filterForm.getAttribute('action')}${next.size ? `?${next}` : ''}`);
-    });
-
-    const sort = section.querySelector('[data-ycb-sort]');
-    sort?.addEventListener('change', () => sort.form.requestSubmit());
-    sort?.form.addEventListener('submit', () => {
-      writeState(new URLSearchParams(), state).forEach((value, key) => {
-        sort.form.append(Object.assign(document.createElement('input'), { type: 'hidden', name: key, value }));
-      });
-    });
+      let next = writeState(new URLSearchParams(window.location.search), state);
+      if (state.inStock) next.set(STOCK_KEY, '1'); else next.delete(STOCK_KEY);
+      if (state.priceBand) next = applyBand(next, state.priceBand);
+      else PRICE_KEYS.forEach((k) => next.delete(k));
+      next.set('sort_by', link.dataset.ycbSortOpt || 'manual');
+      next.delete('page');
+      window.location.assign(`${window.location.pathname}?${next}`);
+    }));
 
     if (!grid) return;
 
-    const readItem = (li) => ({ li, tokens: li.dataset.ycbFacets || '', handle: li.dataset.ycbItem });
+    const readItem = (li) => ({
+      li,
+      tokens: li.dataset.ycbFacets || '',
+      handle: li.dataset.ycbItem,
+      price: li.dataset.ycbPrice !== undefined && li.dataset.ycbPrice !== '' ? Number(li.dataset.ycbPrice) : null,
+      available: li.dataset.ycbAvailable !== 'false',
+    });
     items = Array.from(grid.children, readItem);
 
-    // More than one server page (over 48 products): fetch the rest once so filters and counts see every product.
     async function loadRest() {
       const pages = Number(grid.dataset.ycbPages) || 1;
       if (pages <= 1) return;
@@ -185,7 +216,7 @@
         grid.append(...lis);
         items = items.concat(lis.map(readItem));
       } catch (error) {
-        // Keep the first page; the counts then cover only what is loaded.
+        // Keep first page if pagination fetch fails
       } finally {
         grid.removeAttribute('aria-busy');
       }
@@ -193,7 +224,6 @@
 
     const entryGroup = () => (state.entry || '').split(':')[0];
 
-    // Page head: the entry's own title and words; without an entry, the collection's.
     function renderHead() {
       const node = entries[state.entry];
       const entryLabel = label(state.entry);
@@ -204,8 +234,6 @@
       document.title = `${title?.textContent || ''} – ${document.title.split(' – ').pop()}`;
     }
 
-    // Circle row: only on a category entry, showing that entry's siblings (CSS picks the row from data-ycb-group).
-    // 全部毛线 and 新手推荐 have no siblings to switch to, so no circles there.
     function renderCircles(baseCounts) {
       if (state.entry) section.setAttribute('data-ycb-group', entryGroup()); else section.removeAttribute('data-ycb-group');
       section.querySelectorAll('[data-ycb-circle]').forEach((link) => {
@@ -225,47 +253,91 @@
       });
     }
 
-    // Refine rows: every group except the entry's, multi-select inside a row.
-    // Options with 0 matches across the entire collection stay hidden (covers items loaded past page 1).
-    function renderRefine(counts, baseCounts) {
-      section.querySelectorAll('[data-ycb-row]').forEach((row) => {
+    function renderMenus(counts, baseCounts) {
+      menus.forEach((menu) => {
+        const key = menu.dataset.yfbMenu;
+        if (key === 'sort') return;
+        if (key === 'price_stock') {
+          let pickedInMenu = 0;
+          if (stockButton) {
+            stockButton.setAttribute('aria-pressed', String(Boolean(state.inStock)));
+            if (state.inStock) pickedInMenu += 1;
+            const stockN = items.filter((item) => matchesItem(item, state, 'stock') && item.available).length;
+            const sc = stockButton.querySelector('[data-yfb-stock-count]');
+            if (sc) sc.textContent = `(${stockN})`;
+          }
+          priceButtons.forEach((btn) => {
+            const on = state.priceBand === btn.dataset.yfbPrice;
+            btn.setAttribute('aria-pressed', String(on));
+            if (on) pickedInMenu += 1;
+            const pn = items.filter((item) => matchesItem(item, state, 'price') && matchesPrice(item.price, btn.dataset.yfbPrice)).length;
+            btn.disabled = pn === 0 && !on;
+            const pc = btn.querySelector('[data-yfb-price-count]');
+            if (pc) pc.textContent = `(${pn})`;
+          });
+          menu.classList.toggle('has-active', pickedInMenu > 0);
+          const badge = menu.querySelector('[data-yfb-menu-count]');
+          if (badge) { badge.hidden = pickedInMenu === 0; badge.textContent = pickedInMenu ? `· ${pickedInMenu}` : ''; }
+          const sel = menu.querySelector('[data-yfb-selected]');
+          if (sel) sel.textContent = fill(sel.dataset.t, { N: pickedInMenu });
+          return;
+        }
+
         let shown = 0;
-        row.querySelectorAll('[data-ycb-opt]').forEach((button) => {
+        let pickedInMenu = 0;
+        menu.querySelectorAll('[data-ycb-opt]').forEach((button) => {
           const opt = button.dataset.ycbOpt;
           const [group, value] = opt.split(':');
           const on = group === 'beginner' ? state.beginner : state.facets[group]?.includes(value);
-          // The entry's own group is the page itself, so its options leave the rows (新手推荐 sits in the 特点 row).
           button.hidden = group === entryGroup() || ((baseCounts[opt] || 0) === 0 && !on);
           if (!button.hidden) shown += 1;
+          if (on && opt !== state.entry) pickedInMenu += 1;
           const n = counts[opt] || 0;
           button.setAttribute('aria-pressed', String(Boolean(on)));
           button.disabled = n === 0 && !on;
-          button.querySelector('[data-ycb-opt-count]').textContent = n;
+          const cntEl = button.querySelector('[data-ycb-opt-count]');
+          if (cntEl) cntEl.textContent = `(${n})`;
         });
-        row.hidden = shown === 0;
+        menu.hidden = key === entryGroup() || shown === 0;
+        menu.classList.toggle('has-active', pickedInMenu > 0);
+        const badge = menu.querySelector('[data-yfb-menu-count]');
+        if (badge) { badge.hidden = pickedInMenu === 0; badge.textContent = pickedInMenu ? `· ${pickedInMenu}` : ''; }
+        const sel = menu.querySelector('[data-yfb-selected]');
+        if (sel) sel.textContent = fill(sel.dataset.t, { N: pickedInMenu });
       });
     }
 
-    // Picked refine options as removable tags (the entry itself is the page, not a tag).
     function renderActive() {
       active.querySelectorAll('[data-ycb-tag], [data-ycb-clear]').forEach((node) => node.remove());
       const tag = (text, clear) => {
-        const button = el('button', 'ycb-active__chip', text);
+        const button = el('button', 'yfb__tag', text);
         button.type = 'button';
         button.dataset.ycbTag = '';
-        button.append(el('span', 'ycb-active__x', '×'));
+        button.append(el('span', 'yfb__tag-x', '×'));
         button.setAttribute('aria-label', `${text} · ${active.dataset.tRemove || ''}`);
         button.addEventListener('click', clear);
         active.append(button);
       };
-      if (state.beginner && state.entry !== 'beginner:yes') tag(label('beginner:yes'), () => update({ beginner: false }));
+      if (state.beginner && state.entry !== 'beginner:yes') {
+        tag(label('beginner:yes'), () => update({ beginner: false }));
+      }
       facetsActive(state.facets).forEach((group) => state.facets[group].forEach((value) => {
         if (`${group}:${value}` === state.entry) return;
-        tag(label(`${group}:${value}`), () => update({ facets: { ...state.facets, [group]: state.facets[group].filter((v) => v !== value) } }));
+        const g = groupLabel(group);
+        const v = label(`${group}:${value}`);
+        tag(g ? `${g}：${v}` : v, () => update({ facets: { ...state.facets, [group]: state.facets[group].filter((x) => x !== value) } }));
       }));
+      if (state.inStock) {
+        tag(active.dataset.tStock || '仅看现货', () => update({ inStock: false }));
+      }
+      if (state.priceBand) {
+        const pb = priceButtons.find((b) => b.dataset.yfbPrice === state.priceBand);
+        const pLabel = pb?.querySelector('.yfb__opt-name')?.textContent.trim() || state.priceBand;
+        tag(pLabel, () => update({ priceBand: '' }));
+      }
       const picked = active.querySelectorAll('[data-ycb-tag]').length;
       if (picked) {
-        const clear = el('button', 'ycb-active__clear', active.dataset.tClear || '');
+        const clear = el('button', 'yfb__clear', active.dataset.tClear || '');
         clear.type = 'button';
         clear.dataset.ycbClear = '';
         clear.addEventListener('click', () => update(entryOnly()));
@@ -279,11 +351,11 @@
       const facets = noFacets();
       const [group, value] = (state.entry || '').split(':');
       if (FACET_GROUPS.includes(group)) facets[group] = [value];
-      return { facets, beginner: state.entry === 'beginner:yes' };
+      return { facets, beginner: state.entry === 'beginner:yes', inStock: false, priceBand: '' };
     }
 
     function renderList(picked) {
-      const matched = items.filter((item) => matches(item.tokens, state));
+      const matched = items.filter((item) => matchesItem(item, state));
       items.forEach((item) => { item.li.hidden = true; });
       matched.slice(0, limit).forEach((item) => { item.li.hidden = false; });
       const shown = Math.min(limit, matched.length);
@@ -292,11 +364,9 @@
       if (status) status.textContent = fill(more?.dataset.tShown, { S: shown, T: matched.length });
       if (reveal) reveal.hidden = shown >= matched.length;
       if (count) count.textContent = fill(count.dataset.t, { N: matched.length });
-      if (total) total.textContent = fill(total.dataset.t, { N: matched.length });
       renderNear(matched, picked);
     }
 
-    // Fewer than 4 results after refining: show yarns that miss only one of the picked conditions.
     function renderNear(matched, picked) {
       if (!near) return;
       nearGrid.replaceChildren();
@@ -304,7 +374,9 @@
       const taken = new Set(matched.map((item) => item.handle));
       const refinedGroups = facetsActive(state.facets).filter((group) => group !== entryGroup());
       if (state.beginner && state.entry !== 'beginner:yes') refinedGroups.push('beginner');
-      const relaxed = items.filter((item) => !taken.has(item.handle) && refinedGroups.some((group) => matches(item.tokens, state, group))).slice(0, 4);
+      if (state.inStock) refinedGroups.push('stock');
+      if (state.priceBand) refinedGroups.push('price');
+      const relaxed = items.filter((item) => !taken.has(item.handle) && refinedGroups.some((group) => matchesItem(item, state, group))).slice(0, 4);
       relaxed.forEach((item) => {
         const copy = item.li.cloneNode(true);
         copy.hidden = false;
@@ -315,17 +387,19 @@
     }
 
     function syncUrl() {
-      const params = writeState(new URLSearchParams(window.location.search), state);
+      let params = writeState(new URLSearchParams(window.location.search), state);
+      if (state.inStock) params.set(STOCK_KEY, '1'); else params.delete(STOCK_KEY);
+      if (state.priceBand) params = applyBand(params, state.priceBand);
+      else PRICE_KEYS.forEach((k) => params.delete(k));
       window.history.replaceState(null, '', `${window.location.pathname}${params.size ? `?${params}` : ''}`);
     }
 
     function render() {
-      const tokenList = items.map((item) => item.tokens);
-      const baseCounts = countOptions(tokenList, { facets: noFacets(), beginner: false, entry: '' });
-      const counts = countOptions(tokenList, state);
+      const baseCounts = countOptions(items, { facets: noFacets(), beginner: false, entry: '', inStock: false, priceBand: '' });
+      const counts = countOptions(items, state);
       renderHead();
       renderCircles(baseCounts);
-      renderRefine(counts, baseCounts);
+      renderMenus(counts, baseCounts);
       renderList(renderActive());
       syncUrl();
     }
@@ -340,17 +414,10 @@
       const before = limit;
       limit += step;
       renderList(active.querySelectorAll('[data-ycb-tag]').length);
-      const first = items.filter((item) => matches(item.tokens, state))[before];
+      const first = items.filter((item) => matchesItem(item, state))[before];
       first?.li.querySelector('a')?.focus({ preventScroll: true });
     });
 
-    // The refine rows start open on 全部毛线 (nothing picked yet, so they are the way in) and closed on an entry.
-    function setOpen(open) {
-      refine?.classList.toggle('is-open', open);
-      section.querySelector('[data-ycb-refine-toggle]')?.setAttribute('aria-expanded', String(open));
-    }
-
-    // Circles switch the entry in place and drop the refine options.
     section.querySelectorAll('[data-ycb-circle]').forEach((link) => link.addEventListener('click', (event) => {
       if (event.metaKey || event.ctrlKey || event.shiftKey) return;
       event.preventDefault();
@@ -362,15 +429,9 @@
         facets[group] = [value];
         entry = token;
       }
-      setOpen(!entry);
-      update({ facets, beginner: false, entry });
+      menus.forEach((m) => { m.open = false; });
+      update({ facets, beginner: false, entry, inStock: false, priceBand: '' });
     }));
-
-    section.querySelector('[data-ycb-refine-toggle]')?.addEventListener('click', (event) => {
-      const open = !refine.classList.contains('is-open');
-      refine.classList.toggle('is-open', open);
-      event.currentTarget.setAttribute('aria-expanded', String(open));
-    });
 
     section.querySelectorAll('[data-ycb-opt]').forEach((button) => button.addEventListener('click', () => {
       const [group, value] = button.dataset.ycbOpt.split(':');
@@ -379,8 +440,25 @@
       update({ facets: { ...state.facets, [group]: values.includes(value) ? values.filter((v) => v !== value) : [...values, value] } });
     }));
 
-    // Arriving with refine options already in the URL (a shared link): open the rows so they can be seen.
-    if (!state.entry || (active && facetsActive(state.facets).some((group) => group !== entryGroup()))) setOpen(true);
+    stockButton?.addEventListener('click', () => update({ inStock: !state.inStock }));
+    priceButtons.forEach((btn) => btn.addEventListener('click', () => {
+      update({ priceBand: state.priceBand === btn.dataset.yfbPrice ? '' : btn.dataset.yfbPrice });
+    }));
+
+    section.querySelectorAll('[data-yfb-reset]').forEach((btn) => btn.addEventListener('click', () => {
+      const grp = btn.dataset.yfbReset;
+      if (grp === 'price_stock') { update({ inStock: false, priceBand: '' }); return; }
+      if (grp === 'feature_grams') {
+        update({ beginner: state.entry === 'beginner:yes', facets: { ...state.facets, feature: [], grams: [] } });
+        return;
+      }
+      update({ facets: { ...state.facets, [grp]: [] } });
+    }));
+
+    section.querySelector('[data-ycb-empty-clear]')?.addEventListener('click', (event) => {
+      event.preventDefault();
+      update(entryOnly());
+    });
 
     render();
     if (Number(grid.dataset.ycbPages) > 1) loadRest().then(render);
