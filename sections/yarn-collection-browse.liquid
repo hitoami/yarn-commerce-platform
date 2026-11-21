@@ -30,8 +30,11 @@
       assign cb_shop_filtered = true
     endif
   endfor
-  assign cb_sort = collection.sort_by | default: collection.default_sort_by
   assign cb_sort_keys = 'manual,best-selling,price-ascending,price-descending,created-descending' | split: ','
+  assign cb_sort = collection.sort_by | default: collection.default_sort_by
+  unless cb_sort_keys contains cb_sort
+    assign cb_sort = 'manual'
+  endunless
   assign cb_step = section.settings.products_per_page
 
   assign cb_beginner_handles = '' | split: ','
