@@ -1,5 +1,9 @@
 {
   "sections": {
+    "scroll-cat": {
+      "type": "yarn-scroll-cat",
+      "settings": {}
+    },
     "hero": {
       "type": "hitoami-hero",
       "blocks": {
@@ -215,6 +219,9 @@
         "note_en": "",
         "collection": "sale",
         "mode": "sale",
+        "all_label": "セールをすべて見る",
+        "all_label_zh": "全部折扣",
+        "all_label_en": "All sale items",
         "products_to_show": 10,
         "columns_desktop": 4,
         "exit_enabled": false,
@@ -233,9 +240,12 @@
       "settings": {
         "limit": 4,
         "all_link": "/pages/kits",
+        "all_label": "編みキットをすべて見る",
+        "all_label_zh": "全部材料包",
+        "all_label_en": "All knitting kits",
         "color_scheme": "scheme-1",
         "heading": "編みキット",
-        "heading_zh": "编织包",
+        "heading_zh": "材料包",
         "heading_en": "Knitting kits",
         "note": "作品を選ぶだけ。色と玉数はそろえてあります。",
         "note_zh": "选一件想织的，毛线的颜色和团数都配好了。",
@@ -300,6 +310,9 @@
         "color_scheme": "scheme-1",
         "heading_zh": "手工编织成品",
         "heading_en": "Handmade pieces",
+        "all_label": "完成品をすべて見る",
+        "all_label_zh": "全部手织成品",
+        "all_label_en": "All handmade pieces",
         "note_zh": "",
         "note_en": "",
         "mode": "handmade",
@@ -564,6 +577,9 @@
         "note_en": "The yarns we would pick first.",
         "collection": "home-featured",
         "all_collection": "yarn",
+        "all_label": "すべての毛糸を見る",
+        "all_label_zh": "查看全部毛线",
+        "all_label_en": "View all yarn",
         "mode": "collection",
         "products_to_show": 8,
         "products_to_show_mobile": 4,
@@ -588,6 +604,9 @@
         "note_en": "Thick, smooth yarn with stitches that are easy to see.",
         "collection": "beginner-picks",
         "all_collection": "yarn",
+        "all_label": "初心者向けをすべて見る",
+        "all_label_zh": "全部新手推荐",
+        "all_label_en": "All beginner picks",
         "mode": "beginner",
         "products_to_show": 4,
         "products_to_show_mobile": 4,
@@ -625,6 +644,7 @@
     "beginner-kits",
     "filter-switch",
     "yarn-hero",
-    "line-support"
+    "line-support",
+    "scroll-cat"
   ]
 }
