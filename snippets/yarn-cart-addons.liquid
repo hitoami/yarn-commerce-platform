@@ -44,12 +44,10 @@
   {%- if addon_source != blank -%}
     {%- capture addon_cards -%}
       {%- assign addon_shown = 0 -%}
+      {%- assign addon_scanned = 0 -%}
       {%- paginate addon_source.products by 250 -%}
-        {%- assign addon_pool = addon_source.products -%}
-        {%- if addon_pool.size == 0 and collections['home-featured'] != blank -%}
-          {%- assign addon_pool = collections['home-featured'].products -%}
-        {%- endif -%}
-        {%- for addon in addon_pool -%}
+        {%- assign addon_scanned = addon_source.products.size -%}
+        {%- for addon in addon_source.products -%}
           {%- if addon_shown >= 3 -%}{%- break -%}{%- endif -%}
           {%- if cart_ids contains addon.id or addon.available == false or addon.price <= 0 or addon.price > addon_left -%}{%- continue -%}{%- endif -%}
           {%- assign addon_shown = addon_shown | plus: 1 -%}
@@ -61,6 +59,23 @@
           </li>
         {%- endfor -%}
       {%- endpaginate -%}
+      {%- if addon_scanned == 0 -%}
+        {%- assign addon_fallback_pool = addon_source.products -%}
+        {%- if addon_fallback_pool.size == 0 and collections['home-featured'] != blank -%}
+          {%- assign addon_fallback_pool = collections['home-featured'].products -%}
+        {%- endif -%}
+        {%- for addon in addon_fallback_pool -%}
+          {%- if addon_shown >= 3 -%}{%- break -%}{%- endif -%}
+          {%- if cart_ids contains addon.id or addon.available == false or addon.price <= 0 or addon.price > addon_left -%}{%- continue -%}{%- endif -%}
+          {%- assign addon_shown = addon_shown | plus: 1 -%}
+          {%- capture addon_title -%}{%- render 'yarn-product-title', product: addon -%}{%- endcapture -%}
+          <li class="yarn-cart-addon">
+            <a class="yarn-cart-addon__media" href="{{ addon.url }}" tabindex="-1" aria-hidden="true">{%- if addon.featured_image != blank -%}{{ addon.featured_image | image_url: width: 96 | image_tag: width: 48, height: 48, loading: 'lazy', alt: '' }}{%- endif -%}</a>
+            <a class="yarn-cart-addon__text" href="{{ addon.url }}"><span data-proof-content>{{ addon_title | strip | escape }}</span><strong>{{ addon.price | money }}</strong></a>
+            <button type="button" class="yarn-cart-addon__add" data-cart-quick-add="{{ addon.selected_or_first_available_variant.id }}" aria-label="{{ 'yarn_cart.addon_add_label' | t: name: addon_title | strip | escape }}">{{ 'icon-plus.svg' | inline_asset_content }}</button>
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
     {%- endcapture -%}
     {%- if addon_cards contains 'yarn-cart-addon' -%}
       <div class="yarn-cart-addons">
