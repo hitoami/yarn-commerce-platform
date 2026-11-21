@@ -1,0 +1,9 @@
+{
+  "eyebrow": "领取教程",
+  "heading": "你已买齐《{{kit}}》的毛线",
+  "line": "去 LINE 领取教程",
+  "lineNote": "会打开 hitoami 官方 LINE，消息里已写好订单号和作品名，点发送即可。店员核对后发教程。",
+  "contact": "去联系页领取教程",
+  "contactNote": "请写上订单号 {{order}} 和作品名《{{kit}}》，店员核对后发教程。",
+  "message": "我想领取教程\n订单号：{order}\n作品：{kit}"
+}
