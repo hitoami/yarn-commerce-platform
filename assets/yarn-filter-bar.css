@@ -27,7 +27,7 @@
 .yfb__bar {
   display: flex;
   flex-wrap: nowrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--yarn-space-3);
   min-width: 0;
@@ -199,6 +199,7 @@
   flex: none;
   display: flex;
   align-items: center;
+  min-height: 36px;
   gap: 10px;
   margin-left: auto;
 }

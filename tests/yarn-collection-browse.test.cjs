@@ -130,6 +130,7 @@ test('355 + 2026-11-21: list cards carry yarn-facets tokens; price and stock liv
   assert.match(menus, /'small,mid,big'/);
   assert.match(section, /data-ycb-facet="\{\{ cb_facet_pair\[0\] \}\}:\{\{ cb_facet_value \}\}"/);
   assert.match(menus, /'yarn_collection\.price_and_stock' \| t/);
+  assert.match(section, /unless cb_sort_keys contains cb_sort/);
   assert.match(menus, /data-yfb-stock="1"/);
   assert.match(menus, /data-yfb-price=/);
   const facets = fs.readFileSync('snippets/yarn-facets.liquid', 'utf8');
