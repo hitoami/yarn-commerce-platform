@@ -473,3 +473,73 @@ test('planCollectionCleanup removes ARCHIVED items from manual collections and s
   assert.deepEqual(plan.actions[0].removeProductIds, ['p1']);
   assert.equal(plan.skippedSmartCollections[0].handle, 'sale');
 });
+
+// ---------------------------------------------------------------------------
+// 8. cleanup-store-data.cjs: write-executor ordering & userErrors guards
+// ---------------------------------------------------------------------------
+
+test('applyVendorPlan saves internal.supplier before productUpdate and aborts productUpdate on metafieldsSet userErrors', async () => {
+  const plan = cleanup.planVendorCleanup([
+    { id: 'p-fail', handle: 'yarn-fail', title: 'Fail', status: 'ACTIVE', vendor: '1688 工厂A', metafields: { nodes: [] } },
+    { id: 'p-ok', handle: 'yarn-ok', title: 'OK', status: 'ACTIVE', vendor: '淘宝 店铺B', metafields: { nodes: [] } },
+  ]);
+
+  const calls = [];
+  const mockGql = async (query, vars) => {
+    if (query.includes('metafieldsSet')) {
+      const ownerId = vars.metafields[0].ownerId;
+      calls.push(`metafieldsSet:${ownerId}`);
+      if (ownerId === 'p-fail') {
+        return { metafieldsSet: { metafields: [], userErrors: [{ field: ['metafields'], message: 'definition error' }] } };
+      }
+      return { metafieldsSet: { metafields: [{ id: 'mf1', namespace: 'internal', key: 'supplier', value: vars.metafields[0].value }], userErrors: [] } };
+    }
+    if (query.includes('productUpdate')) {
+      calls.push(`productUpdate:${vars.product.id}`);
+      return { productUpdate: { product: { id: vars.product.id, vendor: vars.product.vendor }, userErrors: [] } };
+    }
+    throw new Error(`Unexpected query: ${query}`);
+  };
+
+  const results = await cleanup.applyVendorPlan(mockGql, plan, { write: true });
+
+  // p-fail must NOT call productUpdate; p-ok must run metafieldsSet BEFORE productUpdate
+  assert.deepEqual(calls, ['metafieldsSet:p-fail', 'metafieldsSet:p-ok', 'productUpdate:p-ok']);
+  assert.equal(results[0].skippedProductUpdate, true);
+  assert.equal(results[0].productUpdate, null);
+  assert.equal(results[1].productUpdate.product.vendor, 'hitoami');
+});
+
+test('applyHandlePlan skips urlRedirectCreate when productUpdate returns userErrors', async () => {
+  const plan = cleanup.planHandleCleanup([
+    { id: 'p-fail', handle: 'kit-xuebao-fringe-scarf', title: '雪ちゃん', status: 'ACTIVE', productType: '毛线' },
+    { id: 'p-ok', handle: 'コットン65-花しずく-段染め-50g-中細-花モチーフ-夏ニットに', title: '花しずく', status: 'ACTIVE', productType: '毛线' },
+  ], []);
+
+  const calls = [];
+  const mockGql = async (query, vars) => {
+    if (query.includes('productUpdate')) {
+      calls.push(`productUpdate:${vars.product.id}`);
+      if (vars.product.id === 'p-fail') {
+        return { productUpdate: { product: null, userErrors: [{ field: ['handle'], message: 'Handle already taken' }] } };
+      }
+      return { productUpdate: { product: { id: vars.product.id, handle: vars.product.handle }, userErrors: [] } };
+    }
+    if (query.includes('urlRedirectCreate')) {
+      calls.push(`urlRedirectCreate:${vars.urlRedirect.target}`);
+      return { urlRedirectCreate: { urlRedirect: { id: 'r1', ...vars.urlRedirect }, userErrors: [] } };
+    }
+    throw new Error(`Unexpected query: ${query}`);
+  };
+
+  const results = await cleanup.applyHandlePlan(mockGql, plan, { write: true });
+
+  assert.deepEqual(calls, [
+    'productUpdate:p-fail',
+    'productUpdate:p-ok',
+    'urlRedirectCreate:/products/yarn-hanashizuku-gradient-cotton-50g',
+  ]);
+  assert.equal(results[0].skippedRedirect, true);
+  assert.equal(results[0].urlRedirectCreate, null);
+  assert.equal(results[1].urlRedirectCreate.urlRedirect.target, '/products/yarn-hanashizuku-gradient-cotton-50g');
+});

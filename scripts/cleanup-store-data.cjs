@@ -597,15 +597,6 @@ async function applyVendorPlan(gql, plan, { write = false } = {}) {
   assertWriteAllowed(write, 'vendors cleanup');
   const results = [];
   for (const action of plan.actions) {
-    const updateRes = await gql(
-      `mutation($product: ProductUpdateInput!) {
-        productUpdate(product: $product) {
-          product { id handle vendor }
-          userErrors { field message }
-        }
-      }`,
-      { product: { id: action.productId, vendor: action.toVendor } }
-    );
     let mfRes = null;
     if (action.preserveSupplierMetafield) {
       mfRes = await gql(
@@ -617,8 +608,28 @@ async function applyVendorPlan(gql, plan, { write = false } = {}) {
         }`,
         { metafields: [action.preserveSupplierMetafield] }
       );
+      const mfErrors = mfRes?.metafieldsSet?.userErrors || [];
+      if (mfErrors.length > 0) {
+        results.push({
+          handle: action.handle,
+          metafieldsSet: mfRes.metafieldsSet,
+          productUpdate: null,
+          skippedProductUpdate: true,
+          reason: 'Aborted vendor overwrite because saving internal.supplier returned userErrors',
+        });
+        continue;
+      }
     }
-    results.push({ handle: action.handle, productUpdate: updateRes.productUpdate, metafieldsSet: mfRes?.metafieldsSet || null });
+    const updateRes = await gql(
+      `mutation($product: ProductUpdateInput!) {
+        productUpdate(product: $product) {
+          product { id handle vendor }
+          userErrors { field message }
+        }
+      }`,
+      { product: { id: action.productId, vendor: action.toVendor } }
+    );
+    results.push({ handle: action.handle, metafieldsSet: mfRes?.metafieldsSet || null, productUpdate: updateRes.productUpdate });
   }
   return results;
 }
@@ -636,8 +647,12 @@ async function applyHandlePlan(gql, plan, { write = false } = {}) {
       }`,
       { product: { id: action.productId, handle: action.toHandle } }
     );
+    const updateErrors = updateRes?.productUpdate?.userErrors || [];
     let redirectRes = null;
-    if (!action.redirect.alreadyExists) {
+    let skippedRedirect = false;
+    if (updateErrors.length > 0) {
+      skippedRedirect = true;
+    } else if (!action.redirect.alreadyExists) {
       redirectRes = await gql(
         `mutation($urlRedirect: UrlRedirectInput!) {
           urlRedirectCreate(urlRedirect: $urlRedirect) {
@@ -653,6 +668,7 @@ async function applyHandlePlan(gql, plan, { write = false } = {}) {
       toHandle: action.toHandle,
       productUpdate: updateRes.productUpdate,
       urlRedirectCreate: redirectRes?.urlRedirectCreate || null,
+      ...(skippedRedirect ? { skippedRedirect: true, reason: 'Skipped urlRedirectCreate because productUpdate returned userErrors' } : {}),
     });
   }
   return results;
