@@ -48,6 +48,13 @@
   capture picks_note
     render 'yarn-setting-text', settings: section.settings, key: 'note'
   endcapture
+  capture picks_all_label
+    render 'yarn-setting-text', settings: section.settings, key: 'all_label', allow_blank: true
+  endcapture
+  assign picks_all_label = picks_all_label | strip
+  if picks_all_label == blank
+    assign picks_all_label = 'yarn_project.card_view_all' | t
+  endif
   capture exit_title
     render 'yarn-setting-text', settings: section.settings, key: 'exit_title'
   endcapture
@@ -100,7 +107,7 @@
           <h2 id="Picks-{{ section.id }}">{{ picks_heading | escape }}</h2>
           {%- if picks_note != blank -%}<p class="yx-picks__note">{{ picks_note | escape }}</p>{%- endif -%}
         </div>
-        {%- if picks_all != blank -%}<a class="yx-picks__all" href="{{ picks_all }}">{{ 'yarn_project.card_view_all' | t }} →</a>{%- endif -%}
+        {%- if picks_all != blank -%}<a class="yx-picks__all" href="{{ picks_all }}">{{ picks_all_label | escape }} →</a>{%- endif -%}
       </div>
       {%- if picks_empty != blank -%}<p class="yx-picks__empty">{{ picks_empty | escape }}</p>{%- endif -%}
     </div>
@@ -118,7 +125,7 @@
         <h2 id="Picks-{{ section.id }}">{{ picks_heading | escape }}</h2>
         {%- if picks_note != blank -%}<p class="yx-picks__note">{{ picks_note | escape }}</p>{%- endif -%}
       </div>
-      {%- if picks_all != blank -%}<a class="yx-picks__all" href="{{ picks_all }}">{{ 'yarn_project.card_view_all' | t }} →</a>{%- endif -%}
+      {%- if picks_all != blank -%}<a class="yx-picks__all" href="{{ picks_all }}">{{ picks_all_label | escape }} →</a>{%- endif -%}
     </div>
     <div class="yx-picks__body{% if section.settings.exit_enabled %} yx-picks__body--with-exit{% endif %}">
     {%- if section.settings.exit_enabled -%}
@@ -182,6 +189,9 @@
     { "type": "checkbox", "id": "clean_title", "label": "卡片标题去掉【材质】前缀与｜后的规格", "default": false, "info": "材质并进规格行" },
     { "type": "collection", "id": "all_collection", "label": "「查看全部」目标集合(留空则用上面的集合;自动带语言前缀)" },
     { "type": "url", "id": "all_link", "label": "「查看全部」自定义链接(填了优先于目标集合)" },
+    { "type": "text", "id": "all_label", "label": "日文 · 右上角链接文字(留空用「すべて見る」)" },
+    { "type": "text", "id": "all_label_zh", "label": "中文 · 右上角链接文字(留空用「查看全部」)" },
+    { "type": "text", "id": "all_label_en", "label": "英文 · 右上角链接文字(留空用「View all」)" },
     { "type": "checkbox", "id": "show_empty", "label": "没有商品时也显示标题和一行说明", "default": false },
     { "type": "text", "id": "empty_text", "label": "日文 · 没有商品时的说明" },
     { "type": "text", "id": "empty_text_zh", "label": "中文 · 没有商品时的说明" },
