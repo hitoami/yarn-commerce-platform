@@ -1,8 +1,10 @@
 {%- comment -%}
   #149 搜索结果里的毛线 / 成品卡：与首页和目录同一张 yarn-pick-card，外层只加搜索与收藏需要的数据;收藏爱心与加入购物车按钮由卡片自带(#161)。
   可搜文字：本商品的名称、描述、规格行、成分/粗细/花色/织什么等 Metafield，以及由 product.type 映射的三语品类词（不再读 product.tags）。
+  同时带 data-facets / data-price / data-available / data-created，支撑搜索页单行胶囊筛选与排序。
 {%- endcomment -%}
 {%- capture search_kind -%}{%- render 'yarn-product-kind', product: search_product -%}{%- endcapture -%}
+{%- capture search_facets -%}{%- render 'yarn-facets', product: search_product, beginner_handles: beginner_handles -%}{%- endcapture -%}
 {%- liquid
   assign search_kind = search_kind | strip
   assign search_kind_words = ''
@@ -28,10 +30,11 @@
   assign search_text = search_text | append: ' ' | append: search_colors | append: ' ' | append: search_works
 -%}
 <div class="yd-search__item" data-discovery-card data-entity-type="product" data-entity-id="{{ search_product.id }}" data-group="{{ group }}"
-  data-title="{{ search_product.title | escape }}" data-summary="{{ search_text | strip | escape }}" data-tags="{{ search_kind_words | escape }}">
+  data-title="{{ search_product.title | escape }}" data-summary="{{ search_text | strip | escape }}" data-tags="{{ search_kind_words | escape }}"
+  data-facets="{{ search_facets }}" data-price="{{ search_product.price | divided_by: 100.0 }}" data-available="{{ search_product.available }}" data-created="{{ search_product.created_at | date: '%s' }}">
   {%- if group == 'finished' -%}
     {%- render 'yarn-pick-card', card_product: search_product, handmade: true -%}
   {%- else -%}
-    {%- render 'yarn-pick-card', card_product: search_product, beginner: is_beginner -%}
+    {%- render 'yarn-pick-card', card_product: search_product, beginner: is_beginner, clean_title: true -%}
   {%- endif -%}
 </div>

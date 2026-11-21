@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { stateFromSearch, queryState, urlWithState, matchesEntity, categoryForQuery, paginationUrl, fill, templateParts } = require('../assets/yarn-search.js');
+const { stateFromSearch, queryState, urlWithState, hasFacetFilters, matchesEntity, compareEntities, categoryForQuery, paginationUrl, fill, templateParts } = require('../assets/yarn-search.js');
 const { endpointUrl } = require('../assets/yarn-favorites.js');
 
 const sunrise = { type: 'product', id: '1', group: 'yarn', title: '印象·日出', summary: '长段染 段染渐变 100g', tags: '毛糸' };
@@ -76,5 +76,27 @@ test('search section renders the three groups and no longer ships the old filter
     assert.match(liquid, new RegExp(`data-search-tab="${group}"`));
   }
   assert.match(liquid, /render 'yarn-kit-visible'/);
+  assert.match(liquid, /render 'yarn-filter-menus'/);
   assert.doesNotMatch(liquid, /inline_purchase|data-search-filter|'all,bag,scarf,home,toy'/);
+});
+
+test('2026-11-21: search supports 6-pill facets, stock, price bands, sorting and URL round-trip', () => {
+  const yarnA = { ...sunrise, facets: ' color:variegated fiber:wool_blend thick:medium ', price: 1200, available: true, created: 200, order: 0 };
+  const yarnB = { ...sunrise, id: '4', facets: ' color:variegated fiber:cotton thick:fine ', price: 450, available: false, created: 300, order: 1 };
+  const state = stateFromSearch('?q=段染&ycb_fiber=wool_blend,cotton&filter.v.availability=1&filter.v.price.gte=500&filter.v.price.lte=1499&sort_by=price-ascending');
+  assert.equal(hasFacetFilters(state), true);
+  assert.equal(matchesEntity(yarnA, state), true);
+  assert.equal(matchesEntity(yarnB, state), false);
+  assert.equal(matchesEntity(bag, state), false);
+  assert.deepEqual(stateFromSearch(urlWithState('https://example.com/zh/search', state).search), state);
+  assert.deepEqual([yarnA, yarnB].sort((a, b) => compareEntities(a, b, 'price-ascending')).map((i) => i.id), ['4', '1']);
+  assert.deepEqual([yarnA, yarnB].sort((a, b) => compareEntities(a, b, 'created-descending')).map((i) => i.id), ['4', '1']);
+});
+
+test('2026-11-21: directory page renders pure editorial shop directory with 3 category cards and 2 Header-aligned facet panels', () => {
+  const dir = fs.readFileSync(path.join(__dirname, '../sections/main-list-collections.liquid'), 'utf8');
+  assert.match(dir, /ydir__cats/);
+  assert.match(dir, /ydir__panels/);
+  assert.match(dir, /render 'yarn-facet-icon'/);
+  assert.doesNotMatch(dir, /render 'yarn-pick-card'/);
 });
