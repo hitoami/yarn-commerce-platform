@@ -80,7 +80,7 @@ Issue #65 删除了无模板使用的 `yarn-purpose-grid` / `yarn-seasonal-featu
 
 品牌区的 LINE 入口桌面与手机共用一行（#292，用户 2026-10-31 选定 [Figma 方案 A](https://www.figma.com/design/dgYI1k4yzVLB1qCcSTA07C)，两端都不要箭头；手机沿用 [#196 方案 A](approved/196-line-mobile-a.source.md) 的分隔线与图标）：图标 + 添加好友 + `line_text` 说明。桌面右侧直接显示二维码与「手机扫码添加」（Theme locales `accessibility.scan_line_qr`），手机用原生 `details` 展开。复用品牌 Section 的 `line_link` / `line_qr`；没有链接时继续显示联系页回退卡片。随主题提供的二维码只对用户给出的对应账号链接生效，更换链接须同时上传对应二维码。
 
-首页不放滚动进度小猫（`yarn-scroll-cat`，#151，锦晨 2026-11-20 要求去掉）；毛线分类区的可互动小猫已删除（用户 2026-10-17 决定）。分类仍引用 `yarn_entry` 与 Shopify 商品字段，参考图可在 block 选择本轮原表实物图。毛线资料区 `yarn-catalog` 只渲染运营明确选择的已核实 Product，没有配置时给出整理提示。`yarn-home-guide` 的首页 `guide` 实例停用，`faq` 实例继续以三语 block 承载常见问题。
+首页只保留桌面底边的滚动进度小猫（`yarn-scroll-cat`，#151）；毛线分类区的可互动小猫已删除（用户 2026-10-17 决定）。分类仍引用 `yarn_entry` 与 Shopify 商品字段，参考图可在 block 选择本轮原表实物图。毛线资料区 `yarn-catalog` 只渲染运营明确选择的已核实 Product，没有配置时给出整理提示。`yarn-home-guide` 的首页 `guide` 实例停用，`faq` 实例继续以三语 block 承载常见问题。
 
 材料包公开条件在 `yarn-kit-visible` 集中处理：公开状态、封面、毛线 Variant/团数与教程领取链接缺一不可；当前路径不使用内部样例开关。价格与可售性继续取 Shopify，不随作品公开状态复制。商品页、卡片和材料包的零价状态显示「暂未开售」；整份材料缺项时阻止加购，可逐项购买其他可售材料。
 
