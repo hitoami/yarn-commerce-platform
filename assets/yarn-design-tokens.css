@@ -44,7 +44,8 @@ html { font-synthesis-weight: none; }
   .yp-component--yarn .yp-component__heading h4, .yd-search h2, .yd-search__bar h1,
   .yx-season__heading, .yx-season-page__heading, .yx-season-page__toc-num, .yx-season-page__num,
   .yx-season-page__name, .yx-season-page__lead, .yarn-support-page .main-page-title,
-  .yarn-home-guide--cat .yarn-faq-chat__bubble h3, .yarn-home-guide--cat .yarn-faq-chat__line-title
+  .yarn-home-guide--cat .yarn-faq-chat__bubble h3, .yarn-home-guide--cat .yarn-faq-chat__line-title,
+  .ydir__title, .ydir__cat-title, .ydir__dims-head h2, .ydir__panel-title
 ) {
   letter-spacing: -0.05em;
 }

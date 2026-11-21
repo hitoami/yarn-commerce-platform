@@ -1079,6 +1079,22 @@
     "nav_big": "Big balls",
     "thick_range_chunky": "≤200m",
     "thick_range_medium": "≤350m",
-    "thick_range_fine": ">350m"
+    "thick_range_fine": ">350m",
+    "facet_group_feature_grams": "特點與克重",
+    "price_and_stock": "價格與現貨",
+    "in_stock_only": "僅看現貨",
+    "selected_count": "已選 {{ n }} 項",
+    "reset": "重設",
+    "sort_relevance": "相關度",
+    "directory_title": "商品目錄",
+    "directory_lead": "毛線、材料包與手織成品，選一個入口開始逛",
+    "directory_by_dim": "直接按維度挑毛線",
+    "directory_view_all_yarn": "查看全部 {{ n }} 款毛線 →",
+    "directory_yarn_group": "毛線分類",
+    "directory_yarn_hint": "按線本身的手感、花色與成分進入",
+    "directory_works_hint": "選好作品，直接看適合的線",
+    "directory_yarn_desc": "按粗細、花色與材質慢慢挑，進入後可疊加篩選。",
+    "directory_kits_desc": "配齊同款毛線與 LINE 教程，照著成品圖就能織。",
+    "directory_finished_desc": "第一批手作圍巾與小物正在編織與拍攝，敬請期待。"
   }
 }

@@ -1,7 +1,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const { applyBand, activeBand, readState, writeState, matches, countOptions, isFiltered, readEntry } = require('../assets/yarn-collection-browse.js');
+const { applyBand, activeBand, matchesPrice, matchesItem, readState, writeState, matches, countOptions, isFiltered, readEntry } = require('../assets/yarn-collection-browse.js');
 
 const params = (value) => new URLSearchParams(value);
 const bands = ['filter.v.price.lte=499', 'filter.v.price.gte=500&filter.v.price.lte=1499', 'filter.v.price.gte=1500'];
@@ -55,22 +55,24 @@ const items = [
   ' fiber:cotton ',
 ];
 
-test('2026-11-20: the top chips and the hand-feel map are gone; entry head, circles and refine rows replace them', () => {
+test('2026-11-20: the top chips and the hand-feel map are gone; entry head, circles and unified 6-pill menus replace them', () => {
   const section = fs.readFileSync('sections/yarn-collection-browse.liquid', 'utf8').split('{% schema %}')[0];
+  const menus = fs.readFileSync('snippets/yarn-filter-menus.liquid', 'utf8');
   for (const gone of ['data-ycb-chip=', 'data-ycb-view', 'yarn-collection-map', 'ycb-chips', 'data-ycb-cat=', 'all_categories']) assert.ok(!section.includes(gone), gone);
   for (const file of ['snippets/yarn-collection-map.liquid', 'snippets/yarn-pdp-map-link.liquid', 'snippets/yarn-weight-strand.liquid']) assert.ok(!fs.existsSync(file), file);
   assert.doesNotMatch(fs.readFileSync('sections/main-product.liquid', 'utf8'), /yarn-pdp-map-link/);
-  // 页头换成入口；圆图按组切换；细筛每组一行、与导航同一组值。
+  // 页头换成入口；圆图按组切换；细筛使用共用单行胶囊下拉菜单，与导航同一组值。
   assert.match(section, /data-ycb-title/);
   assert.match(section, /<template data-ycb-entries>/);
   assert.match(section, /data-ycb-circles="\{\{ cb_circle_group \}\}"/);
-  assert.match(section, /data-ycb-row="\{\{ cb_group \}\}"/);
-  assert.match(section, /data-ycb-opt="\{\{ cb_group \}\}:\{\{ cb_value \}\}"/);
+  assert.match(section, /render 'yarn-filter-menus'/);
+  assert.match(menus, /data-ycb-row="\{\{ grp \}\}"/);
+  assert.match(menus, /data-ycb-opt="\{\{ grp \}\}:\{\{ val \}\}"/);
   assert.match(section, /data-ycb-near/);
   const nav = fs.readFileSync('snippets/yarn-nav-facet-links.liquid', 'utf8');
   for (const [group, values] of Object.entries({ thick: 'fine,medium,chunky', color: 'solid,variegated', fiber: 'wool,wool_blend,cotton,synthetic', works: 'sweater,hat,scarf,blanket,bag,doll' })) {
     assert.ok(nav.includes(values.split(',').map((v) => `${group}:${v}`).join(',')), group);
-    assert.ok(section.includes(`${group}:${values}`), group);
+    assert.ok(menus.includes(`${group}:${values}`), group);
   }
 });
 
@@ -109,10 +111,11 @@ test('state rides the URL with the entry first; retired map / compare params are
   assert.equal(writeState(params(''), { facets: { ...NONE, fiber: ['wool', 'cotton'] }, beginner: false, entry: '' }).toString(), 'ycb_fiber=wool%2Ccotton');
 });
 
-test('beginner option reads beginner-picks collection; all circles and refine options render for multi-page JS counting', () => {
+test('beginner option reads beginner-picks collection; all circles and filter options render for multi-page JS counting', () => {
   const section = fs.readFileSync('sections/yarn-collection-browse.liquid', 'utf8');
+  const menus = fs.readFileSync('snippets/yarn-filter-menus.liquid', 'utf8');
   assert.match(section, /collections\['beginner-picks'\]\.products \| map: 'handle'/);
-  assert.match(section, /data-ycb-opt="beginner:yes"/);
+  assert.match(menus, /data-ycb-opt="beginner:yes"/);
   assert.doesNotMatch(section, /beginner_reason|ycb-reason/);
   assert.doesNotMatch(section, /unless cb_tokens contains cb_token -%\}\{%- continue/);
   const js = fs.readFileSync('assets/yarn-collection-browse.js', 'utf8');
@@ -120,14 +123,30 @@ test('beginner option reads beginner-picks collection; all circles and refine op
   assert.match(js, /button\.hidden = group === entryGroup\(\) \|\| \(\(baseCounts\[opt\] \|\| 0\) === 0 && !on\)/);
 });
 
-test('355: list cards carry yarn-facets tokens; price and stock live in the drawer', () => {
+test('355 + 2026-11-21: list cards carry yarn-facets tokens; price and stock live in the unified price_stock pill menu', () => {
   const section = fs.readFileSync('sections/yarn-collection-browse.liquid', 'utf8');
+  const menus = fs.readFileSync('snippets/yarn-filter-menus.liquid', 'utf8');
   assert.match(section, /data-ycb-facets="\{%- render 'yarn-facets', product: product, beginner_handles: cb_beginner_handles -%\}"/);
-  assert.match(section, /grams:small,mid,big/);
+  assert.match(menus, /'small,mid,big'/);
   assert.match(section, /data-ycb-facet="\{\{ cb_facet_pair\[0\] \}\}:\{\{ cb_facet_value \}\}"/);
-  assert.match(section, /'yarn_collection\.more_filters' \| t/);
+  assert.match(menus, /'yarn_collection\.price_and_stock' \| t/);
+  assert.match(menus, /data-yfb-stock="1"/);
+  assert.match(menus, /data-yfb-price=/);
   const facets = fs.readFileSync('snippets/yarn-facets.liquid', 'utf8');
   for (const field of ['thickness', 'ball_length_m', 'ball_weight_g', 'composition', 'color_type', 'works', 'fluffy', 'crochet']) assert.match(facets, new RegExp(`metafields\\.yarn\\.${field}`), field);
+});
+
+test('2026-11-21: client-side price band and stock matching work cleanly on collection items', () => {
+  assert.equal(matchesPrice(450, bands[0]), true);
+  assert.equal(matchesPrice(500, bands[0]), false);
+  assert.equal(matchesPrice(1200, bands[1]), true);
+  assert.equal(matchesPrice(1500, bands[2]), true);
+  const sample = { tokens: ' color:variegated fiber:wool ', price: 1200, available: true };
+  const soldOut = { tokens: ' color:variegated fiber:wool ', price: 1200, available: false };
+  const state = { facets: { ...NONE, color: ['variegated'] }, beginner: false, entry: 'color:variegated', inStock: true, priceBand: bands[1] };
+  assert.equal(matchesItem(sample, state), true);
+  assert.equal(matchesItem(soldOut, state), false);
+  assert.equal(matchesItem(soldOut, state, 'stock'), true);
 });
 
 test('366: collection pages use the translated collection name in <title>', () => {

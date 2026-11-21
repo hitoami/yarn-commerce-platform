@@ -1079,6 +1079,22 @@
     "nav_big": "大玉毛糸",
     "thick_range_chunky": "≤200m",
     "thick_range_medium": "≤350m",
-    "thick_range_fine": ">350m"
+    "thick_range_fine": ">350m",
+    "facet_group_feature_grams": "特徴・玉の重さ",
+    "price_and_stock": "価格・在庫",
+    "in_stock_only": "在庫ありのみ",
+    "selected_count": "{{ n }}件選択中",
+    "reset": "リセット",
+    "sort_relevance": "関連度順",
+    "directory_title": "商品カタログ",
+    "directory_lead": "毛糸・材料セット・手編み完成品から、気になる入口を選んでください",
+    "directory_by_dim": "条件から毛糸を選ぶ",
+    "directory_view_all_yarn": "すべての毛糸（{{ n }}点）を見る →",
+    "directory_yarn_group": "毛糸の分類",
+    "directory_yarn_hint": "太さ・色柄・素材から探す",
+    "directory_works_hint": "編みたい作品に合う糸を探す",
+    "directory_yarn_desc": "太さ・色柄・素材からじっくり選び、条件を組み合わせて絞り込めます。",
+    "directory_kits_desc": "必要な毛糸とLINEチュートリアル付きで、写真と同じ作品を編めます。",
+    "directory_finished_desc": "最初の手編みマフラーや小物を制作・撮影中です。公開までお待ちください。"
   }
 }
