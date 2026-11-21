@@ -6,6 +6,9 @@
 {% endcomment %}
 {%- capture pp_heading -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'heading' -%}{%- endcapture -%}
 {%- capture pp_note -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'note', allow_blank: true -%}{%- endcapture -%}
+{%- capture pp_all_label -%}{%- render 'yarn-setting-text', settings: section.settings, key: 'all_label', allow_blank: true -%}{%- endcapture -%}
+{%- assign pp_all_label = pp_all_label | strip -%}
+{%- if pp_all_label == blank -%}{%- assign pp_all_label = 'yarn_project.card_view_all' | t -%}{%- endif -%}
 {%- assign pp_guided = false -%}
 {%- if request.page_type == 'index' -%}{%- assign pp_guided = true -%}{%- endif -%}
 {%- capture pp_steps -%}
@@ -46,7 +49,7 @@
         <h2 id="ProjectPicks-{{ section.id }}">{{ pp_heading | escape }}</h2>
         {%- if pp_note != blank -%}<p class="yx-picks__note">{{ pp_note | escape }}</p>{%- endif -%}
       </div>
-      {%- if section.settings.all_link != blank -%}<a class="yx-picks__all" href="{% render 'yarn-local-url', url: section.settings.all_link %}">{{ 'yarn_project.card_view_all' | t }} →</a>{%- endif -%}
+      {%- if section.settings.all_link != blank -%}<a class="yx-picks__all" href="{% render 'yarn-local-url', url: section.settings.all_link %}">{{ pp_all_label | escape }} →</a>{%- endif -%}
     </div>
     {%- if pp_steps != blank -%}<ol class="yx-picks__steps" role="list">{{ pp_steps }}</ol>{%- endif -%}
     <div class="yx-project-picks" style="--yx-project-cols: {{ pp_shown | at_most: 4 }};">{{ pp_cards }}</div>
@@ -87,6 +90,9 @@
     { "type": "metaobject_list", "id": "projects", "label": "作品及顺序", "metaobject_type": "yarn_project", "limit": 8 },
     { "type": "range", "id": "limit", "min": 2, "max": 8, "step": 1, "default": 4, "label": "最多显示" },
     { "type": "url", "id": "all_link", "label": "查看全部链接(可空)" },
+    { "type": "text", "id": "all_label", "label": "日文 · 右上角链接文字(留空用「すべて見る」)" },
+    { "type": "text", "id": "all_label_zh", "label": "中文 · 右上角链接文字(留空用「查看全部」)" },
+    { "type": "text", "id": "all_label_en", "label": "英文 · 右上角链接文字(留空用「View all」)" },
     { "type": "select", "id": "color_scheme", "label": "配色", "options": [ { "value": "scheme-1", "label": "默认" } ], "default": "scheme-1" }
   ],
   "presets": [ { "name": "按作品图选" } ]
