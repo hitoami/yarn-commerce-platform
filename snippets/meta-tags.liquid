@@ -55,7 +55,9 @@
 
   assign og_title_is_cn_fallback = false
   if og_is_zh == false
-    if og_title contains '毛线与手作' or og_title contains '从第一针开始' or og_title contains '毛线'
+    if og_title contains '毛线与手作' or og_title contains '从第一针开始'
+      assign og_title_is_cn_fallback = true
+    elsif request.page_type == 'index' and og_title contains '毛线'
       assign og_title_is_cn_fallback = true
     endif
   endif
@@ -68,7 +70,9 @@
 
   assign og_desc_is_cn_fallback = false
   if og_is_zh == false
-    if og_description contains '从第一针开始' or og_description contains '毛线与手作' or og_description contains '把毛线' or og_description contains '毛线'
+    if og_description contains '从第一针开始' or og_description contains '毛线与手作' or og_description contains '把毛线'
+      assign og_desc_is_cn_fallback = true
+    elsif request.page_type == 'index' and og_description contains '毛线'
       assign og_desc_is_cn_fallback = true
     endif
   endif
@@ -96,13 +100,15 @@
     else
       assign og_image_url = og_entity_url | prepend: 'https:'
     endif
-    assign og_image_width = og_entity_image.width
-    assign og_image_height = og_entity_image.height
-    if og_image_width > 1200 and og_image_height > 0
-      assign og_image_height = og_image_height | times: 1200 | divided_by: og_image_width
-      assign og_image_width = 1200
+    assign og_image_width = og_entity_image.width | default: og_entity_image.image.width
+    assign og_image_height = og_entity_image.height | default: og_entity_image.image.height
+    if og_image_width != blank and og_image_height != blank
+      if og_image_width > 1200 and og_image_height > 0
+        assign og_image_height = og_image_height | times: 1200 | divided_by: og_image_width
+        assign og_image_width = 1200
+      endif
     endif
-    assign og_image_alt = og_entity_image.alt | default: og_title | strip
+    assign og_image_alt = og_entity_image.alt | default: og_entity_image.image.alt | default: og_title | strip
   else
     assign og_default_asset = 'hitoami-og-share.jpg' | asset_url
     if og_default_asset contains 'http://' or og_default_asset contains 'https://'

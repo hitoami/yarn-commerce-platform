@@ -88,7 +88,10 @@ function resolveSocialMeta({
   }
 
   const titleIsCnFallback =
-    !isZh && (ogTitle.includes('毛线与手作') || ogTitle.includes('从第一针开始') || ogTitle.includes('毛线'));
+    !isZh &&
+    (ogTitle.includes('毛线与手作') ||
+      ogTitle.includes('从第一针开始') ||
+      (pageType === 'index' && ogTitle.includes('毛线')));
   if (!ogTitle || ogTitle === 'My Store' || titleIsCnFallback) {
     ogTitle = defaultTitle;
   } else if (pageType === 'index' && ogTitle === ogSiteName) {
@@ -100,7 +103,7 @@ function resolveSocialMeta({
     (ogDescription.includes('从第一针开始') ||
       ogDescription.includes('毛线与手作') ||
       ogDescription.includes('把毛线') ||
-      ogDescription.includes('毛线'));
+      (pageType === 'index' && ogDescription.includes('毛线')));
   if (
     !ogDescription ||
     ogDescription === 'My Store' ||
@@ -112,11 +115,13 @@ function resolveSocialMeta({
   }
 
   if (hasEntityImage && entityImage) {
-    let width = entityImage.width;
-    let height = entityImage.height;
-    if (width > 1200 && height > 0) {
-      height = Math.floor((height * 1200) / width);
-      width = 1200;
+    let width = entityImage.width ?? entityImage.image?.width ?? null;
+    let height = entityImage.height ?? entityImage.image?.height ?? null;
+    if (width != null && height != null) {
+      if (width > 1200 && height > 0) {
+        height = Math.floor((height * 1200) / width);
+        width = 1200;
+      }
     }
     return {
       ogSiteName,
@@ -128,7 +133,7 @@ function resolveSocialMeta({
       ogImageWidth: width,
       ogImageHeight: height,
       ogImageType: '',
-      ogImageAlt: (entityImage.alt || ogTitle).trim(),
+      ogImageAlt: (entityImage.alt || entityImage.image?.alt || ogTitle).trim(),
     };
   }
 
@@ -258,6 +263,13 @@ test('snippets/meta-tags.liquid outputs complete OG/Twitter card tags with 1200x
   // Guard against raw Shopify Preferences Chinese fallback leaking onto ja/en storefronts
   assert.match(meta, /毛线与手作/);
   assert.match(meta, /从第一针开始/);
+  // Broad '毛线' fallback must be scoped to homepage (index), never clobbering product/collection pages
+  assert.match(meta, /elsif request\.page_type == 'index' and og_title contains '毛线'/);
+  assert.match(meta, /elsif request\.page_type == 'index' and og_description contains '毛线'/);
+  // Guard against NilClass comparison crash on file_reference drops (metaobject.cover.value)
+  assert.match(meta, /assign og_image_width = og_entity_image\.width \| default: og_entity_image\.image\.width/);
+  assert.match(meta, /assign og_image_height = og_entity_image\.height \| default: og_entity_image\.image\.height/);
+  assert.match(meta, /if og_image_width != blank and og_image_height != blank\s+if og_image_width > 1200/);
 });
 
 test('locale-aware OG fallback replaces raw Chinese homepage metadata on ja/en while respecting Admin translations', () => {
@@ -303,6 +315,61 @@ test('locale-aware OG fallback replaces raw Chinese homepage metadata on ja/en w
   });
   assert.equal(jaExplicitAdmin.ogTitle, 'hitoami｜手編みのための小さな毛糸店');
   assert.equal(jaExplicitAdmin.ogDescription, '季節の毛糸と編みキットを取りそろえています。');
+
+  // Untranslated product title/description mentioning '毛线' must NOT be clobbered by homepage defaults
+  const jaUntranslatedProduct = resolveSocialMeta({
+    locale: 'ja',
+    pageType: 'product',
+    pageTitle: '【羊毛混纺】泡芙·空气感绚彩羊毛线｜100g',
+    pageDescription: '蓬松柔软的羊毛线，适合编织围巾与帽子。',
+    hasEntityImage: true,
+    entityImage: { url: '//cdn.shopify.com/s/files/1/puff.jpg', width: 1000, height: 1000, alt: '泡芙羊毛线' },
+  });
+  assert.equal(jaUntranslatedProduct.ogTitle, '【羊毛混纺】泡芙·空气感绚彩羊毛线｜100g');
+  assert.equal(jaUntranslatedProduct.ogDescription, '蓬松柔软的羊毛线，适合编织围巾与帽子。');
+
+  // Collection page with translated collection.title and inherited Chinese Preferences description
+  const jaCollection = resolveSocialMeta({
+    locale: 'ja',
+    pageType: 'collection',
+    pageTitle: '精选毛线',
+    collectionTitle: '毛糸',
+    pageDescription: '从第一针开始，把毛线、色彩与创意慢慢编进生活。',
+  });
+  assert.equal(jaCollection.ogTitle, '毛糸｜hitoami');
+  assert.equal(
+    jaCollection.ogDescription,
+    'ひと玉ずつ、選ぶ楽しみ。グラデーションや段染め、モヘヤ、ループヤーンなどの毛糸と、作品ごとの編みキットをお届けするオンラインの毛糸屋さんです。',
+  );
+  assert.equal(jaCollection.ogImageWidth, 1200);
+  assert.equal(jaCollection.ogImageHeight, 630);
+
+  // Metaobject file_reference drop: width/height under .image or null must never throw
+  const metaobjectNestedDims = resolveSocialMeta({
+    locale: 'ja',
+    pageType: 'metaobject',
+    pageTitle: 'ねこマフラーキット',
+    pageDescription: 'マフラー用毛糸セット。',
+    hasEntityImage: true,
+    entityImage: {
+      url: '//cdn.shopify.com/s/files/1/kit-cover.jpg',
+      image: { width: 1600, height: 1200, alt: 'キット表紙' },
+    },
+  });
+  assert.equal(metaobjectNestedDims.ogImageWidth, 1200);
+  assert.equal(metaobjectNestedDims.ogImageHeight, 900);
+  assert.equal(metaobjectNestedDims.ogImageAlt, 'キット表紙');
+
+  const metaobjectNullDims = resolveSocialMeta({
+    locale: 'ja',
+    pageType: 'metaobject',
+    pageTitle: 'ねこマフラーキット',
+    pageDescription: 'マフラー用毛糸セット。',
+    hasEntityImage: true,
+    entityImage: { url: '//cdn.shopify.com/s/files/1/kit-cover.jpg' },
+  });
+  assert.equal(metaobjectNullDims.ogImageWidth, null);
+  assert.equal(metaobjectNullDims.ogImageHeight, null);
 
   const productWithImage = resolveSocialMeta({
     locale: 'ja',
