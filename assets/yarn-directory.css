@@ -44,6 +44,7 @@
   color: var(--yarn-text-secondary);
   font-size: var(--yarn-fs-15);
   line-height: 1.65;
+  text-wrap: balance;
 }
 
 /* 主体容器 */

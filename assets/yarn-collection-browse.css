@@ -11,7 +11,7 @@
 
 .ycb-head { display: grid; justify-items: center; gap: var(--yarn-space-2); text-align: center; margin-bottom: var(--yarn-space-4); }
 .ycb-head__title { margin: 0; color: var(--yarn-text-heading); font-family: var(--yarn-display); font-size: var(--yarn-fs-32); font-weight: 500; line-height: 1.25; }
-.ycb-head__intro, .ycb-head__intro p { max-width: 44em; margin: 0; color: var(--yarn-text-secondary); font-size: var(--yarn-fs-15); line-height: 1.7; }
+.ycb-head__intro, .ycb-head__intro p { max-width: 44em; margin: 0; color: var(--yarn-text-secondary); font-size: var(--yarn-fs-15); line-height: 1.7; text-wrap: balance; }
 .ycb-badge { padding: 3px 10px; border-radius: var(--yarn-radius-pill); background: var(--yarn-tint-butter); color: var(--yarn-text-primary); font-size: var(--yarn-fs-12); font-weight: 500; }
 
 /* 圆图：同组分类居中横排，当前项陶土色外圈。手机一排横滑。 */
