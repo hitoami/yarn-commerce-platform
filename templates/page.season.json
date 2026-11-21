@@ -6,27 +6,27 @@
         "yarn-01": {
           "type": "note",
           "settings": {
-            "product": "mvp-yarn-26",
+            "product": "mvp-yarn-03",
             "assets": "season-2026aw-01-a.jpg,season-2026aw-01-b.jpg,season-2026aw-01-c.jpg",
-            "lead": "ひと目ずつ、キャンバスに色をのせるように。",
-            "lead_zh": "一针一针，像在画布上涂色。",
-            "lead_en": "Stitch by stitch, like painting on a canvas.",
-            "note": "小さなループに、いくつもの色の糸が混ざり合います。編み地は凹凸のある立体的な表情になり、帽子にもマフラーにも、ほかにない質感が生まれます。",
-            "note_zh": "细小的圈圈里混合着多种颜色的线。编出来的布面凹凸立体，无论帽子还是围巾，都呈现出独一无二的质感。",
-            "note_en": "Many colours of thread mingle in tiny loops. The fabric knits up textured and dimensional, giving hats and scarves a feel all their own."
+            "lead": "ひと目ずつ、小さなループが描く立体感。",
+            "lead_zh": "一针一针，细小圈圈织出的立体质感。",
+            "lead_en": "Stitch by stitch, tiny loops build rich texture.",
+            "note": "表面に小さなループが並ぶウール混紡糸。編み地は凹凸のある立体的な表情になり、帽子やマフラーはもちろん、ほかの糸との引き揃えにも活躍します。",
+            "note_zh": "表面带有细小圈圈的羊毛混纺线。织出的织片凹凸立体，无论编织帽子、围巾，还是与其他线材配线，都能呈现独特的纹理层次。",
+            "note_en": "A wool-blend bouclé yarn studded with tiny loops. It knits into dimensional texture for hats and scarves, or holds beautifully alongside another strand."
           }
         },
         "yarn-02": {
           "type": "note",
           "settings": {
-            "product": "mvp-yarn-24",
+            "product": "yarn-tyndall",
             "assets": "season-2026aw-02-a.jpg,season-2026aw-02-b.jpg,season-2026aw-02-c.jpg",
             "lead": "ひと玉の中に、夕暮れから星空まで。",
             "lead_zh": "一团线里，从黄昏到星空。",
             "lead_en": "From dusk to a starry sky, in a single ball.",
-            "note": "色がゆっくり移り変わる、ロングピッチの段染め糸。編み進めるほど景色が変わっていくようで、ショールやマフラーに大きなグラデーションが自然に現れます。",
-            "note_zh": "颜色缓缓过渡的长段染线。越织越有风景变幻之感，披肩和围巾上自然呈现出大幅渐变。",
-            "note_en": "A long-pitch space-dyed yarn with slowly shifting colours. The view changes as you knit, and shawls and scarves take on broad, natural gradients."
+            "note": "ウールを含むふんわりした質感のロングピッチ段染め糸。編み進めるほど景色が変わっていくようで、ショールやマフラーに大きなグラデーションが自然に現れます。",
+            "note_zh": "含羊毛成分、蓬松轻盈的长渐变毛线。越织越有风景变幻之感，披肩、围巾和毛毯上自然呈现出大幅渐变。",
+            "note_en": "An airy wool-blend yarn with long, slowly shifting colour runs. The view evolves as you knit, bringing broad natural gradients to shawls, scarves and blankets."
           }
         },
         "yarn-03": {
@@ -71,20 +71,20 @@
         "yarn-06": {
           "type": "note",
           "settings": {
-            "product": "mvp-yarn-05",
+            "product": "mvp-yarn-20",
             "assets": "season-2026aw-06-a.jpg,season-2026aw-06-b.jpg,season-2026aw-06-c.jpg",
-            "lead": "夜明けの空が、ゆっくりとにじんでいく。",
-            "lead_zh": "黎明的天空，缓缓晕染开来。",
-            "lead_en": "The dawn sky, slowly blooming.",
-            "note": "ふんわりとした質感のケーキ糸。霧のような青から朝焼けのオレンジへ、色がやさしく移り変わります。",
-            "note_zh": "质感微微蓬松的蛋糕线。从薄雾般的蓝到朝霞的橙，颜色温柔过渡。",
-            "note_en": "A softly lofty cake yarn that drifts gently from misty blue to sunrise orange."
+            "lead": "空気をふくんだ色合いが、ふんわり重なる。",
+            "lead_zh": "蓬松轻盈的色彩，柔和叠染开来。",
+            "lead_en": "Airy, lofty colours that bloom softly together.",
+            "note": "ウール55%のふくらみある混紡糸。多彩なグラデーションがやさしく移り変わり、太めの針でマフラーや帽子、ゆったりしたセーターが心地よく編めます。",
+            "note_zh": "含55%羊毛的空气感蓬松混纺线。多彩渐变自然交织，搭配较粗针具就能轻松织出围巾、帽子和宽松毛衣。",
+            "note_en": "A lofty 55% wool-blend yarn with richly shifting gradients. Worked on thicker needles, it makes cosy scarves, hats and relaxed sweaters."
           }
         },
         "yarn-07": {
           "type": "note",
           "settings": {
-            "product": "mvp-yarn-04",
+            "product": "yarn-selection-20261023-08",
             "assets": "season-2026aw-07-a.jpg,season-2026aw-07-b.jpg,season-2026aw-07-c.jpg",
             "lead": "出かけたくなる、元気いっぱいの色。",
             "lead_zh": "带着出门的心情，活力满满的颜色。",
