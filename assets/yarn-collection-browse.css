@@ -1,5 +1,6 @@
 /* 毛线目录（2026-11-20 Woobles 轻下拉胶囊 + 暖色波浪页头）。筛选与波浪页头见 yarn-filter-bar.css，商品卡见 yarn-cards.css。 */
-.ycb { width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter))); margin: 0 auto; padding-block: var(--yarn-space-4) var(--yarn-space-7); color: var(--yarn-text-primary); }
+.ycb { padding-bottom: var(--yarn-space-7); color: var(--yarn-text-primary); }
+.ycb__body { width: min(var(--yarn-commerce-max), calc(100% - 2 * var(--yarn-gutter))); margin: 0 auto; }
 .ycb :is(a, button, select, input):focus-visible { outline: var(--yarn-focus-width) solid var(--yarn-focus); outline-offset: var(--yarn-focus-offset); }
 .ycb ul { margin: 0; padding: 0; list-style: none; }
 .ycb [hidden] { display: none !important; }

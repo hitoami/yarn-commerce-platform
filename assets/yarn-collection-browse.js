@@ -256,6 +256,7 @@
     function renderMenus(counts, baseCounts) {
       menus.forEach((menu) => {
         const key = menu.dataset.yfbMenu;
+        if (key === 'sort') return;
         if (key === 'price_stock') {
           let pickedInMenu = 0;
           if (stockButton) {

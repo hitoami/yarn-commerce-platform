@@ -491,6 +491,7 @@
 
       this.menus.forEach((menu) => {
         const key = menu.dataset.yfbMenu;
+        if (key === 'sort') return;
         let selected = 0;
         if (key === 'price_stock') selected = (this.state.stock ? 1 : 0) + (this.state.price ? 1 : 0);
         else if (key === 'feature_grams') selected = (this.state.beginner ? 1 : 0) + (this.state.facets.feature?.length || 0) + (this.state.facets.grams?.length || 0);

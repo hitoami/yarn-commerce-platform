@@ -1,9 +1,7 @@
 /* 统一单行胶囊下拉筛选、浮层勾选、已选奶油胶囊、胶囊排序与暖色波浪页头（搜索页 / 目录页 / Collection 共用）。 */
 .yfb-wave-head {
   position: relative;
-  width: 100vw;
-  margin-inline: calc(50% - 50vw);
-  margin-top: calc(-1 * var(--yarn-space-5));
+  width: 100%;
   padding-top: var(--yarn-space-5);
   background: var(--yarn-bg-band);
 }
@@ -260,7 +258,7 @@
 .yfb__clear:hover { color: var(--yarn-action); }
 
 @media (max-width: 749px) {
-  .yfb-wave-head { margin-top: calc(-1 * var(--yarn-space-4)); padding-top: var(--yarn-space-4); }
+  .yfb-wave-head { padding-top: var(--yarn-space-4); }
   .yfb-wave-head__edge { height: 24px; }
   .yfb__bar { gap: var(--yarn-space-2); }
   .yfb__bar > .yfb__filters {
