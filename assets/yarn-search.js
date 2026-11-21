@@ -243,7 +243,8 @@
       this.tabs = Array.from(this.querySelectorAll('[data-search-tab]'));
       this.toolbar = this.querySelector('[data-search-toolbar]');
       this.count = this.querySelector('[data-search-count]');
-      this.sortSelect = this.querySelector('[data-search-sort]');
+      this.sortLabel = this.querySelector('[data-search-sort-label]');
+      this.sortOptions = Array.from(this.querySelectorAll('[data-search-sort-opt]'));
       this.activeWrap = this.querySelector('[data-search-active]');
       this.activeTags = this.querySelector('[data-search-active-tags]');
       this.clearFiltersButton = this.querySelector('[data-search-clear-filters]');
@@ -281,9 +282,11 @@
         this.setState({ ...this.state, group: tab.dataset.searchTab, browse: this.state.browse });
       }));
       listen(this.showAll, 'click', () => this.setState({ ...this.state, group: 'yarn' }));
-      listen(this.sortSelect, 'change', () => {
-        this.setState({ ...this.state, sort: this.sortSelect.value });
-      });
+      this.sortOptions.forEach((button) => listen(button, 'click', () => {
+        const menu = button.closest('[data-yfb-menu]');
+        if (menu) menu.open = false;
+        this.setState({ ...this.state, sort: button.dataset.searchSortOpt || '' });
+      }));
       this.menus.forEach((menu) => listen(menu, 'toggle', () => {
         if (menu.open) this.menus.forEach((other) => { if (other !== menu) other.open = false; });
       }));
@@ -396,7 +399,14 @@
       this.classList.toggle('is-favorites', isFavorites);
       this.querySelector('[data-favorites-link]').hidden = isFavorites;
       this.tabs.forEach((tab) => tab.setAttribute('aria-pressed', String(tab.dataset.searchTab === this.state.group)));
-      if (this.sortSelect) this.sortSelect.value = this.state.sort || '';
+      const currentSort = this.state.sort || '';
+      this.sortOptions.forEach((button) => {
+        const activeSort = (button.dataset.searchSortOpt || '') === currentSort;
+        button.setAttribute('aria-pressed', String(activeSort));
+        if (activeSort && this.sortLabel) {
+          this.sortLabel.textContent = (this.sortLabel.dataset.t || '__N__').replace('__N__', button.dataset.sortName || '');
+        }
+      });
       this.hideStates();
       if (this.localNote) this.localNote.hidden = true;
       if (this.toolbar) this.toolbar.hidden = !active;

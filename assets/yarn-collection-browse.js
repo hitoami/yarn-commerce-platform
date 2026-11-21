@@ -174,17 +174,17 @@
       if (event.key === 'Escape') menus.forEach((m) => { m.open = false; });
     });
 
-    const sort = section.querySelector('[data-ycb-sort]');
-    sort?.addEventListener('change', () => sort.form.requestSubmit());
-    sort?.form.addEventListener('submit', () => {
-      const next = writeState(new URLSearchParams(), state);
-      if (state.inStock) next.set(STOCK_KEY, '1');
-      if (state.priceBand) new URLSearchParams(state.priceBand).forEach((v, k) => next.set(k, v));
-      next.forEach((value, key) => {
-        if (key === 'sort_by') return;
-        sort.form.append(Object.assign(document.createElement('input'), { type: 'hidden', name: key, value }));
-      });
-    });
+    section.querySelectorAll('[data-ycb-sort-opt]').forEach((link) => link.addEventListener('click', (event) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey) return;
+      event.preventDefault();
+      let next = writeState(new URLSearchParams(window.location.search), state);
+      if (state.inStock) next.set(STOCK_KEY, '1'); else next.delete(STOCK_KEY);
+      if (state.priceBand) next = applyBand(next, state.priceBand);
+      else PRICE_KEYS.forEach((k) => next.delete(k));
+      next.set('sort_by', link.dataset.ycbSortOpt || 'manual');
+      next.delete('page');
+      window.location.assign(`${window.location.pathname}?${next}`);
+    }));
 
     if (!grid) return;
 

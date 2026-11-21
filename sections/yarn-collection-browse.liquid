@@ -154,20 +154,28 @@
             {%- endunless -%}
             <div class="yfb__meta">
               <p class="yfb__count" role="status"><span data-ycb-count data-t="{{ 'yarn_collection.count_all' | t: n: '__N__' | escape }}">{{ 'yarn_collection.count_all' | t: n: collection.products_count }}</span> · {{ 'yarn_collection.tax_included' | t }}</p>
-              <form class="ycb-sort" action="{{ collection.url }}" method="get" data-ycb-sort-form>
-                <label class="visually-hidden" for="CollectionSort-{{ section.id }}">{{ 'yarn_collection.sort' | t }}</label>
-                <span class="yfb__sort-wrap">
-                  <select class="yfb__sort" id="CollectionSort-{{ section.id }}" name="sort_by" data-ycb-sort>
+              {%- assign cb_current_sort_key = 'yarn_collection.sort_' | append: cb_sort | replace: '-', '_' -%}
+              {%- assign cb_current_sort_name = cb_current_sort_key | t -%}
+              <details class="yfb__menu yfb__menu--sort" data-yfb-menu="sort">
+                <summary class="yfb__trigger yfb__trigger--sort" aria-label="{{ 'yarn_collection.sort' | t }}">
+                  <span>{{ 'yarn_collection.sort_option' | t: name: cb_current_sort_name }}</span>
+                  <svg class="yfb__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </summary>
+                <div class="yfb__popover">
+                  <div class="yfb__pop-list">
                     {%- for key in cb_sort_keys -%}
                       {%- assign cb_option_key = 'yarn_collection.sort_' | append: key | replace: '-', '_' -%}
                       {%- assign cb_option_name = cb_option_key | t -%}
-                      <option value="{{ key }}"{% if key == cb_sort %} selected{% endif %}>{{ 'yarn_collection.sort_option' | t: name: cb_option_name }}</option>
+                      <a class="yfb__opt" href="{{ collection.url }}?sort_by={{ key }}" data-ycb-sort-opt="{{ key }}"{% if key == cb_sort %} aria-current="true"{% endif %}>
+                        <span class="yfb__opt-left">
+                          <span class="yfb__check yfb__check--radio" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                          <span class="yfb__opt-name">{{ cb_option_name }}</span>
+                        </span>
+                      </a>
                     {%- endfor -%}
-                  </select>
-                  <svg class="yfb__sort-chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </span>
-                <noscript><button class="yfb__trigger" type="submit">{{ 'products.facets.apply' | t }}</button></noscript>
-              </form>
+                  </div>
+                </div>
+              </details>
             </div>
           </div>
           <div class="yfb__active" data-ycb-active data-t-clear="{{ 'yarn_collection.clear_all' | t | escape }}" data-t-remove="{{ 'accessibility.close' | t | escape }}" data-t-stock="{{ 'yarn_collection.in_stock_only' | t | escape }}"{% unless cb_shop_filtered %} hidden{% endunless %}>

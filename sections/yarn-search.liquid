@@ -136,16 +136,40 @@
       </div>
       <div class="yfb__meta">
         <p class="yfb__count" data-search-count aria-live="polite" data-template="{{ 'yarn_discovery.result_line' | t: count: '[count]', query: '[query]' | escape }}" data-short-template="{{ 'yarn_collection.count_all' | t: n: '[count]' | escape }}" hidden></p>
-        <div class="yfb__sort-wrap">
-          <label class="visually-hidden" for="SearchSort-{{ section.id }}">{{ 'yarn_collection.sort' | t }}</label>
-          <select id="SearchSort-{{ section.id }}" class="yfb__sort" data-search-sort aria-label="{{ 'yarn_collection.sort' | t }}">
-            <option value="">{{ 'yarn_collection.sort_option' | t: name: sort_rel_label }}</option>
-            <option value="price-ascending">{{ 'yarn_collection.sort_option' | t: name: sort_pa_label }}</option>
-            <option value="price-descending">{{ 'yarn_collection.sort_option' | t: name: sort_pd_label }}</option>
-            <option value="created-descending">{{ 'yarn_collection.sort_option' | t: name: sort_new_label }}</option>
-          </select>
-          <svg class="yfb__sort-chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
+        <details class="yfb__menu yfb__menu--sort" data-yfb-menu="sort">
+          <summary class="yfb__trigger yfb__trigger--sort" aria-label="{{ 'yarn_collection.sort' | t }}">
+            <span data-search-sort-label data-t="{{ 'yarn_collection.sort_option' | t: name: '__N__' | escape }}">{{ 'yarn_collection.sort_option' | t: name: sort_rel_label }}</span>
+            <svg class="yfb__chev" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </summary>
+          <div class="yfb__popover">
+            <div class="yfb__pop-list">
+              <button class="yfb__opt" type="button" data-search-sort-opt="" data-sort-name="{{ sort_rel_label | escape }}" aria-pressed="true">
+                <span class="yfb__opt-left">
+                  <span class="yfb__check yfb__check--radio" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span class="yfb__opt-name">{{ sort_rel_label }}</span>
+                </span>
+              </button>
+              <button class="yfb__opt" type="button" data-search-sort-opt="price-ascending" data-sort-name="{{ sort_pa_label | escape }}" aria-pressed="false">
+                <span class="yfb__opt-left">
+                  <span class="yfb__check yfb__check--radio" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span class="yfb__opt-name">{{ sort_pa_label }}</span>
+                </span>
+              </button>
+              <button class="yfb__opt" type="button" data-search-sort-opt="price-descending" data-sort-name="{{ sort_pd_label | escape }}" aria-pressed="false">
+                <span class="yfb__opt-left">
+                  <span class="yfb__check yfb__check--radio" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span class="yfb__opt-name">{{ sort_pd_label }}</span>
+                </span>
+              </button>
+              <button class="yfb__opt" type="button" data-search-sort-opt="created-descending" data-sort-name="{{ sort_new_label | escape }}" aria-pressed="false">
+                <span class="yfb__opt-left">
+                  <span class="yfb__check yfb__check--radio" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L5 8.7L9.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span class="yfb__opt-name">{{ sort_new_label }}</span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </details>
       </div>
     </div>
     <div class="yfb__active" data-search-active hidden>
