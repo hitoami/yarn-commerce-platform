@@ -45,18 +45,21 @@ test('header.liquid and yarn-cart-addons.liquid lift the 50-product hard cap wit
   }
 
   assert.match(header, /if section\.settings\.drawer_yarn_collection != blank/);
-  assert.match(header, /paginate section\.settings\.drawer_yarn_collection\.products by 250/);
-  assert.match(header, /paginate collections\['beginner-picks'\]\.products by 250/);
   assert.match(
     header,
-    /endpaginate[\s\S]*if nav_facets == blank and section\.settings\.drawer_yarn_collection\.all_products_count > 0[\s\S]*for nav_product in section\.settings\.drawer_yarn_collection\.products/,
-    'header falls back to unpaginated drawer_yarn_collection.products on ?page>=2 when paginated slice is empty'
+    /if collections\['beginner-picks'\] != blank[\s\S]*if current_page and current_page > 1[\s\S]*collections\['beginner-picks'\]\.products \| map: 'handle'[\s\S]*else[\s\S]*paginate collections\['beginner-picks'\]\.products by 250/,
+    'beginner-picks skips paginate on ?page>=2 before touching the collection drop, and paginates by 250 on page 1'
+  );
+  assert.match(
+    header,
+    /if section\.settings\.drawer_yarn_collection != blank[\s\S]*if current_page and current_page > 1[\s\S]*for nav_product in section\.settings\.drawer_yarn_collection\.products[\s\S]*else[\s\S]*paginate section\.settings\.drawer_yarn_collection\.products by 250/,
+    'drawer_yarn_collection skips paginate on ?page>=2 before touching the active collection drop, and paginates by 250 on page 1'
   );
   assert.match(addons, /collections\['yarn'\] \| default: collections\['home-featured'\]/);
   assert.match(
     addons,
-    /endpaginate[\s\S]*if addon_scanned == 0[\s\S]*assign addon_fallback_pool = addon_source\.products[\s\S]*if addon_fallback_pool\.size == 0 and collections\['home-featured'\] != blank/,
-    'cart addons fall back outside endpaginate to unpaginated addon_source.products first, then home-featured'
+    /if current_page and current_page > 1[\s\S]*assign addon_fallback_pool = addon_source\.products[\s\S]*if addon_fallback_pool\.size == 0 and collections\['home-featured'\] != blank[\s\S]*else[\s\S]*paginate addon_source\.products by 250/,
+    'cart addons skip paginate on ?page>=2 before touching addon_source, and paginate by 250 on page 1'
   );
 });
 

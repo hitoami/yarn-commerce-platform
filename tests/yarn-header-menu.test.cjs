@@ -100,11 +100,11 @@ test('one language switch serves header and drawer, opening the same page in eac
 });
 
 test('header computes the yarn facets once; yarn opens three filter groups and 织什么 follows it (#355)', () => {
-  // Primary paginate-by-250 pass + unpaginated fallback guarded by `nav_facets == blank` for ?page>=2 URLs; desktop & drawer never recompute facets.
+  // Exclusive branches: ?page>=2 skips paginate to avoid mutating the active collection drop, while page 1 paginates by 250; desktop & drawer never recompute facets.
   assert.equal((header.match(/render 'yarn-facets'/g) || []).length, 2);
   assert.doesNotMatch(desktop, /render 'yarn-facets'/);
   assert.doesNotMatch(drawer, /render 'yarn-facets'/);
-  assert.match(header, /paginate section\.settings\.drawer_yarn_collection\.products by 250[\s\S]*for nav_product in section\.settings\.drawer_yarn_collection\.products[\s\S]*endpaginate[\s\S]*if nav_facets == blank and section\.settings\.drawer_yarn_collection\.all_products_count > 0/);
+  assert.match(header, /if current_page and current_page > 1[\s\S]*for nav_product in section\.settings\.drawer_yarn_collection\.products[\s\S]*else[\s\S]*paginate section\.settings\.drawer_yarn_collection\.products by 250[\s\S]*for nav_product in section\.settings\.drawer_yarn_collection\.products/);
   assert.match(header, /render 'yarn-header-drawer', navigation_menu: navigation_menu, nav_facets: nav_facets/);
   assert.match(header, /render 'yarn-header-menu', navigation_menu: navigation_menu, nav_facets: nav_facets/);
   assert.match(desktop, /link\.object\.handle == section\.settings\.drawer_yarn_collection\.handle and nav_facets != blank/);
