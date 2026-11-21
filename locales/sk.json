@@ -990,7 +990,7 @@
   },
   "yarn_cart_assurance": {
     "title_1": "Delivery across Japan",
-    "text_1": "Free shipping on orders over ¥9,900",
+    "text_1": "Shipping rates are calculated at checkout",
     "title_2": "Yarn guidance",
     "text_2": "Ask about colour matching and quantity",
     "title_3": "Shop with confidence",
@@ -1103,6 +1103,22 @@
     "nav_big": "Big balls",
     "thick_range_chunky": "≤200m",
     "thick_range_medium": "≤350m",
-    "thick_range_fine": ">350m"
+    "thick_range_fine": ">350m",
+    "facet_group_feature_grams": "Features & weight",
+    "price_and_stock": "Price & stock",
+    "in_stock_only": "In stock only",
+    "selected_count": "{{ n }} selected",
+    "reset": "Reset",
+    "sort_relevance": "Relevance",
+    "directory_title": "Catalog",
+    "directory_lead": "Yarn, knitting kits and handmade pieces — pick a place to start",
+    "directory_by_dim": "Browse yarn by category",
+    "directory_view_all_yarn": "View all {{ n }} yarns →",
+    "directory_yarn_group": "Yarn categories",
+    "directory_yarn_hint": "By thickness, colour and fibre",
+    "directory_works_hint": "Pick a project to see matching yarns",
+    "directory_yarn_desc": "Browse by thickness, colour and fibre, then combine filters.",
+    "directory_kits_desc": "Matching yarn and LINE tutorial included to knit the piece in the photo.",
+    "directory_finished_desc": "Our first handmade scarves and small pieces are being knitted and photographed."
   }
 }

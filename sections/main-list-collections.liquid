@@ -1,167 +1,324 @@
-{{ 'component-card.css' | asset_url | stylesheet_tag }}
-{{ 'section-collection-list.css' | asset_url | stylesheet_tag }}
-
-<div class="page-width">
-  <h1 class="title title--primary inline-richtext{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
-    {{ section.settings.title }}
-  </h1>
-  {%- liquid
-    case section.settings.sort
-      when 'products_high', 'products_low'
-        assign collections = collections | sort: 'all_products_count'
-      when 'date', 'date_reversed'
-        assign collections = collections | sort: 'published_at'
-    endcase
-
-    if section.settings.sort == 'products_high' or section.settings.sort == 'date_reversed' or section.settings.sort == 'alphabetical_reversed'
-      assign collections = collections | reverse
+{{ 'yarn-filter-bar.css' | asset_url | stylesheet_tag }}
+{{ 'yarn-directory.css' | asset_url | stylesheet_tag }}
+{%- if section.blocks.size == 0 -%}
+  {{ 'component-card.css' | asset_url | stylesheet_tag }}
+  {{ 'section-collection-list.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
+{%- liquid
+  assign dir_yarn = collections['yarn']
+  assign dir_beginner_handles = '' | split: ','
+  if collections['beginner-picks'] != blank
+    assign dir_beginner_handles = collections['beginner-picks'].products | map: 'handle'
+  endif
+  assign dir_kits_count = 0
+  assign dir_kits_cover = blank
+  for project in shop.metaobjects.yarn_project.values
+    capture kit_vis
+      render 'yarn-kit-visible', project: project
+    endcapture
+    if kit_vis == 'true'
+      assign dir_kits_count = dir_kits_count | plus: 1
+      if dir_kits_cover == blank and project.cover.value != blank
+        assign dir_kits_cover = project.cover.value
+      endif
     endif
+  endfor
+-%}
 
-    assign moduloResult = 28 | modulo: section.settings.columns_desktop
-    assign paginate_by = 30
-    if moduloResult == 0
-      assign paginate_by = 28
-    endif
-  -%}
-  {%- if section.blocks.size > 0 -%}
-    <ul
-      class="collection-list grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
-      role="list"
-    >
-      {%- for block in section.blocks -%}
-        {%- liquid
-          assign entry_collection = block.settings.collection
-          assign entry_page = block.settings.page
-          assign entry_url = ''
-          if entry_collection != blank
-            assign entry_url = entry_collection.url
-          elsif entry_page != blank
-            assign entry_url = entry_page.url
-          endif
-          if entry_url == blank
-            continue
-          endif
-          assign entry_image = block.settings.image
-          if entry_image == blank and entry_collection != blank
-            assign entry_image = entry_collection.featured_image
-          endif
-          if entry_image == blank and block.settings.kits_cover
-            for project in shop.metaobjects.yarn_project.values
-              if project.cover.value != blank
-                capture kit_vis
-                  render 'yarn-kit-visible', project: project
-                endcapture
-                if kit_vis == 'true'
-                  assign entry_image = project.cover.value
-                  break
-                endif
+<div class="ydir">
+  <div class="yfb-wave-head">
+    <div class="yfb-wave-head__inner">
+      <header class="ydir__head">
+        <nav class="ydir__crumb" aria-label="{{ 'yarn_collection.breadcrumb' | t }}">
+          <a href="{{ routes.root_url }}">{{ 'yarn_collection.home' | t }}</a>
+          <span aria-hidden="true">/</span>
+          <span>{{ 'yarn_collection.directory_title' | t }}</span>
+        </nav>
+        <h1 class="ydir__title">{{ 'yarn_collection.directory_title' | t }}</h1>
+        <p class="ydir__lead">{{ 'yarn_collection.directory_lead' | t }}</p>
+      </header>
+    </div>
+    <svg class="yfb-wave-head__edge" viewBox="0 0 1440 40" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,0 L1440,0 L1440,14 C1220,38 1020,2 720,22 C420,40 220,4 0,24 Z" fill="currentColor"/>
+    </svg>
+  </div>
+
+  <div class="ydir__main">
+    {%- if section.blocks.size > 0 -%}
+      <ul class="ydir__cats" role="list">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign entry_collection = block.settings.collection
+            assign entry_page = block.settings.page
+            assign entry_url = ''
+            if entry_collection != blank
+              assign entry_url = entry_collection.url
+            elsif entry_page != blank
+              assign entry_url = entry_page.url
+            endif
+            if entry_url == blank
+              continue
+            endif
+            assign entry_image = block.settings.image
+            if entry_image == blank and entry_collection != blank
+              assign entry_image = entry_collection.featured_image
+            endif
+            if entry_image == blank and block.settings.kits_cover
+              assign entry_image = dir_kits_cover
+            endif
+            assign badge_text = ''
+            assign badge_tint = false
+            if block.settings.kits_cover or entry_page != blank
+              assign badge_tint = true
+              if dir_kits_count > 0
+                assign badge_text = 'yarn_collection.count' | t: n: dir_kits_count
+              else
+                assign badge_text = 'yarn_collection.preparing_badge' | t
               endif
-            endfor
-          endif
-          assign ratio = 1
-          if section.settings.image_ratio == 'portrait'
-            assign ratio = 0.8
-          elsif section.settings.image_ratio == 'adapt' and entry_image != blank and entry_image.aspect_ratio != blank
-            assign ratio = entry_image.aspect_ratio
-          endif
-          assign card_color_scheme = settings.collection_card_color_scheme
-          assign card_style = settings.collection_card_style
-        -%}
-        {%- capture entry_title -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'title', allow_blank: true -%}{%- endcapture -%}
-        {%- assign entry_title = entry_title | strip -%}
-        {%- if entry_title == blank -%}
-          {%- assign entry_title = entry_collection.title | default: entry_page.title -%}
-        {%- endif -%}
-        <li
-          class="collection-list__item grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-          {% if settings.animations_reveal_on_scroll %}
-            data-cascade
-            style="--animation-order: {{ forloop.index }};"
-          {% endif %}
-          {{ block.shopify_attributes }}
-        >
-          <div class="card-wrapper animate-arrow collection-card-wrapper">
-            <div
-              class="card card--{{ card_style }} card--media{% if card_style == 'card' %} color-{{ card_color_scheme }} gradient{% endif %}"
-              style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
-            >
-              <div
-                class="card__inner {% if card_style == 'standard' %}color-{{ card_color_scheme }} gradient{% endif %} ratio"
-                style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
-              >
-                <div class="card__media">
-                  <div class="media media--transparent media--hover-effect">
-                    {%- if entry_image != blank -%}
-                      {{
-                        entry_image
-                        | image_url: width: 1200
-                        | image_tag:
-                          widths: '330, 535, 750, 1000',
-                          sizes: '(min-width: 750px) calc((100vw - 10rem) / 3), calc(100vw - 3rem)',
-                          loading: 'lazy',
-                          class: 'motion-reduce',
-                          alt: entry_title
-                      }}
-                    {%- elsif block.settings.fallback_asset != blank -%}
-                      <img
-                        src="{{ block.settings.fallback_asset | asset_url }}"
-                        alt="{{ entry_title | escape }}"
-                        width="900"
-                        height="1350"
-                        loading="lazy"
-                        class="motion-reduce"
-                        style="object-position: center 75%;"
-                      >
+            elsif entry_collection != blank
+              if entry_collection.all_products_count > 0
+                assign badge_text = 'yarn_collection.count' | t: n: entry_collection.all_products_count
+              else
+                assign badge_text = 'yarn_collection.preparing_badge' | t
+                assign badge_tint = true
+              endif
+            endif
+          -%}
+          {%- capture entry_title -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'title', allow_blank: true -%}{%- endcapture -%}
+          {%- assign entry_title = entry_title | strip -%}
+          {%- if entry_title == blank -%}
+            {%- assign entry_title = entry_collection.title | default: entry_page.title -%}
+          {%- endif -%}
+          {%- capture entry_desc -%}{%- render 'yarn-setting-text', settings: block.settings, key: 'desc', allow_blank: true -%}{%- endcapture -%}
+          {%- assign entry_desc = entry_desc | strip -%}
+          {%- if entry_desc == blank -%}
+            {%- if block.settings.kits_cover or entry_page != blank -%}
+              {%- assign entry_desc = 'yarn_collection.directory_kits_desc' | t -%}
+            {%- elsif entry_collection != blank and entry_collection.handle == 'yarn' -%}
+              {%- assign entry_desc = 'yarn_collection.directory_yarn_desc' | t -%}
+            {%- else -%}
+              {%- assign entry_desc = 'yarn_collection.directory_finished_desc' | t -%}
+            {%- endif -%}
+          {%- endif -%}
+          <li {{ block.shopify_attributes }}>
+            <a class="ydir__cat-card" href="{{ entry_url }}">
+              <div class="ydir__cat-media">
+                {%- if entry_image != blank -%}
+                  {{
+                    entry_image
+                    | image_url: width: 1000
+                    | image_tag:
+                      widths: '360, 540, 750, 1000',
+                      sizes: '(min-width: 750px) 32vw, 94vw',
+                      loading: 'eager',
+                      alt: entry_title
+                  }}
+                {%- elsif block.settings.fallback_asset != blank -%}
+                  <img
+                    src="{{ block.settings.fallback_asset | asset_url }}"
+                    alt="{{ entry_title | escape }}"
+                    width="900"
+                    height="600"
+                    loading="eager"
+                    style="object-position: center 75%;"
+                  >
+                {%- endif -%}
+                {%- if badge_text != blank -%}
+                  <span class="ydir__cat-badge{% if badge_tint %} ydir__cat-badge--tint{% endif %}">{{ badge_text }}</span>
+                {%- endif -%}
+              </div>
+              <div class="ydir__cat-body">
+                <h2 class="ydir__cat-title">{{ entry_title | escape }}</h2>
+                <p class="ydir__cat-desc">{{ entry_desc | escape }}</p>
+              </div>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if dir_yarn != blank and dir_yarn.all_products_count > 0 -%}
+        {%- paginate dir_yarn.products by 250 -%}
+          {%- capture dir_all_tokens -%}
+            {%- for p in dir_yarn.products -%}
+              {%- render 'yarn-facets', product: p, beginner_handles: dir_beginner_handles -%}
+              {{- '|' -}}
+            {%- endfor -%}
+          {%- endcapture -%}
+          {%- assign dir_rows = dir_all_tokens | split: '|' -%}
+          <section class="ydir__dims" aria-labelledby="DirDimsHeading-{{ section.id }}">
+            <div class="ydir__dims-head">
+              <h2 id="DirDimsHeading-{{ section.id }}">{{ 'yarn_collection.directory_by_dim' | t }}</h2>
+              <a class="ydir__dims-all" href="{{ dir_yarn.url }}">{{ 'yarn_collection.directory_view_all_yarn' | t: n: dir_yarn.all_products_count }}</a>
+            </div>
+            <div class="ydir__panels">
+              <div class="ydir__panel">
+                <div class="ydir__panel-head">
+                  <h3 class="ydir__panel-title">{{ 'yarn_collection.directory_yarn_group' | t }}</h3>
+                  <p class="ydir__panel-hint">{{ 'yarn_collection.directory_yarn_hint' | t }}</p>
+                </div>
+                <div class="ydir__cols">
+                  {%- assign dir_left_groups = 'thick:fine,medium,chunky|color:solid,variegated|fiber:wool,wool_blend,cotton,synthetic' | split: '|' -%}
+                  {%- for gdef in dir_left_groups -%}
+                    {%- assign pair = gdef | split: ':' -%}
+                    {%- assign grp = pair[0] -%}
+                    {%- assign vals = pair[1] | split: ',' -%}
+                    {%- assign gkey = 'yarn_collection.facet_group_' | append: grp -%}
+                    <div class="ydir__col">
+                      <p class="ydir__col-label">{{ gkey | t }}</p>
+                      {%- for val in vals -%}
+                        {%- liquid
+                          assign tok = ' ' | append: grp | append: ':' | append: val | append: ' '
+                          assign cnt = 0
+                          for row in dir_rows
+                            if row contains tok
+                              assign cnt = cnt | plus: 1
+                            endif
+                          endfor
+                          assign vkey = 'yarn_collection.facet_' | append: grp | append: '_' | append: val
+                        -%}
+                        {%- if cnt > 0 -%}
+                          <a class="ydir__link" href="{{ dir_yarn.url }}?ycb_{{ grp }}={{ val }}">
+                            <span class="ydir__link-left">
+                              {%- render 'yarn-facet-icon', group: grp, value: val, uid: 'DirMain' -%}
+                              <span>{{ vkey | t }}</span>
+                            </span>
+                            <span class="ydir__link-count">{{ 'yarn_collection.count' | t: n: cnt }}</span>
+                          </a>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                  {%- endfor -%}
+                </div>
+                <div class="ydir__strip">
+                  <span class="ydir__strip-label">{{ 'yarn_collection.facet_group_feature_grams' | t }}：</span>
+                  {%- assign dir_strip_items = 'feature:fluffy|feature:crochet|grams:big' | split: '|' -%}
+                  {%- for sdef in dir_strip_items -%}
+                    {%- liquid
+                      assign spair = sdef | split: ':'
+                      assign sgrp = spair[0]
+                      assign sval = spair[1]
+                      assign stok = ' ' | append: sdef | append: ' '
+                      assign scnt = 0
+                      for row in dir_rows
+                        if row contains stok
+                          assign scnt = scnt | plus: 1
+                        endif
+                      endfor
+                      if sdef == 'grams:big'
+                        assign skey = 'yarn_collection.nav_big'
+                      else
+                        assign skey = 'yarn_collection.facet_' | append: sgrp | append: '_' | append: sval
+                      endif
+                    -%}
+                    {%- if scnt > 0 -%}
+                      <a class="ydir__pill" href="{{ dir_yarn.url }}?ycb_{{ sgrp }}={{ sval }}">
+                        {%- render 'yarn-facet-icon', group: sgrp, value: sval, uid: 'DirStrip' -%}
+                        <span>{{ skey | t }}</span>
+                        <span class="ydir__pill-count">{{ scnt }}</span>
+                      </a>
                     {%- endif -%}
-                  </div>
+                  {%- endfor -%}
                 </div>
               </div>
-              <div class="card__content">
-                <div class="card__information">
-                  <h3 class="card__heading">
-                    <a href="{{ entry_url }}" class="full-unstyled-link">
-                      {{- entry_title | escape -}}
-                      <span class="icon-wrap">
-                        {{- 'icon-arrow.svg' | inline_asset_content -}}
-                      </span>
-                    </a>
-                  </h3>
+
+              <div class="ydir__panel">
+                <div class="ydir__panel-head">
+                  <h3 class="ydir__panel-title">{{ 'yarn_collection.nav_works' | t }}</h3>
+                  <p class="ydir__panel-hint">{{ 'yarn_collection.directory_works_hint' | t }}</p>
+                </div>
+                {%- liquid
+                  assign beg_cnt = 0
+                  for row in dir_rows
+                    if row contains ' beginner:yes '
+                      assign beg_cnt = beg_cnt | plus: 1
+                    endif
+                  endfor
+                -%}
+                {%- if beg_cnt > 0 -%}
+                  <a class="ydir__starter" href="{{ dir_yarn.url }}?ycb_beginner=1">
+                    <span class="ydir__link-left">
+                      {%- render 'yarn-facet-icon', group: 'beginner', value: 'yes', uid: 'DirWorks' -%}
+                      <span>{{ 'yarn_collection.beginner' | t }}</span>
+                    </span>
+                    <span class="ydir__link-count">{{ 'yarn_collection.count' | t: n: beg_cnt }}</span>
+                  </a>
+                {%- endif -%}
+                <div class="ydir__works">
+                  {%- assign dir_works = 'sweater,hat,scarf,blanket,bag,doll' | split: ',' -%}
+                  {%- for wval in dir_works -%}
+                    {%- liquid
+                      assign wtok = ' works:' | append: wval | append: ' '
+                      assign wcnt = 0
+                      for row in dir_rows
+                        if row contains wtok
+                          assign wcnt = wcnt | plus: 1
+                        endif
+                      endfor
+                      assign wkey = 'yarn_collection.facet_works_' | append: wval
+                    -%}
+                    {%- if wcnt > 0 -%}
+                      <a class="ydir__link" href="{{ dir_yarn.url }}?ycb_works={{ wval }}">
+                        <span class="ydir__link-left">
+                          {%- render 'yarn-facet-icon', group: 'works', value: wval, uid: 'DirWorks' -%}
+                          <span>{{ wkey | t }}</span>
+                        </span>
+                        <span class="ydir__link-count">{{ 'yarn_collection.count' | t: n: wcnt }}</span>
+                      </a>
+                    {%- endif -%}
+                  {%- endfor -%}
                 </div>
               </div>
             </div>
-          </div>
-        </li>
-      {%- endfor -%}
-    </ul>
-  {%- else -%}
-  {%- paginate collections by paginate_by -%}
-    <ul
-      class="collection-list grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
-      role="list"
-    >
-      {%- comment -%}shortcut: skipped seo.hidden collections still count toward paginate_by (30); fine while total collections << 30.{%- endcomment -%}
-      {%- for collection in collections -%}
-        {%- assign collection_hidden = collection.metafields.seo.hidden.value | append: '' -%}
-        {%- if collection_hidden == '1' -%}{%- continue -%}{%- endif -%}
-        <li
-          class="collection-list__item grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-          {% if settings.animations_reveal_on_scroll %}
-            data-cascade
-            style="--animation-order: {{ forloop.index }};"
-          {% endif %}
+          </section>
+        {%- endpaginate -%}
+      {%- endif -%}
+    {%- else -%}
+      {%- liquid
+        case section.settings.sort
+          when 'products_high', 'products_low'
+            assign collections = collections | sort: 'all_products_count'
+          when 'date', 'date_reversed'
+            assign collections = collections | sort: 'published_at'
+        endcase
+        if section.settings.sort == 'products_high' or section.settings.sort == 'date_reversed' or section.settings.sort == 'alphabetical_reversed'
+          assign collections = collections | reverse
+        endif
+        assign modulo_result = 28 | modulo: section.settings.columns_desktop
+        assign paginate_by = 30
+        if modulo_result == 0
+          assign paginate_by = 28
+        endif
+      -%}
+      {%- paginate collections by paginate_by -%}
+        <ul
+          class="collection-list grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
+          role="list"
         >
-          {% render 'card-collection',
-            card_collection: collection,
-            media_aspect_ratio: section.settings.image_ratio,
-            columns: 3
-          %}
-        </li>
-      {%- endfor -%}
-    </ul>
-    {% render 'pagination', paginate: paginate %}
-  {%- endpaginate -%}
-  {%- endif -%}
+          {%- comment -%}shortcut: skipped seo.hidden collections still count toward paginate_by (30); fine while total collections << 30.{%- endcomment -%}
+          {%- for collection in collections -%}
+            {%- assign collection_hidden = collection.metafields.seo.hidden.value | append: '' -%}
+            {%- if collection_hidden == '1' -%}{%- continue -%}{%- endif -%}
+            <li
+              class="collection-list__item grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+              {% if settings.animations_reveal_on_scroll %}
+                data-cascade
+                style="--animation-order: {{ forloop.index }};"
+              {% endif %}
+            >
+              {% render 'card-collection',
+                card_collection: collection,
+                media_aspect_ratio: section.settings.image_ratio,
+                columns: 3
+              %}
+            </li>
+          {%- endfor -%}
+        </ul>
+        {% render 'pagination', paginate: paginate %}
+      {%- endpaginate -%}
+    {%- endif -%}
+  </div>
 </div>
+
 {% schema %}
 {
   "name": "t:sections.main-list-collections.name",
@@ -263,7 +420,10 @@
         { "type": "text", "id": "fallback_asset", "label": "无封面图时的主题内置图文件名" },
         { "type": "text", "id": "title", "label": "日文 · 标题" },
         { "type": "text", "id": "title_zh", "label": "中文 · 标题" },
-        { "type": "text", "id": "title_en", "label": "英文 · 标题" }
+        { "type": "text", "id": "title_en", "label": "英文 · 标题" },
+        { "type": "text", "id": "desc", "label": "日文 · 简介（留空用默认文案）" },
+        { "type": "text", "id": "desc_zh", "label": "中文 · 简介（留空用默认文案）" },
+        { "type": "text", "id": "desc_en", "label": "英文 · 简介（留空用默认文案）" }
       ]
     }
   ]

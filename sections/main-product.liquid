@@ -874,8 +874,51 @@
         <script src="{{ 'product-model.js' | asset_url }}" defer></script>
       {%- endif -%}
 
+      {%- liquid
+        assign jsonld_brand_fallback = shop.name | strip
+        if jsonld_brand_fallback == blank or jsonld_brand_fallback == 'My Store'
+          assign jsonld_brand_fallback = 'hitoami'
+        endif
+        assign jsonld_vendor_raw = product.vendor | strip
+        assign jsonld_vendor_down = jsonld_vendor_raw | downcase
+        assign jsonld_sanitize_brand = false
+        if jsonld_vendor_raw == blank or jsonld_vendor_down == 'my store' or jsonld_vendor_down == 'unknown' or jsonld_vendor_down == 'tbd' or jsonld_vendor_down == 'n/a'
+          assign jsonld_sanitize_brand = true
+        elsif jsonld_vendor_down contains '1688' or jsonld_vendor_down contains 'taobao' or jsonld_vendor_down contains 'tmall' or jsonld_vendor_down contains 'pinduoduo'
+          assign jsonld_sanitize_brand = true
+        elsif jsonld_vendor_raw contains '淘宝' or jsonld_vendor_raw contains '天猫' or jsonld_vendor_raw contains '拼多多' or jsonld_vendor_raw contains '品牌待确认' or jsonld_vendor_raw contains '待确认' or jsonld_vendor_raw contains '待补' or jsonld_vendor_raw contains '未知' or jsonld_vendor_raw contains '纺织' or jsonld_vendor_raw contains '纱厂' or jsonld_vendor_raw contains '毛纺' or jsonld_vendor_raw contains '有限' or jsonld_vendor_raw contains '商贸' or jsonld_vendor_raw contains '实业' or jsonld_vendor_raw contains '工厂' or jsonld_vendor_raw contains '旗舰店' or jsonld_vendor_raw contains '专营店' or jsonld_vendor_raw contains '商行' or jsonld_vendor_raw contains '批发' or jsonld_vendor_raw contains '供应' or jsonld_vendor_raw contains '手工坊'
+          assign jsonld_sanitize_brand = true
+        endif
+        assign jsonld_output = product | structured_data
+        if jsonld_sanitize_brand and jsonld_output contains '"brand":'
+          assign jsonld_parts = jsonld_output | split: '"brand":'
+          assign jsonld_fallback_json = jsonld_brand_fallback | json
+          assign jsonld_vendor_json = product.vendor | json
+          assign jsonld_vendor_trimmed_json = jsonld_vendor_raw | json
+          assign jsonld_rebuilt = jsonld_parts[0]
+          for jsonld_part in jsonld_parts offset: 1
+            assign jsonld_tail = jsonld_part
+            if jsonld_vendor_raw == blank
+              assign jsonld_empty_sp = '"name": ""'
+              assign jsonld_empty_min = '"name":""'
+              assign jsonld_name_replacement = '"name": ' | append: jsonld_fallback_json
+              if jsonld_tail contains jsonld_empty_sp
+                assign jsonld_tail = jsonld_tail | replace_first: jsonld_empty_sp, jsonld_name_replacement
+              elsif jsonld_tail contains jsonld_empty_min
+                assign jsonld_tail = jsonld_tail | replace_first: jsonld_empty_min, jsonld_name_replacement
+              endif
+            elsif jsonld_tail contains jsonld_vendor_json
+              assign jsonld_tail = jsonld_tail | replace_first: jsonld_vendor_json, jsonld_fallback_json
+            elsif jsonld_tail contains jsonld_vendor_trimmed_json
+              assign jsonld_tail = jsonld_tail | replace_first: jsonld_vendor_trimmed_json, jsonld_fallback_json
+            endif
+            assign jsonld_rebuilt = jsonld_rebuilt | append: '"brand":' | append: jsonld_tail
+          endfor
+          assign jsonld_output = jsonld_rebuilt
+        endif
+      -%}
       <script type="application/ld+json">
-        {{ product | structured_data }}
+        {{ jsonld_output }}
       </script>
     </div>
   </product-component>

@@ -27,7 +27,7 @@
             "page": "kits",
             "kits_cover": true,
             "title": "編みキット",
-            "title_zh": "编织包",
+            "title_zh": "材料包",
             "title_en": "Knitting kits"
           }
         },
@@ -37,7 +37,7 @@
             "collection": "finished-goods",
             "fallback_asset": "hitoami-finished-mobile.webp",
             "title": "手編みの完成品",
-            "title_zh": "成品",
+            "title_zh": "手织成品",
             "title_en": "Handmade pieces"
           }
         }
@@ -53,9 +53,28 @@
         "columns_desktop": 3,
         "columns_mobile": "1"
       }
+    },
+    "line-help": {
+      "type": "yarn-line-contact",
+      "settings": {
+        "compact_layout": true,
+        "compact_heading": "どのカテゴリから見ればいいか迷ったら",
+        "compact_action": "LINEで相談する",
+        "compact_text": "編みたいものを教えてください。ぴったりの毛糸と玉数をご案内します。",
+        "compact_heading_zh": "还不确定从哪一类开始逛？",
+        "compact_action_zh": "在 LINE 上咨询",
+        "compact_text_zh": "告诉我们想织什么，店员会帮你直接推荐毛线和用量。",
+        "compact_heading_en": "Not sure where to start?",
+        "compact_action_en": "Ask us on LINE",
+        "compact_text_en": "Tell us what you want to make and we'll recommend the yarn and quantity.",
+        "primary_link": "",
+        "secondary_link": "shopify://pages/contact",
+        "color_scheme": "scheme-3"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "line-help"
   ]
 }
