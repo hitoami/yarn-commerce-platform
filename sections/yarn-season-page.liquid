@@ -13,11 +13,12 @@
   assign sp_max = section.settings.products_to_show
   assign sp_count = 0
   for block in section.blocks
-    if block.type == 'note' and block.settings.product != blank
-      assign sp_count = sp_count | plus: 1
-      if sp_count >= sp_max
-        break
-      endif
+    if block.type != 'note' or block.settings.product == blank or block.settings.product.id == blank or block.settings.product.handle == blank or block.settings.product.url == blank or block.settings.product.title == blank
+      continue
+    endif
+    assign sp_count = sp_count | plus: 1
+    if sp_count >= sp_max
+      break
     endif
   endfor
   capture sp_eyebrow
@@ -47,7 +48,7 @@
       {%- else -%}
         {%- assign sp_mosaic = 0 -%}
         {%- for block in section.blocks -%}
-          {%- if block.type != 'note' or block.settings.product == blank -%}{%- continue -%}{%- endif -%}
+          {%- if block.type != 'note' or block.settings.product == blank or block.settings.product.id == blank or block.settings.product.handle == blank or block.settings.product.url == blank or block.settings.product.title == blank -%}{%- continue -%}{%- endif -%}
           {%- assign sp_cover = block.settings.product.featured_image -%}
           {%- if sp_cover != blank -%}
             {%- assign sp_mosaic = sp_mosaic | plus: 1 -%}
@@ -68,7 +69,7 @@
         <ol>
           {%- assign sp_toc_index = 0 -%}
           {%- for block in section.blocks -%}
-            {%- if block.type != 'note' or block.settings.product == blank -%}{%- continue -%}{%- endif -%}
+            {%- if block.type != 'note' or block.settings.product == blank or block.settings.product.id == blank or block.settings.product.handle == blank or block.settings.product.url == blank or block.settings.product.title == blank -%}{%- continue -%}{%- endif -%}
             {%- assign sp_toc_index = sp_toc_index | plus: 1 -%}
             {%- if sp_toc_index > sp_count -%}{%- break -%}{%- endif -%}
             {%- assign sp_item = block.settings.product -%}
@@ -96,7 +97,7 @@
     <ol class="yx-season-page__list">
       {%- assign sp_index = 0 -%}
       {%- for block in section.blocks -%}
-        {%- if block.type != 'note' or block.settings.product == blank -%}{%- continue -%}{%- endif -%}
+        {%- if block.type != 'note' or block.settings.product == blank or block.settings.product.id == blank or block.settings.product.handle == blank or block.settings.product.url == blank or block.settings.product.title == blank -%}{%- continue -%}{%- endif -%}
         {%- assign sp_index = sp_index | plus: 1 -%}
         {%- if sp_index > sp_count -%}{%- break -%}{%- endif -%}
         {%- assign sp_item = block.settings.product -%}

@@ -178,26 +178,42 @@
       if section.settings.logo_position == 'top-center' or navigation_menu == blank or shop.customer_accounts_enabled
         assign render_search_left = true
       endif
-
-      if navigation_menu != blank
-        # #355：毛线、织什么下拉的筛选项由毛线目录的商品算出（yarn-facets），只算一次，桌面和抽屉共用。
-        # shortcut: unpaginated collection.products caps at 50; upgrade when yarn exceeds 50 live items.
-        assign nav_beginner_handles = '' | split: ','
-        if collections['beginner-picks'] != blank
-          assign nav_beginner_handles = collections['beginner-picks'].products | map: 'handle'
-        endif
-        capture nav_facets
-          for nav_product in section.settings.drawer_yarn_collection.products limit: 50
-            render 'yarn-facets', product: nav_product, beginner_handles: nav_beginner_handles
-          endfor
-        endcapture
-        render 'yarn-header-drawer', navigation_menu: navigation_menu, nav_facets: nav_facets, show_country_selector: country_selector, show_language_selector: language_selector, show_social_links: social_links, welcome_illustration: section.settings.drawer_welcome_illustration
-      endif
-
-      if render_search_left
-        render 'header-search', input_id: 'Search-In-Modal-1'
-      endif
+      assign nav_facets = ''
     -%}
+    {%- if navigation_menu != blank -%}
+      {%- comment -%}#355：毛线、织什么下拉的筛选项由毛线目录的商品算出（yarn-facets），只算一次，桌面和抽屉共用；第 1 页按 250 分页扫描突破 50 件上限，?page >= 2 时跳过 paginate 避免污染当前集合对象。{%- endcomment -%}
+      {%- assign nav_beginner_handles = '' | split: ',' -%}
+      {%- if collections['beginner-picks'] != blank -%}
+        {%- if current_page and current_page > 1 -%}
+          {%- assign nav_beginner_handles = collections['beginner-picks'].products | map: 'handle' -%}
+        {%- else -%}
+          {%- paginate collections['beginner-picks'].products by 250 -%}
+            {%- assign nav_beginner_handles = collections['beginner-picks'].products | map: 'handle' -%}
+          {%- endpaginate -%}
+        {%- endif -%}
+      {%- endif -%}
+      {%- if section.settings.drawer_yarn_collection != blank -%}
+        {%- if current_page and current_page > 1 -%}
+          {%- capture nav_facets -%}
+            {%- for nav_product in section.settings.drawer_yarn_collection.products -%}
+              {%- render 'yarn-facets', product: nav_product, beginner_handles: nav_beginner_handles -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+        {%- else -%}
+          {%- paginate section.settings.drawer_yarn_collection.products by 250 -%}
+            {%- capture nav_facets -%}
+              {%- for nav_product in section.settings.drawer_yarn_collection.products -%}
+                {%- render 'yarn-facets', product: nav_product, beginner_handles: nav_beginner_handles -%}
+              {%- endfor -%}
+            {%- endcapture -%}
+          {%- endpaginate -%}
+        {%- endif -%}
+      {%- endif -%}
+      {%- render 'yarn-header-drawer', navigation_menu: navigation_menu, nav_facets: nav_facets, show_country_selector: country_selector, show_language_selector: language_selector, show_social_links: social_links, welcome_illustration: section.settings.drawer_welcome_illustration -%}
+    {%- endif -%}
+    {%- if render_search_left -%}
+      {%- render 'header-search', input_id: 'Search-In-Modal-1' -%}
+    {%- endif -%}
 
     {%- if section.settings.logo_position != 'middle-center' -%}
       {%- if request.page_type == 'index' -%}
