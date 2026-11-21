@@ -1,0 +1,33 @@
+{
+  "kind": "composed social sharing card (Open Graph / Twitter / Slack / LINE)",
+  "date": "2026-11-21",
+  "issue": "#320",
+  "format": "1200x630 JPEG (1.905:1, quality 90, 2x supersampled from 2400x1260)",
+  "scope": "首页及无独立主图的页面（如目录默认态、支持页）在 Slack / LINE / X 分享时的默认预览图；同步保留一份在 docs/design/approved/hitoami-og-share.jpg。",
+  "sources": [
+    {
+      "asset": "assets/hitoami-yarn-wide.webp",
+      "provenance": "assets/hitoami-yarn-wide.webp.source.json",
+      "role": "右侧窗边木椅、织到一半的奶白织片与毛线团主景（#274 已确认首屏窗边系列第①张）"
+    },
+    {
+      "asset": "assets/hitoami-logo.webp",
+      "provenance": "assets/hitoami-logo.webp.source.json",
+      "role": "左上品牌字标（用户提供的 hitoami 猫抱毛线球陶土色字标，未改动字形与颜色）"
+    }
+  ],
+  "design_tokens": {
+    "background": ["#fffdfa (--yarn-bg-page)", "#f8eee7 (--yarn-bg-band)"],
+    "accent": ["#ab5631 (--yarn-home-logo)", "#bf5a38 (--yarn-decor-thread)", "#f8e5a9 (--yarn-cta-bg)"],
+    "text": ["#573d2c (--yarn-text-heading)", "#4a3426 (--yarn-text-primary)", "#8f3c26 (--yarn-action-strong)"],
+    "fonts": ["Kiwi Maru 500 (JP headline)", "Zen Maru Gothic 500 (JP subtitle)", "Nunito 700 (domain & tag)"]
+  },
+  "copy": {
+    "ja_headline": "ひと玉ずつ、選ぶ楽しみ。",
+    "zh_meaning_headline": "一团一团，慢慢挑。",
+    "ja_subtitle": "毛糸・編みキット・手編みの専門店",
+    "zh_meaning_subtitle": "毛线・编织包・手工编织专门店",
+    "domain": "hitoami.com"
+  },
+  "processing": "将上述已批准素材以 2x 分辨率（2400×1260）在无头 Chrome 中按 DESIGN.md 配色与字体排版渲染，再以 macOS sips 等比缩采样至 1200×630 JPEG（quality 90）。"
+}
