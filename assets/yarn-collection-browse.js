@@ -162,11 +162,33 @@
     section.querySelector('[data-ycb-next]')?.remove();
     section.querySelectorAll('.ycb-grid__item--later').forEach((li) => li.classList.remove('ycb-grid__item--later'));
 
+    function positionPopover(menu) {
+      const pop = menu.querySelector('.yfb__popover');
+      const trigger = menu.querySelector('.yfb__trigger');
+      if (!pop || !trigger) return;
+      if (window.innerWidth <= 749) { pop.style.top = ''; pop.style.left = ''; pop.style.right = ''; return; }
+      const rect = trigger.getBoundingClientRect();
+      if (rect.bottom < 0 || rect.top > window.innerHeight) { menu.open = false; return; }
+      pop.style.top = `${Math.round(rect.bottom + 8)}px`;
+      if (menu.dataset.yfbMenu === 'sort') {
+        pop.style.left = 'auto';
+        pop.style.right = `${Math.max(16, Math.round(window.innerWidth - rect.right))}px`;
+      } else {
+        pop.style.right = 'auto';
+        const w = pop.offsetWidth || 264;
+        pop.style.left = `${Math.max(16, Math.min(Math.round(rect.left), window.innerWidth - w - 16))}px`;
+      }
+    }
+    const syncOpenPopover = () => { const open = menus.find((m) => m.open); if (open) positionPopover(open); };
     // One open popover at a time + click outside / Escape closes
     menus.forEach((menu) => menu.addEventListener('toggle', () => {
       if (!menu.open) return;
       menus.forEach((other) => { if (other !== menu) other.open = false; });
+      positionPopover(menu);
     }));
+    window.addEventListener('scroll', syncOpenPopover, { passive: true });
+    window.addEventListener('resize', syncOpenPopover, { passive: true });
+    section.querySelector('[data-yfb-filters]')?.addEventListener('scroll', syncOpenPopover, { passive: true });
     document.addEventListener('click', (event) => {
       if (!event.target.closest('[data-yfb-menu]')) menus.forEach((m) => { m.open = false; });
     });
