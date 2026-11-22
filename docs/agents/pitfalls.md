@@ -16,7 +16,7 @@
 
 ## 文案与语言
 
-- **新文案键要进全部语言文件**（Theme Check MatchingTranslations）：用 `node scripts/locale-add.cjs <命名空间> <keys.json>`，日 / 中 / 英各写一份，其他语言自动用英文。不要用 JSON 重写整份文件，会打乱键顺序。
+- **新文案键要进三语语言文件**（Theme Check MatchingTranslations）：用 `node scripts/locale-add.cjs <命名空间> <keys.json>`，日 / 中 / 英三份都要提供。不要用 JSON 重写整份文件，会打乱键顺序。
 - **`| t` 的输出已转义 HTML**：`>` 会变成 `&gt;`。要给 JS 用，就从页面上已渲染的元素读文字，不要再 `| json` 塞进 data 属性。
 - **商品字段按语言翻译**：如 `yarn.spec_line` 在日 / 中 / 英分别是「約 / 约 / Approx.」，解析时三种都要认。
 - 按语言切换文案只能走 `yarn-setting-text` snippet 或 `| t`（有检查）。

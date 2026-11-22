@@ -123,6 +123,6 @@ live Theme `189727637817` 当前已开启 `settings.yarn_internal_projects`，�
 - `snippets/yarn-project-products.liquid`
 - `snippets/yarn-project-label.liquid`
 
-31 个非 schema locale 均包含相同的 `yarn_project` 键。日文、简体中文与英文是当前三份实际翻译；其余 28 份暂用英文 fallback，这只避免未启用语言缺键，不表示这些语言已经翻译或发布。根路径 `/` 为日文、`/zh` 为简体中文；不能因后台以中文为 primary 就推断根路径语言异常。英文已按用户本次授权发布，`/en` 可选择；每轮关键路径的实际验收以 Issue / PR 证据为准，不由字段已保存推定通过。
+仓库只保留日文（`ja.json`）、简体中文（`zh-CN.json`）与英文（`en.default.json`）三份前台语言文件及对应 `*.schema.json`，均包含相同的 `yarn_project` 键。根路径 `/` 为日文、`/zh` 为简体中文；不能因后台以中文为 primary 就推断根路径语言异常。英文已按用户本次授权发布，`/en` 可选择；每轮关键路径的实际验收以 Issue / PR 证据为准，不由字段已保存推定通过。
 
 本文不推定成品与教程同款关系、语言发布状态、公开 URL 可用性或 production 发布结果。
