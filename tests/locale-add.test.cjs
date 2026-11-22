@@ -17,12 +17,24 @@ test('275: keys are appended inside the namespace without reordering numeric key
   assert.throws(() => addKeys(SAMPLE, 'missing', { a: '1' }));
 });
 
-test('275: every storefront locale gets the keys, other languages fall back to English, schema files untouched', () => {
+test('275: every published storefront locale gets its own keys, missing locale throws, schema files untouched', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'locale-add-'));
-  for (const file of ['ja.json', 'zh-CN.json', 'en.default.json', 'de.json', 'en.default.schema.json']) fs.writeFileSync(path.join(dir, file), SAMPLE);
+  for (const file of ['ja.json', 'zh-CN.json', 'en.default.json', 'en.default.schema.json']) fs.writeFileSync(path.join(dir, file), SAMPLE);
+  assert.throws(() => run('shop', { en: { b: 'B' } }, dir), /缺少/);
   const changed = run('shop', { ja: { b: 'ビ' }, 'zh-CN': { b: '乙' }, en: { b: 'B' } }, dir);
-  assert.deepEqual(changed.sort(), ['de.json', 'en.default.json', 'ja.json', 'zh-CN.json']);
+  assert.deepEqual(changed.sort(), ['en.default.json', 'ja.json', 'zh-CN.json']);
   const read = (file) => JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8').replace(/^\s*\/\*[\s\S]*?\*\//, '')).shop.b;
-  assert.deepEqual(['ja.json', 'zh-CN.json', 'en.default.json', 'de.json'].map(read), ['ビ', '乙', 'B', 'B']);
+  assert.deepEqual(['ja.json', 'zh-CN.json', 'en.default.json'].map(read), ['ビ', '乙', 'B']);
   assert.equal(fs.readFileSync(path.join(dir, 'en.default.schema.json'), 'utf8'), SAMPLE);
+});
+
+test('locales directory keeps only ja, zh-CN, and en.default storefront and schema files', () => {
+  assert.deepEqual(fs.readdirSync('locales').sort(), [
+    'en.default.json',
+    'en.default.schema.json',
+    'ja.json',
+    'ja.schema.json',
+    'zh-CN.json',
+    'zh-CN.schema.json',
+  ]);
 });

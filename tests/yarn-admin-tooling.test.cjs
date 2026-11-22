@@ -77,7 +77,7 @@ test('filterActiveTranslatableNodes excludes ARCHIVED products, demo metaobjects
   assert.equal(menuRes.kept.length, 1);
 });
 
-test('extractCoverageGaps lists missing and outdated keys cleanly for ops', () => {
+test('extractCoverageGaps lists missing and outdated keys cleanly for ops and excludes handle', () => {
   const metaById = new Map([
     ['gid://shopify/Product/2', { handle: 'mvp-yarn-16', title: '十刻纯色', status: 'ACTIVE' }],
   ]);
@@ -88,6 +88,7 @@ test('extractCoverageGaps lists missing and outdated keys cleanly for ops', () =
         { key: 'title', value: '十刻纯色' },
         { key: 'body_html', value: '<p>说明</p>' },
         { key: 'handle', value: 'mvp-yarn-16' },
+        { key: 'product_type', value: '毛线' },
       ],
       translations: [
         { key: 'title', value: '十刻', outdated: false },
@@ -98,8 +99,263 @@ test('extractCoverageGaps lists missing and outdated keys cleanly for ops', () =
 
   assert.equal(gaps.length, 1);
   assert.equal(gaps[0].handle, 'mvp-yarn-16');
-  assert.deepEqual(gaps[0].missingKeys, ['body_html', 'handle']);
+  assert.deepEqual(gaps[0].missingKeys, ['body_html']);
   assert.deepEqual(gaps[0].outdatedKeys, ['body_html']);
+});
+
+test('summarizeCoverage ignores handle and non-translatable enum fields so translated resources count as full', () => {
+  const nodes = [
+    {
+      resourceId: 'gid://shopify/Product/10',
+      translatableContent: [
+        { key: 'title', value: '十刻纯色' },
+        { key: 'handle', value: 'mvp-yarn-16' },
+        { key: 'product_type', value: '毛线' },
+      ],
+      translations: [{ key: 'title', value: '十刻単色', outdated: false }],
+    },
+    {
+      resourceId: 'gid://shopify/Product/11',
+      translatableContent: [{ key: 'handle', value: 'handle-only' }],
+      translations: [],
+    },
+  ];
+  assert.deepEqual(admin.summarizeCoverage(nodes), { total: 1, full: 1, partial: 0, none: 0 });
+  assert.deepEqual(admin.extractCoverageGaps('PRODUCT', nodes), []);
+
+  const metaById = new Map([
+    ['gid://shopify/Metaobject/50', { handle: 'kit-a', type: 'yarn_project', displayName: '围巾' }],
+    ['gid://shopify/Metaobject/51', { handle: 'mat-a', type: 'yarn_material', displayName: '主线' }],
+  ]);
+  const moNodes = [
+    {
+      resourceId: 'gid://shopify/Metaobject/50',
+      translatableContent: [
+        { key: 'title', value: '围巾' },
+        { key: 'handle', value: 'kit-a' },
+        { key: 'category', value: '配饰' },
+        { key: 'difficulty', value: '新手' },
+        { key: 'release_scope', value: '已核实可公开' },
+      ],
+      translations: [{ key: 'title', value: 'マフラー', outdated: false }],
+    },
+    {
+      resourceId: 'gid://shopify/Metaobject/51',
+      translatableContent: [
+        { key: 'title', value: '主线' },
+        { key: 'supply', value: '本店提供' },
+        { key: 'component_type', value: '毛线' },
+      ],
+      translations: [{ key: 'title', value: 'メイン糸', outdated: false }],
+    },
+  ];
+  assert.deepEqual(admin.summarizeCoverage(moNodes, { metaById }), { total: 2, full: 2, partial: 0, none: 0 });
+  assert.deepEqual(admin.extractCoverageGaps('METAOBJECT', moNodes, metaById), []);
+});
+
+test('filterActiveTranslatableNodes excludes DRAFT products, shopify-- system metaobjects, and non-narrative metafields', () => {
+  const context = {
+    archivedProductIds: new Set(['gid://shopify/Product/1']),
+    draftProductIds: new Set(['gid://shopify/Product/2']),
+    archivedMetafieldIds: new Set(['gid://shopify/Metafield/10']),
+    draftMetafieldIds: new Set(['gid://shopify/Metafield/11']),
+    nonNarrativeMetafieldIds: new Set(['gid://shopify/Metafield/12']),
+    systemMetaobjectIds: new Set(['gid://shopify/Metaobject/20']),
+    metaById: new Map([
+      ['gid://shopify/Metaobject/21', { type: 'shopify--color-pattern', handle: 'black' }],
+      ['gid://shopify/Metaobject/22', { type: 'yarn_project', handle: 'kit-scarf' }],
+    ]),
+  };
+
+  const prodRes = admin.filterActiveTranslatableNodes('PRODUCT', [
+    { resourceId: 'gid://shopify/Product/1', translatableContent: [{ key: 'title', value: '归档' }], translations: [] },
+    { resourceId: 'gid://shopify/Product/2', translatableContent: [{ key: 'title', value: '草稿' }], translations: [] },
+    { resourceId: 'gid://shopify/Product/3', translatableContent: [{ key: 'title', value: '在售' }], translations: [] },
+  ], context);
+  assert.equal(prodRes.excluded, 2);
+  assert.deepEqual(prodRes.kept.map(n => n.resourceId), ['gid://shopify/Product/3']);
+
+  const moRes = admin.filterActiveTranslatableNodes('METAOBJECT', [
+    { resourceId: 'gid://shopify/Metaobject/20', translatableContent: [{ key: 'label', value: 'Red' }], translations: [] },
+    { resourceId: 'gid://shopify/Metaobject/21', translatableContent: [{ key: 'label', value: 'Black' }], translations: [] },
+    { resourceId: 'gid://shopify/Metaobject/22', translatableContent: [{ key: 'title', value: '围巾' }], translations: [] },
+  ], context);
+  assert.equal(moRes.excluded, 2);
+  assert.deepEqual(moRes.kept.map(n => n.resourceId), ['gid://shopify/Metaobject/22']);
+
+  const mfRes = admin.filterActiveTranslatableNodes('METAFIELD', [
+    { resourceId: 'gid://shopify/Metafield/10', translatableContent: [{ key: 'value', value: '归档规格' }], translations: [] },
+    { resourceId: 'gid://shopify/Metafield/11', translatableContent: [{ key: 'value', value: '草稿规格' }], translations: [] },
+    { resourceId: 'gid://shopify/Metafield/12', translatableContent: [{ key: 'value', value: '中粗' }], translations: [] },
+    { resourceId: 'gid://shopify/Metafield/13', translatableContent: [{ key: 'value', value: '50g｜约100m/团' }], translations: [] },
+  ], context);
+  assert.equal(mfRes.excluded, 3);
+  assert.deepEqual(mfRes.kept.map(n => n.resourceId), ['gid://shopify/Metafield/13']);
+});
+
+test('isSystemMetaobject and isNarrativeMetafield follow docs/shopify-content-onboarding.md rules', () => {
+  assert.equal(admin.isSystemMetaobject({ type: 'shopify--color-pattern' }), true);
+  assert.equal(admin.isSystemMetaobject({ type: 'shopify--material' }), true);
+  assert.equal(admin.isSystemMetaobject({ type: 'yarn_project' }), false);
+
+  for (const key of ['spec_line', 'card_line', 'composition', 'care', 'beginner_reason']) {
+    assert.equal(admin.isNarrativeMetafield({ namespace: 'yarn', key }), true, `yarn.${key} should be narrative`);
+  }
+  for (const key of ['thickness', 'color_type', 'works', 'fluffy', 'crochet', 'undyed', 'texture', 'use']) {
+    assert.equal(admin.isNarrativeMetafield({ namespace: 'yarn', key }), false, `yarn.${key} should not be narrative`);
+  }
+  assert.equal(admin.isNarrativeMetafield({ namespace: 'internal', key: 'supplier' }), false);
+});
+
+test('coverage --active-only filters DRAFT products, shopify-- metaobjects, non-narrative metafields, and ignores handle end-to-end', async () => {
+  const mockGql = async (query, vars = {}) => {
+    if (query.includes('products(first: 100')) {
+      return {
+        products: {
+          nodes: [
+            {
+              id: 'gid://shopify/Product/1',
+              handle: 'active-yarn',
+              title: '在售毛线',
+              status: 'ACTIVE',
+              metafields: {
+                nodes: [
+                  { id: 'gid://shopify/Metafield/101', namespace: 'yarn', key: 'spec_line', value: '50g｜约100m/团' },
+                  { id: 'gid://shopify/Metafield/102', namespace: 'yarn', key: 'card_line', value: '柔软好钩' },
+                  { id: 'gid://shopify/Metafield/103', namespace: 'yarn', key: 'thickness', value: '中粗' },
+                  { id: 'gid://shopify/Metafield/104', namespace: 'yarn', key: 'color_type', value: '["纯色"]' },
+                  { id: 'gid://shopify/Metafield/105', namespace: 'yarn', key: 'works', value: '["围巾"]' },
+                  { id: 'gid://shopify/Metafield/106', namespace: 'yarn', key: 'fluffy', value: 'true' },
+                  { id: 'gid://shopify/Metafield/107', namespace: 'yarn', key: 'crochet', value: 'true' },
+                  { id: 'gid://shopify/Metafield/108', namespace: 'yarn', key: 'undyed', value: 'false' },
+                  { id: 'gid://shopify/Metafield/109', namespace: 'internal', key: 'supplier', value: '1688 工厂' },
+                ],
+              },
+            },
+            {
+              id: 'gid://shopify/Product/2',
+              handle: 'draft-yarn',
+              title: '草稿毛线',
+              status: 'DRAFT',
+              metafields: {
+                nodes: [
+                  { id: 'gid://shopify/Metafield/201', namespace: 'yarn', key: 'spec_line', value: '草稿规格' },
+                ],
+              },
+            },
+            {
+              id: 'gid://shopify/Product/3',
+              handle: 'archived-yarn',
+              title: '归档毛线',
+              status: 'ARCHIVED',
+              metafields: {
+                nodes: [
+                  { id: 'gid://shopify/Metafield/301', namespace: 'yarn', key: 'spec_line', value: '归档规格' },
+                ],
+              },
+            },
+          ],
+          pageInfo: { hasNextPage: false, endCursor: null },
+        },
+      };
+    }
+    if (query.includes('metaobjectDefinitions')) {
+      return {
+        metaobjectDefinitions: {
+          nodes: [
+            { type: 'shopify--color-pattern', name: 'Color', metaobjectsCount: 1 },
+            { type: 'yarn_project', name: 'Project', metaobjectsCount: 1 },
+          ],
+        },
+      };
+    }
+    if (query.includes('metaobjects(type: $type')) {
+      if (vars.type === 'shopify--color-pattern') {
+        return {
+          metaobjects: {
+            nodes: [{ id: 'gid://shopify/Metaobject/900', handle: 'black', type: 'shopify--color-pattern', displayName: 'Black', fields: [] }],
+            pageInfo: { hasNextPage: false, endCursor: null },
+          },
+        };
+      }
+      return {
+        metaobjects: {
+          nodes: [{ id: 'gid://shopify/Metaobject/901', handle: 'kit-scarf', type: 'yarn_project', displayName: '围巾', fields: [{ key: 'release_scope', value: '已核实可公开' }] }],
+          pageInfo: { hasNextPage: false, endCursor: null },
+        },
+      };
+    }
+    if (query.includes('menus(first: 50)')) {
+      return { menus: { nodes: [] } };
+    }
+    if (query.includes('translatableResources')) {
+      const byType = {
+        PRODUCT: [
+          {
+            resourceId: 'gid://shopify/Product/1',
+            translatableContent: [
+              { key: 'title', value: '在售毛线' },
+              { key: 'handle', value: 'active-yarn' },
+              { key: 'product_type', value: '毛线' },
+            ],
+            translations: [{ key: 'title', value: '販売中毛糸', outdated: false }],
+          },
+          {
+            resourceId: 'gid://shopify/Product/2',
+            translatableContent: [{ key: 'title', value: '草稿毛线' }],
+            translations: [],
+          },
+          {
+            resourceId: 'gid://shopify/Product/3',
+            translatableContent: [{ key: 'title', value: '归档毛线' }],
+            translations: [],
+          },
+        ],
+        METAOBJECT: [
+          {
+            resourceId: 'gid://shopify/Metaobject/900',
+            translatableContent: [{ key: 'label', value: 'Black' }],
+            translations: [],
+          },
+          {
+            resourceId: 'gid://shopify/Metaobject/901',
+            translatableContent: [
+              { key: 'title', value: '围巾' },
+              { key: 'handle', value: 'kit-scarf' },
+              { key: 'category', value: '配饰' },
+            ],
+            translations: [{ key: 'title', value: 'マフラー', outdated: false }],
+          },
+        ],
+        METAFIELD: [
+          { resourceId: 'gid://shopify/Metafield/101', translatableContent: [{ key: 'value', value: '50g｜约100m/团' }], translations: [{ key: 'value', value: '50g｜約100m/玉', outdated: false }] },
+          { resourceId: 'gid://shopify/Metafield/102', translatableContent: [{ key: 'value', value: '柔软好钩' }], translations: [] },
+          { resourceId: 'gid://shopify/Metafield/103', translatableContent: [{ key: 'value', value: '中粗' }], translations: [] },
+          { resourceId: 'gid://shopify/Metafield/104', translatableContent: [{ key: 'value', value: '["纯色"]' }], translations: [] },
+          { resourceId: 'gid://shopify/Metafield/105', translatableContent: [{ key: 'value', value: '["围巾"]' }], translations: [] },
+          { resourceId: 'gid://shopify/Metafield/109', translatableContent: [{ key: 'value', value: '1688 工厂' }], translations: [] },
+          { resourceId: 'gid://shopify/Metafield/201', translatableContent: [{ key: 'value', value: '草稿规格' }], translations: [] },
+          { resourceId: 'gid://shopify/Metafield/301', translatableContent: [{ key: 'value', value: '归档规格' }], translations: [] },
+        ],
+      };
+      return {
+        translatableResources: {
+          nodes: byType[vars.type] || [],
+          pageInfo: { hasNextPage: false, endCursor: null },
+        },
+      };
+    }
+    throw new Error(`Unexpected query: ${query}`);
+  };
+
+  const report = await admin.coverage(mockGql, 'ja', { activeOnly: true });
+  assert.deepEqual(report.coverage.PRODUCT, { total: 1, full: 1, partial: 0, none: 0, excluded: 2 });
+  assert.deepEqual(report.coverage.METAOBJECT, { total: 1, full: 1, partial: 0, none: 0, excluded: 1 });
+  assert.deepEqual(report.coverage.METAFIELD, { total: 2, full: 1, partial: 0, none: 1, excluded: 6 });
+  assert.equal(report.filterSummary.excludedDraftProducts, 1);
+  assert.equal(report.filterSummary.excludedSystemMetaobjects, 1);
+  assert.equal(report.filterSummary.excludedNonNarrativeMetafields, 7);
+  assert.deepEqual(report.actionableGaps, {});
 });
 
 // ---------------------------------------------------------------------------

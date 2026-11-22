@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// #275 给全部语言文件补同一组文案键：Theme Check（MatchingTranslations）要求每个语言文件都有这个键。
+// #275 给三语前台语言文件（ja.json / zh-CN.json / en.default.json）补同一组文案键：Theme Check（MatchingTranslations）要求每个语言文件都有这个键。
 // 用法：node scripts/locale-add.cjs <命名空间，如 yarn_collection> <keys.json> [--dir locales]
-// keys.json 形如 { "ja": {...}, "zh-CN": {...}, "en": {...} }；其他语言文件用 en 的文字。
+// keys.json 形如 { "ja": {...}, "zh-CN": {...}, "en": {...} }，三语均须提供。
 // 按文本插入到命名空间末尾，不用 JSON.stringify 重写整份文件：重写会把 "404" 这类数字键挪到最前，造成大片无关 diff。
 // 已有的键不覆盖；*.schema.json 不动。
 const fs = require('node:fs');
@@ -27,11 +27,15 @@ function addKeys(raw, namespace, entries) {
 }
 
 function run(namespace, keys, dir) {
-  const changed = [];
-  for (const file of fs.readdirSync(dir).filter((f) => f.endsWith('.json') && !f.includes('schema'))) {
+  const files = fs.readdirSync(dir).filter((f) => f.endsWith('.json') && !f.includes('schema'));
+  for (const file of files) {
     const lang = file.replace(/(\.default)?\.json$/, '');
-    const entries = keys[lang] || keys.en;
-    if (!entries) throw new Error('keys.json 至少要有 en');
+    if (!keys[lang]) throw new Error(`keys.json 缺少 ${lang}`);
+  }
+  const changed = [];
+  for (const file of files) {
+    const lang = file.replace(/(\.default)?\.json$/, '');
+    const entries = keys[lang];
     const target = path.join(dir, file);
     const raw = fs.readFileSync(target, 'utf8');
     const next = addKeys(raw, namespace, entries);
