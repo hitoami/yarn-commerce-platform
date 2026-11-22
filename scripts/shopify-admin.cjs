@@ -49,6 +49,34 @@ const AUDITED_COLLECTIONS = [
 
 const INTERNAL_DEMO_HANDLE_RE = /^(demo-|e-2-e-|issue-\d+-demo-|sample-)/i;
 const PROTOTYPE_MENU_RE = /^(issue-\d+)/i;
+const SYSTEM_METAOBJECT_TYPE_RE = /^shopify--/i;
+
+// Non-translatable fields that stay fixed across locales (URL handles, product_type enums).
+const IGNORED_TRANSLATABLE_KEYS = new Set(['handle', 'product_type']);
+
+// Metaobject enum fields marked non-translatable in docs/shopify-content-onboarding.md.
+const NON_TRANSLATABLE_METAOBJECT_KEYS = {
+  yarn_project: new Set(['category', 'difficulty', 'release_scope']),
+  yarn_material: new Set(['supply', 'component_type']),
+};
+
+// Narrative product metafields maintained in Translate & Adapt
+// (see docs/shopify-content-onboarding.md). Filter/enum/internal metafields
+// (yarn.thickness, yarn.color_type, yarn.works, yarn.fluffy, yarn.crochet,
+// yarn.undyed, internal.supplier, etc.) are excluded from coverage.
+const NARRATIVE_METAFIELD_KEYS = new Set([
+  'yarn.spec_line',
+  'yarn.card_line',
+  'yarn.composition',
+  'yarn.material',
+  'yarn.gauge',
+  'yarn.needle_knit',
+  'yarn.needle_crochet',
+  'yarn.needle_size',
+  'yarn.care',
+  'yarn.beginner_reason',
+  'yarn.short_description',
+]);
 
 function parseArgs(argv) {
   const opts = { write: false, activeOnly: false, vars: {}, file: null, positional: [] };
@@ -107,12 +135,42 @@ function isProblematicHandle(product) {
   return reasons;
 }
 
+function isSystemMetaobject(metaobject) {
+  if (!metaobject) return false;
+  const type = typeof metaobject === 'string' ? metaobject : (metaobject.type || metaobject.metaobjectType || '');
+  return SYSTEM_METAOBJECT_TYPE_RE.test(String(type).trim());
+}
+
+function isNarrativeMetafield(metafield) {
+  if (!metafield) return false;
+  if (typeof metafield === 'string') return NARRATIVE_METAFIELD_KEYS.has(metafield.trim());
+  const fullKey = metafield.namespace && metafield.key
+    ? `${metafield.namespace}.${metafield.key}`
+    : String(metafield.key || '').trim();
+  return NARRATIVE_METAFIELD_KEYS.has(fullKey);
+}
+
+function requiredTranslatableKeys(node, meta = {}) {
+  const moType = meta.type || node.metaobjectType || node.type;
+  const ignoredMoKeys = moType ? NON_TRANSLATABLE_METAOBJECT_KEYS[moType] : null;
+  return (node.translatableContent || [])
+    .filter(c => {
+      if (!c.value || !String(c.value).trim()) return false;
+      if (IGNORED_TRANSLATABLE_KEYS.has(c.key)) return false;
+      if (ignoredMoKeys && ignoredMoKeys.has(c.key)) return false;
+      return true;
+    })
+    .map(c => c.key);
+}
+
 // Summarise translatableResources nodes for one locale: a resource counts as
-// translated when every non-empty source field has a current translation.
-function summarizeCoverage(nodes) {
+// translated when every required non-empty source field has a current translation.
+function summarizeCoverage(nodes, options = {}) {
+  const metaById = options.metaById || new Map();
   const result = { total: 0, full: 0, partial: 0, none: 0 };
   for (const node of nodes) {
-    const keys = node.translatableContent.filter(c => c.value && String(c.value).trim()).map(c => c.key);
+    const meta = metaById.get(node.resourceId) || {};
+    const keys = requiredTranslatableKeys(node, meta);
     if (!keys.length) continue;
     const done = new Set(node.translations.filter(t => !t.outdated && t.value).map(t => t.key));
     const hit = keys.filter(k => done.has(k)).length;
@@ -127,13 +185,13 @@ function summarizeCoverage(nodes) {
 function extractCoverageGaps(resourceType, nodes, metaById = new Map()) {
   const gaps = [];
   for (const node of nodes) {
-    const keys = node.translatableContent.filter(c => c.value && String(c.value).trim()).map(c => c.key);
+    const meta = metaById.get(node.resourceId) || {};
+    const keys = requiredTranslatableKeys(node, meta);
     if (!keys.length) continue;
     const current = new Set(node.translations.filter(t => !t.outdated && t.value).map(t => t.key));
     const outdated = new Set(node.translations.filter(t => t.outdated && t.value).map(t => t.key));
     const missingKeys = keys.filter(k => !current.has(k));
     if (!missingKeys.length) continue;
-    const meta = metaById.get(node.resourceId) || {};
     const handleFromContent = node.translatableContent.find(c => c.key === 'handle')?.value;
     const titleFromContent = node.translatableContent.find(c => c.key === 'title' || c.key === 'name')?.value;
     gaps.push({
@@ -152,8 +210,16 @@ function extractCoverageGaps(resourceType, nodes, metaById = new Map()) {
 
 function filterActiveTranslatableNodes(resourceType, nodes, context = {}) {
   const archivedProductIds = context.archivedProductIds || new Set();
+  const draftProductIds = context.draftProductIds || new Set();
+  const inactiveProductIds = context.inactiveProductIds || new Set();
   const archivedMetafieldIds = context.archivedMetafieldIds || new Set();
+  const draftMetafieldIds = context.draftMetafieldIds || new Set();
+  const nonNarrativeMetafieldIds = context.nonNarrativeMetafieldIds || new Set();
+  const narrativeMetafieldIds = context.narrativeMetafieldIds || null;
+  const metafieldMetaById = context.metafieldMetaById || null;
   const internalMetaobjectIds = context.internalMetaobjectIds || new Set();
+  const systemMetaobjectIds = context.systemMetaobjectIds || new Set();
+  const metaById = context.metaById || new Map();
   const prototypeMenuIds = context.prototypeMenuIds || new Set();
 
   const kept = [];
@@ -162,12 +228,28 @@ function filterActiveTranslatableNodes(resourceType, nodes, context = {}) {
   for (const node of nodes) {
     const id = node.resourceId;
     let drop = false;
-    if (resourceType === 'PRODUCT' && archivedProductIds.has(id)) {
-      drop = true;
-    } else if (resourceType === 'METAOBJECT' && internalMetaobjectIds.has(id)) {
-      drop = true;
-    } else if (resourceType === 'METAFIELD' && archivedMetafieldIds.has(id)) {
-      drop = true;
+    if (resourceType === 'PRODUCT') {
+      if (archivedProductIds.has(id) || draftProductIds.has(id) || inactiveProductIds.has(id)) {
+        drop = true;
+      }
+    } else if (resourceType === 'METAOBJECT') {
+      const meta = metaById.get(id);
+      if (
+        internalMetaobjectIds.has(id) ||
+        systemMetaobjectIds.has(id) ||
+        isSystemMetaobject(meta) ||
+        isSystemMetaobject(node)
+      ) {
+        drop = true;
+      }
+    } else if (resourceType === 'METAFIELD') {
+      if (archivedMetafieldIds.has(id) || draftMetafieldIds.has(id) || nonNarrativeMetafieldIds.has(id)) {
+        drop = true;
+      } else if (metafieldMetaById && metafieldMetaById.has(id) && !isNarrativeMetafield(metafieldMetaById.get(id))) {
+        drop = true;
+      } else if (narrativeMetafieldIds && !narrativeMetafieldIds.has(id)) {
+        drop = true;
+      }
     } else if (resourceType === 'MENU' && prototypeMenuIds.has(id)) {
       drop = true;
     }
@@ -223,7 +305,7 @@ async function fetchAllProducts(gql) {
         id handle title status vendor productType totalInventory publishedAt updatedAt
         category { id fullName }
         collections(first: 20) { nodes { id handle title } }
-        metafields(first: 50) { nodes { id namespace key value type } }
+        metafields(first: 100) { nodes { id namespace key value type } }
         description
       }
       pageInfo { hasNextPage endCursor }
@@ -285,6 +367,12 @@ async function fetchAllMetaobjects(gql) {
       pageInfo { hasNextPage endCursor }
     }
   }`;
+  const minimalQuery = `query($type: String!, $after: String) {
+    metaobjects(type: $type, first: 100, after: $after) {
+      nodes { id handle type displayName }
+      pageInfo { hasNextPage endCursor }
+    }
+  }`;
   const all = [];
   for (const def of defs) {
     let after = null;
@@ -295,7 +383,17 @@ async function fetchAllMetaobjects(gql) {
         after = page.pageInfo.hasNextPage ? page.pageInfo.endCursor : null;
       } while (after);
     } catch {
-      // Skip restricted system metaobject types if any.
+      // Fallback for system metaobjects whose fields query may be restricted.
+      let fallbackAfter = null;
+      try {
+        do {
+          const page = (await gql(minimalQuery, { type: def.type, after: fallbackAfter })).metaobjects;
+          all.push(...page.nodes);
+          fallbackAfter = page.pageInfo.hasNextPage ? page.pageInfo.endCursor : null;
+        } while (fallbackAfter);
+      } catch {
+        // Skip restricted system metaobject types if any.
+      }
     }
   }
   return { definitions: defs, metaobjects: all };
@@ -626,18 +724,43 @@ async function coverage(gql, locale, { activeOnly = false } = {}) {
       fetchAllMenus(gql),
     ]);
     const archivedProductIds = new Set();
+    const draftProductIds = new Set();
     const archivedMetafieldIds = new Set();
+    const draftMetafieldIds = new Set();
+    const nonNarrativeMetafieldIds = new Set();
+    const narrativeMetafieldIds = new Set();
     for (const p of products) {
       metaById.set(p.id, { handle: p.handle, title: p.title, status: p.status });
+      const metafields = p.metafields?.nodes || [];
       if (p.status === 'ARCHIVED') {
         archivedProductIds.add(p.id);
-        for (const mf of p.metafields?.nodes || []) archivedMetafieldIds.add(mf.id);
+        for (const mf of metafields) archivedMetafieldIds.add(mf.id);
+      } else if (p.status !== 'ACTIVE') {
+        draftProductIds.add(p.id);
+        for (const mf of metafields) draftMetafieldIds.add(mf.id);
+      } else {
+        for (const mf of metafields) {
+          if (isNarrativeMetafield(mf)) {
+            narrativeMetafieldIds.add(mf.id);
+            metaById.set(mf.id, {
+              namespace: mf.namespace,
+              key: mf.key,
+              handle: p.handle,
+              title: p.title,
+              status: p.status,
+            });
+          } else {
+            nonNarrativeMetafieldIds.add(mf.id);
+          }
+        }
       }
     }
     const internalMetaobjectIds = new Set();
+    const systemMetaobjectIds = new Set();
     for (const mo of metaobjects) {
       metaById.set(mo.id, { handle: mo.handle, displayName: mo.displayName, type: mo.type });
-      if (isInternalDemoMetaobject(mo)) internalMetaobjectIds.add(mo.id);
+      if (isSystemMetaobject(mo)) systemMetaobjectIds.add(mo.id);
+      else if (isInternalDemoMetaobject(mo)) internalMetaobjectIds.add(mo.id);
     }
     const prototypeMenuIds = new Set();
     for (const m of menus) {
@@ -646,11 +769,26 @@ async function coverage(gql, locale, { activeOnly = false } = {}) {
         prototypeMenuIds.add(m.id);
       }
     }
-    filterContext = { archivedProductIds, archivedMetafieldIds, internalMetaobjectIds, prototypeMenuIds };
+    filterContext = {
+      archivedProductIds,
+      draftProductIds,
+      archivedMetafieldIds,
+      draftMetafieldIds,
+      nonNarrativeMetafieldIds,
+      narrativeMetafieldIds,
+      internalMetaobjectIds,
+      systemMetaobjectIds,
+      metaById,
+      prototypeMenuIds,
+    };
     filterSummary = {
       excludedArchivedProducts: archivedProductIds.size,
+      excludedDraftProducts: draftProductIds.size,
       excludedArchivedProductMetafields: archivedMetafieldIds.size,
+      excludedDraftProductMetafields: draftMetafieldIds.size,
+      excludedNonNarrativeMetafields: nonNarrativeMetafieldIds.size,
       excludedInternalMetaobjects: internalMetaobjectIds.size,
+      excludedSystemMetaobjects: systemMetaobjectIds.size,
       excludedPrototypeMenus: prototypeMenuIds.size,
     };
   }
@@ -668,7 +806,7 @@ async function coverage(gql, locale, { activeOnly = false } = {}) {
       } while (after);
       if (activeOnly) {
         const { kept, excluded } = filterActiveTranslatableNodes(type, nodes, filterContext);
-        out[type] = { ...summarizeCoverage(kept), excluded };
+        out[type] = { ...summarizeCoverage(kept, { metaById }), excluded };
         if (type === 'PRODUCT' || type === 'COLLECTION' || type === 'METAOBJECT' || type === 'PAGE') {
           const gaps = extractCoverageGaps(type, kept, metaById);
           if (gaps.length) actionableGaps[type] = gaps;
@@ -716,10 +854,16 @@ module.exports = {
   API_VERSION,
   CORE_YARN_METAFIELDS,
   AUDITED_COLLECTIONS,
+  IGNORED_TRANSLATABLE_KEYS,
+  NON_TRANSLATABLE_METAOBJECT_KEYS,
+  NARRATIVE_METAFIELD_KEYS,
   parseArgs,
   isMutation,
   isInternalDemoHandle,
   isInternalDemoMetaobject,
+  isSystemMetaobject,
+  isNarrativeMetafield,
+  requiredTranslatableKeys,
   classifyVendor,
   isProblematicHandle,
   summarizeCoverage,
