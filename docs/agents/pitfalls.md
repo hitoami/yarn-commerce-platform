@@ -6,7 +6,7 @@
 
 - **发布要明确授权**：只有锦晨在对话里「准奏」（御书房按钮或「要 #N」）或直接说「发布」才算。「原型 OK，但……」是批原型，不是批发布；权限检查会拦下合并 production。拿不准就先合进 main，问一句再发。
 - **开不了新会话**：远程控制下 `start_session` 会被拒，御书房消息里「开新会话」的要求就在当前会话做，不要停下等。
-- **只能写本工作区**：工具不允许写别的 worktree。新任务在本工作区开新分支 `codex/<issue>-<slug>`，不要另建 worktree；删 worktree 会弄坏共享的 `node_modules` 链接，坏了就重新 `npm install`。
+- **多 worktree 各自装依赖**：按 `AGENTS.md` 可以另开 worktree（每个会话只写本工作区）；新 worktree 自己跑 `npm ci`，不要用符号链接共享 `node_modules`，删 worktree 前不要删共享目录。
 
 ## 发布
 
