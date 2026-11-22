@@ -568,7 +568,9 @@
     "free_reached": "已满足免运费条件",
     "free_rule": "订单含税满 {{ amount }}，日本全国免运费（以结账页为准）",
     "kit_title": "购物车里有材料包用的线",
-    "kit_text": "下单后，把订单号和作品名发到官方 LINE，店员核对后发送教程。"
+    "kit_text": "下单后，把订单号和作品名发到官方 LINE，店员核对后发送教程。",
+    "addon_choose": "选规格",
+    "addon_choose_label": "选择 {{ name }} 的规格"
   },
   "yarn_pdp": {
     "trust_line_note": "配色与用量都能问",
