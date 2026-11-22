@@ -219,29 +219,43 @@
     });
     items = Array.from(grid.children, readItem);
 
+    const loadErrors = section.querySelectorAll('[data-ycb-load-error]');
+    const showLoadError = (shown) => loadErrors.forEach((node) => { node.hidden = !shown; });
+    let restLoading = null;
+    let restLoaded = false;
+
     async function loadRest() {
       const pages = Number(grid.dataset.ycbPages) || 1;
-      if (pages <= 1) return;
+      if (pages <= 1 || restLoaded) return true;
+      if (restLoading) return restLoading;
+      showLoadError(false);
       grid.setAttribute('aria-busy', 'true');
-      try {
-        const rest = await Promise.all(Array.from({ length: pages - 1 }, async (_, index) => {
-          const url = new URL(window.location.href);
-          url.searchParams.set('page', String(index + 2));
-          url.searchParams.set('section_id', section.dataset.sectionId);
-          const response = await fetch(url, { credentials: 'same-origin', headers: { Accept: 'text/html' } });
-          if (!response.ok) throw new Error('Collection page failed');
-          const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
-          return Array.from(doc.querySelectorAll('[data-ycb-grid] > li'), (li) => document.importNode(li, true));
-        }));
+      restLoading = Promise.all(Array.from({ length: pages - 1 }, async (_, index) => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', String(index + 2));
+        url.searchParams.set('section_id', section.dataset.sectionId);
+        const response = await fetch(url, { credentials: 'same-origin', signal: AbortSignal.timeout(15000), headers: { Accept: 'text/html' } });
+        if (!response.ok) throw new Error('Collection page failed');
+        const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+        const nodes = doc.querySelectorAll('[data-ycb-grid] > li');
+        if (!nodes.length) throw new Error('Collection page is empty');
+        return Array.from(nodes, (li) => document.importNode(li, true));
+      })).then((rest) => {
         const lis = rest.flat();
         lis.forEach((li) => li.classList.remove('ycb-grid__item--later'));
         grid.append(...lis);
         items = items.concat(lis.map(readItem));
-      } catch (error) {
-        // Keep first page if pagination fetch fails
-      } finally {
+        restLoaded = true;
+        return true;
+      }).catch(() => {
+        // Keep page 1 products intact and show a visible retry prompt.
+        showLoadError(true);
+        return false;
+      }).finally(() => {
         grid.removeAttribute('aria-busy');
-      }
+        restLoading = null;
+      });
+      return restLoading;
     }
 
     const entryGroup = () => (state.entry || '').split(':')[0];
@@ -482,8 +496,21 @@
       update(entryOnly());
     });
 
+    section.querySelectorAll('[data-ycb-load-retry]').forEach((button) => button.addEventListener('click', async () => {
+      const restoreFocus = document.activeElement === button;
+      button.disabled = true;
+      const complete = await loadRest();
+      if (complete) render();
+      else button.closest('[data-ycb-load-error]')?.scrollIntoView?.({ block: 'nearest' });
+      button.disabled = false;
+      if (restoreFocus) {
+        const next = complete ? grid.querySelector('li:not([hidden]) a') : button;
+        next?.focus({ preventScroll: true });
+      }
+    }));
+
     render();
-    if (Number(grid.dataset.ycbPages) > 1) loadRest().then(render);
+    if (Number(grid.dataset.ycbPages) > 1) loadRest().then((complete) => { if (complete) render(); });
   }
 
   connect(document);

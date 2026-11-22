@@ -71,6 +71,11 @@ module.exports = {
     { key: 'finished-collection', path: '/collections/finished-goods', requiredContent: [
       { selector: '.ycb-preparing__text', minimum: 1, label: '手工成品准备中说明' },
     ] },
+    { key: 'cart-recovery', path: '/products/mvp-yarn-12', openCart: true, flows: [
+      { key: 'network-recovery', label: '明确拒绝可重试、结果不明先核对', steps: [
+        { run: require('./proof-network.cjs').cartRecovery }, { noOverflow: true }, { shot: true },
+      ] },
+    ] },
     { key: 'yarn-pdp', path: '/products/mvp-yarn-18' },
     // #177：缺货毛线（询问到货 + 同类毛线出口）与材料包的可购买 / 暂不可买两种购买区。
     // #245：缺货商品会变，运行时从毛线集合里找一款已定价、全部色号缺货的；找不到就跳过这一项。

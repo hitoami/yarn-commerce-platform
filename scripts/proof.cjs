@@ -42,7 +42,7 @@ function pick(list, csv, label) {
 //                                          数看得见的元素（present: true 时数 DOM 里存在的，含隐藏的）
 //   { noOverflow: true }                  页面不横向溢出
 //   { shot: true }                        截图进报告
-const STEP_KEYS = ['click', 'waitFor', 'wait', 'expect', 'noOverflow', 'shot'];
+const STEP_KEYS = ['click', 'waitFor', 'wait', 'expect', 'noOverflow', 'shot', 'run'];
 function validateFlows(pages) {
   for (const page of pages) {
     for (const flow of page.flows || []) {
@@ -50,6 +50,7 @@ function validateFlows(pages) {
       flow.steps.forEach((step, index) => {
         const kinds = STEP_KEYS.filter(key => key in step);
         if (kinds.length !== 1) throw new Error(`${page.key} · ${flow.key} 第 ${index + 1} 步要且只能有一种动作（${STEP_KEYS.join(' / ')}）`);
+        if ('run' in step && typeof step.run !== 'function') throw new Error('run 必须是可执行检查');
         if ('expect' in step && (typeof step.minimum !== 'number' || !step.label)) throw new Error(`${page.key} · ${flow.key} 第 ${index + 1} 步 expect 要写 minimum 和 label`);
       });
     }
@@ -71,8 +72,13 @@ async function runFlows(page, url, job, result) {
     const fail = (index, message) => result.failures.push(`流程「${flow.label}」第 ${index + 1} 步：${message}`);
     try {
       await page.goto(url, { waitUntil: 'load', timeout: 90000 });
+      if (target.openCart) {
+        await page.click('#cart-icon-bubble');
+        await page.locator('cart-drawer.active').waitFor();
+      }
       for (const [index, step] of flow.steps.entries()) {
-        if (step.click) await page.locator(step.click).first().click({ timeout: 10000 });
+        if (step.run) { const note = await step.run(page); if (note) result.warnings.push(note); }
+        else if (step.click) await page.locator(step.click).first().click({ timeout: 10000 });
         else if (step.waitFor) await page.locator(step.waitFor).first().waitFor({ state: 'visible', timeout: 15000 });
         else if (step.wait) await page.waitForTimeout(step.wait);
         else if (step.expect) {
@@ -90,7 +96,7 @@ async function runFlows(page, url, job, result) {
         }
       }
     } catch (error) {
-      result.failures.push(`流程「${flow.label}」中断：${error.message.split('\n')[0]}`);
+      result.failures.push(`流程「${flow.label}」中断：${error.message.replace(/\n/g, ' ').slice(0, 600)}`);
     }
   }
 }
@@ -248,6 +254,15 @@ async function runJob(browser, job, baseUrl) {
     hasTouch: Boolean(viewport.hasTouch),
     locale: locale.browserLocale,
   });
+  if (['127.0.0.1', 'localhost'].includes(new URL(baseUrl).hostname)) {
+    // Shopify theme dev exposes /ja GET pages but not /ja/cart POST endpoints.
+    // Normalize transport only in the local harness; public PR checks use real routes.
+    await context.route('**/ja/cart/*.js', route => {
+      const url = new URL(route.request().url());
+      url.pathname = url.pathname.replace(/^\/ja/, '');
+      return route.continue({ url: url.href });
+    });
+  }
   const page = await context.newPage();
   const url = `${baseUrl}${locale.prefix}${target.path === '/' && locale.prefix ? '' : target.path}`;
   const result = { page: target.key, locale: locale.key, viewport: viewport.key, url, failures: [], warnings: [], leaks: [], contentLeaks: [], flowShots: [] };

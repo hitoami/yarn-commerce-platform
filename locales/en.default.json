@@ -568,7 +568,9 @@
     "free_reached": "You qualify for free shipping",
     "free_rule": "Free shipping in Japan on orders of {{ amount }} or more, tax included (confirmed at checkout)",
     "kit_title": "Your cart has yarn for a yarn set",
-    "kit_text": "After ordering, send your order number and the project name to our official LINE. We will check it and send you the pattern."
+    "kit_text": "After ordering, send your order number and the project name to our official LINE. We will check it and send you the pattern.",
+    "quick_uncertain": "We couldn’t confirm whether this was added. Check your cart before adding it again.",
+    "quick_view_cart": "Check cart"
   },
   "yarn_pdp": {
     "trust_line_note": "Ask about colors and how much to buy",
@@ -1095,6 +1097,7 @@
     "directory_works_hint": "Pick a project to see matching yarns",
     "directory_yarn_desc": "Browse by thickness, colour and fibre, then combine filters.",
     "directory_kits_desc": "Matching yarn and LINE tutorial included to knit the piece in the photo.",
-    "directory_finished_desc": "Our first handmade scarves and small pieces are being knitted and photographed."
+    "directory_finished_desc": "Our first handmade scarves and small pieces are being knitted and photographed.",
+    "load_error": "We couldn’t load all products. Only part of the catalog is shown. Please retry."
   }
 }
