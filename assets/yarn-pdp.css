@@ -292,8 +292,8 @@ product-info.yarn-product-page--yarn .product__info-container > .yp-yarn-intro {
   product-info.yarn-product-page--yarn .product__info-container > div:has(> product-form) > product-form { margin: 0; }
   /* 店铺未开到店自取；动态结账已隐藏，两者都不占位。 */
   product-info.yarn-product-page--yarn .product__info-container > div:has(> product-form) :is(pickup-availability, .product-form__error-message-wrapper[hidden]) { display: none; }
-  /* 保障三格插画 */
-  .yp-trust { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 20px; padding: 16px 12px; border-radius: 14px; }
+  /* 保障插画：免运费开启时 3 栏，关闭时 2 栏自动居中均分 */
+  .yp-trust { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 8px; margin-top: 20px; padding: 16px 12px; border-radius: 14px; }
   .yp-trust li { display: grid; justify-items: center; gap: 6px; text-align: center; }
   .yp-trust .yp-trust__line, .yp-trust li.yp-trust__mobile { display: none; }
   .yp-trust .yarn-spot, .yp-trust li.yp-trust__desktop { display: grid; }

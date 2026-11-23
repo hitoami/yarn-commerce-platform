@@ -357,11 +357,12 @@
       if (state.beginner && state.entry !== 'beginner:yes') {
         tag(label('beginner:yes'), () => update({ beginner: false }));
       }
+      const colon = /^en/i.test(document.documentElement.lang) ? ': ' : '：';
       facetsActive(state.facets).forEach((group) => state.facets[group].forEach((value) => {
         if (`${group}:${value}` === state.entry) return;
         const g = groupLabel(group);
         const v = label(`${group}:${value}`);
-        tag(g ? `${g}：${v}` : v, () => update({ facets: { ...state.facets, [group]: state.facets[group].filter((x) => x !== value) } }));
+        tag(g ? `${g}${colon}${v}` : v, () => update({ facets: { ...state.facets, [group]: state.facets[group].filter((x) => x !== value) } }));
       }));
       if (state.inStock) {
         tag(active.dataset.tStock || '仅看现货', () => update({ inStock: false }));

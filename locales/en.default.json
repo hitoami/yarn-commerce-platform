@@ -1106,6 +1106,7 @@
     "directory_yarn_desc": "Browse by thickness, colour and fibre, then combine filters.",
     "directory_kits_desc": "Matching yarn and LINE tutorial included to knit the piece in the photo.",
     "directory_finished_desc": "Our first handmade scarves and small pieces are being knitted and photographed.",
-    "load_error": "We couldn’t load all products. Only part of the catalog is shown. Please retry."
+    "load_error": "We couldn’t load all products. Only part of the catalog is shown. Please retry.",
+    "filter_label": "Filter:"
   }
 }
