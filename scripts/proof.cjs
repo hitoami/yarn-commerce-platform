@@ -42,7 +42,7 @@ function pick(list, csv, label) {
 //                                          数看得见的元素（present: true 时数 DOM 里存在的，含隐藏的）
 //   { noOverflow: true }                  页面不横向溢出
 //   { shot: true }                        截图进报告
-const STEP_KEYS = ['click', 'waitFor', 'wait', 'expect', 'noOverflow', 'shot'];
+const STEP_KEYS = ['click', 'waitFor', 'wait', 'expect', 'noOverflow', 'shot', 'run'];
 function validateFlows(pages) {
   for (const page of pages) {
     for (const flow of page.flows || []) {
@@ -50,6 +50,7 @@ function validateFlows(pages) {
       flow.steps.forEach((step, index) => {
         const kinds = STEP_KEYS.filter(key => key in step);
         if (kinds.length !== 1) throw new Error(`${page.key} · ${flow.key} 第 ${index + 1} 步要且只能有一种动作（${STEP_KEYS.join(' / ')}）`);
+        if ('run' in step && typeof step.run !== 'function') throw new Error('run 必须是可执行检查');
         if ('expect' in step && (typeof step.minimum !== 'number' || !step.label)) throw new Error(`${page.key} · ${flow.key} 第 ${index + 1} 步 expect 要写 minimum 和 label`);
       });
     }
@@ -71,8 +72,13 @@ async function runFlows(page, url, job, result) {
     const fail = (index, message) => result.failures.push(`流程「${flow.label}」第 ${index + 1} 步：${message}`);
     try {
       await page.goto(url, { waitUntil: 'load', timeout: 90000 });
+      if (target.openCart) {
+        await page.click('#cart-icon-bubble');
+        await page.locator('cart-drawer.active').waitFor();
+      }
       for (const [index, step] of flow.steps.entries()) {
-        if (step.click) await page.locator(step.click).first().click({ timeout: 10000 });
+        if (step.run) { const note = await step.run(page); if (note) result.warnings.push(note); }
+        else if (step.click) await page.locator(step.click).first().click({ timeout: 10000 });
         else if (step.waitFor) await page.locator(step.waitFor).first().waitFor({ state: 'visible', timeout: 15000 });
         else if (step.wait) await page.waitForTimeout(step.wait);
         else if (step.expect) {
@@ -90,7 +96,7 @@ async function runFlows(page, url, job, result) {
         }
       }
     } catch (error) {
-      result.failures.push(`流程「${flow.label}」中断：${error.message.split('\n')[0]}`);
+      result.failures.push(`流程「${flow.label}」中断：${error.message.replace(/\n/g, ' ').slice(0, 600)}`);
     }
   }
 }
@@ -223,23 +229,30 @@ function pickSoldOut(products) {
   return product ? `/products/${product.handle}` : null;
 }
 
-async function resolvePages(pages, baseUrl) {
+async function resolvePages(pages, baseUrl, request = fetch) {
   const skipped = [];
   const resolved = [];
   for (const page of pages) {
     if (page.path || page.find !== 'sold-out-yarn') { resolved.push(page); continue; }
     let found = null;
+    let prerequisite = '目录暂无已定价且全部规格缺货的商品';
     try {
-      const response = await fetch(`${baseUrl}/collections/yarn/products.json?limit=250`, { signal: AbortSignal.timeout(20000) });
+      const response = await request(`${baseUrl}/collections/yarn/products.json?limit=250`, { signal: AbortSignal.timeout(20000) });
+      if (!response.ok) throw new Error(`目录读取 HTTP ${response.status}`);
       found = pickSoldOut((await response.json()).products || []);
-    } catch {}
+    } catch (error) { prerequisite = `无法确认真实库存：${error.message}`; }
     if (found) resolved.push({ ...page, path: found });
-    else skipped.push(`${page.key}：目录里暂无缺货商品，跳过`);
+    else {
+      skipped.push(`${page.key}：原生缺货页样例前提未满足（${prerequisite}）；本轮执行隔离 Liquid 缺货样例，不代表原生页面已验收`);
+      if (!pages.some(item => item.fixture === 'yarn-sold-out')) {
+        resolved.push(config.pages.find(item => item.fixture === 'yarn-sold-out'));
+      }
+    }
   }
   return { resolved, skipped };
 }
 
-async function runJob(browser, job, baseUrl) {
+async function runJob(browser, job, baseUrl, fixtureBase) {
   const { page: target, locale, viewport } = job;
   const context = await browser.newContext({
     viewport: { width: viewport.width, height: viewport.height },
@@ -248,9 +261,20 @@ async function runJob(browser, job, baseUrl) {
     hasTouch: Boolean(viewport.hasTouch),
     locale: locale.browserLocale,
   });
+  if (['127.0.0.1', 'localhost'].includes(new URL(baseUrl).hostname)) {
+    // Shopify theme dev exposes /ja GET pages but not /ja/cart POST endpoints.
+    // Normalize transport only in the local harness; public PR checks use real routes.
+    await context.route('**/ja/cart/*.js', route => {
+      const url = new URL(route.request().url());
+      url.pathname = url.pathname.replace(/^\/ja/, '');
+      return route.continue({ url: url.href });
+    });
+  }
   const page = await context.newPage();
-  const url = `${baseUrl}${locale.prefix}${target.path === '/' && locale.prefix ? '' : target.path}`;
-  const result = { page: target.key, locale: locale.key, viewport: viewport.key, url, failures: [], warnings: [], leaks: [], contentLeaks: [], flowShots: [] };
+  const url = target.fixture
+    ? `${fixtureBase}/${target.fixture}?locale=${locale.key === 'zh' ? 'zh-CN' : locale.key}`
+    : `${baseUrl}${locale.prefix}${target.path === '/' && locale.prefix ? '' : target.path}`;
+  const result = { source: target.fixture ? 'isolated-liquid-fixture' : 'shopify-preview', page: target.key, locale: locale.key, viewport: viewport.key, url, failures: [], warnings: [], leaks: [], contentLeaks: [], flowShots: [] };
   const origin = new URL(baseUrl).host;
 
   page.on('pageerror', error => result.failures.push(`脚本异常：${error.message.split('\n')[0]}`));
@@ -319,6 +343,7 @@ function writeReport(results, meta) {
     `- 结论：**${failed.length ? '未通过' : '通过'}**（主题侧语言泄漏 ${count('leaks')}，失败项 ${count('failures')}；内容层混语言 ${count('contentLeaks')}、提醒 ${count('warnings')} 不阻塞）`,
     '',
     ...(meta.skipped && meta.skipped.length ? ['## 跳过', '', ...meta.skipped.map(item => `- ${item}`), ''] : []),
+    ...(meta.pages.some(page => page.fixture) ? ['隔离样例（fixture-*）使用当前仓库 Liquid 与固定数据；不代表 Shopify 线上库存或真实结账验收。', ''] : []),
     '## 截图清单',
     '',
     `| 页面 | 语言 | ${meta.viewports.map(v => `${v.key} ${v.width}`).join(' | ')} |`,
@@ -387,20 +412,22 @@ async function main() {
   for (const viewport of viewports) fs.mkdirSync(path.join(OUT, 'shots', viewport.key), { recursive: true });
 
   const jobs = pages.flatMap(page => locales.flatMap(locale => viewports.map(viewport => ({ page, locale, viewport }))));
+  const fixtures = pages.some(page => page.fixture) ? await require('./proof-fixtures.cjs').startFixtures() : null;
   const results = [];
   const started = Date.now();
   let next = 0;
   const worker = async () => {
     while (next < jobs.length) {
       const job = jobs[next++];
-      let result = await runJob(browser, job, baseUrl);
+      let result = await runJob(browser, job, baseUrl, fixtures?.url);
       // 本地预览偶发的网络请求失败（多为 Shopify 遥测）重跑一次；再失败就如实报告。
-      if (result.failures.length && result.failures.every(f => f.startsWith('脚本异常：Failed to fetch'))) result = await runJob(browser, job, baseUrl);
+      if (result.failures.length && result.failures.every(f => f.startsWith('脚本异常：Failed to fetch'))) result = await runJob(browser, job, baseUrl, fixtures?.url);
       results.push(result);
     }
   };
   await Promise.all(Array.from({ length: Number(args.concurrency || 4) }, worker));
   await browser.close();
+  if (fixtures) await fixtures.close();
 
   const git = execSync('git log -1 --format="%h %s" && git status --porcelain | wc -l', { encoding: 'utf8' }).trim().split('\n');
   const meta = {
@@ -423,4 +450,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { cartAjaxUrl, pickSoldOut, validateFlows };
+module.exports = { cartAjaxUrl, pickSoldOut, resolvePages, validateFlows };

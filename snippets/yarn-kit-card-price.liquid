@@ -1,0 +1,8 @@
+{%- comment -%}
+  材料包卡的价格文字（#369）：材料包是独立商品时显示它的真实售价（多种价格时「X 起」）；否则沿用毛线合计的「约 X」。
+{%- endcomment -%}
+{%- if kit_mode -%}
+  {%- if kit_product.price_varies -%}{{ 'yarn_project.kit_price_from' | t: price: kit_price }}{%- else -%}{{ kit_price }}{%- endif -%}
+{%- else -%}
+  {{- 'yarn_project.kit_price_about' | t: price: kit_price -}}
+{%- endif -%}

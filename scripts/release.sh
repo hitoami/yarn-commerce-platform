@@ -41,8 +41,11 @@ fi
 json() { node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const v=JSON.parse(s.slice(s.search(/[\[{]/)));console.log(eval(process.argv[1]))})' "$1"; }
 
 git fetch -q origin production
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+PROD_SHA="$(git rev-parse origin/production)"
+PROD_SHORT_SHA="$(git rev-parse --short origin/production)"
 mkdir -p "$WORK/code" "$WORK/live"
-git archive origin/production | tar -x -C "$WORK/code"
+git archive "$PROD_SHA" | tar -x -C "$WORK/code"
 
 LIVE_ID="$(npx shopify theme list --store "$STORE" --role live --json | json 'v[0].id')"
 echo "线上主题：$LIVE_ID"
@@ -78,6 +81,9 @@ EOF
 echo "线上设置文件没有后台改动。"
 [ -n "$CHECK" ] && exit 0
 
+echo "正在校验 origin/production（${PROD_SHORT_SHA}）……"
+(cd "$WORK/code" && PATH="${REPO_ROOT}/node_modules/.bin:${PATH}" NODE_PATH="${REPO_ROOT}/node_modules" npm run verify)
+
 # 两份 release 主题轮流用，避免主题数到 Shopify 上限 20：覆盖最近一份未发布的 release 主题（上一版，
 # 只是上上次上线的回滚目标），发布后当前线上主题就成为新的回滚目标。还没有这份主题时才新建。
 SLOT_ID="$(npx shopify theme list --store "$STORE" --role unpublished --json \
@@ -96,3 +102,4 @@ npx shopify theme publish --store "$STORE" --theme "$NEW_ID" --force >/dev/null
 NOW_ID="$(npx shopify theme list --store "$STORE" --role live --json | json 'v[0].id')"
 [ "$NOW_ID" = "$NEW_ID" ] || { echo "发布后线上仍是 $NOW_ID" >&2; exit 1; }
 echo "已上线：${NAME}（${NEW_ID}）。回滚：重新发布 ${LIVE_ID}。"
+echo "版本对照：origin/production=${PROD_SHA} -> ${NAME}（${NEW_ID}）"

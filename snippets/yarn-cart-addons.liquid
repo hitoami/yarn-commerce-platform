@@ -5,7 +5,7 @@
   参数 part：'spare'（进度条下）或 'addons'（商品行之后）。「+」按钮由 assets/yarn-cart.js 走 /cart/add.js 加 1 件并刷新抽屉。
 {%- endcomment -%}
 {%- liquid
-  assign spare_item = blank
+  assign spare_item = ''
   assign cart_ids = cart.items | map: 'product_id'
   for item in cart.items
     capture item_kind
@@ -15,7 +15,7 @@
     unless item_kind == 'yarn'
       continue
     endunless
-    if spare_item == blank and item.variant.available
+    if spare_item == '' and item.variant.available
       assign spare_room = true
       if item.variant.inventory_management == 'shopify' and item.variant.inventory_policy != 'continue' and item.variant.inventory_quantity <= item.quantity
         assign spare_room = false
@@ -28,7 +28,7 @@
   assign addon_threshold = settings.yarn_free_shipping_threshold | default: 0
   assign addon_left = addon_threshold | times: 100 | minus: cart.total_price
 -%}
-{%- if part == 'spare' and spare_item != blank -%}
+{%- if part == 'spare' and spare_item != '' -%}
   <div class="yarn-cart-spare">
     <span class="yarn-cart-spare__media">{%- if spare_item.image != blank -%}{{ spare_item.image | image_url: width: 112 | image_tag: width: 56, height: 56, loading: 'lazy', alt: '' }}{%- endif -%}</span>
     <div class="yarn-cart-spare__text">
@@ -57,7 +57,11 @@
           <li class="yarn-cart-addon">
             <a class="yarn-cart-addon__media" href="{{ addon.url }}" tabindex="-1" aria-hidden="true">{%- if addon.featured_image != blank -%}{{ addon.featured_image | image_url: width: 96 | image_tag: width: 48, height: 48, loading: 'lazy', alt: '' }}{%- endif -%}</a>
             <a class="yarn-cart-addon__text" href="{{ addon.url }}"><span data-proof-content>{{ addon_title | strip | escape }}</span><strong>{{ addon.price | money }}</strong></a>
+            {%- if addon.variants.size > 1 -%}
+            <a class="yarn-cart-addon__add yarn-cart-addon__choose" href="{{ addon.url }}" data-cart-choose-options aria-label="{{ 'yarn_cart.addon_choose_label' | t: name: addon_title | strip | escape }}">{{ 'yarn_cart.addon_choose' | t }}</a>
+          {%- else -%}
             <button type="button" class="yarn-cart-addon__add" data-cart-quick-add="{{ addon.selected_or_first_available_variant.id }}" aria-label="{{ 'yarn_cart.addon_add_label' | t: name: addon_title | strip | escape }}">{{ 'icon-plus.svg' | inline_asset_content }}</button>
+          {%- endif -%}
           </li>
         {%- endfor -%}
       {%- else -%}
@@ -70,7 +74,11 @@
             <li class="yarn-cart-addon">
               <a class="yarn-cart-addon__media" href="{{ addon.url }}" tabindex="-1" aria-hidden="true">{%- if addon.featured_image != blank -%}{{ addon.featured_image | image_url: width: 96 | image_tag: width: 48, height: 48, loading: 'lazy', alt: '' }}{%- endif -%}</a>
               <a class="yarn-cart-addon__text" href="{{ addon.url }}"><span data-proof-content>{{ addon_title | strip | escape }}</span><strong>{{ addon.price | money }}</strong></a>
-              <button type="button" class="yarn-cart-addon__add" data-cart-quick-add="{{ addon.selected_or_first_available_variant.id }}" aria-label="{{ 'yarn_cart.addon_add_label' | t: name: addon_title | strip | escape }}">{{ 'icon-plus.svg' | inline_asset_content }}</button>
+              {%- if addon.variants.size > 1 -%}
+            <a class="yarn-cart-addon__add yarn-cart-addon__choose" href="{{ addon.url }}" data-cart-choose-options aria-label="{{ 'yarn_cart.addon_choose_label' | t: name: addon_title | strip | escape }}">{{ 'yarn_cart.addon_choose' | t }}</a>
+          {%- else -%}
+            <button type="button" class="yarn-cart-addon__add" data-cart-quick-add="{{ addon.selected_or_first_available_variant.id }}" aria-label="{{ 'yarn_cart.addon_add_label' | t: name: addon_title | strip | escape }}">{{ 'icon-plus.svg' | inline_asset_content }}</button>
+          {%- endif -%}
             </li>
           {%- endfor -%}
         {%- endpaginate -%}
@@ -84,4 +92,7 @@
     {%- endif -%}
   {%- endif -%}
 {%- endif -%}
-{%- if part == 'addons' -%}<p class="yarn-cart-quick-status visually-hidden" role="status" data-cart-quick-status data-error="{{ 'yarn_cart.quick_error' | t | escape }}"></p>{%- endif -%}
+{%- if part == 'addons' -%}
+  <p class="yarn-cart-quick-status" role="status" data-cart-quick-status data-error="{{ 'yarn_cart.quick_error' | t | escape }}" data-uncertain="{{ 'yarn_cart.quick_uncertain' | t | escape }}" hidden></p>
+  <a class="yarn-cart-quick-review" href="{{ routes.cart_url }}" data-cart-quick-review hidden>{{ 'yarn_cart.quick_view_cart' | t }}</a>
+{%- endif -%}

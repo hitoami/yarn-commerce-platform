@@ -241,6 +241,7 @@
       <span data-ycb-group-label="feature">{{ 'yarn_collection.facet_group_feature' | t }}</span>
     </div>
 
+    {% render 'yarn-collection-load-error' %}
     {%- paginate collection.products by 48 -%}
       {%- if collection.products.size == 0 -%}
         <div class="ycb-empty">

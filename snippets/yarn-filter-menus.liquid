@@ -17,7 +17,7 @@
     endfor
   endif
 -%}
-<span class="yfb__label">{{ 'yarn_collection.filter' | t }}：</span>
+<span class="yfb__label">{{ 'yarn_collection.filter_label' | t }}</span>
 {%- for group_def in yfb_core_groups -%}
   {%- assign pair = group_def | split: ':' -%}
   {%- assign grp = pair[0] -%}

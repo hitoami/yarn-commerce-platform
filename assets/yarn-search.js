@@ -533,10 +533,11 @@
       const tags = [];
       const groupName = (g) => this.dataset[`group${g[0].toUpperCase()}${g.slice(1)}`] || '';
       const optLabel = (token) => this.optButtons.find((b) => b.dataset.yfbOpt === token)?.querySelector('.yfb__opt-name')?.textContent.trim() || token;
+      const colon = /^en/i.test(document.documentElement.lang) ? ': ' : '：';
       for (const group of FACET_GROUPS) {
         for (const value of this.state.facets[group] || []) {
           const token = `${group}:${value}`;
-          tags.push({ text: `${groupName(group)}：${optLabel(token)}`, remove: () => this.toggleFacet(token) });
+          tags.push({ text: `${groupName(group)}${colon}${optLabel(token)}`, remove: () => this.toggleFacet(token) });
         }
       }
       if (this.state.beginner) {
@@ -547,7 +548,7 @@
       }
       if (this.state.price) {
         const priceName = this.priceButtons.find((b) => b.dataset.yfbPrice === this.state.price)?.querySelector('.yfb__opt-name')?.textContent.trim() || this.state.price;
-        tags.push({ text: `${this.dataset.labelPrice || ''}：${priceName}`, remove: () => this.setState({ ...this.state, price: '' }) });
+        tags.push({ text: `${this.dataset.labelPrice || ''}${colon}${priceName}`, remove: () => this.setState({ ...this.state, price: '' }) });
       }
       this.activeTags.replaceChildren(...tags.map((item) => {
         const btn = document.createElement('button');

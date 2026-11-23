@@ -6,7 +6,7 @@
 
 - **发布要明确授权**：只有锦晨在对话里「准奏」（御书房按钮或「要 #N」）或直接说「发布」才算。「原型 OK，但……」是批原型，不是批发布；权限检查会拦下合并 production。拿不准就先合进 main，问一句再发。
 - **开不了新会话**：远程控制下 `start_session` 会被拒，御书房消息里「开新会话」的要求就在当前会话做，不要停下等。
-- **只能写本工作区**：工具不允许写别的 worktree。新任务在本工作区开新分支 `codex/<issue>-<slug>`，不要另建 worktree；删 worktree 会弄坏共享的 `node_modules` 链接，坏了就重新 `npm install`。
+- **多 worktree 各自装依赖**：按 `AGENTS.md` 可以另开 worktree（每个会话只写本工作区）；新 worktree 自己跑 `npm ci`，不要用符号链接共享 `node_modules`，删 worktree 前不要删共享目录。
 
 ## 发布
 
@@ -16,7 +16,7 @@
 
 ## 文案与语言
 
-- **新文案键要进全部语言文件**（Theme Check MatchingTranslations）：用 `node scripts/locale-add.cjs <命名空间> <keys.json>`，日 / 中 / 英各写一份，其他语言自动用英文。不要用 JSON 重写整份文件，会打乱键顺序。
+- **新文案键要进三语语言文件**（Theme Check MatchingTranslations）：用 `node scripts/locale-add.cjs <命名空间> <keys.json>`，日 / 中 / 英三份都要提供。不要用 JSON 重写整份文件，会打乱键顺序。
 - **`| t` 的输出已转义 HTML**：`>` 会变成 `&gt;`。要给 JS 用，就从页面上已渲染的元素读文字，不要再 `| json` 塞进 data 属性。
 - **商品字段按语言翻译**：如 `yarn.spec_line` 在日 / 中 / 英分别是「約 / 约 / Approx.」，解析时三种都要认。
 - 按语言切换文案只能走 `yarn-setting-text` snippet 或 `| t`（有检查）。
@@ -28,13 +28,9 @@
 
 ## 自查与截图
 
-- **用 `npm run proof`**：`--pages` 写页面名（如 `yarn-collection`、`yarn-pdp`，见 `scripts/proof.config.cjs`），不是网址。它会清空 `.proof/` 下的子文件夹，自己的截图别放那里。
-- **点击流程写进 `proof`，不要临时写浏览器脚本**：在 `scripts/proof.config.cjs` 给页面加 `flows`（点哪里、等什么、数几个，写法见 `scripts/proof.cjs` 开头），`npm run proof` 首屏截图后逐个跑，截图进报告。`proof` 已经按语言设好浏览器、过滤了本地预览固有的平台报错；临时脚本两样都没有，曾把语言转址误判成泄漏。
-  - 断言只写「有」和「变了」（如「选细后仍有商品」「有商品被筛掉」），不写死款数，商品会变。
-  - 先等页面给出「载入完」的信号再点（如面板里的款数出现），否则会和异步载入抢跑，结果时过时不过。
+- `npm run proof` 的用法和坑见 `docs/agents/visual-review.md`。
 - **万一要自己写浏览器脚本**：设语言（Playwright `browser.newContext({ locale: 'ja-JP' | 'zh-CN' })`，无头浏览器默认英文，打开 `/zh` 会被转到 `/en`），并忽略 shop.app、shopifycloud 这类平台报错。
 - **截图前确认预览已同步**：`shopify theme dev` 的日志出现这个文件的 `Synced » update <文件>` 才截，否则截到旧样式。
-- **Safari 引擎**：`npm run proof -- --browser webkit`。第一次要下载 WebKit（`node node_modules/playwright-core/cli.js install webkit`，约百 MB），下载前先问锦晨。它只模拟 Safari 的渲染，不等于真机。
 - **看截图省 token**：多张缩小拼成一张看，只放大可疑处。
 - 本地预览（`shopify theme dev`）的语言路径是日 `/ja`、中 `/`、英 `/en`；线上是日 `/`、中 `/zh`、英 `/en`。本地预览不一定同步模板 JSON 的改动。
 

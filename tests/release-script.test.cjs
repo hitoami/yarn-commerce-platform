@@ -18,3 +18,14 @@ test('release guard compares live settings with production history, not only the
   assert.match(release, /pastVersions\(file\)\.includes\(now\) \? releasing : edited/);
   assert.match(release, /if \(edited\.length\) \{[\s\S]*process\.exit\(1\);/);
 });
+
+test('release script runs npm run verify on extracted production before pushing and logs SHA mapping after publish', () => {
+  const release = fs.readFileSync('scripts/release.sh', 'utf8');
+  const checkExit = release.indexOf('[ -n "$CHECK" ] && exit 0');
+  const verifyRun = release.indexOf('npm run verify');
+  const pushRun = release.indexOf('shopify theme push');
+  assert.ok(checkExit !== -1 && verifyRun !== -1 && pushRun !== -1);
+  assert.ok(checkExit < verifyRun && verifyRun < pushRun, 'verify gate must run after --check exit and before push');
+  assert.match(release, /PROD_SHA="\$\(git rev-parse origin\/production\)"/);
+  assert.match(release, /origin\/production=\$\{PROD_SHA\} -> \$\{NAME\}/);
+});

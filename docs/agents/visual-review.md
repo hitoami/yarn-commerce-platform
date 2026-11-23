@@ -4,7 +4,7 @@ UI / UX 工作读取本文件。范围、数据归属与生产授权以根目录
 
 ## 页面设计流程（2026-09-26 用户决定，#69）
 
-设计仍会推倒重来，流程以省 token 为先。一个页面由一个带生图能力的 Codex 线程从视觉稿、实现到自查做完，不拆给多个 agent。
+设计仍会推倒重来，流程以省 token 为先。一个页面由一个带生图能力的 agent 从视觉稿、实现到自查做完，不拆给多个 agent。
 
 1. **手机稿**：生成一张手机构图稿。输入必须把当前站相关页面截图和参考站截图作为图片传入（只写路径不算；生图最多 5 张参考图，挑最相关的）。不出多方案。
 2. **手机实现**：用户确认手机稿后实现手机版，截图给用户确认。
@@ -16,9 +16,13 @@ UI / UX 工作读取本文件。范围、数据归属与生产授权以根目录
 
 ## 截图与自查
 
-- 自查用 `npm run proof`：先在另一个终端运行 `npx shopify theme dev --store tutaka-54.myshopify.com --live-reload off`，再跑 `npm run proof`。它检查日文 `/ja`、简体中文 `/`、英文 `/en` 的关键页面（路径以当前店铺与 `scripts/proof.config.cjs` 为准）的主题侧语言泄漏、横向溢出、图片加载与脚本异常，并生成 390×844 / 1440×900 首屏截图和清单 `.proof/report.md`（被忽略，不提交）。页面与选择器在 `scripts/proof.config.cjs` 维护。
-- 只改了少数页面时可以缩小范围：`npm run proof -- --pages yarn-pdp --viewports mobile`；PR 前跑一次完整的。
+- 自查用 `npm run proof`：先在另一个终端运行 `npx shopify theme dev --store tutaka-54.myshopify.com --live-reload off`，再跑 `npm run proof`。它检查日文 `/ja`、简体中文 `/`、英文 `/en` 的关键页面（路径以当前店铺与 `scripts/proof.config.cjs` 为准）的主题侧语言泄漏、横向溢出、图片加载与脚本异常，并生成 390×844 / 1440×900 首屏截图和清单 `.proof/report.md`（被忽略，不提交；每次运行会清空 `.proof/` 下的子文件夹，自己的截图别放那里）。页面与选择器在 `scripts/proof.config.cjs` 维护。
+- 只改了少数页面时可以缩小范围：`npm run proof -- --pages yarn-pdp --viewports mobile`（`--pages` 写页面名，如 `yarn-collection`、`yarn-pdp`，见 `scripts/proof.config.cjs`，不是网址）；PR 前跑一次完整的。
 - 发布后查线上：`PROOF_BASE_URL=https://hitoami.com npm run proof -- --live`。`--live` 改用线上语言路径（日文 `/`、中文 `/zh`、英文 `/en`）；浏览器语言按页面语言设置，不会被店铺的语言重定向带走。
+- 点击流程写进 `proof`，不要临时写浏览器脚本：在 `scripts/proof.config.cjs` 给页面加 `flows`（点哪里、等什么、数几个，写法见 `scripts/proof.cjs` 开头），`npm run proof` 首屏截图后逐个跑，截图进报告。`proof` 已经按语言设好浏览器、过滤了本地预览固有的平台报错；临时脚本两样都没有，曾把语言转址误判成泄漏。
+  - 断言只写「有」和「变了」（如「选细后仍有商品」「有商品被筛掉」），不写死款数，商品会变。
+  - 先等页面给出「载入完」的信号再点（如面板里的款数出现），否则会和异步载入抢跑，结果时过时不过。
+- Safari 引擎：`npm run proof -- --browser webkit`。第一次要下载 WebKit（`node node_modules/playwright-core/cli.js install webkit`，约百 MB），下载前先问锦晨。它只模拟 Safari 的渲染，不等于真机。
 - 只打开与本次改动相关的截图；不看整页长图（读取时会被缩到一两百像素宽）。对照视觉稿时同视口并排看；上下文压缩后先重新打开视觉稿与 Issue。
 - 「内容层混语言」来自 Shopify 后台内容（商品名、描述、菜单等），归 #60 / #68，不阻塞主题改动；新写的主题文案若被列进这一节，说明选择器写宽了，改 `scripts/proof.config.cjs`。
 - `npm run proof` 不覆盖的仍需手动看：手机展开菜单、页脚与当前页语言一致，不把缺失译文的英文回退当通过；交互流程（筛选、规格、加减购物车）按改动范围实点。

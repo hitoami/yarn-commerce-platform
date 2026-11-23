@@ -19,8 +19,46 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  preview:
+  changes:
     if: >-
+      github.event.action != 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: read
+    outputs:
+      theme: ${{ steps.filter.outputs.theme }}
+    steps:
+      - name: Detect theme directory changes
+        id: filter
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const pull_number = context.issue.number;
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner,
+              repo,
+              pull_number,
+              per_page: 100,
+            });
+            const themeDir = /^(assets|blocks|config|layout|locales|sections|snippets|templates)\//;
+            const matched = files.filter(
+              (file) => themeDir.test(file.filename) || (file.previous_filename && themeDir.test(file.previous_filename)),
+            );
+            const changed = matched.length > 0;
+            core.setOutput('theme', String(changed));
+            core.info(
+              changed
+                ? `Theme files changed (${matched.length}): ${matched.slice(0, 10).map((f) => f.filename).join(', ')}`
+                : 'No theme directory files changed; skipping Shopify preview deploy.',
+            );
+
+  preview:
+    needs: changes
+    if: >-
+      needs.changes.outputs.theme == 'true' &&
       github.event.action != 'closed' &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
