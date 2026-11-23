@@ -31,10 +31,10 @@
         "shopping-note": {
           "type": "text",
           "settings": {
-            "text": "税込価格 · 日本全国配送",
+            "text": "配送地域・送料は確認中です",
             "text_style": "body",
-            "text_zh": "含税价格 · 日本全国配送",
-            "text_en": "Tax included · Ships across Japan"
+            "text_zh": "配送地区与费用确认中",
+            "text_en": "Delivery areas and fees are being confirmed"
           }
         },
         "description": {
@@ -87,9 +87,9 @@
             "heading_zh": "配送与运费",
             "heading_en": "Shipping",
             "icon": "truck",
-            "content": "<p>日本全国へ配送します。送料はチェックアウト時に確認できます。発送時期は商品と在庫状況により異なります。</p>",
-            "content_zh": "<p>日本全国配送，实际运费以结账页显示为准。发货时间因商品与库存情况而异。</p>",
-            "content_en": "<p>We ship across Japan. Shipping rates are shown at checkout. Dispatch times vary by item and stock.</p>",
+            "content": "<p>配送地域・送料は現在確認中です。ご購入前にお問い合わせください。</p>",
+            "content_zh": "<p>配送地区与费用尚在确认中。购买前请先咨询。</p>",
+            "content_en": "<p>Delivery areas and fees are being confirmed. Please contact us before purchasing.</p>",
             "page": ""
           }
         },
