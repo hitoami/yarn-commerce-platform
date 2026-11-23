@@ -28,13 +28,9 @@
 
 ## 自查与截图
 
-- **用 `npm run proof`**：`--pages` 写页面名（如 `yarn-collection`、`yarn-pdp`，见 `scripts/proof.config.cjs`），不是网址。它会清空 `.proof/` 下的子文件夹，自己的截图别放那里。
-- **点击流程写进 `proof`，不要临时写浏览器脚本**：在 `scripts/proof.config.cjs` 给页面加 `flows`（点哪里、等什么、数几个，写法见 `scripts/proof.cjs` 开头），`npm run proof` 首屏截图后逐个跑，截图进报告。`proof` 已经按语言设好浏览器、过滤了本地预览固有的平台报错；临时脚本两样都没有，曾把语言转址误判成泄漏。
-  - 断言只写「有」和「变了」（如「选细后仍有商品」「有商品被筛掉」），不写死款数，商品会变。
-  - 先等页面给出「载入完」的信号再点（如面板里的款数出现），否则会和异步载入抢跑，结果时过时不过。
+- `npm run proof` 的用法和坑见 `docs/agents/visual-review.md`。
 - **万一要自己写浏览器脚本**：设语言（Playwright `browser.newContext({ locale: 'ja-JP' | 'zh-CN' })`，无头浏览器默认英文，打开 `/zh` 会被转到 `/en`），并忽略 shop.app、shopifycloud 这类平台报错。
 - **截图前确认预览已同步**：`shopify theme dev` 的日志出现这个文件的 `Synced » update <文件>` 才截，否则截到旧样式。
-- **Safari 引擎**：`npm run proof -- --browser webkit`。第一次要下载 WebKit（`node node_modules/playwright-core/cli.js install webkit`，约百 MB），下载前先问锦晨。它只模拟 Safari 的渲染，不等于真机。
 - **看截图省 token**：多张缩小拼成一张看，只放大可疑处。
 - 本地预览（`shopify theme dev`）的语言路径是日 `/ja`、中 `/`、英 `/en`；线上是日 `/`、中 `/zh`、英 `/en`。本地预览不一定同步模板 JSON 的改动。
 
