@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { stateFromSearch, queryState, urlWithState, hasFacetFilters, matchesEntity, compareEntities, categoryForQuery, paginationUrl, fill, templateParts } = require('../assets/yarn-search.js');
+const { stateFromSearch, queryState, urlWithState, hasFacetFilters, matchesEntity, compareEntities, categoryForQuery, paginationUrl, fill, templateParts, YarnDiscoverySearch } = require('../assets/yarn-search.js');
 const { endpointUrl } = require('../assets/yarn-favorites.js');
 
 const sunrise = { type: 'product', id: '1', group: 'yarn', title: '印象·日出', summary: '长段染 段染渐变 100g', tags: '毛糸' };
@@ -99,4 +99,26 @@ test('2026-11-21: directory page renders pure editorial shop directory with 3 ca
   assert.match(dir, /ydir__panels/);
   assert.match(dir, /render 'yarn-facet-icon'/);
   assert.doesNotMatch(dir, /render 'yarn-pick-card'/);
+});
+
+test('#210: focusGroupTab hands focus to the active visible group tab and skips disabled or hidden tabs', () => {
+  const calls = [];
+  const makeTab = (group, { disabled = false, hidden = false } = {}) => ({
+    dataset: { searchTab: group },
+    disabled,
+    hidden,
+    focus() { calls.push(`focus:${group}`); },
+    scrollIntoView(options) { calls.push(`scroll:${group}:${options.block}:${options.inline}`); },
+  });
+  const search = new YarnDiscoverySearch();
+  search.tabs = [
+    makeTab(''),
+    makeTab('yarn'),
+    makeTab('kit', { hidden: true }),
+    makeTab('finished', { disabled: true }),
+  ];
+  search.focusGroupTab('yarn');
+  search.focusGroupTab('kit');
+  search.focusGroupTab('finished');
+  assert.deepEqual(calls, ['focus:yarn', 'scroll:yarn:nearest:nearest']);
 });
