@@ -1,0 +1,54 @@
+{%- comment -%}
+  材料包详情购买框里的一行（从 sections/yarn-kit-detail 拆出，#369）：一种商品的图、名称、配色下拉、单价与数量步进器。
+  #369 起材料包是独立商品时只渲染这一行（材料包本身，配色就是它的 Variant）；没有材料包商品时仍按配件逐行渲染毛线。
+  参数：row_variant、row_qty（预填数量）、row_image、row_index（同页唯一序号）、section_id；colour_key 可选，配色下拉的标签文案键（默认「选择同款颜色」）。
+{%- endcomment -%}
+{%- liquid
+  assign row_product = row_variant.product
+  assign row_ok = false
+  if row_variant.available and row_variant.price > 0
+    assign row_ok = true
+  endif
+-%}
+<li class="yk-row{% unless row_ok %} yk-row--out{% endunless %}" data-kit-row data-variant="{{ row_variant.id }}" data-price="{{ row_variant.price }}" data-available="{{ row_variant.available }}">
+  <a class="yk-row__media" href="{{ row_variant.url }}" tabindex="-1" aria-hidden="true">
+    {%- if row_image != blank -%}{{ row_image | image_url: width: 200 | image_tag: width: 64, height: 64, loading: 'lazy', alt: '' }}{%- endif -%}
+  </a>
+  <div class="yk-row__info">
+    <p class="yk-row__title">
+      <a class="yk-row__name" href="{{ row_variant.url }}">{{ row_product.title | escape }}</a>
+      {%- if row_variant.price > 0 and row_variant.available == false -%}<span class="yk-tag" data-kit-stock>{{ 'yarn_project.kit_sold_out' | t }}</span>{%- endif -%}
+    </p>
+    {%- assign colour_index = -1 -%}
+    {%- for option in row_product.options_with_values -%}
+      {%- assign option_name = option.name | downcase -%}
+      {%- if option_name contains '色' or option_name contains 'color' or option_name contains 'colour' or option_name contains 'カラー' -%}{%- assign colour_index = forloop.index0 -%}{%- endif -%}
+    {%- endfor -%}
+    {%- if colour_index >= 0 -%}
+      <label class="yk-colour" for="Colour-{{ section_id }}-{{ row_index }}">{{ colour_key | default: 'yarn_project.kit_choose_colour' | t }}</label>
+      <select id="Colour-{{ section_id }}-{{ row_index }}" data-kit-colour>
+        {%- for alternative in row_product.variants -%}
+          {%- assign same_spec = true -%}
+          {%- for value in alternative.options -%}
+            {%- if forloop.index0 != colour_index and value != row_variant.options[forloop.index0] -%}{%- assign same_spec = false -%}{%- endif -%}
+          {%- endfor -%}
+          {%- if same_spec -%}
+            <option value="{{ alternative.id }}" data-price="{{ alternative.price }}" data-available="{{ alternative.available }}" data-url="{{ alternative.url }}" {% if alternative.id == row_variant.id %}selected{% endif %}{% unless alternative.available and alternative.price > 0 %} disabled{% endunless %}>{{ alternative.options[colour_index] | escape }}{% if alternative.price <= 0 %} — {{ 'yarn_project.kit_not_on_sale' | t }}{% elsif alternative.available == false %} — {{ 'yarn_project.kit_sold_out' | t }}{% endif %}</option>
+          {%- endif -%}
+        {%- endfor -%}
+      </select>
+    {%- elsif row_product.has_only_default_variant -%}
+      <span class="yk-row__note">{{ 'yarn_project.kit_qty_needed' | t: count: row_qty }} · {{ 'yarn_pdp.colour_pending' | t }}</span>
+    {%- else -%}
+      <span class="yk-row__variant">{{ row_variant.title | escape }}</span>
+    {%- endif -%}
+    <div class="yk-row__buy">
+      {%- if row_variant.price > 0 -%}<span class="yk-row__price" data-kit-price>{{ row_variant.price | money }}</span>{%- else -%}<span class="yk-soldout" data-kit-price>{{ 'yarn_project.kit_not_on_sale' | t }}</span>{%- endif -%}
+      <div class="yk-step" data-kit-stepper{% unless row_ok %} hidden{% endunless %}>
+        <button type="button" data-kit-step="-1" aria-label="{{ 'products.product.quantity.decrease' | t: product: row_product.title | escape }}"><span class="svg-wrapper">{{- 'icon-minus.svg' | inline_asset_content -}}</span></button>
+        <input type="number" data-kit-qty name="quantity" value="{{ row_qty }}" min="1" inputmode="numeric" aria-label="{{ 'yarn_project.kit_qty_label' | t }} · {{ row_product.title | escape }}">
+        <button type="button" data-kit-step="1" aria-label="{{ 'products.product.quantity.increase' | t: product: row_product.title | escape }}"><span class="svg-wrapper">{{- 'icon-plus.svg' | inline_asset_content -}}</span></button>
+      </div>
+    </div>
+  </div>
+</li>

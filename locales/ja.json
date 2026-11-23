@@ -900,7 +900,13 @@
     "collection_preparing_title": "ただいま準備中です",
     "collection_preparing_text": "一点ずつ準備しています。並ぶまで、毛糸をご覧ください。",
     "collection_preparing_link": "毛糸を見る",
-    "kit_choose_colour": "同じ毛糸の色を選ぶ"
+    "kit_choose_colour": "同じ毛糸の色を選ぶ",
+    "kit_total_set": "合計",
+    "kit_card_sold_out": "売り切れ・現在購入できません",
+    "kit_price_from": "{{ price }}から",
+    "kit_buy_heading_set": "カラーを選ぶ",
+    "kit_choose_set_colour": "カラー",
+    "kit_quick_hint_set": "カラーと数量は下で選べます"
   },
   "yarn_discovery": {
     "search": "検索",
