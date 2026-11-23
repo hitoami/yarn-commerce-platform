@@ -8,7 +8,7 @@
 .yd-search h2 { margin: 0; font-family: var(--yarn-display); font-weight: 500; line-height: 1.4; color: var(--yarn-text-heading); }
 
 /* 页头：手机为返回 / 搜索 / 收藏；桌面居中对齐标题、680px 胶囊搜索框与分组标签。 */
-.yd-search__hero { border-bottom: 1px solid var(--yarn-border-subtle); margin-bottom: var(--yarn-space-4); }
+.yd-search:not(.is-favorites) .yd-search__tabs { border-bottom: 1px solid var(--yarn-border-subtle); margin-bottom: var(--yarn-space-4); }
 .yd-search__bar { display: grid; grid-template-columns: var(--yarn-touch) 1fr var(--yarn-touch); align-items: center; margin-bottom: var(--yarn-space-3); }
 .yd-search__bar h1 { margin: 0; text-align: center; font-size: var(--yarn-fs-18); font-weight: 500; line-height: 1.4; color: var(--yarn-text-heading); }
 .yd-search__back { display: grid; place-items: center; width: var(--yarn-touch); height: var(--yarn-touch); }
@@ -96,7 +96,7 @@
 
 @media (min-width: 990px) {
   .yd-search { padding-block: var(--yarn-space-6) 72px; }
-  .yd-search__hero { margin-bottom: var(--yarn-space-5); }
+  .yd-search:not(.is-favorites) .yd-search__tabs { margin-bottom: var(--yarn-space-5); }
   .yd-search__bar { display: block; margin-bottom: var(--yarn-space-4); }
   .yd-search__back, .yd-search__favorites { display: none; }
   .yd-search__bar h1 { text-align: center; font-family: var(--yarn-display); font-size: var(--yarn-fs-32); font-weight: 500; }
