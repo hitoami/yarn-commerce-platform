@@ -727,6 +727,42 @@ a.product__text {
   .product-media-modal__content > .product__media-item--variant:not(:first-child) {
     display: none;
   }
+
+  /* 视频与 3D 媒体去掉内联 padding-top 占位，避免滑块撑高超出一屏、裁掉播放控件与 XR 按钮 */
+  .product-media-modal__content .deferred-media,
+  .product-media-modal__content > .product-media-modal__model {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding-top: 0 !important;
+    overflow: hidden;
+  }
+
+  .product-media-modal__content .deferred-media iframe,
+  .product-media-modal__content .deferred-media video,
+  .product-media-modal__content .deferred-media model-viewer,
+  .product-media-modal__content .deferred-media__poster img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .product-media-modal__content .deferred-media video,
+  .product-media-modal__content .deferred-media__poster img {
+    object-fit: contain;
+  }
+
+  /* 3D 模型的 XR 按钮浮在滑块底部安全区内，保持可见可点 */
+  .product-media-modal__content .product-media-modal__model .product__xr-button {
+    position: absolute;
+    left: var(--yarn-space-4);
+    right: var(--yarn-space-4);
+    bottom: calc(var(--yarn-space-4) + env(safe-area-inset-bottom, 0px));
+    width: calc(100% - 2 * var(--yarn-space-4));
+    margin: 0;
+    z-index: 2;
+  }
 }
 
 .product-media-modal__content .media {
