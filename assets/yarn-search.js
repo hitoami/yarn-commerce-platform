@@ -281,7 +281,11 @@
         if (tab.disabled) return;
         this.setState({ ...this.state, group: tab.dataset.searchTab, browse: this.state.browse });
       }));
-      listen(this.showAll, 'click', () => this.setState({ ...this.state, group: 'yarn' }));
+      listen(this.showAll, 'click', () => {
+        this.setState({ ...this.state, group: 'yarn' });
+        // #210: showAll hides after expanding, so hand focus to the selected yarn tab to keep keyboard order.
+        this.focusGroupTab('yarn');
+      });
       this.sortOptions.forEach((button) => listen(button, 'click', () => {
         const menu = button.closest('[data-yfb-menu]');
         if (menu) menu.open = false;
@@ -305,11 +309,17 @@
         }
       };
       const syncOpenPopover = () => { const open = this.menus.find((m) => m.open); if (open) positionPopover(open); };
-      this.menus.forEach((menu) => listen(menu, 'toggle', () => {
-        if (!menu.open) return;
-        this.menus.forEach((other) => { if (other !== menu) other.open = false; });
-        positionPopover(menu);
-      }));
+      // iOS clips position:fixed popovers inside the overflow-x filter row; the top layer escapes any ancestor clip.
+      this.menus.forEach((menu) => {
+        const pop = menu.querySelector('.yfb__popover');
+        if (pop?.showPopover) pop.popover = 'manual';
+        listen(menu, 'toggle', () => {
+          if (pop?.popover) pop.togglePopover(menu.open);
+          if (!menu.open) return;
+          this.menus.forEach((other) => { if (other !== menu) other.open = false; });
+          positionPopover(menu);
+        });
+      });
       listen(window, 'scroll', syncOpenPopover);
       listen(window, 'resize', syncOpenPopover);
       listen(this.toolbar?.querySelector('.yfb__bar > .yfb__filters'), 'scroll', syncOpenPopover);
@@ -373,6 +383,11 @@
       const url = urlWithState(window.location.href, state);
       if (url.href !== window.location.href) window.history.pushState({ discovery: true }, '', url.href);
       this.present();
+    }
+
+    focusGroupTab(group) {
+      const tab = this.tabs.find((item) => item.dataset.searchTab === group && !item.disabled && !item.hidden);
+      tab?.focus();
     }
 
     async loadCatalogs() {

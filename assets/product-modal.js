@@ -25,10 +25,8 @@ if (!customElements.get('product-modal')) {
         const activeMediaTemplate = activeMedia.querySelector('template');
         const activeMediaContent = activeMediaTemplate ? activeMediaTemplate.content : null;
         activeMedia.classList.add('active');
-        activeMedia.scrollIntoView();
-
-        const container = this.querySelector('[role="document"]');
-        container.scrollLeft = (activeMedia.width - container.clientWidth) / 2;
+        // 手机上灯箱横向翻页，要横向滚到被点的那张；图片已不超宽，不再需要居中 scrollLeft
+        activeMedia.scrollIntoView({ block: 'start', inline: 'center' });
 
         if (
           activeMedia.nodeName == 'DEFERRED-MEDIA' &&

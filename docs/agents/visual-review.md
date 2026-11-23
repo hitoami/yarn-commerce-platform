@@ -16,7 +16,7 @@ UI / UX 工作读取本文件。范围、数据归属与生产授权以根目录
 
 ## 截图与自查
 
-- 自查用 `npm run proof`：先在另一个终端运行 `npx shopify theme dev --store tutaka-54.myshopify.com --live-reload off`，再跑 `npm run proof`。它检查日文 `/ja`、简体中文 `/`、英文 `/en` 的关键页面（路径以当前店铺与 `scripts/proof.config.cjs` 为准）的主题侧语言泄漏、横向溢出、图片加载与脚本异常，并生成 390×844 / 1440×900 首屏截图和清单 `.proof/report.md`（被忽略，不提交；每次运行会清空 `.proof/` 下的子文件夹，自己的截图别放那里）。页面与选择器在 `scripts/proof.config.cjs` 维护。
+- 自查用 `npm run proof`：PR 或发布前验证优先用该 PR 的未发布预览主题，跑 `npm run proof -- --preview <theme_id>`（避免 `shopify theme dev` 代理触发 Cloudflare 429）。本地改动可用 `npx shopify theme dev --store tutaka-54.myshopify.com --live-reload off` 后跑 `npm run proof`。它检查日文 `/ja`（预览/线上为 `/`）、简体中文 `/`（预览/线上为 `/zh`）、英文 `/en` 的关键页面（路径以当前店铺与 `scripts/proof.config.cjs` 为准）的主题侧语言泄漏、横向溢出、图片加载与脚本异常，并生成 390×844 / 1440×900 首屏截图和清单 `.proof/report.md`（被忽略，不提交；每次运行会清空 `.proof/` 下的子文件夹，自己的截图别放那里）。页面与选择器在 `scripts/proof.config.cjs` 维护。
 - 只改了少数页面时可以缩小范围：`npm run proof -- --pages yarn-pdp --viewports mobile`（`--pages` 写页面名，如 `yarn-collection`、`yarn-pdp`，见 `scripts/proof.config.cjs`，不是网址）；PR 前跑一次完整的。
 - 发布后查线上：`PROOF_BASE_URL=https://hitoami.com npm run proof -- --live`。`--live` 改用线上语言路径（日文 `/`、中文 `/zh`、英文 `/en`）；浏览器语言按页面语言设置，不会被店铺的语言重定向带走。
 - 点击流程写进 `proof`，不要临时写浏览器脚本：在 `scripts/proof.config.cjs` 给页面加 `flows`（点哪里、等什么、数几个，写法见 `scripts/proof.cjs` 开头），`npm run proof` 首屏截图后逐个跑，截图进报告。`proof` 已经按语言设好浏览器、过滤了本地预览固有的平台报错；临时脚本两样都没有，曾把语言转址误判成泄漏。
