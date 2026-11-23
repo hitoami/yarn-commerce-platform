@@ -28,6 +28,7 @@
 
 ## 自查与截图
 
+- **PR / 发布前验证优先用预览主题**：用 PR 预览评论里或 `shopify theme list` 中 `PR-<n>` 的主题 ID，跑 `npm run proof -- --preview <id>`，或用浏览器工具直接打开 `https://hitoami.com/?preview_theme_id=<id>`。不要对 `shopify theme dev` 做大量自动化请求（易触发 Cloudflare 429 挑战）；浏览器预览工具截图前标签页须可见（`open: true`）；遇 Cloudflare 挑战立即停止、不绕过。
 - `npm run proof` 的用法和坑见 `docs/agents/visual-review.md`。
 - **万一要自己写浏览器脚本**：设语言（Playwright `browser.newContext({ locale: 'ja-JP' | 'zh-CN' })`，无头浏览器默认英文，打开 `/zh` 会被转到 `/en`），并忽略 shop.app、shopifycloud 这类平台报错。
 - **截图前确认预览已同步**：`shopify theme dev` 的日志出现这个文件的 `Synced » update <文件>` 才截，否则截到旧样式。
