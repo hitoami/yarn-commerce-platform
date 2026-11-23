@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-// npm run proof：对本地预览（shopify theme dev）生成证据包，写到被忽略的 .proof/。
+// npm run proof：对本地预览（shopify theme dev）或未发布预览主题生成证据包，写到被忽略的 .proof/。
 // 语言泄漏 + 首屏截图清单 + 横向溢出 / 图片 / 脚本错误断言。PR 只引用 .proof/report.md 的结论。
 //
-// 用法：npm run proof -- [--base <url>] [--live] [--pages home,yarn-pdp] [--locales zh,en] [--viewports mobile] [--browser webkit]
+// 用法：npm run proof -- [--base <url>] [--live] [--preview <theme_id>] [--pages home,yarn-pdp] [--locales zh,en] [--viewports mobile] [--browser webkit]
+// --preview <theme_id>（或 PROOF_PREVIEW_THEME_ID）：检查未发布预览主题（默认 https://hitoami.com，隐含线上语言路径，并校验每页实际渲染的主题 ID）。
 // --live（或 PROOF_LIVE=1）：按线上语言路径（日文 /、中文 /zh、英文 /en）检查 PROOF_BASE_URL / --base 指向的线上店铺。
 // --browser webkit（或 PROOF_BROWSER=webkit）：用 Safari 引擎跑，需先下载 WebKit（见 docs/agents/pitfalls.md）。
 // #277：页面可在 proof.config.cjs 写 flows（点击流程），首屏截图后逐个从页面初始状态跑，失败记为失败项。
@@ -14,16 +15,45 @@ const config = require('./proof.config.cjs');
 const { detectLeak } = require('./proof-lang.cjs');
 
 const OUT = '.proof';
+const DEFAULT_PREVIEW_BASE_URL = 'https://hitoami.com';
 
 function parseArgs(argv) {
   const args = {};
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--live') { args.live = true; continue; }
-    const match = argv[i].match(/^--(base|pages|locales|viewports|concurrency|browser)$/);
+    const match = argv[i].match(/^--(base|pages|locales|viewports|concurrency|browser|preview)$/);
     if (!match || argv[i + 1] === undefined) throw new Error(`未知参数：${argv[i]}`);
     args[match[1]] = argv[++i];
   }
   return args;
+}
+
+function resolveTarget(args, env = process.env) {
+  const rawPreview = args.preview !== undefined ? args.preview : env.PROOF_PREVIEW_THEME_ID;
+  const previewThemeId = rawPreview === undefined ? '' : String(rawPreview).trim();
+  if (args.preview !== undefined && !previewThemeId) throw new Error('--preview 需要提供预览主题 ID');
+  if (previewThemeId && !/^\d+$/.test(previewThemeId)) throw new Error(`预览主题 ID 应为数字：${previewThemeId}`);
+  const live = Boolean(args.live || env.PROOF_LIVE || previewThemeId);
+  const baseUrl = (args.base || env.PROOF_BASE_URL || (previewThemeId ? DEFAULT_PREVIEW_BASE_URL : config.baseUrl)).replace(/\/$/, '');
+  return { baseUrl, live, previewThemeId };
+}
+
+function withPreviewTheme(rawUrl, previewThemeId) {
+  if (!previewThemeId) return rawUrl;
+  const url = new URL(rawUrl);
+  url.searchParams.set('preview_theme_id', String(previewThemeId));
+  return url.toString();
+}
+
+function checkPreviewTheme(expectedThemeId, actualTheme) {
+  if (!expectedThemeId) return null;
+  const expected = String(expectedThemeId);
+  const id = actualTheme && typeof actualTheme === 'object' ? actualTheme.id : actualTheme;
+  const role = actualTheme && typeof actualTheme === 'object' ? actualTheme.role : undefined;
+  const actual = id === null || id === undefined || id === '' ? '未知' : String(id);
+  if (actual !== expected) return `渲染的不是预览主题 ${expected}，实际 ${actual}`;
+  if (role === 'main') return `渲染的是线上主题 ${actual}（role: main），不是未发布预览主题`;
+  return null;
 }
 
 function pick(list, csv, label) {
@@ -229,7 +259,7 @@ function pickSoldOut(products) {
   return product ? `/products/${product.handle}` : null;
 }
 
-async function resolvePages(pages, baseUrl, request = fetch) {
+async function resolvePages(pages, baseUrl, request = fetch, previewThemeId = '') {
   const skipped = [];
   const resolved = [];
   for (const page of pages) {
@@ -237,7 +267,7 @@ async function resolvePages(pages, baseUrl, request = fetch) {
     let found = null;
     let prerequisite = '目录暂无已定价且全部规格缺货的商品';
     try {
-      const response = await request(`${baseUrl}/collections/yarn/products.json?limit=250`, { signal: AbortSignal.timeout(20000) });
+      const response = await request(withPreviewTheme(`${baseUrl}/collections/yarn/products.json?limit=250`, previewThemeId), { signal: AbortSignal.timeout(20000) });
       if (!response.ok) throw new Error(`目录读取 HTTP ${response.status}`);
       found = pickSoldOut((await response.json()).products || []);
     } catch (error) { prerequisite = `无法确认真实库存：${error.message}`; }
@@ -252,7 +282,7 @@ async function resolvePages(pages, baseUrl, request = fetch) {
   return { resolved, skipped };
 }
 
-async function runJob(browser, job, baseUrl, fixtureBase) {
+async function runJob(browser, job, baseUrl, fixtureBase, previewThemeId = '') {
   const { page: target, locale, viewport } = job;
   const context = await browser.newContext({
     viewport: { width: viewport.width, height: viewport.height },
@@ -271,9 +301,10 @@ async function runJob(browser, job, baseUrl, fixtureBase) {
     });
   }
   const page = await context.newPage();
-  const url = target.fixture
+  const rawUrl = target.fixture
     ? `${fixtureBase}/${target.fixture}?locale=${locale.key === 'zh' ? 'zh-CN' : locale.key}`
     : `${baseUrl}${locale.prefix}${target.path === '/' && locale.prefix ? '' : target.path}`;
+  const url = target.fixture ? rawUrl : withPreviewTheme(rawUrl, previewThemeId);
   const result = { source: target.fixture ? 'isolated-liquid-fixture' : 'shopify-preview', page: target.key, locale: locale.key, viewport: viewport.key, url, failures: [], warnings: [], leaks: [], contentLeaks: [], flowShots: [] };
   const origin = new URL(baseUrl).host;
 
@@ -293,6 +324,11 @@ async function runJob(browser, job, baseUrl, fixtureBase) {
     const response = await page.goto(url, { waitUntil: 'load', timeout: 90000 });
     if (!response || response.status() !== 200) result.failures.push(`页面状态 ${response ? response.status() : '无响应'}`);
     if ((await page.content()).includes('Liquid error')) result.failures.push('页面含 Liquid error');
+    if (previewThemeId && !target.fixture) {
+      const actualTheme = await page.evaluate(() => (window.Shopify && window.Shopify.theme ? { id: window.Shopify.theme.id, role: window.Shopify.theme.role } : null));
+      const themeMismatch = checkPreviewTheme(previewThemeId, actualTheme);
+      if (themeMismatch) result.failures.push(themeMismatch);
+    }
     await page.evaluate(() => document.fonts.ready);
 
     const found = await page.evaluate(inspectPage, { contentSelectors: config.contentSelectors, ignoreSelectors: config.ignoreSelectors });
@@ -375,21 +411,20 @@ function writeReport(results, meta) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  const baseUrl = (args.base || process.env.PROOF_BASE_URL || config.baseUrl).replace(/\/$/, '');
+  const { baseUrl, live, previewThemeId } = resolveTarget(args, process.env);
   let pages = pick(config.pages, args.pages, '页面');
-  const live = Boolean(args.live || process.env.PROOF_LIVE);
   const locales = pick(config.locales, args.locales, '语言').map(locale => (live ? { ...locale, prefix: locale.livePrefix } : locale));
   const viewports = pick(config.viewports, args.viewports, '视口');
 
   try {
-    await fetch(baseUrl, { signal: AbortSignal.timeout(20000) });
+    await fetch(withPreviewTheme(baseUrl, previewThemeId), { signal: AbortSignal.timeout(20000) });
   } catch {
     if (live) console.error(`无法打开 ${baseUrl}。`);
     else console.error(`无法打开 ${baseUrl}。先在另一个终端运行：npx shopify theme dev --store tutaka-54.myshopify.com --live-reload off`);
     process.exit(2);
   }
 
-  const { resolved, skipped } = await resolvePages(pages, baseUrl);
+  const { resolved, skipped } = await resolvePages(pages, baseUrl, fetch, previewThemeId);
   pages = resolved;
 
   validateFlows(pages);
@@ -419,9 +454,9 @@ async function main() {
   const worker = async () => {
     while (next < jobs.length) {
       const job = jobs[next++];
-      let result = await runJob(browser, job, baseUrl, fixtures?.url);
+      let result = await runJob(browser, job, baseUrl, fixtures?.url, previewThemeId);
       // 本地预览偶发的网络请求失败（多为 Shopify 遥测）重跑一次；再失败就如实报告。
-      if (result.failures.length && result.failures.every(f => f.startsWith('脚本异常：Failed to fetch'))) result = await runJob(browser, job, baseUrl, fixtures?.url);
+      if (result.failures.length && result.failures.every(f => f.startsWith('脚本异常：Failed to fetch'))) result = await runJob(browser, job, baseUrl, fixtures?.url, previewThemeId);
       results.push(result);
     }
   };
@@ -433,7 +468,8 @@ async function main() {
   const meta = {
     time: new Date().toISOString(),
     git: `${git[0]}${Number(git[1]) ? `（另有 ${git[1].trim()} 个未提交改动）` : ''}`,
-    baseUrl: live ? `${baseUrl}（线上语言路径）` : baseUrl,
+    baseUrl: previewThemeId ? `${baseUrl}（预览主题 ${previewThemeId}）` : (live ? `${baseUrl}（线上语言路径）` : baseUrl),
+    previewThemeId: previewThemeId || null,
     pages, locales, viewports, skipped, engine,
     seconds: Math.round((Date.now() - started) / 1000),
   };
@@ -450,4 +486,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { cartAjaxUrl, pickSoldOut, resolvePages, validateFlows };
+module.exports = { cartAjaxUrl, checkPreviewTheme, parseArgs, pickSoldOut, resolvePages, resolveTarget, validateFlows, withPreviewTheme };
