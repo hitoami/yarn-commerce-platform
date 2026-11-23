@@ -675,6 +675,96 @@ a.product__text {
   margin: auto;
 }
 
+/* 灯箱图片整张放进视口：Dawn 原样在手机上按原图像素（如 1100px）渲染，只露出一角 */
+.product-media-modal__content > img {
+  width: auto;
+  max-width: 100%;
+  max-height: 100vh;
+  object-fit: contain;
+}
+
+@media screen and (min-width: 750px) {
+  .product-media-modal__content > img {
+    max-height: calc(100vh - 4rem);
+  }
+}
+
+/* 手机：灯箱改成左右滑动翻页，每张图居中占满一屏；dvh 避开 iOS 地址栏 */
+@media screen and (max-width: 749px) {
+  .product-media-modal__dialog {
+    height: 100dvh;
+  }
+
+  .product-media-modal__content {
+    display: flex;
+    height: 100%;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .product-media-modal__content::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-media-modal__content > *,
+  .product-media-modal__content > *:not(.active) {
+    display: block;
+    flex: 0 0 100%;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    object-fit: contain;
+    scroll-snap-align: center;
+  }
+
+  /* 与桌面一致：开启「隐藏其他变体图」时只保留当前变体那张 */
+  .product-media-modal__content > .product__media-item--variant:not(:first-child) {
+    display: none;
+  }
+
+  /* 视频与 3D 媒体去掉内联 padding-top 占位，避免滑块撑高超出一屏、裁掉播放控件与 XR 按钮 */
+  .product-media-modal__content .deferred-media,
+  .product-media-modal__content > .product-media-modal__model {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding-top: 0 !important;
+    overflow: hidden;
+  }
+
+  .product-media-modal__content .deferred-media iframe,
+  .product-media-modal__content .deferred-media video,
+  .product-media-modal__content .deferred-media model-viewer,
+  .product-media-modal__content .deferred-media__poster img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .product-media-modal__content .deferred-media video,
+  .product-media-modal__content .deferred-media__poster img {
+    object-fit: contain;
+  }
+
+  /* 3D 模型的 XR 按钮浮在滑块底部安全区内，保持可见可点 */
+  .product-media-modal__content .product-media-modal__model .product__xr-button {
+    position: absolute;
+    left: var(--yarn-space-4);
+    right: var(--yarn-space-4);
+    bottom: calc(var(--yarn-space-4) + env(safe-area-inset-bottom, 0px));
+    width: calc(100% - 2 * var(--yarn-space-4));
+    margin: 0;
+    z-index: 2;
+  }
+}
+
 .product-media-modal__content .media {
   background: none;
 }
