@@ -675,6 +675,20 @@ a.product__text {
   margin: auto;
 }
 
+/* 灯箱图片整张放进视口：Dawn 原样在手机上按原图像素（如 1100px）渲染，只露出一角 */
+.product-media-modal__content > img {
+  width: auto;
+  max-width: 100%;
+  max-height: 100vh;
+  object-fit: contain;
+}
+
+@media screen and (min-width: 750px) {
+  .product-media-modal__content > img {
+    max-height: calc(100vh - 4rem);
+  }
+}
+
 .product-media-modal__content .media {
   background: none;
 }
