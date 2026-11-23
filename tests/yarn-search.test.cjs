@@ -108,7 +108,6 @@ test('#210: focusGroupTab hands focus to the active visible group tab and skips 
     disabled,
     hidden,
     focus() { calls.push(`focus:${group}`); },
-    scrollIntoView(options) { calls.push(`scroll:${group}:${options.block}:${options.inline}`); },
   });
   const search = new YarnDiscoverySearch();
   search.tabs = [
@@ -120,5 +119,10 @@ test('#210: focusGroupTab hands focus to the active visible group tab and skips 
   search.focusGroupTab('yarn');
   search.focusGroupTab('kit');
   search.focusGroupTab('finished');
-  assert.deepEqual(calls, ['focus:yarn', 'scroll:yarn:nearest:nearest']);
+  assert.deepEqual(calls, ['focus:yarn']);
+});
+
+test('#210: show-all click focuses the yarn tab after expanding', () => {
+  const source = fs.readFileSync(path.join(__dirname, '../assets/yarn-search.js'), 'utf8');
+  assert.match(source, /listen\(this\.showAll, 'click', \(\) => \{\s*this\.setState\(\{ \.\.\.this\.state, group: 'yarn' \}\);[\s\S]*?this\.focusGroupTab\('yarn'\);\s*\}\);/);
 });

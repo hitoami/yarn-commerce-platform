@@ -381,9 +381,7 @@
 
     focusGroupTab(group) {
       const tab = this.tabs.find((item) => item.dataset.searchTab === group && !item.disabled && !item.hidden);
-      if (!tab) return;
-      tab.focus();
-      tab.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+      tab?.focus();
     }
 
     async loadCatalogs() {
