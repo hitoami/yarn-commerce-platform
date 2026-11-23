@@ -563,14 +563,16 @@
     "addons_title": "Top up to free shipping",
     "addon_add_label": "Add {{ name }} to cart",
     "quick_error": "Couldn't add to cart.",
-    "footer_trust": "Ships across Japan · Yarn help on LINE · Secure Shopify checkout",
+    "footer_trust": "LINE yarn advice · Secure Shopify checkout",
     "free_remaining": "{{ amount }} more for free shipping",
     "free_reached": "You qualify for free shipping",
-    "free_rule": "Free shipping in Japan on orders of {{ amount }} or more, tax included (confirmed at checkout)",
+    "free_rule": "Free shipping from {{ amount }} including tax. Check eligible areas and conditions at checkout.",
     "kit_title": "Your cart has yarn for a yarn set",
     "kit_text": "After ordering, send your order number and the project name to our official LINE. We will check it and send you the pattern.",
     "quick_uncertain": "We couldn’t confirm whether this was added. Check your cart before adding it again.",
-    "quick_view_cart": "Check cart"
+    "quick_view_cart": "Check cart",
+    "addon_choose": "Choose options",
+    "addon_choose_label": "Choose options for {{ name }}"
   },
   "yarn_pdp": {
     "trust_line_note": "Ask about colors and how much to buy",
@@ -586,7 +588,7 @@
     "trust_free": "Free shipping over {{ amount }}",
     "trust_line": "Yarn help on LINE",
     "trust_staff": "Ask our staff",
-    "trust_ship": "Ships across Japan",
+    "trust_ship": "Delivery areas and fees under review",
     "beginner_heading": "Good for beginners?",
     "per_ball": "/ ball",
     "per_ball_tax_included": "/ ball (tax incl.)",
@@ -902,7 +904,13 @@
     "collection_preparing_title": "Coming soon",
     "collection_preparing_text": "We're preparing these one piece at a time. In the meantime, have a look at our yarn.",
     "collection_preparing_link": "Browse yarn",
-    "kit_choose_colour": "Choose a colour of this yarn"
+    "kit_choose_colour": "Choose a colour of this yarn",
+    "kit_total_set": "Total",
+    "kit_card_sold_out": "Sold out · not available",
+    "kit_price_from": "From {{ price }}",
+    "kit_buy_heading_set": "Choose a colourway",
+    "kit_choose_set_colour": "Colourway",
+    "kit_quick_hint_set": "Choose the colourway and quantity below"
   },
   "yarn_discovery": {
     "search": "Search",
@@ -967,8 +975,8 @@
     "finished_coming_soon": "Handmade pieces are coming soon and will appear in search once listed."
   },
   "yarn_cart_assurance": {
-    "title_1": "Delivery across Japan",
-    "text_1": "Shipping rates are calculated at checkout",
+    "title_1": "Delivery information",
+    "text_1": "Areas and fees are being confirmed. Contact us before purchasing.",
     "title_2": "Yarn guidance",
     "text_2": "Ask about colour matching and quantity",
     "title_3": "Shop with confidence",

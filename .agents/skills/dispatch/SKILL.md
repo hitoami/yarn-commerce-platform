@@ -5,7 +5,7 @@ description: Use when handing work to another agent on this repo (Orca worker, C
 
 # 派工清单
 
-派工是为了并行杂活，不是为了拆开同一件事。页面与样式从视觉稿、实现到自查由一个 Codex 线程完成，不拆给多个 agent（见 `docs/agents/visual-review.md`）。
+派工是为了并行杂活，不是为了拆开同一件事。页面与样式从视觉稿、实现到自查由一个 agent 完成，不拆给多个 agent（见 `docs/agents/visual-review.md`）。
 
 ## 派工前
 
@@ -27,13 +27,8 @@ description: Use when handing work to another agent on this repo (Orca worker, C
 - 上下文压缩后，先重新打开当前 Issue 和相关视觉稿，再继续。
 - 工具输出不整份读入：截图按视口、日志 `tail`、大文件按段读。
 
-## 模型分工（按角色；型号为 2026-09 现状）
+## 模型分工
 
-| 角色 | 默认 | 用于 |
-|---|---|---|
-| 协调 / 规划 | Claude（Opus） | Issue、规格、派工、看证据、PR 收尾 |
-| 高难度 | GPT-6 Astra 或 Fable | 出视觉稿；评审来回失控、改动越滚越大时出面收拾 |
-| 实现 / 代码评审 | GPT-6 Sol 或 Opus | 按规格写页面与脚本、对抗式代码评审 |
-| 琐碎 | 更便宜的模型（如 GPT-6 Luna） | 一行修复、配置、后台录入、抓截图与数据 |
-
-高难度模型不做高频评审或截图巡检；琐碎任务不开高难度模型。
+- 高难度任务（出视觉稿、评审失控或改动滚雪球时收拾局面）交给最强模型；日常协调、规划、实现与对抗式代码评审用主力模型。
+- 一行修复、配置调整、后台录入、截图与数据抓取等琐碎工作用便宜模型。
+- 强模型不做高频评审或截图巡检；琐碎任务不开高难度模型。

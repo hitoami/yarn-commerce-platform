@@ -88,8 +88,25 @@ module.exports = {
     { key: 'kit-buyable', path: '/pages/projects/kit-xuebao-fringe-scarf', requiredContent: [
       { selector: '.yk-add-all[data-kit-add]', minimum: 1, label: '材料包主按钮' },
     ] },
-    { key: 'kit-blocked', path: '/pages/projects/kit-tyndall-kids-scarf', requiredContent: [
-      { selector: '.yk-blocked', minimum: 1, label: '材料包不可买说明' },
+    // #199：真实页面只断言有效购买状态；缺货/未定价由真实 Liquid + 隔离数据固定覆盖。
+    { key: 'kit-current', path: '/pages/projects/kit-tyndall-kids-scarf', requiredContent: [
+      { selector: '.yk-blocked, [data-kit-add]', minimum: 1, label: '材料包当前购买状态' },
+    ] },
+    { key: 'fixture-yarn-sold-out', fixture: 'yarn-sold-out', requiredContent: [
+      { selector: '.yp-status--sold-out', minimum: 1, label: '隔离样例：缺货说明' },
+      { selector: '.yp-status__ask, .yp-status__link', minimum: 2, label: '联系与同类商品出口' },
+    ] },
+    { key: 'fixture-kit-blocked', fixture: 'kit-blocked', requiredContent: [
+      { selector: '.yk-blocked', minimum: 1, label: '隔离样例：材料包不可买说明' },
+    ] },
+    { key: 'fixture-kit-unpriced', fixture: 'kit-unpriced', requiredContent: [
+      { selector: '.yk-blocked', minimum: 1, label: '隔离样例：未定价不可购买' },
+    ] },
+    { key: 'fixture-kit-buyable', fixture: 'kit-buyable', requiredContent: [
+      { selector: '[data-kit-add="all"]', minimum: 1, label: '隔离样例：全部可买' },
+    ] },
+    { key: 'fixture-kit-partial', fixture: 'kit-partial', requiredContent: [
+      { selector: '[data-kit-add="available"]', minimum: 1, label: '隔离样例：只加入可买的毛线' },
     ] },
     // 本季主推专题页：后台页面已建（handle season）；page.season 上线正式主题、后台改选该模板前，用 ?view 预览。
     { key: 'season', path: '/pages/season?view=season', requiredContent: [
@@ -97,10 +114,24 @@ module.exports = {
       { selector: '.yx-season-page__yarn', minimum: 7, label: '本季专题 7 款毛线' },
       { selector: '.yx-season-page__toc-thumb img', minimum: 7, label: '本季专题目录小图' },
     ] },
-    { key: 'cart-drawer', path: '/products/mvp-yarn-18', openCart: true },
+    { key: 'cart-drawer', path: '/products/mvp-yarn-12', openCart: true, flows: [
+      { key: 'choose-options', label: '凑单选择规格与原规格加购', steps: [
+        { run: require('./proof-cart.cjs').cartChoice }, { noOverflow: true }, { shot: true },
+      ] },
+    ] },
     // #149：搜索按毛线 / 材料包 / 手工成品分组；「段染」覆盖毛线与材料包两组，另看一次无结果状态。
     { key: 'search', path: '/search?q=%E6%AE%B5%E6%9F%93' },
     { key: 'search-empty', path: '/search?q=zzqx' },
+    // #347：同一搜索状态通过真实语言入口到三种语言，不依赖商品标题译文。
+    { key: 'search-language', path: '/search?q=%E6%AE%B5%E6%9F%93&group=yarn', flows:
+      ['ja', 'zh-CN', 'en'].map(language => ({ key: `language-${language}`, label: `切换语言 ${language}`, steps: [
+        { click: '#YarnLang > summary:visible, #FooterLanguageForm .localization-form__select:visible' },
+        { click: `.yarn-lang__option[hreflang="${language}"]:visible, #FooterLanguageForm a[hreflang="${language}"]:visible` },
+        { waitFor: '[data-search-tab="yarn"][aria-pressed="true"]' },
+        { expect: 'input[name="q"][value="段染"]', minimum: 1, label: '搜索词保留' },
+        { noOverflow: true }, { shot: true },
+      ] }))
+    },
     { key: 'commercial-disclosure', path: '/pages/commercial-disclosure' },
     { key: 'returns-exchanges', path: '/pages/returns-exchanges' },
     { key: 'shipping', path: '/pages/shipping' },
