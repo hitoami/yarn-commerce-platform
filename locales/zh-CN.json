@@ -1106,6 +1106,7 @@
     "directory_yarn_desc": "按粗细、花色与材质慢慢挑，进入后可叠加筛选。",
     "directory_kits_desc": "配齐同款毛线与 LINE 教程，照着成品图就能织。",
     "directory_finished_desc": "第一批手作围巾与小物正在编织与拍摄，敬请期待。",
-    "load_error": "商品未能全部加载，目前只显示部分商品。请重试。"
+    "load_error": "商品未能全部加载，目前只显示部分商品。请重试。",
+    "filter_label": "筛选："
   }
 }

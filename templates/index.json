@@ -542,17 +542,6 @@
             "text_zh": "是。商品页面标示含税价格。",
             "text_en": "Yes. Tax-inclusive prices are shown on each product page."
           }
-        },
-        "item-8": {
-          "type": "item",
-          "settings": {
-            "title": "ギフト包装はありますか？",
-            "title_zh": "提供礼品包装吗？",
-            "title_en": "Is gift wrapping available?",
-            "text": "無料でご用意しています。お申し込み方法は情報待ちです。",
-            "text_zh": "提供，且免费。申请方式待提供。",
-            "text_en": "Yes, free of charge. How to request it: to be provided."
-          }
         }
       },
       "block_order": [
@@ -562,8 +551,7 @@
         "item-4",
         "item-5",
         "item-6",
-        "item-7",
-        "item-8"
+        "item-7"
       ]
     },
     "picks-featured": {
