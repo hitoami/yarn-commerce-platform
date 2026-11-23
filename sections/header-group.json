@@ -17,9 +17,9 @@
         "announcement-bar-0": {
           "type": "announcement",
           "settings": {
-            "text": "配送地域・送料は確認中です。ご購入前にお問い合わせください。",
-            "text_zh": "配送地区与费用确认中，购买前请先咨询。",
-            "text_en": "Delivery areas and fees are being confirmed. Please contact us before purchasing.",
+            "text": "税込¥8,500以上のご注文で送料無料（北海道・離島は¥10,000以上／沖縄は¥12,000以上）",
+            "text_zh": "订单满 ¥8,500 免邮（北海道・离岛满 ¥10,000／冲绳满 ¥12,000）",
+            "text_en": "Free shipping on orders over ¥8,500 (Hokkaido & remote islands: ¥10,000 / Okinawa: ¥12,000)",
             "link": ""
           }
         }
@@ -39,24 +39,6 @@
     },
     "header": {
       "type": "header",
-      "settings": {
-        "logo_position": "middle-left",
-        "mobile_logo_position": "center",
-        "menu": "main-menu",
-        "menu_type_desktop": "mega",
-        "sticky_header_type": "on-scroll-up",
-        "show_line_separator": true,
-        "color_scheme": "scheme-1",
-        "menu_color_scheme": "scheme-1",
-        "enable_country_selector": false,
-        "enable_language_selector": true,
-        "margin_bottom": 0,
-        "padding_top": 16,
-        "padding_bottom": 16,
-        "drawer_yarn_collection": "yarn",
-        "drawer_all_illustration": "hitoami-cat-knitting.webp",
-        "drawer_welcome_illustration": "hitoami-cat-basket.webp"
-      },
       "blocks": {
         "entry-1": {
           "type": "yarn_entry",
@@ -110,7 +92,28 @@
         "entry-3",
         "entry-4",
         "entry-5"
-      ]
+      ],
+      "settings": {
+        "logo_position": "middle-left",
+        "mobile_logo_position": "center",
+        "menu": "main-menu",
+        "menu_type_desktop": "mega",
+        "sticky_header_type": "on-scroll-up",
+        "show_line_separator": true,
+        "color_scheme": "scheme-1",
+        "menu_color_scheme": "scheme-1",
+        "enable_country_selector": false,
+        "enable_language_selector": true,
+        "margin_bottom": 0,
+        "padding_top": 16,
+        "padding_bottom": 16,
+        "drawer_season_text": "この季節、編みたい色。",
+        "drawer_season_text_zh": "这一季，想织的颜色。",
+        "drawer_season_text_en": "This season, colours to knit.",
+        "drawer_yarn_collection": "yarn",
+        "drawer_all_illustration": "hitoami-cat-knitting.webp",
+        "drawer_welcome_illustration": "hitoami-cat-basket.webp"
+      }
     }
   },
   "order": [
