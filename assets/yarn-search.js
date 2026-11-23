@@ -281,7 +281,11 @@
         if (tab.disabled) return;
         this.setState({ ...this.state, group: tab.dataset.searchTab, browse: this.state.browse });
       }));
-      listen(this.showAll, 'click', () => this.setState({ ...this.state, group: 'yarn' }));
+      listen(this.showAll, 'click', () => {
+        this.setState({ ...this.state, group: 'yarn' });
+        // #210: showAll hides after expanding, so hand focus to the selected yarn tab to keep keyboard order.
+        this.focusGroupTab('yarn');
+      });
       this.sortOptions.forEach((button) => listen(button, 'click', () => {
         const menu = button.closest('[data-yfb-menu]');
         if (menu) menu.open = false;
@@ -373,6 +377,11 @@
       const url = urlWithState(window.location.href, state);
       if (url.href !== window.location.href) window.history.pushState({ discovery: true }, '', url.href);
       this.present();
+    }
+
+    focusGroupTab(group) {
+      const tab = this.tabs.find((item) => item.dataset.searchTab === group && !item.disabled && !item.hidden);
+      tab?.focus();
     }
 
     async loadCatalogs() {
