@@ -309,11 +309,17 @@
         }
       };
       const syncOpenPopover = () => { const open = this.menus.find((m) => m.open); if (open) positionPopover(open); };
-      this.menus.forEach((menu) => listen(menu, 'toggle', () => {
-        if (!menu.open) return;
-        this.menus.forEach((other) => { if (other !== menu) other.open = false; });
-        positionPopover(menu);
-      }));
+      // iOS clips position:fixed popovers inside the overflow-x filter row; the top layer escapes any ancestor clip.
+      this.menus.forEach((menu) => {
+        const pop = menu.querySelector('.yfb__popover');
+        if (pop?.showPopover) pop.popover = 'manual';
+        listen(menu, 'toggle', () => {
+          if (pop?.popover) pop.togglePopover(menu.open);
+          if (!menu.open) return;
+          this.menus.forEach((other) => { if (other !== menu) other.open = false; });
+          positionPopover(menu);
+        });
+      });
       listen(window, 'scroll', syncOpenPopover);
       listen(window, 'resize', syncOpenPopover);
       listen(this.toolbar?.querySelector('.yfb__bar > .yfb__filters'), 'scroll', syncOpenPopover);
