@@ -87,13 +87,13 @@
     <span class="yx-project-pick__head">
       <span class="yx-project-pick__title">{{ project.title.value | escape }}</span>
       {%- if kit_state == 'sold_out' -%}
-        <span class="yx-project-pick__meta yx-project-pick__meta--muted">{{ 'yarn_project.kit_card_sold_out' | t }}</span>
+        <span class="yx-project-pick__meta yx-project-pick__meta--note yx-project-pick__meta--muted">{{ 'yarn_project.kit_card_sold_out' | t }}</span>
       {%- elsif kit_state == 'blocked' -%}
-        <span class="yx-project-pick__meta yx-project-pick__meta--muted">{{ 'yarn_project.kit_card_blocked' | t }}</span>
+        <span class="yx-project-pick__meta yx-project-pick__meta--note yx-project-pick__meta--muted">{{ 'yarn_project.kit_card_blocked' | t }}</span>
       {%- elsif kit_state == 'pending' -%}
-        <span class="yx-project-pick__meta yx-project-pick__meta--muted">{{ 'yarn_project.kit_card_pending' | t }}</span>
+        <span class="yx-project-pick__meta yx-project-pick__meta--note yx-project-pick__meta--muted">{{ 'yarn_project.kit_card_pending' | t }}</span>
       {%- elsif kit_state == 'partial' -%}
-        <span class="yx-project-pick__meta">{{ 'yarn_project.kit_card_partial' | t }}</span>
+        <span class="yx-project-pick__meta yx-project-pick__meta--note">{{ 'yarn_project.kit_card_partial' | t }}</span>
       {%- elsif kit_total > 0 -%}
         <span class="yx-project-pick__meta">{%- render 'yarn-kit-card-price', kit_mode: kit_mode, kit_product: kit_product, kit_price: kit_price -%}</span>
       {%- endif -%}
