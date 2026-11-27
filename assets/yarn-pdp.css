@@ -265,7 +265,8 @@ product-info.yarn-product-page--yarn .product__info-container > .product__title 
 product-info.yarn-product-page--yarn .product__info-container > .yp-yarn-price { grid-column: 3; grid-row: 1 / span 2; flex-direction: column; align-items: flex-end; margin: 0; text-align: right; }
 /* 商品介绍收进「关于这款线」折叠行；首屏只留 ✓ 清单。 */
 product-info.yarn-product-page--yarn .product__info-container > .yp-yarn-intro { display: none; }
-.yp-yarn-works .yp-yarn-grid { grid-template-columns: minmax(0, 1fr); }
+/* 关联材料包在各宽度都是竖排列表，不用 .yx-project-picks 的手机横滑。 */
+.yp-yarn-works .yp-yarn-grid { grid-template-columns: minmax(0, 1fr); grid-auto-flow: row; overflow: visible; margin: 0; padding: 0; }
 .yp-yarn-works .yx-project-pick { display: grid; grid-template-columns: 96px minmax(0, 1fr); column-gap: 12px; row-gap: 2px; align-items: start; padding: 12px; border: 1px solid var(--yarn-border-card); border-radius: 14px; background: var(--yarn-bg-surface); }
 .yp-yarn-works .yx-project-pick > :not(.yx-project-pick__media) { grid-column: 2; }
 .yp-yarn-works .yx-project-pick__media { grid-column: 1; grid-row: 1 / span 4; aspect-ratio: 1; }
